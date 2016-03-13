@@ -56,7 +56,18 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 	public static String[] get(String strPath, boolean prefix){
 		File trFile = ensureLanguageFileExists(getLangByConfig());
 		YamlConfiguration trYaml = YamlConfiguration.loadConfiguration(trFile);
-		String translation = trYaml.getString(strPath, "{" + strPath + "}");
+		String translation = trYaml.getString(strPath, null);
+		
+		if(translation == null && !getLangByConfig().equals(Languages.EN_US)){
+			//Intentar obtener desde el archivo EnUS
+			
+			Console.sendMessage("String " + strPath + " not found in " + getLangByConfig().getResource() + ", try to get this string with EnUs.yml");
+			YamlConfiguration enUsYaml = YamlConfiguration.loadConfiguration(ensureLanguageFileExists(Languages.EN_US));
+			translation = enUsYaml.getString(strPath, null);
+		
+		}
+		
+		if(translation == null) translation = "{" + strPath + "}";
 		
 		String[] split = translation.split("%BREAK%");
 
@@ -90,14 +101,21 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 	private static File ensureLanguageFileExists(Languages lang){
 		
 		if(!lang.getFile().exists()){
+			Console.sendMessage("Language file " + lang.toString() + " not found...");
+			Console.sendMessage("Saving resource...");
 			//Intentar instalar
 			AllBanks.getInstance().saveResource(lang.getResource(), true);
 			//Mover de ruta
 			Languages.ensureLanguageFolderExists();
+			
 			File moveFrom = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResource());
 			File moveTo = new File(Languages.getFolder() + File.separator + lang.getResource());
 			
+			Console.sendMessage("Copy " + moveFrom.getName() + " to " + moveTo);
+			
 			moveFrom.renameTo(moveTo);
+			
+			Console.sendMessage("Success! Language installed!");
 		}
 		
 		return lang.getFile();

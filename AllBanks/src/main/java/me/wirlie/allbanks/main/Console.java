@@ -11,11 +11,15 @@ import org.bukkit.Bukkit;
  *
  */
 public class Console {
+	
+	static String simplePrefix = "[" + AllBanks.getInstance().getDescription().getName() + "] ";
+	
 	public static void sendMessage(StringsID strID){
-		Bukkit.getConsoleSender().sendMessage(Translation.get(strID, true));
+		for(String s : Translation.get(strID, false))
+			Bukkit.getConsoleSender().sendMessage(simplePrefix + s);
 	}
 	
 	public static void sendMessage(String str){
-		Bukkit.getConsoleSender().sendMessage(str);
+		Bukkit.getConsoleSender().sendMessage(simplePrefix + str);
 	}
 }
