@@ -23,7 +23,8 @@ public class Banks {
 		BANK_BUY,
 		BANK_USER,
 		BANK_LAND,
-		ATM;
+		ATM, 
+		BANK_CHEST, DEFAULT;
 	}
 	
 	public static enum AllBanksAction{
@@ -54,8 +55,9 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.user.new");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.new");
+			default:
+				return false;
 			}
-			break;
 		case DESTROY_SIGN:
 			switch(btype){
 			case ATM:
@@ -76,9 +78,9 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.user.destroy");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.destroy");
-			
+			default:
+				return false;
 			}
-			break;
 		case USE_SIGN:
 			switch(btype){
 			case ATM:
@@ -99,9 +101,9 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.user.use");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.use");
-			
+			default:
+				return false;
 			}
-			break;
 		default:
 			break;
 		
@@ -148,6 +150,11 @@ public class Banks {
 				break;
 			case BANK_XP:
 				sign.setLine(1, ChatColor.WHITE + "XP");
+				break;
+			case BANK_CHEST:
+				sign.setLine(1, ChatColor.WHITE + "Chest");
+				break;
+			default:
 				break;
 		}
 		

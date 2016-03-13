@@ -8,8 +8,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import me.wirlie.allbanks.listeners.SignChangeListener;
 
 /**
  * @author Wirlie
@@ -30,6 +33,9 @@ public class AllBanks extends JavaPlugin {
 		//Ejecutar lo demás normalmente.
 		ensureConfigIsUpToDate();
 		Console.sendMessage(StringsID.ENABLING);
+		
+		//Registrar listener
+		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
 	}
 	
 	@Override
