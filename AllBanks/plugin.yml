@@ -1,0 +1,8 @@
+name: AllBanks
+version: 1.0
+main: me.wirlie.allbanks.main.AllBanks
+commands:
+  allbanks:
+    description: AllBanks (Main command).
+    usage: Syntax error, please use /ab ?
+    aliases: [ab, abanks, allb]
