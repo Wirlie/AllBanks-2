@@ -22,7 +22,7 @@ public class SignChangeListener implements Listener {
 	public void onSignChange(SignChangeEvent e){
 		String[] lines = e.getLines();
 		Player ep = e.getPlayer();
-		try___mssad
+		
 		if(lines.length > 1){
 			if(lines[0].equalsIgnoreCase("AllBanks") || lines[0].equalsIgnoreCase("[AllBanks]") || lines[0].equalsIgnoreCase("All Banks")){
 				if(lines[1].equalsIgnoreCase("BankLoan")){
