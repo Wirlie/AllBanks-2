@@ -4,6 +4,7 @@
 package me.wirlie.allbanks.main;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
@@ -114,6 +115,9 @@ public class Banks {
 	}
 	
 	public static void switchSignTo(Sign sign, BankType btype){
+		if(!sign.getBlock().getType().equals(Material.SIGN) && !sign.getBlock().getType().equals(Material.WALL_SIGN))
+			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
+			return;
 		
 		boolean configurationRequired = false;
 		
@@ -162,5 +166,7 @@ public class Banks {
 			sign.setLine(2, String.valueOf(ChatColor.AQUA) + String.valueOf(StringsID.SIGN_NOT_CONFIGURED));
 		else
 			sign.setLine(2, String.valueOf(ChatColor.GREEN) + String.valueOf(StringsID.CLICK_TO_USE));
+		
+		sign.update();
 	}
 }

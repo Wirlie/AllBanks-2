@@ -1,6 +1,24 @@
+###########################################################################################################################
+# Este documento ha sido traducido por Wirlie, las traducciones son exactas ya que yo (Wirlie)                            #
+# hablo español nativamente. Sin embargo, si usted encuentra algún problema o cree que una traducción                     #
+# puede tener una mejor traducción envíe su reporte de corrección: https://github.com/Wirlie/AllBanks-Localisation/issues #
+#                                                                                                                         #
+# Actualmente el idioma menos acertado es el Inglés (debido a que no conozco el Inglés a la perfección),                  #
+# si estás dispuesto a ayudar con la traducción de AllBanks y conoces Español e Inglés a la perfección puedes             #
+# aportar mejores traducciones basándote en este archivo (ya que yo, wirlie he traducido el archivo EnUs con              #
+# ayuda de este archivo EsMx.                                                                                             #
+#                                                                                                                         #
+# Con respecto a otros idiomas (por ejemplo, Español España "EsEs"), puedes solicitar una nueva traducción desde:         #
+# https://github.com/Wirlie/AllBanks-Localisation/ (se requiere una cuenta en GitHub)                                     #
+#                                                                                                                         #
+# AllBanks v1.0                                                                                                           #
+#                                                                                                                         #
+###########################################################################################################################
+
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
 2: "Deshabilitando plugin.%BREAK%Guardando Base de Datos local"
 3: "&cSe necesitan más argumentos para crear un letrero de AllBanks."
 4: "No configurado"
 5: "Clic para usar"
 6: "&cNo tienes permiso para hacer esto."
+7: "&cAllBanks solo funciona con letreros en la pared (WALL_SIGN)."
