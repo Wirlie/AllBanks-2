@@ -104,7 +104,7 @@ public class SignChangeListener implements Listener {
 			new BukkitRunnable(){
 
 				public void run() {
-					Banks.switchSignTo((Sign) e.getBlock().getState(), btypefinal);
+					Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
 				}
 
 			}.runTaskLater(AllBanks.getInstance(), 10);

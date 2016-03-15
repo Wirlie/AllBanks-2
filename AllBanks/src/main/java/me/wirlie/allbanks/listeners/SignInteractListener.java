@@ -21,11 +21,13 @@ package me.wirlie.allbanks.listeners;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.main.Util;
+import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.main.Banks.BankType;
 
 /**
@@ -41,6 +43,7 @@ public class SignInteractListener implements Listener {
 		if(e.getClickedBlock() == null) return;
 		
 		Block b = e.getClickedBlock();
+		Player p = e.getPlayer();
 		
 		if(b.getType().equals(Material.WALL_SIGN)){
 			
@@ -52,8 +55,16 @@ public class SignInteractListener implements Listener {
 				BankType btype = BankType.getByString(btypeStr);
 				
 				if(btype != null){
+					e.setCancelled(true);
+					
 					//Bien ya sabemos de que banco se trata.
-					System.out.println(btype);
+					if(BankSession.checkSession(p)){
+						//¿Ya está usando otro banco?
+						return;
+					}
+					
+					//Iniciar nueva sesión
+					BankSession.startSession(p, new BankSession(p, (Sign) b.getState(), btype, 0));
 				}
 			}
 		}

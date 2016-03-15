@@ -23,6 +23,8 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.data.BankSession;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
@@ -150,7 +152,7 @@ public class Banks {
 		return false;
 	}
 	
-	public static void switchSignTo(Sign sign, BankType btype){
+	public static void switchSignToInitialState(Sign sign, BankType btype){
 		if(!sign.getBlock().getType().equals(Material.SIGN) && !sign.getBlock().getType().equals(Material.WALL_SIGN))
 			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
 			return;
@@ -206,4 +208,181 @@ public class Banks {
 		
 		sign.update();
 	}
+	
+	public static int getNextStep(BankSession bs){
+		int nextStep = bs.getStep() + 1;
+		
+		switch(bs.getBankType()){
+		case ATM:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_BUY:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_CHEST:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_LAND:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_LOAN:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_MONEY:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_SELL:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_TIME:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_USER:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case BANK_XP:
+			if(nextStep > 2){
+				nextStep = 0;
+			}
+			break;
+		case DEFAULT:
+			nextStep = 0;
+			break;
+		
+		}
+		
+		return nextStep;
+	}
+
+	/**
+	 * @param btype
+	 * @param sign
+	 * @param step
+	 */
+	public static void switchSignToStep(BankType btype, Sign sign, int step) {
+		switch(btype){
+		case ATM:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_BUY:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_CHEST:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_LAND:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_LOAN:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_MONEY:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_SELL:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_TIME:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_USER:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case BANK_XP:
+			switch(step){
+			default:
+				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
+				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(3, "");
+				sign.update();
+				break;
+			}
+			break;
+		case DEFAULT:
+			break;
+		
+		}
+	}
+	
 }
