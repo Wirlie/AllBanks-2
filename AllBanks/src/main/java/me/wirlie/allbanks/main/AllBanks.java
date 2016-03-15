@@ -1,5 +1,20 @@
-/**
+/*
+ * AllBanks - AllBanks is a plugin for CraftBukkit and Spigot.
+ * Copyright (C) 2016 Josue Israel Acevedo Peña
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU General Public License
+ * as published by the Free Software Foundation; either version 2
+ * of the License, or (at your option) any later version.
  * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 package me.wirlie.allbanks.main;
 
@@ -7,12 +22,14 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.wirlie.allbanks.listeners.SignChangeListener;
+import me.wirlie.allbanks.listeners.SignInteractListener;
 
 /**
  * @author Wirlie
@@ -30,12 +47,16 @@ public class AllBanks extends JavaPlugin {
 		AllBanksInstance = this;
 		dbc = db.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
 		
+		//Instalar DB
+		installDatabase();
+		
 		//Ejecutar lo demás normalmente.
 		ensureConfigIsUpToDate();
 		Console.sendMessage(StringsID.ENABLING);
 		
 		//Registrar listener
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
+		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
 	}
 	
 	@Override
@@ -51,6 +72,15 @@ public class AllBanks extends JavaPlugin {
 		}
 		
 		db.multipleConnections.clear();
+	}
+	
+	public static void installDatabase(){
+		try{
+			Statement stm = dbc.createStatement();
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS signs (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, location TEXT NOT NULL)");
+		}catch (SQLException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public static void ensureConfigExists(){
