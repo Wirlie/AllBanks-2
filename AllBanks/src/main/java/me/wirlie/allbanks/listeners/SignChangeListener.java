@@ -27,12 +27,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import me.wirlie.allbanks.main.AllBanks;
-import me.wirlie.allbanks.main.Banks;
-import me.wirlie.allbanks.main.StringsID;
-import me.wirlie.allbanks.main.Translation;
-import me.wirlie.allbanks.main.Banks.AllBanksAction;
-import me.wirlie.allbanks.main.Banks.BankType;
+import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Banks.AllBanksAction;
+import me.wirlie.allbanks.Banks.BankType;
 
 /**
  * @author Wirlie

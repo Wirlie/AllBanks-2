@@ -24,8 +24,8 @@ import java.util.UUID;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import me.wirlie.allbanks.main.Banks;
-import me.wirlie.allbanks.main.Banks.BankType;
+import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.Banks.BankType;
 
 /**
  * @author Wirlie

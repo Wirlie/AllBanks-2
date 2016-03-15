@@ -26,9 +26,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
-import me.wirlie.allbanks.main.Util;
+import me.wirlie.allbanks.Util;
+import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.data.BankSession;
-import me.wirlie.allbanks.main.Banks.BankType;
 
 /**
  * @author Wirlie
