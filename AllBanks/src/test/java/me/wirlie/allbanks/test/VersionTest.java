@@ -18,11 +18,34 @@
  */
 package me.wirlie.allbanks.test;
 
+import static org.junit.Assert.assertTrue;
+
+import org.bukkit.Bukkit;
+import org.junit.Test;
+
+import me.wirlie.allbanks.AllBanks;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
-public class TestClass {
-
+public class VersionTest {
+	@Test
+	public void testVersion(){
+		
+		String rawVersion = Bukkit.getServer().getBukkitVersion();
+		
+		boolean compatible = false;
+		
+		for(String sv : AllBanks.COMPATIBLE_VERSIONS){
+			if(rawVersion.equalsIgnoreCase(sv)){
+				//La version es igual al minimo o maximo, no es necesario calcular nada
+				compatible = true;
+				break;
+			}
+		}
+		
+		assertTrue("Incompatible version!", compatible);
+	}
 }

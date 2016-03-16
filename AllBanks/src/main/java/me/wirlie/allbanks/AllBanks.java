@@ -43,7 +43,7 @@ public class AllBanks extends JavaPlugin {
 	private static DataBase db = new DataBase();
 	private static Connection dbc;
 
-	private final String[] COMPATIBLE_VERSIONS = {"1.9-R0.1"};
+	public final static String[] COMPATIBLE_VERSIONS = {"1.9-R0.1"};
 	
 	@Override
 	public void onEnable(){
