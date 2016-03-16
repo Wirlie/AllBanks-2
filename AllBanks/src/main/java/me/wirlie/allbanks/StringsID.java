@@ -18,6 +18,8 @@
  */
 package me.wirlie.allbanks;
 
+import java.util.HashMap;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
@@ -31,7 +33,9 @@ public enum StringsID {
 	SIGN_NOT_CONFIGURED(4),
 	CLICK_TO_USE(5), 
 	NO_PERMISSIONS_FOR_THIS(6), 
-	ONLY_WALL_SIGN(7),
+	ONLY_WALL_SIGN(7), 
+	YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB(8),
+	YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB(9),
 	
 	;
 	
@@ -49,6 +53,6 @@ public enum StringsID {
 	
 	@Override
 	public String toString(){
-		return Translation.get(getPath(), true)[0];
+		return Translation.get(getPath(), new HashMap<String, String>(), true)[0];
 	}
 }

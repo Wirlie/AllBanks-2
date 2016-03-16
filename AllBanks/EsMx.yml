@@ -22,3 +22,5 @@
 5: "Clic para usar"
 6: "&cNo tienes permiso para hacer esto."
 7: "&cAllBanks solo funciona con letreros en la pared (WALL_SIGN)."
+8: "Estas usando una version compatible de CraftBukkit (%1%)."
+9: "====== ADVERTENCIA ======%BREAK%Estas usando una version de CraftBukkit que no ha sido probada (%1)%BREAK%Es posible que exista alguna incompatibilidad, procede con precaución."

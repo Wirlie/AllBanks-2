@@ -1,6 +1,6 @@
 name: AllBanks
 version: 1.0
-main: me.wirlie.allbanks.main.AllBanks
+main: me.wirlie.allbanks.AllBanks
 commands:
   allbanks:
     description: AllBanks (Main command).
