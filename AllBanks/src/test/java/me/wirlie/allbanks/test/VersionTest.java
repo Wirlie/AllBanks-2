@@ -42,8 +42,12 @@ public class VersionTest {
 	public void testVersion(){
 		
 		String rawVersion = Bukkit.getServer().getBukkitVersion();
-		Bukkit.getLogger().info("BukkitVersion is: " + rawVersion);
-		Bukkit.getLogger().info("Compatible versions are: " + AllBanks.COMPATIBLE_VERSIONS);
+		Bukkit.getLogger().info("[DEBUG] BukkitVersion is: " + rawVersion);
+		Bukkit.getLogger().info("[DEBUG] Compatible versions are: ");
+		
+		for(String s : AllBanks.COMPATIBLE_VERSIONS){
+			Bukkit.getLogger().info(s);
+		}
 		
 		boolean compatible = false;
 		
