@@ -21,6 +21,7 @@ package me.wirlie.allbanks.test;
 import static org.junit.Assert.assertTrue;
 
 import org.bukkit.Bukkit;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import me.wirlie.allbanks.AllBanks;
@@ -31,6 +32,12 @@ import me.wirlie.allbanks.AllBanks;
  *
  */
 public class VersionTest {
+	
+	@BeforeClass
+	public static void initializeBukkit() throws IllegalAccessException {
+		BukkitInitialization.initializeItemMeta();
+	}
+	
 	@Test
 	public void testVersion(){
 		

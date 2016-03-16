@@ -20,6 +20,14 @@ package me.wirlie.allbanks.test;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
+import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemFactory;
+import org.bukkit.craftbukkit.v1_9_R1.util.Versioning;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+import java.util.logging.Logger;
 
 import net.minecraft.server.v1_9_R1.DispenserRegistry;
 
@@ -60,8 +68,6 @@ public class BukkitInitialization {
 
 			// Inject this fake server
 			Bukkit.setServer(mockedServer);
-
-			initializePackage();
 		}
 	}
 }
