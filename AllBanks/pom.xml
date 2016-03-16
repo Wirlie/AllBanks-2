@@ -64,6 +64,20 @@
     	<version>1.9-R0.1-SNAPSHOT</version>
     	<scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.spigotmc</groupId>
+      <artifactId>spigot-api</artifactId>
+      <version>1.9-R0.1-SNAPSHOT</version>
+      <scope>provided</scope>
+    </dependency>
+    <!-- CraftBukkit -->
+    <dependency>
+	    <groupId>org.bukkit</groupId>
+	    <artifactId>craftbukkit</artifactId>
+	    <version>1.9</version>
+	    <scope>system</scope>
+	    <systemPath>${project.basedir}/src/main/resources/craftbukkit-1.9.jar</systemPath>
+	</dependency>
   </dependencies>
   <issueManagement>
   	<url>https://github.com/Wirlie/AllBanks-2/issues</url>
