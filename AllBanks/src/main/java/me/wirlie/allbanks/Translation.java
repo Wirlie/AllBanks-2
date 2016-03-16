@@ -19,6 +19,9 @@
 package me.wirlie.allbanks;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -68,7 +71,7 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		}
 	}
 	
-	public static String[] get(String strPath, boolean prefix){
+	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix){
 		File trFile = ensureLanguageFileExists(getLangByConfig());
 		YamlConfiguration trYaml = YamlConfiguration.loadConfiguration(trFile);
 		String translation = trYaml.getString(strPath, null);
@@ -84,21 +87,37 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		
 		if(translation == null) translation = "{" + strPath + "}";
 		
+		if(!replaceMap.isEmpty()){
+			Iterator<Entry<String, String>> it = replaceMap.entrySet().iterator();
+			while(it.hasNext()){
+				Entry<String, String> ent = it.next();
+				translation = translation.replace(ent.getKey(), ent.getValue());
+			}
+		}
+		
 		String[] split = translation.split("%BREAK%");
 
 		return split;
 	}
 	
-	public static String[] get(StringsID strPath, boolean prefix){
-		return get(strPath.getPath(), prefix);
+	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
+		return get(strPath.getPath(), replaceMap, prefix);
 	}
 	
-	public static void getAndSendMessage(Player p, String strPath, boolean prefix){
-		p.sendMessage(get(strPath, prefix));
+	public static String[] get(StringsID strPath, boolean prefix){
+		return get(strPath.getPath(), new HashMap<String, String>(), prefix);
+	}
+	
+	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix){
+		p.sendMessage(get(strPath, replaceMap, prefix));
+	}
+	
+	public static void getAndSendMessage(Player p, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
+		getAndSendMessage(p, strPath.getPath(), replaceMap, prefix);
 	}
 	
 	public static void getAndSendMessage(Player p, StringsID strPath, boolean prefix){
-		getAndSendMessage(p, strPath.getPath(), prefix);
+		getAndSendMessage(p, strPath.getPath(), new HashMap<String, String>(), prefix);
 	}
 	
 	public static Languages getLangByConfig(){
