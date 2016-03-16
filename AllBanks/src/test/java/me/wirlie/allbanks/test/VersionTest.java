@@ -53,6 +53,6 @@ public class VersionTest {
 			}
 		}
 		
-		assertTrue("Incompatible version!", compatible);
+		assertTrue("Incompatible version! ", compatible);
 	}
 }
