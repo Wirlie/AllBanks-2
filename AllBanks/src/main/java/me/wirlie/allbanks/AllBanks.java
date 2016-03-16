@@ -23,8 +23,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -41,9 +43,15 @@ public class AllBanks extends JavaPlugin {
 	private static AllBanks AllBanksInstance;
 	private static DataBase db = new DataBase();
 	private static Connection dbc;
+
+	private final String[] COMPATIBLE_VERSIONS = {"1.9-R0.1"};
 	
 	@Override
 	public void onEnable(){
+		
+		//Version del servidor
+		verifyServerVersion();
+		
 		AllBanksInstance = this;
 		dbc = db.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
 		
@@ -170,4 +178,41 @@ public class AllBanks extends JavaPlugin {
 	public static Connection getDBC(){
 		return dbc;
 	}
+	
+	private void verifyServerVersion() {
+		
+		String rawVersion = Bukkit.getServer().getBukkitVersion();
+		//String[] version = Bukkit.getServer().getBukkitVersion().split("-");
+		
+		//String mcversion = version[0];
+		//String bukkitversion = version[1];
+		
+		boolean compatible = false;
+		
+		for(String sv : COMPATIBLE_VERSIONS){
+			if(rawVersion.equalsIgnoreCase(sv)){
+				//La version es igual al minimo o maximo, no es necesario calcular nada
+				compatible = true;
+				break;
+			}
+		}
+		
+		HashMap<String, String> replaceMap = new HashMap<String, String>();
+		replaceMap.put("%1%", rawVersion);
+		
+		if(compatible){
+			Console.sendMessage(StringsID.YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+		}else{
+			Console.sendMessage(StringsID.YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+		}
+		
+	}
+	
+	//Version para el paquete ej: net.minecraft.VERSION.clase
+	/*
+	 * String name = getServer().getClass().getPackage().getName();
+	   String version = name.substring(name.lastIndexOf('.') + 1);
+		
+	   System.out.println(version);
+	 */
 }
