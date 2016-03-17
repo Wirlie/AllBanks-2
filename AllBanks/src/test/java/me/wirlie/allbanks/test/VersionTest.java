@@ -35,20 +35,15 @@ public class VersionTest {
 	
 	@BeforeClass
 	public static void initializeBukkit() throws IllegalAccessException {
-		BukkitInitialization.initializeItemMeta();
+		//Iniciar el servidor de Bukkit falso.
+		BukkitInitialization.initializeServer();
 	}
 	
 	@Test
 	public void testVersion(){
 		
 		String rawVersion = Bukkit.getServer().getBukkitVersion();
-		Bukkit.getLogger().info("[DEBUG] BukkitVersion is: " + rawVersion);
-		Bukkit.getLogger().info("[DEBUG] Compatible versions are: ");
-		
-		for(String s : AllBanks.COMPATIBLE_VERSIONS){
-			Bukkit.getLogger().info(s);
-		}
-		
+
 		boolean compatible = false;
 		
 		for(String sv : AllBanks.COMPATIBLE_VERSIONS){
@@ -59,6 +54,6 @@ public class VersionTest {
 			}
 		}
 		
-		assertTrue("Incompatible version! ", compatible);
+		assertTrue("Incompatible version! (" + rawVersion + ") ", compatible);
 	}
 }

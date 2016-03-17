@@ -17,7 +17,7 @@ public class BukkitInitialization {
 	
 	private static boolean initialized;
 	
-	public static void initializeItemMeta() throws IllegalAccessException {
+	public static void initializeServer() throws IllegalAccessException {
 		if (!initialized) {
 			initialized = true;
 
