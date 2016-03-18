@@ -18,14 +18,19 @@
  */
 package me.wirlie.allbanks.data;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
 
 /**
  * @author Wirlie
@@ -40,6 +45,10 @@ public class BankSession {
 	
 	private static HashMap<UUID, BankSession> activeSessions = new HashMap<UUID, BankSession>();
 	
+	public static Collection<BankSession> getAllActiveSessions(){
+		return activeSessions.values();
+	}
+	
 	public static BankSession getActiveSessionBySign(Sign sign){
 		
 		for(BankSession bs : activeSessions.values()){
@@ -51,19 +60,25 @@ public class BankSession {
 		return null;
 	}
 	
-	public static void startSession(Player p, BankSession bs){
+	public static BankSession startSession(Player p, BankSession bs){
 		startSession(p.getUniqueId(), bs);
+		
+		//Para fines prácticos, retornamos el valor bs.
+		return bs;
 	}
 	
-	public static void startSession(UUID uuid, BankSession bs){
+	public static BankSession startSession(UUID uuid, BankSession bs){
 		activeSessions.put(uuid, bs);
+		
+		//Para fines prácticos, retornamos el valor bs.
+		return bs;
 	}
 	
-	public BankSession getSession(Player p){
+	public static BankSession getSession(Player p){
 		return getSession(p.getUniqueId());
 	}
 	
-	public BankSession getSession(UUID uuid){
+	public static BankSession getSession(UUID uuid){
 		return activeSessions.get(uuid);
 	}
 	
@@ -72,9 +87,16 @@ public class BankSession {
 	}
 	
 	public static void closeSession(UUID uuid){
+		//notificar
+		Translation.getAndSendMessage(Bukkit.getPlayer(uuid), StringsID.SESSION_CLOSED, true);
+
+		//actualizar letrero
+		BankSession bs = activeSessions.get(uuid);
+		if(bs.getSign().getBlock().getType().equals(Material.WALL_SIGN)) bs.updateToInitialState();
+		
 		activeSessions.remove(uuid);
 	}
-	
+
 	public static boolean checkSession(Player p){
 		return checkSession(p.getUniqueId());
 	}
@@ -119,15 +141,32 @@ public class BankSession {
 		return sign;
 	}
 	
-	public void updateStepAndSwitchSign(int step){
-		this.step = step;
-		updateSession(player.getUniqueId(), this);
+	public Player getPlayer(){
+		return player;
+	}
+	
+	public void updateStepAndSwitchSign(int step, boolean ignoreUpdate){
+		if(!ignoreUpdate){
+			this.step = step;
+			updateSession(player.getUniqueId(), this);
+		}
 		
 		Banks.switchSignToStep(btype, sign, step);
 	}
 	
-	public void updateStepAndSwitchSign(){
-		updateStepAndSwitchSign(Banks.getNextStep(this));
+	public void updateStepAndSwitchSign(int step){
+		updateStepAndSwitchSign(step, false);
 	}
 	
+	public void updateStepAndSwitchSign(){
+		updateStepAndSwitchSign(Banks.getNextStep(this), false);
+	}
+	
+	public void closeSession(){
+		closeSession(player);
+	}
+	
+	private void updateToInitialState() {
+		updateStepAndSwitchSign(-1, true);
+	}
 }

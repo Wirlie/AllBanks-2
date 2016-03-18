@@ -27,7 +27,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Util;
+import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.data.BankSession;
 
 /**
@@ -50,21 +53,55 @@ public class SignInteractListener implements Listener {
 			Sign s = (Sign) b.getState();
 			
 			if(Util.ChatFormatUtil.removeChatFormat(s.getLine(0)).equalsIgnoreCase("AllBanks")){
+				
 				//Se puede tratar de un letrero AllBanks.
 				String btypeStr = Util.ChatFormatUtil.removeChatFormat(s.getLine(1));
 				BankType btype = BankType.getByString(btypeStr);
 				
 				if(btype != null){
-					e.setCancelled(true);
+					
+					BankSession bs;
 					
 					//Bien ya sabemos de que banco se trata.
-					if(BankSession.checkSession(p)){
-						//¿Ya está usando otro banco?
+					
+					//Seguridad: Comprobar si el banco está registrado en AllBanks
+					if(!Banks.signIsRegistered(s.getLocation())){
+						Translation.getAndSendMessage(p, StringsID.BANK_NOT_REGISTERED_ON_ALLBANKS, true);
 						return;
 					}
 					
-					//Iniciar nueva sesión
-					BankSession.startSession(p, new BankSession(p, (Sign) b.getState(), btype, 0));
+					//Comprobar si el banco es usado por otro jugador
+					BankSession bs2 = BankSession.getActiveSessionBySign(s);
+					if(bs2 != null){
+						if(!bs2.getPlayer().equals(p)){
+							Translation.getAndSendMessage(p, StringsID.BANK_USED_WITH_ANOTHER_PLAYER, true);
+							return;
+						}
+						
+					}
+					
+					//Comprobar si el usuario está en sesión
+					if(BankSession.checkSession(p)){
+						//¿Ya está usando otro banco?
+						bs = BankSession.getSession(p);
+						if(bs != null && !bs.getSign().equals(s)){
+							//Esta intentando usar otro banco.
+							Translation.getAndSendMessage(p, StringsID.ALREADY_USING_ANOTHER_BANK, true);
+							return;
+						}else if(bs == null){
+							//Nulo ???
+							return;
+						}
+						
+						//Bien, cambiar paso
+						bs.updateStepAndSwitchSign();
+					}else{
+						//Iniciar nueva sesión
+						bs = BankSession.startSession(p, new BankSession(p, (Sign) b.getState(), btype, 0));
+						
+						//Bien, establecer el paso en 0 ya que si no se establece en 0 el paso actualizado sería 1.
+						bs.updateStepAndSwitchSign(0);
+					}
 				}
 			}
 		}

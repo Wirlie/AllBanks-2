@@ -23,12 +23,16 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.listeners.PlayerMoveListener;
+import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
 import me.wirlie.allbanks.listeners.SignInteractListener;
 
@@ -47,11 +51,12 @@ public class AllBanks extends JavaPlugin {
 	
 	@Override
 	public void onEnable(){
+
+		AllBanksInstance = this;
 		
 		//Version del servidor
 		verifyServerVersion();
 		
-		AllBanksInstance = this;
 		dbc = db.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
 		
 		//Instalar DB
@@ -64,11 +69,20 @@ public class AllBanks extends JavaPlugin {
 		//Registrar listener
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
+		Bukkit.getPluginManager().registerEvents(new SignBreakListener(), this);
 	}
 	
 	@Override
 	public void onDisable(){
 		Console.sendMessage(StringsID.DISABLING);
+		
+		//Cerrar todas las sesiones.
+		Collection<BankSession> sessions = BankSession.getAllActiveSessions();
+		
+		for(BankSession bs : sessions){
+			bs.closeSession();
+		}
 		
 		for(Connection c : db.multipleConnections.values()){
 			try {

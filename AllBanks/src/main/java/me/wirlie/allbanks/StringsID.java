@@ -35,7 +35,14 @@ public enum StringsID {
 	NO_PERMISSIONS_FOR_THIS(6), 
 	ONLY_WALL_SIGN(7), 
 	YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB(8),
-	YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB(9),
+	YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB(9), 
+	ASK(10), 
+	PAY(11), 
+	ALREADY_USING_ANOTHER_BANK(12),
+	SESSION_CLOSED(13), 
+	BANK_USED_WITH_ANOTHER_PLAYER(14),
+	BANK_NOT_REGISTERED_ON_ALLBANKS(15), 
+	BANK_REMOVED(16),
 	
 	;
 	
@@ -54,5 +61,9 @@ public enum StringsID {
 	@Override
 	public String toString(){
 		return Translation.get(getPath(), new HashMap<String, String>(), true)[0];
+	}
+	
+	public String toString(boolean prefix){
+		return Translation.get(getPath(), new HashMap<String, String>(), prefix)[0];
 	}
 }

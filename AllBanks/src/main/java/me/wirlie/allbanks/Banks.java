@@ -18,7 +18,12 @@
  */
 package me.wirlie.allbanks;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -157,56 +162,8 @@ public class Banks {
 			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
 			return;
 		
-		boolean configurationRequired = false;
+		switchSignToStep(btype, sign, 0);
 		
-		sign.setLine(0, ChatColor.AQUA + "AllBanks");
-		
-		switch(btype){
-			case ATM:
-				sign.setLine(1, ChatColor.WHITE + BankType.ATM.getDisplay());
-				configurationRequired = true;
-				break;
-			case BANK_BUY:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_BUY.getDisplay());
-				configurationRequired = true;
-				break;
-			case BANK_LAND:
-				//Este letrero solo aparecerá en la venta de un terreno.
-				sign.getBlock().breakNaturally();
-				return;
-			case BANK_LOAN:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_LOAN.getDisplay());
-				break;
-			case BANK_MONEY:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_MONEY.getDisplay());
-				break;
-			case BANK_SELL:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_SELL.getDisplay());
-				configurationRequired = true;
-				break;
-			case BANK_TIME:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_TIME.getDisplay());
-				break;
-			case BANK_USER:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_USER.getDisplay());
-				configurationRequired = true;
-				break;
-			case BANK_XP:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_XP.getDisplay());
-				break;
-			case BANK_CHEST:
-				sign.setLine(1, ChatColor.WHITE + BankType.BANK_CHEST.getDisplay());
-				break;
-			default:
-				break;
-		}
-		
-		if(configurationRequired)
-			sign.setLine(2, String.valueOf(ChatColor.AQUA) + String.valueOf(StringsID.SIGN_NOT_CONFIGURED));
-		else
-			sign.setLine(2, String.valueOf(ChatColor.GREEN) + String.valueOf(StringsID.CLICK_TO_USE));
-		
-		sign.update();
 	}
 	
 	public static int getNextStep(BankSession bs){
@@ -234,7 +191,7 @@ public class Banks {
 			}
 			break;
 		case BANK_LOAN:
-			if(nextStep > 2){
+			if(nextStep >= 2){
 				nextStep = 0;
 			}
 			break;
@@ -278,14 +235,17 @@ public class Banks {
 	 * @param step
 	 */
 	public static void switchSignToStep(BankType btype, Sign sign, int step) {
+		
+		sign.setLine(0, ChatColor.AQUA + "AllBanks");
+		sign.setLine(1, ChatColor.WHITE + btype.getDisplay());
+		
 		switch(btype){
 		case ATM:
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -293,9 +253,8 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -303,9 +262,8 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -313,19 +271,25 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
 		case BANK_LOAN:
 			switch(step){
+			case 0:
+				sign.setLine(2, ChatColor.YELLOW + StringsID.ASK.toString(false));
+				sign.setLine(3, "");
+				break;
+			case 1:
+				sign.setLine(2, ChatColor.YELLOW + StringsID.PAY.toString(false));
+				sign.setLine(3, "");
+				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -333,9 +297,8 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -343,9 +306,8 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -353,9 +315,8 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -363,9 +324,8 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
@@ -373,15 +333,46 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, String.valueOf(StringsID.CLICK_TO_USE));
+				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
-				sign.update();
 				break;
 			}
 			break;
 		case DEFAULT:
 			break;
 		
+		}
+		
+		sign.update();
+	}
+	
+	public static void registerSign(Location signLoc, Player owner){
+		try{
+			Statement stm = AllBanks.getDBC().createStatement();
+			stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+	}
+	
+	public static boolean signIsRegistered(Location signLoc){
+		try{
+			Statement stm = AllBanks.getDBC().createStatement();
+			ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+			return res.next();
+		}catch(SQLException e){
+			e.printStackTrace();
+		}
+		
+		return false;
+	}
+	
+	public static void removeSign(Location signLoc){
+		try{
+			Statement stm = AllBanks.getDBC().createStatement();
+			stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+		}catch(SQLException e){
+			e.printStackTrace();
 		}
 	}
 	

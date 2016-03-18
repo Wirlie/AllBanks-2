@@ -44,7 +44,7 @@ public class SignChangeListener implements Listener {
 	@EventHandler
 	public void onSignChange(final SignChangeEvent e){
 		String[] lines = e.getLines();
-		Player p = e.getPlayer();
+		final Player p = e.getPlayer();
 		
 		if(lines[0].equalsIgnoreCase("AllBanks") || lines[0].equalsIgnoreCase("[AllBanks]") || lines[0].equalsIgnoreCase("All Banks")){
 			
@@ -104,6 +104,7 @@ public class SignChangeListener implements Listener {
 			new BukkitRunnable(){
 
 				public void run() {
+					Banks.registerSign(e.getBlock().getLocation(), p);
 					Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
 				}
 

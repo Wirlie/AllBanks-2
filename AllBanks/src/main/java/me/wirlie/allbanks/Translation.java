@@ -19,10 +19,12 @@
 package me.wirlie.allbanks;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -79,7 +81,7 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		if(translation == null && !getLangByConfig().equals(Languages.EN_US)){
 			//Intentar obtener desde el archivo EnUS
 			
-			Console.sendMessage("String " + strPath + " not found in " + getLangByConfig().getResource() + ", try to get this string with EnUs.yml");
+			Console.sendMessage(ChatColor.YELLOW + "[Translation] String " + strPath + " not found in " + getLangByConfig().getResource() + ", try to get this string with EnUs.yml");
 			YamlConfiguration enUsYaml = YamlConfiguration.loadConfiguration(ensureLanguageFileExists(Languages.EN_US));
 			translation = enUsYaml.getString(strPath, null);
 		
@@ -95,7 +97,17 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 			}
 		}
 		
+		translation = Util.ChatFormatUtil.replaceChatFormat(translation);
+		
 		String[] split = translation.split("%BREAK%");
+		
+		if(prefix){
+			String prefixStr = ChatColor.LIGHT_PURPLE + "All" + ChatColor.DARK_PURPLE + "Banks" + ChatColor.GOLD + " >> " + ChatColor.RESET;
+			
+			for(int i = 0; i < split.length; i++){
+				split[i] = prefixStr + split[i];
+			}
+		}
 
 		return split;
 	}
@@ -135,8 +147,8 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 	private static File ensureLanguageFileExists(Languages lang){
 		
 		if(!lang.getFile().exists()){
-			Console.sendMessage("Language file " + lang.toString() + " not found...");
-			Console.sendMessage("Saving resource...");
+			Console.sendMessage(ChatColor.YELLOW + "[Translation] Language file " + lang.toString() + " not found...");
+			Console.sendMessage(ChatColor.YELLOW + "[Translation] Saving resource...");
 			//Intentar instalar
 			AllBanks.getInstance().saveResource(lang.getResource(), true);
 			//Mover de ruta
@@ -145,13 +157,71 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 			File moveFrom = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResource());
 			File moveTo = new File(Languages.getFolder() + File.separator + lang.getResource());
 			
-			Console.sendMessage("Copy " + moveFrom.getName() + " to " + moveTo);
+			Console.sendMessage(ChatColor.WHITE + "[Translation][Debug] Copy " + moveFrom.getName() + " to " + moveTo);
 			
 			moveFrom.renameTo(moveTo);
 			
-			Console.sendMessage("Success! Language installed!");
+			Console.sendMessage(ChatColor.GREEN + "[Translation] Success! Language installed!");
+		}else{
+			ensureLanguageFileIsUpToDate(lang);
 		}
 		
 		return lang.getFile();
+	}
+
+	//FIXME Quitar esto ya que es solo para forzar una actualización de los idiomas.
+	static boolean isupdtodate = false;
+	
+	private static void ensureLanguageFileIsUpToDate(Languages lang){
+		YamlConfiguration readLanguage = YamlConfiguration.loadConfiguration(lang.getFile());
+		
+		String version = readLanguage.getString("language-version", "null");
+		
+		if(!version.equalsIgnoreCase(AllBanks.getInstance().getDescription().getVersion()) || !isupdtodate){
+			
+			isupdtodate = true;
+			
+			//No concuerda, intentar actualizar.
+			Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResource() + " " + version + " to " + AllBanks.getInstance().getDescription().getVersion());
+			
+			AllBanks.getInstance().saveResource(lang.getResource(), true);
+			File nativeLangFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResource());
+			
+			if(!nativeLangFile.exists()){
+				//error!! no existe a pesar de haber sido guardado
+				Console.sendMessage(ChatColor.RED + "[Translation][Error] Ops! Language file can not be updated because an unknow error (NativeFileNotExists)");
+				return;
+			}
+			
+			YamlConfiguration nativeYaml = YamlConfiguration.loadConfiguration(nativeLangFile);
+			
+			int count = 0;
+			
+			for(String key : nativeYaml.getKeys(true)){
+				Object obj = readLanguage.get(key, null);
+				
+				if(obj == null){
+					readLanguage.set(key, nativeYaml.get(key));
+					count++;
+				}
+				
+			}
+			
+			if(count > 0)
+				Console.sendMessage(ChatColor.GREEN + "[Translation] " + count + " translations updated!");
+			else
+				Console.sendMessage(ChatColor.YELLOW + "[Translation] 0 translations updated.");
+			
+			//Actualizar version
+			readLanguage.set("language-version", AllBanks.getInstance().getDescription().getVersion());
+			
+			try {
+				readLanguage.save(lang.getFile());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			nativeLangFile.delete();
+		}
 	}
 }
