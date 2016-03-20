@@ -27,7 +27,9 @@ import java.util.Collection;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.wirlie.allbanks.data.BankSession;
@@ -35,6 +37,7 @@ import me.wirlie.allbanks.listeners.PlayerMoveListener;
 import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
 import me.wirlie.allbanks.listeners.SignInteractListener;
+import net.milkbowl.vault.economy.Economy;
 
 /**
  * @author Wirlie
@@ -46,6 +49,8 @@ public class AllBanks extends JavaPlugin {
 	private static AllBanks AllBanksInstance;
 	private static DataBase db = new DataBase();
 	private static Connection dbc;
+	
+	private static Economy econ = null;
 
 	public final static String[] COMPATIBLE_VERSIONS = {"1.9-R0.1-SNAPSHOT"};
 	
@@ -62,9 +67,19 @@ public class AllBanks extends JavaPlugin {
 		//Instalar DB
 		installDatabase();
 		
+		//Economy
+		if(!setupEconomy()){
+		    Bukkit.getPluginManager().disablePlugin(this);
+		    return;
+		}
+
 		//Ejecutar lo demás normalmente.
 		ensureConfigIsUpToDate();
 		Console.sendMessage(StringsID.ENABLING);
+		
+		//comando
+		Bukkit.getPluginCommand("allbanks").setExecutor(new Commands());
+		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandsTabCompleter());
 		
 		//Registrar listener
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
@@ -95,10 +110,33 @@ public class AllBanks extends JavaPlugin {
 		db.multipleConnections.clear();
 	}
 	
+	private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+        	Console.sendMessage(ChatColor.RED + "[Error] Ops! Vault plugin is required for AllBanks...");
+            return false;
+        }
+        
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+        	Console.sendMessage(ChatColor.RED + "[Error] Ops! An economy plugin is required for AllBanks...");
+        	return false;
+        }
+        
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+	
+	public static Economy getEconomy(){
+		return econ;
+	}
+	
 	public static void installDatabase(){
 		try{
 			Statement stm = dbc.createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS signs (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, location TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, loan NUMBER)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankmoney_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, money NUMBER)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankxp_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, xp NUMBER)");
 		}catch (SQLException e){
 			e.printStackTrace();
 		}
