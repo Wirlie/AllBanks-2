@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -124,12 +125,24 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		p.sendMessage(get(strPath, replaceMap, prefix));
 	}
 	
+	public static void getAndSendMessage(CommandSender s, String strPath, HashMap<String, String> replaceMap, boolean prefix){
+		s.sendMessage(get(strPath, replaceMap, prefix));
+	}
+	
 	public static void getAndSendMessage(Player p, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
 		getAndSendMessage(p, strPath.getPath(), replaceMap, prefix);
 	}
 	
 	public static void getAndSendMessage(Player p, StringsID strPath, boolean prefix){
 		getAndSendMessage(p, strPath.getPath(), new HashMap<String, String>(), prefix);
+	}
+	
+	public static void getAndSendMessage(CommandSender s, StringsID strPath, boolean prefix){
+		getAndSendMessage(s, strPath.getPath(), new HashMap<String, String>(), prefix);
+	}
+	
+	public static void getAndSendMessage(CommandSender s, String strPath, boolean prefix){
+		getAndSendMessage(s, strPath, new HashMap<String, String>(), prefix);
 	}
 	
 	public static Languages getLangByConfig(){
