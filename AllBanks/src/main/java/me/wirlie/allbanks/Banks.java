@@ -28,6 +28,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
 
 /**
@@ -78,6 +79,11 @@ public class Banks {
 	}
 	
 	public static boolean playerHasPermissions(Player p, AllBanksAction action, BankType btype){
+		
+		if(btype == null){
+			return true;
+		}
+		
 		switch(action){
 		case NEW_SIGN:
 			switch(btype){
@@ -162,7 +168,7 @@ public class Banks {
 			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
 			return;
 		
-		switchSignToStep(btype, sign, 0);
+		switchSignToStep(btype, sign, -1);
 		
 	}
 	
@@ -280,11 +286,11 @@ public class Banks {
 			switch(step){
 			case 0:
 				sign.setLine(2, ChatColor.YELLOW + StringsID.ASK.toString(false));
-				sign.setLine(3, "");
+				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(BankAccount.Cache.get(sign).BankLoan_getLoan()));
 				break;
 			case 1:
 				sign.setLine(2, ChatColor.YELLOW + StringsID.PAY.toString(false));
-				sign.setLine(3, "");
+				sign.setLine(3, ChatColor.YELLOW + AllBanks.getEconomy().format(BankAccount.Cache.get(sign).BankLoan_getLoan()));
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
