@@ -53,11 +53,13 @@ public class SignBreakListener implements Listener {
 					BankType btype = BankType.getByString(Util.ChatFormatUtil.removeChatFormat(s.getLine(1)));
 					
 					if(Banks.playerHasPermissions(e.getPlayer(), AllBanksAction.DESTROY_SIGN, btype)){
-						Banks.removeSign(s.getLocation());
-						Translation.getAndSendMessage(e.getPlayer(), StringsID.BANK_REMOVED, true);
-						//Cerrar sesión
-						BankSession.closeSession(e.getPlayer());
-						e.setCancelled(false);
+						if(btype != null){
+							Banks.removeSign(s.getLocation());
+							Translation.getAndSendMessage(e.getPlayer(), StringsID.BANK_REMOVED, true);
+							//Cerrar sesión
+							BankSession.closeSession(e.getPlayer());
+							e.setCancelled(false);
+						}
 					}else{
 						//sin permisos
 						Translation.getAndSendMessage(e.getPlayer(), StringsID.NO_PERMISSIONS_FOR_THIS, true);
