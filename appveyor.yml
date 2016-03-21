@@ -14,17 +14,12 @@ install:
   - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=2g -Xmx4g
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=2g -Xmx4g
 build_script:
-  - ps: |-
-      &$mvn clean install --batch-mode;
-      
-      Write-Host -ForegroundColor Cyan "Archiving artifacts"
-      del target\artifacts -Recurse -Include "maven-metadata.xml*"
-      cd target\artifacts
-      7z a ..\artifacts.zip **
-      cd ..\..
+  - mvn clean install --batch-mode
 cache:
   - C:\maven\
   - C:\Users\appveyor\.m2
+after_build:
+  - 7z a AllBanks.zip C:\projects\allbanks-2\AllBanks\target\*.jar
 artifacts:
-- path: target\artifacts.zip
-  name: AllBanks
+- path: AllBanks.zip
+  name: AllBanksZIP
