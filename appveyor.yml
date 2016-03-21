@@ -20,3 +20,6 @@ test_script:
 cache:
   - C:\maven\
   - C:\Users\appveyor\.m2
+artifacts:
+- path: .\projects\allbanks-2\AllBanks\target\allbanks-1.0.0-RELEASE.jar
+  name: AllBanks-JAR
