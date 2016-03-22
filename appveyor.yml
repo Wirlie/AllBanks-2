@@ -19,7 +19,7 @@ cache:
   - C:\maven\
   - C:\Users\appveyor\.m2
 after_build:
-  - 7z a AllBanks.zip C:\projects\allbanks-2\AllBanks\target\*.jar
+  - 7z a C:\AllBanks.zip C:\projects\allbanks-2\AllBanks\target\*.jar
 artifacts:
-- path: AllBanks.zip
+- path: C:\AllBanks.zip
   name: AllBanksZIP
