@@ -11,3 +11,6 @@ notifications:
       - "josue.211996@outlook.com"
     on_success: change
     on_failure: always
+cache:
+  directories:
+  - maven
