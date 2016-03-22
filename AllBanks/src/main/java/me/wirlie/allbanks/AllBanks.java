@@ -33,6 +33,7 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.listeners.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.PlayerMoveListener;
 import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
@@ -86,6 +87,7 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SignBreakListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerChatBSListener(), this);
 	}
 	
 	@Override
@@ -134,8 +136,8 @@ public class AllBanks extends JavaPlugin {
 		try{
 			Statement stm = dbc.createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS signs (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, location TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, loan NUMBER)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankmoney_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, money NUMBER)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, loan TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankmoney_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, money TEXT NOT NULL)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankxp_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, xp NUMBER)");
 		}catch (SQLException e){
 			e.printStackTrace();
@@ -150,6 +152,7 @@ public class AllBanks extends JavaPlugin {
 		File cfgFile = new File(getInstance().getDataFolder() + File.separator + "Config.yml");
 		if(!cfgFile.exists() || force){
 			getInstance().saveResource("Config.yml", true);
+			getInstance().reloadConfig();
 		}
 	}
 	
@@ -179,6 +182,8 @@ public class AllBanks extends JavaPlugin {
 			if(!version.equalsIgnoreCase(getInstance().getDescription().getVersion())){
 				//Distintas versiones, intentar actualizar nativamente.
 				UpdateConfigWithNativeFile();
+				//Actualizar
+				getInstance().reloadConfig();
 			}
 		}
 	}

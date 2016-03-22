@@ -18,6 +18,7 @@
  */
 package me.wirlie.allbanks.data;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -81,12 +82,15 @@ public class BankAccount {
 				ResultSet result = stm.executeQuery("SELECT bankloan.*, bankmoney.*, bankxp.* FROM bankloan_accounts AS bankloan LEFT JOIN bankmoney_accounts AS bankmoney ON bankmoney.owner = bankloan.owner LEFT JOIN bankxp_accounts AS bankxp ON bankxp.owner = bankloan.owner WHERE bankloan.owner = '" + p.getName() + "'");
 				
 				if(result.next()){
-					ba.BankLoan_updateLoan(result.getInt("loan"), false);
-					ba.BankMoney_updateMoney(result.getInt("money"), false);
+					ba.BankLoan_updateLoan(new BigDecimal(result.getString("loan")), false);
+					ba.BankMoney_updateMoney(new BigDecimal(result.getString("money")), false);
 					ba.BankXP_updateXP(result.getInt("xp"), false);
 				}else{
-					ba.BankLoan_updateLoan(0, false);
-					ba.BankMoney_updateMoney(0, false);
+					//ingresar nuevos valores
+					registerNewAccountInDataBase(p);
+					
+					ba.BankLoan_updateLoan(BigDecimal.ZERO, false);
+					ba.BankMoney_updateMoney(BigDecimal.ZERO, false);
 					ba.BankXP_updateXP(0, false);
 				}
 				
@@ -98,6 +102,21 @@ public class BankAccount {
 			
 			return null;
 		}
+
+		/**
+		 * @param p
+		 */
+		private static void registerNewAccountInDataBase(Player p) {
+			try {
+				Statement stm = AllBanks.getDBC().createStatement();
+				stm.executeUpdate("INSERT INTO bankloan_accounts (owner, loan) VALUES ('" + p.getName() + "', 0)");
+				stm.executeUpdate("INSERT INTO bankmoney_accounts (owner, money) VALUES ('" + p.getName() + "', 0)");
+				stm.executeUpdate("INSERT INTO bankxp_accounts (owner, xp) VALUES ('" + p.getName() + "', 0)");
+				stm.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	/*
@@ -106,8 +125,8 @@ public class BankAccount {
 	
 	Player player;
 	
-	int bankloan_loan = 0;
-	int bankmoney_money = 0;
+	BigDecimal bankloan_loan = BigDecimal.ZERO;
+	BigDecimal bankmoney_money = BigDecimal.ZERO;
 	int bankxp_xp = 0;
 	
 	/**
@@ -117,46 +136,49 @@ public class BankAccount {
 		this.player = p;
 	}
 
-	public void BankLoan_addLoan(int add){
-		int total = bankloan_loan + add;
-		BankLoan_updateLoan(total, true);
+	public boolean BankLoan_addLoan(BigDecimal add){
+		BigDecimal total = bankloan_loan.add(add);
+		return BankLoan_updateLoan(total, true);
 	}
 	
-	public void BankLoan_subsLoan(int substract){
+	public boolean BankLoan_subsLoan(BigDecimal substract){
 
-		int total = bankloan_loan - substract;
-		BankLoan_updateLoan(total, true);
+		BigDecimal total = bankloan_loan.subtract(substract);
+		return BankLoan_updateLoan(total, true);
 	}
 	
-	public void BankLoan_updateLoan(int newLoan, boolean updateFromDatabase){
+	public synchronized boolean BankLoan_updateLoan(BigDecimal newLoan, boolean updateFromDatabase){
 		bankloan_loan = newLoan;
 		
 		//Actualizar la base de datos
 		if(updateFromDatabase)
 			try {
 				Statement stm = AllBanks.getDBC().createStatement();
-				stm.executeUpdate("UPDATE bankloan_accounts SET loan = '" + newLoan + "' WHERE owner = '" + player.getName() + "'");
+				stm.executeUpdate("UPDATE bankloan_accounts SET loan = '" + newLoan.doubleValue() + "' WHERE owner = '" + player.getName() + "'");
 				stm.close();
+				return true;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		
+		return false;
 	}
 	
-	public int BankLoan_getLoan(){
+	public BigDecimal BankLoan_getLoan(){
 		return bankloan_loan;
 	}
 
-	public void BankMoney_addMoney(int add){
-		int total = bankmoney_money + add;
+	public void BankMoney_addMoney(BigDecimal add){
+		BigDecimal total = bankmoney_money.add(add);
 		BankMoney_updateMoney(total, true);
 	}
 	
-	public void BankMoney_subsMoney(int substract){
-		int total = bankmoney_money - substract;
+	public void BankMoney_subsMoney(BigDecimal substract){
+		BigDecimal total = bankmoney_money.subtract(substract);
 		BankMoney_updateMoney(total, true);
 	}
 	
-	public void BankMoney_updateMoney(int newMoney, boolean updateFromDatabase){
+	public synchronized void BankMoney_updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
 		bankmoney_money = newMoney;
 		
 		//Actualizar la base de datos
@@ -170,11 +192,11 @@ public class BankAccount {
 			}
 	}
 	
-	public int BankMoney_getMoney(){
+	public BigDecimal BankMoney_getMoney(){
 		return bankmoney_money;
 	}
 	
-	public void BankXP_updateXP(int newXP, boolean updateFromDatabase){
+	public synchronized void BankXP_updateXP(int newXP, boolean updateFromDatabase){
 		bankxp_xp = newXP;
 		
 		//Actualizar la base de datos

@@ -255,7 +255,7 @@ public class BankSession {
 			updateSession(player.getUniqueId(), this);
 		}
 		
-		Banks.switchSignToStep(btype, sign, step);
+		Banks.switchSignToStep(btype, sign, step, true);
 	}
 	
 	/**
@@ -286,5 +286,9 @@ public class BankSession {
 	 */
 	private void updateToInitialState() {
 		updateStepAndSwitchSign(-1, true);
+	}
+	
+	public void reloadSign(){
+		Banks.switchSignToStep(btype, sign, step, false);
 	}
 }

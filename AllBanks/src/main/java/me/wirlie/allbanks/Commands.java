@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
@@ -156,6 +157,20 @@ public class Commands implements CommandExecutor {
 				}
 			}else{
 				//No cumple con los requisitos: /ab database <arg>
+				return false;
+			}
+		}else if(mainAction.equalsIgnoreCase("money-reset")){
+			//TODO No estoy seguro de si conservar este comando
+			if(!sender.hasPermission("allbanks.commands.money-reset")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+				return true;
+			}
+			
+			if(args.length > 1){
+				Player p = Bukkit.getPlayer(args[1]);
+				AllBanks.getEconomy().withdrawPlayer(p, AllBanks.getEconomy().getBalance(p));
+				return true;
+			}else{
 				return false;
 			}
 		}

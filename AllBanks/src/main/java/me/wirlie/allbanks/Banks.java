@@ -18,9 +18,11 @@
  */
 package me.wirlie.allbanks;
 
+import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -168,7 +170,7 @@ public class Banks {
 			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
 			return;
 		
-		switchSignToStep(btype, sign, -1);
+		switchSignToStep(btype, sign, -1, true);
 		
 	}
 	
@@ -240,10 +242,21 @@ public class Banks {
 	 * @param sign
 	 * @param step
 	 */
-	public static void switchSignToStep(BankType btype, Sign sign, int step) {
+	public static void switchSignToStep(BankType btype, Sign sign, int step, boolean playerMessages) {
 		
 		sign.setLine(0, ChatColor.AQUA + "AllBanks");
 		sign.setLine(1, ChatColor.WHITE + btype.getDisplay());
+		
+		//No en todos los bancos y pasos se requiere esta variable BS.
+		//Esta variable puede ser nula en ocasiones, nunca se debe descartar esto.
+		BankSession bs = BankSession.getActiveSessionBySign(sign);
+		BankAccount ba = null; //Nulo, inicialmente. Puede ser nulo si bs no está especificado.
+		Player p = null; //Nulo, será nulo si bs no está especificado.
+		
+		if(bs != null){
+			ba = BankAccount.Cache.get(bs.getPlayer().getUniqueId()); //Si bs (BankSession) no es nulo, se puede obtener ba (BankAccount).
+			p = bs.getPlayer();
+		}
 		
 		switch(btype){
 		case ATM:
@@ -285,12 +298,29 @@ public class Banks {
 		case BANK_LOAN:
 			switch(step){
 			case 0:
+				BigDecimal maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan_getLoan());
+				
 				sign.setLine(2, ChatColor.YELLOW + StringsID.ASK.toString(false));
-				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(BankAccount.Cache.get(sign).BankLoan_getLoan()));
+				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					HashMap<String, String> replaceMap = new HashMap<String, String>();
+					replaceMap.put("%1%", String.valueOf(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.interest", 0)));
+					replaceMap.put("%2%", String.valueOf(Util.ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("banks.bank-loan.collect-interest-every"))));
+					Translation.getAndSendMessage(p, StringsID.BANKLOAN_STEP0_INFO, replaceMap, true);
+				}
 				break;
 			case 1:
 				sign.setLine(2, ChatColor.YELLOW + StringsID.PAY.toString(false));
-				sign.setLine(3, ChatColor.YELLOW + AllBanks.getEconomy().format(BankAccount.Cache.get(sign).BankLoan_getLoan()));
+				sign.setLine(3, ChatColor.YELLOW + AllBanks.getEconomy().format(ba.BankLoan_getLoan().doubleValue()));
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					HashMap<String, String> replaceMap = new HashMap<String, String>();
+					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankLoan_getLoan().doubleValue()));
+					Translation.getAndSendMessage(p, StringsID.BANKLOAN_STEP1_INFO, replaceMap, true);
+				}
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
