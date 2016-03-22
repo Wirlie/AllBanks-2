@@ -204,7 +204,7 @@ public class Banks {
 			}
 			break;
 		case BANK_MONEY:
-			if(nextStep > 2){
+			if(nextStep >= 2){
 				nextStep = 0;
 			}
 			break;
@@ -331,6 +331,34 @@ public class Banks {
 			break;
 		case BANK_MONEY:
 			switch(step){
+			case 0:
+				//Depositar
+				BigDecimal moneyInBank = ba.BankMoney_getMoney();
+				
+				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT.toString(false));
+				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					HashMap<String, String> replaceMap = new HashMap<String, String>();
+					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney_getMoney().doubleValue()));
+					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP0_INFO, replaceMap, true);
+				}
+				break;
+			case 1:
+				//Retirar
+				BigDecimal moneyInBank2 = ba.BankMoney_getMoney();
+				
+				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW.toString(false));
+				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					HashMap<String, String> replaceMap = new HashMap<String, String>();
+					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney_getMoney().doubleValue()));
+					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP1_INFO, replaceMap, true);
+				}
+				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
 				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
