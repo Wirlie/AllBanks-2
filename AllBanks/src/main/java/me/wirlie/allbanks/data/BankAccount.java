@@ -168,17 +168,17 @@ public class BankAccount {
 		return bankloan_loan;
 	}
 
-	public void BankMoney_addMoney(BigDecimal add){
+	public boolean BankMoney_addMoney(BigDecimal add){
 		BigDecimal total = bankmoney_money.add(add);
-		BankMoney_updateMoney(total, true);
+		return BankMoney_updateMoney(total, true);
 	}
 	
-	public void BankMoney_subsMoney(BigDecimal substract){
+	public boolean BankMoney_subsMoney(BigDecimal substract){
 		BigDecimal total = bankmoney_money.subtract(substract);
-		BankMoney_updateMoney(total, true);
+		return BankMoney_updateMoney(total, true);
 	}
 	
-	public synchronized void BankMoney_updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
+	public synchronized boolean BankMoney_updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
 		bankmoney_money = newMoney;
 		
 		//Actualizar la base de datos
@@ -187,9 +187,12 @@ public class BankAccount {
 				Statement stm = AllBanks.getDBC().createStatement();
 				stm.executeUpdate("UPDATE bankmoney_accounts SET money = '" + newMoney + "' WHERE owner = '" + player.getName() + "'");
 				stm.close();
+				return true;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		
+		return false;
 	}
 	
 	public BigDecimal BankMoney_getMoney(){

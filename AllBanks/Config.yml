@@ -10,3 +10,7 @@ banks:
     #This configuration accept these "time values": day(s), hour(s), minute(s), second(s)
     #You can set multiple time values, for example: "1 days, 20 hours, 15 minutes, 1 second" = (1440 * 60) + (1200 * 60) + (15 * 60) + 1 = 156901 seconds.
     collect-interest-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+  bank-money:
+    # How much money can save the player in the bank?
+    # -1 = unlimited
+    max-money-player-can-save: -1
