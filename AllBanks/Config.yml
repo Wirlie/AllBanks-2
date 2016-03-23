@@ -16,6 +16,6 @@ banks:
     max-money-player-can-save: -1
   bank-time:
     # Pay $1 per minute. Example: 10 minutes = 10 x 1 = $10
-    pay-per-minute: 1
+    pay-per-minute: 1.00
     # Add one minute every 60 seconds.
     add-minute-every: 60

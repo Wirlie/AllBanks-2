@@ -298,6 +298,7 @@ public class PlayerChatBSListener implements Listener {
 					
 					if(e.getMessage().equalsIgnoreCase("all")){
 						changeAll = true;
+						e.setCancelled(true);
 					}
 					
 					if(!changeAll){
@@ -309,21 +310,26 @@ public class PlayerChatBSListener implements Listener {
 						}
 					}
 					
+					if(changeAmount <= 0){
+						Translation.getAndSendMessage(p, StringsID.ONLY_VALID_NUMBER_MORE_THAN_0, true);
+						return;
+					}
+					
 					if(changeAmount > ba.BankTime.getTime()){
 						Translation.getAndSendMessage(p, StringsID.BANKTIME_DO_YOU_DO_NOT_HAVE_TIME, true);
 						return;
 					}
 					
-					int payPerMinute = AllBanks.getInstance().getConfig().getInt("bank-time.pay-per-minute", 0);
-					int pay = changeAmount * payPerMinute;
+					BigDecimal payPerMinute = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-time.pay-per-minute", 0.00));
+					BigDecimal pay = payPerMinute.multiply(new BigDecimal(changeAmount));
 					
 					if(ba.BankTime.subsTime(changeAmount)){
-						AllBanks.getEconomy().depositPlayer(p, pay);
+						AllBanks.getEconomy().depositPlayer(p, pay.doubleValue());
 						
 						HashMap<String, String> replaceMap = new HashMap<String, String>();
-						replaceMap.put("%1%", String.valueOf(pay));
+						replaceMap.put("%1%", AllBanks.getEconomy().format(pay.doubleValue()));
 						replaceMap.put("%2%", String.valueOf(changeAmount));
-						Translation.getAndSendMessage(p, StringsID.BANKTIME_SUCCESS, true);
+						Translation.getAndSendMessage(p, StringsID.BANKTIME_SUCCESS, replaceMap, true);
 						
 						bs.reloadSign();
 					}
