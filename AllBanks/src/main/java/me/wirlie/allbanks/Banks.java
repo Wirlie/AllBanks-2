@@ -101,8 +101,10 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.time.new");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.new");
-			default:
-				return false;
+			case BANK_CHEST:
+				return p.hasPermission("allbanks.sign.chest.new");
+			case DEFAULT:
+				break;
 			}
 		case DESTROY_SIGN:
 			switch(btype){
@@ -120,9 +122,13 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.time.destroy");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.destroy");
-			default:
-				return false;
+			case BANK_CHEST:
+				return p.hasPermission("allbanks.sign.chest.destroy");
+			case DEFAULT:
+				break;
 			}
+			
+			//TODO Cierto, faltan los permisos para cuando el banco se usa.
 		case USE_SIGN:
 			switch(btype){
 			case ATM:
@@ -139,8 +145,10 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.time.use");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.use");
-			default:
-				return false;
+			case BANK_CHEST:
+				return p.hasPermission("allbanks.sign.chest.use");
+			case DEFAULT:
+				break;
 			}
 		default:
 			break;
@@ -175,9 +183,7 @@ public class Banks {
 			}
 			break;
 		case BANK_CHEST:
-			if(nextStep > 2){
-				nextStep = 0;
-			}
+			nextStep = 0;
 			break;
 		case BANK_LAND:
 			if(nextStep > 2){
@@ -254,6 +260,17 @@ public class Banks {
 			break;
 		case BANK_CHEST:
 			switch(step){
+			case 0:
+				//Encontrar el siguiente cofre
+				ba.BankChest.switchToNextChest();
+				
+				//Abrir interfaz de cofre
+				HashMap<String, String> replaceMap = new HashMap<String, String>();
+				replaceMap.put("%1%", String.valueOf(ba.BankChest.getCurrentChestCursor()));
+				
+				sign.setLine(2, ChatColor.GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(false));
+				sign.setLine(3, "");
+				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
 				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
