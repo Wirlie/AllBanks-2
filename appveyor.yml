@@ -28,7 +28,7 @@ deploy:
   description: 'SNAPSHOT'
   provider: GitHub
   auth_token:
-    secure: 7adcd129bd3f8edc8de0470abd7cd6785aa4e789 # your encrypted token from GitHub
+    secure: b658b19bb6e007091697d54177f99d1a360da415 # your encrypted token from GitHub
   artifact: allbanks.jar          # upload all NuGet packages to release assets
   draft: false
   prerelease: false
