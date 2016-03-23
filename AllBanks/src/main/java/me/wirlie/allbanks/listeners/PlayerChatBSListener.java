@@ -288,6 +288,48 @@ public class PlayerChatBSListener implements Listener {
 				}
 				break;
 			case BANK_TIME:
+				switch(step){
+				case 0:
+					
+					boolean changeAll = false;
+					
+					//El valor por defecto será el tiempo de BankTime, pero, si no se especifica "all" el valor tomará el valor especificado por e.getMessage()
+					int changeAmount = ba.BankTime.getTime();
+					
+					if(e.getMessage().equalsIgnoreCase("all")){
+						changeAll = true;
+					}
+					
+					if(!changeAll){
+						try{
+							changeAmount = Integer.parseInt(e.getMessage());
+							e.setCancelled(true);
+						}catch(NumberFormatException e2){
+							return;
+						}
+					}
+					
+					if(changeAmount > ba.BankTime.getTime()){
+						Translation.getAndSendMessage(p, StringsID.BANKTIME_DO_YOU_DO_NOT_HAVE_TIME, true);
+						return;
+					}
+					
+					int payPerMinute = AllBanks.getInstance().getConfig().getInt("bank-time.pay-per-minute", 0);
+					int pay = changeAmount * payPerMinute;
+					
+					if(ba.BankTime.subsTime(changeAmount)){
+						AllBanks.getEconomy().depositPlayer(p, pay);
+						
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						replaceMap.put("%1%", String.valueOf(pay));
+						replaceMap.put("%2%", String.valueOf(changeAmount));
+						Translation.getAndSendMessage(p, StringsID.BANKTIME_SUCCESS, true);
+						
+						bs.reloadSign();
+					}
+					
+					break;
+				}
 				break;
 			case BANK_XP:
 				switch(step){
