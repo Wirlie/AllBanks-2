@@ -21,7 +21,8 @@ cache:
 after_build:
   - echo "Variable APPVEYOR_BUILD_FOLDER:"
   - echo %APPVEYOR_BUILD_FOLDER%
-  - move "C:\projects\allbanks-2\AllBanks\target\allbanks-1.0.0-RELEASE.jar" %APPVEYOR_BUILD_FOLDER%
+  - rename "C:\projects\allbanks-2\AllBanks\target\allbanks-1.0.0-RELEASE.jar" "C:\projects\allbanks-2\AllBanks\target\allbanks.jar"
+  - move "C:\projects\allbanks-2\AllBanks\target\allbanks.jar" %APPVEYOR_BUILD_FOLDER%
 artifacts:
-- path: allbanks-1.0.0-RELEASE.jar
-  name: "AllBanks JAR"
+- path: allbanks.jar
+  name: "AllBanks SNAPSHOT"
