@@ -30,6 +30,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.data.BankAccount;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
@@ -133,6 +135,9 @@ public class Commands implements CommandExecutor {
 							stm.executeUpdate(query);
 							
 							Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_QUERY_SUCCESS, (sender instanceof Player));
+							
+							//Vaciar caché de BankAccount
+							BankAccount.Cache.clearCache();
 							
 							stm.close();
 						}catch(SQLException e){

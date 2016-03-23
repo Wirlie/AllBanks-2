@@ -30,6 +30,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Util;
 
 /**
  * Esta clase permitirá almacenar los datos recopilados de la base de datos, con el fin de
@@ -49,6 +50,10 @@ public class BankAccount {
 	private static HashMap<UUID, BankAccount> cache = new HashMap<UUID, BankAccount>();
 	
 	public static class Cache{
+		
+		public static void clearCache(){
+			cache.clear();
+		}
 		
 		public static BankAccount get(UUID uuid){
 			if(!cache.containsKey(uuid)){
@@ -199,8 +204,10 @@ public class BankAccount {
 		return bankmoney_money;
 	}
 	
-	public synchronized void BankXP_updateXP(int newXP, boolean updateFromDatabase){
+	public synchronized boolean BankXP_updateXP(int newXP, boolean updateFromDatabase){
 		bankxp_xp = newXP;
+		
+		System.out.println("UPDATED XP -> " + newXP + "->" + bankxp_xp);
 		
 		//Actualizar la base de datos
 		if(updateFromDatabase)
@@ -208,8 +215,29 @@ public class BankAccount {
 				Statement stm = AllBanks.getDBC().createStatement();
 				stm.executeUpdate("UPDATE bankxp_accounts SET xp = '" + newXP + "' WHERE owner = '" + player.getName() + "'");
 				stm.close();
+				return true;
 			} catch (SQLException e) {
 				e.printStackTrace();
 			}
+		
+		return false;
+	}
+	
+	public boolean BankXP_addXP(int addXP){
+		int total = bankxp_xp + addXP;
+		return BankXP_updateXP(total, true);
+	}
+	
+	public boolean BankXP_subsXP(int subsXP){
+		int total = bankxp_xp - subsXP;
+		return BankXP_updateXP(total, true);
+	}
+	
+	public int BankXP_getRawXP(){
+		return bankxp_xp;
+	}
+	
+	public int BankXP_getLvlForRawXP(){
+		return Util.XPConversionUtil.convertExpToLevel(bankxp_xp);
 	}
 }

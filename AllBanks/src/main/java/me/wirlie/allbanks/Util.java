@@ -90,13 +90,15 @@ public class Util {
 	    }
 	    
 	    public static int convertExpToLevel(final int xp){
-	        if (xp <= getExpAtLevel(15)) {
-	        	return (xp - 7) / 2;
-	        }else if ((xp >= getExpAtLevel(16)) && (xp <= getExpAtLevel(30))) {
-	        	return (xp + 38) / 5;
-	        }else{
-	        	return (xp + 158) / 9;
+	        int currentLevel = 0;
+	        int remXP = xp;
+	        
+	        while(remXP >= getExpAtLevel(currentLevel)){
+	        	remXP -= getExpAtLevel(currentLevel);
+	        	currentLevel++;
 	        }
+	        
+	        return currentLevel;
 	    }
 	    
 	    /**

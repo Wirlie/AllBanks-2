@@ -28,6 +28,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.data.BankAccount;
@@ -293,6 +294,83 @@ public class PlayerChatBSListener implements Listener {
 			case BANK_USER:
 				break;
 			case BANK_XP:
+				switch(step){
+				case 0:
+					//Depositar XP
+					String rawMsg = e.getMessage().replace("lvl", "");
+					
+					try{
+						Integer.parseInt(rawMsg);
+						e.setCancelled(true);
+					}catch(NumberFormatException e2){
+						return;
+					}
+					
+					int depositXP = 0;
+					
+					if(e.getMessage().endsWith("lvl")){
+						int levels = Integer.parseInt(rawMsg);
+						depositXP = Util.XPConversionUtil.getExpToLevel(levels);
+					}else{
+						depositXP = Integer.parseInt(e.getMessage());
+					}
+					
+					if(depositXP <= 0){
+						Translation.getAndSendMessage(p, StringsID.ONLY_VALID_NUMBER_MORE_THAN_0, true);
+						return;
+					}
+					
+					if(Util.XPConversionUtil.getTotalExperience(p) < depositXP){
+						Translation.getAndSendMessage(p, StringsID.BANKXP_ERROR_DEPOSIT_INS_XP, true);
+						return;
+					}
+					
+					if(ba.BankXP_addXP(depositXP)){
+						Util.XPConversionUtil.setTotalExpToPlayer(p, Util.XPConversionUtil.getTotalExperience(p) - depositXP);
+						Translation.getAndSendMessage(p, StringsID.BANKXP_DEPOSIT_SUCCESS, true);
+						bs.reloadSign();
+					}
+					
+					break;
+				case 1:
+					//Retirar XP
+					String rawMsg2 = e.getMessage().replace("lvl", "");
+					
+					try{
+						Integer.parseInt(rawMsg2);
+						e.setCancelled(true);
+					}catch(NumberFormatException e2){
+						return;
+					}
+					
+					int withdrawXP = 0;
+					
+					if(e.getMessage().endsWith("lvl")){
+						int levels = Integer.parseInt(rawMsg2);
+						withdrawXP = Util.XPConversionUtil.getExpToLevel(levels);
+					}else{
+						withdrawXP = Integer.parseInt(e.getMessage());
+					}
+					
+					if(withdrawXP <= 0){
+						Translation.getAndSendMessage(p, StringsID.ONLY_VALID_NUMBER_MORE_THAN_0, true);
+						return;
+					}
+					
+					if(ba.BankXP_getRawXP() < withdrawXP){
+						Translation.getAndSendMessage(p, StringsID.BANKXP_ERROR_WITHDRAW_INS_XP, true);
+						return;
+					}
+					
+					//Quitar experiencia
+					if(ba.BankXP_subsXP(withdrawXP)){
+						Util.XPConversionUtil.setTotalExpToPlayer(p, Util.XPConversionUtil.getTotalExperience(p) + withdrawXP);
+						Translation.getAndSendMessage(p, StringsID.BANKXP_WITHDRAW_SUCCESS, true);
+						bs.reloadSign();
+					}
+					
+					break;
+				}
 				break;
 			case DEFAULT:
 				break;

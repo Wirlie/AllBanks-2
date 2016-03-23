@@ -224,7 +224,7 @@ public class Banks {
 			}
 			break;
 		case BANK_XP:
-			if(nextStep > 2){
+			if(nextStep >= 2){
 				nextStep = 0;
 			}
 			break;
@@ -335,7 +335,7 @@ public class Banks {
 				//Depositar
 				BigDecimal moneyInBank = ba.BankMoney_getMoney();
 				
-				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT.toString(false));
+				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT_MONEY.toString(false));
 				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
 				
 				//Mensaje al jugador
@@ -349,7 +349,7 @@ public class Banks {
 				//Retirar
 				BigDecimal moneyInBank2 = ba.BankMoney_getMoney();
 				
-				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW.toString(false));
+				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_MONEY.toString(false));
 				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
 				
 				//Mensaje al jugador
@@ -395,6 +395,27 @@ public class Banks {
 			break;
 		case BANK_XP:
 			switch(step){
+			case 0:
+				//depositar xp
+				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT_XP.toString(false));
+				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP_getRawXP()) + " (" + ba.BankXP_getLvlForRawXP() + " lvl)");
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					Translation.getAndSendMessage(p, StringsID.BANKXP_STEP0_INFO, true);
+				}
+				break;
+			case 1:
+				//retirar xp
+				//depositar xp
+				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_XP.toString(false));
+				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP_getRawXP()) + " (" + ba.BankXP_getLvlForRawXP() + " lvl)");
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					Translation.getAndSendMessage(p, StringsID.BANKXP_STEP1_INFO, true);
+				}
+				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
 				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
