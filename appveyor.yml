@@ -19,7 +19,7 @@ cache:
   - C:\maven\
   - C:\Users\appveyor\.m2
 after_build:
-  - 7z a %APPVEYOR_BUILD_FOLDER%\AllBanks.zip C:\projects\allbanks-2\AllBanks\target\*.jar
+  - move "C:\projects\allbanks-2\AllBanks\target\allbanks-1.0.0-RELEASE.jar" %APPVEYOR_BUILD_FOLDER%\allbanks.jar
 artifacts:
-- path: AllBanks.zip
-  name: AllBanksZIP
+- path: allbanks.jar
+  name: "AllBanks SNAPSHOT"
