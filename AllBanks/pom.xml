@@ -102,5 +102,19 @@
   <ciManagement>
   	<url>https://travis-ci.org/Wirlie/AllBanks-2</url>
   </ciManagement>
+  
+  <build>
+  	<resources>
+  		<resource>
+  			<directory>${project.basedir}</directory>
+  			<includes>
+	  			<include>Config.yml</include>
+	  			<include>EnUs.yml</include>
+	  			<include>EsMx.yml</include>
+	  			<include>plugin.yml</include>
+  			</includes>
+  		</resource>
+  	</resources>
+  </build>
 
 </project>
