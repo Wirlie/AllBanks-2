@@ -92,7 +92,7 @@ public class PlayerChatBSListener implements Listener {
 					}
 					
 					BigDecimal maxLoan = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan"));
-					BigDecimal userLoan = ba.BankLoan_getLoan();
+					BigDecimal userLoan = ba.BankLoan.getLoan();
 					BigDecimal maxBorrow = maxLoan.subtract(userLoan);
 					
 					if(maxBorrow.compareTo(BigDecimal.ZERO) < 0 || maxBorrow.subtract(msgValue).compareTo(BigDecimal.ZERO) < 0){
@@ -104,7 +104,7 @@ public class PlayerChatBSListener implements Listener {
 					}
 					
 					//Pedir préstamo.
-					if(ba.BankLoan_addLoan(msgValue)){
+					if(ba.BankLoan.addLoan(msgValue)){
 						AllBanks.getEconomy().depositPlayer(p, msgValue.doubleValue());
 						
 						HashMap<String, String> replaceMap = new HashMap<String, String>();
@@ -126,7 +126,7 @@ public class PlayerChatBSListener implements Listener {
 					}
 					
 					BigDecimal msgValue2 = new BigDecimal(Double.parseDouble(e.getMessage()));
-					BigDecimal userLoan2 = ba.BankLoan_getLoan();
+					BigDecimal userLoan2 = ba.BankLoan.getLoan();
 					
 					if(msgValue2.compareTo(BigDecimal.ZERO) <= 0){
 						//Sólo se pueden pedir valores positivos o mayores a 0
@@ -149,12 +149,12 @@ public class PlayerChatBSListener implements Listener {
 					
 					//¿Puede pagar?
 					if(AllBanks.getEconomy().has(p, msgValue2.doubleValue())){
-						if(ba.BankLoan_subsLoan(msgValue2)){
+						if(ba.BankLoan.subsLoan(msgValue2)){
 							AllBanks.getEconomy().withdrawPlayer(p, msgValue2.doubleValue());
 							
 							HashMap<String, String> replaceMap = new HashMap<String, String>();
 							replaceMap.put("%1%", AllBanks.getEconomy().format(msgValue2.doubleValue()));
-							replaceMap.put("%2%", AllBanks.getEconomy().format(ba.BankLoan_getLoan().doubleValue()));
+							replaceMap.put("%2%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
 							Translation.getAndSendMessage(p, StringsID.BANKLOAN_SUCCESS_PAY, replaceMap, true);
 							
 							//Actualizar letrero
@@ -204,7 +204,7 @@ public class PlayerChatBSListener implements Listener {
 					
 					if(!unlimitedSave){
 						//Si el dinero no es ilimitado, tratamos de acoplarnos al valor máximo.
-						BigDecimal remainingSave = maxLimitSave.subtract(ba.BankMoney_getMoney());
+						BigDecimal remainingSave = maxLimitSave.subtract(ba.BankMoney.getMoney());
 					
 						if(remainingSave.compareTo(msgValue) < 0){
 							BigDecimal msgValueClone = msgValue;
@@ -229,7 +229,7 @@ public class PlayerChatBSListener implements Listener {
 					}
 					
 					//Bien, intentar guardar
-					if(ba.BankMoney_addMoney(msgValue)){
+					if(ba.BankMoney.addMoney(msgValue)){
 						AllBanks.getEconomy().withdrawPlayer(p, msgValue.doubleValue());
 						
 						//Mensaje
@@ -266,7 +266,7 @@ public class PlayerChatBSListener implements Listener {
 					}
 					
 					//Ok, pasó las pruebas básicas ahora hay que trabajar con el banco.
-					BigDecimal moneyInBank = ba.BankMoney_getMoney();
+					BigDecimal moneyInBank = ba.BankMoney.getMoney();
 					
 					if(msgValue2.compareTo(moneyInBank) > 0){
 						//Mayor
@@ -274,7 +274,7 @@ public class PlayerChatBSListener implements Listener {
 					}
 					
 					//Retirar dinero
-					if(ba.BankMoney_subsMoney(msgValue2)){
+					if(ba.BankMoney.subsMoney(msgValue2)){
 						AllBanks.getEconomy().depositPlayer(p, msgValue2.doubleValue());
 						
 						//Mensaje
@@ -321,7 +321,7 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					if(ba.BankXP_addXP(depositXP)){
+					if(ba.BankXP.addXP(depositXP)){
 						Util.XPConversionUtil.setTotalExpToPlayer(p, Util.XPConversionUtil.getTotalExperience(p) - depositXP);
 						Translation.getAndSendMessage(p, StringsID.BANKXP_DEPOSIT_SUCCESS, true);
 						bs.reloadSign();
@@ -353,13 +353,13 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					if(ba.BankXP_getRawXP() < withdrawXP){
+					if(ba.BankXP.getRawXP() < withdrawXP){
 						Translation.getAndSendMessage(p, StringsID.BANKXP_ERROR_WITHDRAW_INS_XP, true);
 						return;
 					}
 					
 					//Quitar experiencia
-					if(ba.BankXP_subsXP(withdrawXP)){
+					if(ba.BankXP.subsXP(withdrawXP)){
 						Util.XPConversionUtil.setTotalExpToPlayer(p, Util.XPConversionUtil.getTotalExperience(p) + withdrawXP);
 						Translation.getAndSendMessage(p, StringsID.BANKXP_WITHDRAW_SUCCESS, true);
 						bs.reloadSign();

@@ -195,9 +195,8 @@ public class Banks {
 			}
 			break;
 		case BANK_TIME:
-			if(nextStep > 2){
-				nextStep = 0;
-			}
+			//Por el momento, BankTime solo tiene el paso 0.
+			nextStep = 0;
 			break;
 		case BANK_XP:
 			if(nextStep >= 2){
@@ -274,7 +273,7 @@ public class Banks {
 		case BANK_LOAN:
 			switch(step){
 			case 0:
-				BigDecimal maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan_getLoan());
+				BigDecimal maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan.getLoan());
 				
 				sign.setLine(2, ChatColor.YELLOW + StringsID.ASK.toString(false));
 				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));
@@ -289,12 +288,12 @@ public class Banks {
 				break;
 			case 1:
 				sign.setLine(2, ChatColor.YELLOW + StringsID.PAY.toString(false));
-				sign.setLine(3, ChatColor.YELLOW + AllBanks.getEconomy().format(ba.BankLoan_getLoan().doubleValue()));
+				sign.setLine(3, ChatColor.YELLOW + AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankLoan_getLoan().doubleValue()));
+					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
 					Translation.getAndSendMessage(p, StringsID.BANKLOAN_STEP1_INFO, replaceMap, true);
 				}
 				break;
@@ -309,7 +308,7 @@ public class Banks {
 			switch(step){
 			case 0:
 				//Depositar
-				BigDecimal moneyInBank = ba.BankMoney_getMoney();
+				BigDecimal moneyInBank = ba.BankMoney.getMoney();
 				
 				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT_MONEY.toString(false));
 				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
@@ -317,13 +316,13 @@ public class Banks {
 				//Mensaje al jugador
 				if(p != null && playerMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney_getMoney().doubleValue()));
+					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney.getMoney().doubleValue()));
 					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP0_INFO, replaceMap, true);
 				}
 				break;
 			case 1:
 				//Retirar
-				BigDecimal moneyInBank2 = ba.BankMoney_getMoney();
+				BigDecimal moneyInBank2 = ba.BankMoney.getMoney();
 				
 				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_MONEY.toString(false));
 				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
@@ -331,7 +330,7 @@ public class Banks {
 				//Mensaje al jugador
 				if(p != null && playerMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney_getMoney().doubleValue()));
+					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney.getMoney().doubleValue()));
 					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP1_INFO, replaceMap, true);
 				}
 				break;
@@ -344,6 +343,18 @@ public class Banks {
 			break;
 		case BANK_TIME:
 			switch(step){
+			case 0:
+				//Retirar tiempo (este banco solo tiene este estatus)
+				sign.setLine(2, ChatColor.YELLOW + StringsID.CHANGE_TIME.toString(false));
+				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankTime.getTime()));
+				
+				//Mensaje al jugador
+				if(p != null && playerMessages){
+					HashMap<String, String> replaceMap = new HashMap<String, String>();
+					Translation.getAndSendMessage(p, StringsID.BANKTIME_STEP0_INFO, replaceMap, true);
+				}
+				
+				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
 				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
@@ -356,7 +367,7 @@ public class Banks {
 			case 0:
 				//depositar xp
 				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT_XP.toString(false));
-				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP_getRawXP()) + " (" + ba.BankXP_getLvlForRawXP() + " lvl)");
+				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -366,7 +377,7 @@ public class Banks {
 			case 1:
 				//retirar xp
 				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_XP.toString(false));
-				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP_getRawXP()) + " (" + ba.BankXP_getLvlForRawXP() + " lvl)");
+				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){

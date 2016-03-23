@@ -49,6 +49,11 @@ public class BankAccount {
 	 */
 	private static HashMap<UUID, BankAccount> cache = new HashMap<UUID, BankAccount>();
 	
+	public BankLoan BankLoan = new BankLoan();
+	public BankMoney BankMoney = new BankMoney();
+	public BankXP BankXP = new BankXP();
+	public BankTime BankTime = new BankTime();
+	
 	public static class Cache{
 		
 		public static void clearCache(){
@@ -84,19 +89,21 @@ public class BankAccount {
 				BankAccount ba = new BankAccount(p);
 				
 				//BankLoan
-				ResultSet result = stm.executeQuery("SELECT bankloan.*, bankmoney.*, bankxp.* FROM bankloan_accounts AS bankloan LEFT JOIN bankmoney_accounts AS bankmoney ON bankmoney.owner = bankloan.owner LEFT JOIN bankxp_accounts AS bankxp ON bankxp.owner = bankloan.owner WHERE bankloan.owner = '" + p.getName() + "'");
+				ResultSet result = stm.executeQuery("SELECT bankloan.*, bankmoney.*, bankxp.*, banktime.* FROM bankloan_accounts AS bankloan LEFT JOIN bankmoney_accounts AS bankmoney ON bankmoney.owner = bankloan.owner LEFT JOIN bankxp_accounts AS bankxp ON bankxp.owner = bankloan.owner LEFT JOIN banktime_accounts AS banktime ON bankloan.owner = banktime.owner WHERE bankloan.owner = '" + p.getName() + "'");
 				
 				if(result.next()){
-					ba.BankLoan_updateLoan(new BigDecimal(result.getString("loan")), false);
-					ba.BankMoney_updateMoney(new BigDecimal(result.getString("money")), false);
-					ba.BankXP_updateXP(result.getInt("xp"), false);
+					ba.BankLoan.updateLoan(new BigDecimal(result.getString("loan")), false);
+					ba.BankMoney.updateMoney(new BigDecimal(result.getString("money")), false);
+					ba.BankXP.updateXP(result.getInt("xp"), false);
+					ba.BankTime.updateTime(result.getInt("time"), false);
 				}else{
 					//ingresar nuevos valores
 					registerNewAccountInDataBase(p);
 					
-					ba.BankLoan_updateLoan(BigDecimal.ZERO, false);
-					ba.BankMoney_updateMoney(BigDecimal.ZERO, false);
-					ba.BankXP_updateXP(0, false);
+					ba.BankLoan.updateLoan(BigDecimal.ZERO, false);
+					ba.BankMoney.updateMoney(BigDecimal.ZERO, false);
+					ba.BankXP.updateXP(0, false);
+					ba.BankTime.updateTime(0, false);
 				}
 				
 				return ba;
@@ -117,6 +124,7 @@ public class BankAccount {
 				stm.executeUpdate("INSERT INTO bankloan_accounts (owner, loan) VALUES ('" + p.getName() + "', 0)");
 				stm.executeUpdate("INSERT INTO bankmoney_accounts (owner, money) VALUES ('" + p.getName() + "', 0)");
 				stm.executeUpdate("INSERT INTO bankxp_accounts (owner, xp) VALUES ('" + p.getName() + "', 0)");
+				stm.executeUpdate("INSERT INTO banktime_accounts (owner, time) VALUES ('" + p.getName() + "', 0)");
 				stm.close();
 			} catch (SQLException e) {
 				e.printStackTrace();
@@ -133,6 +141,7 @@ public class BankAccount {
 	BigDecimal bankloan_loan = BigDecimal.ZERO;
 	BigDecimal bankmoney_money = BigDecimal.ZERO;
 	int bankxp_xp = 0;
+	int banktime_time = 0;
 	
 	/**
 	 * @param uniqueId
@@ -140,104 +149,145 @@ public class BankAccount {
 	public BankAccount(Player p) {
 		this.player = p;
 	}
+	
+	public class BankLoan{
+		public boolean addLoan(BigDecimal add){
+			BigDecimal total = bankloan_loan.add(add);
+			return updateLoan(total, true);
+		}
+		
+		public boolean subsLoan(BigDecimal substract){
 
-	public boolean BankLoan_addLoan(BigDecimal add){
-		BigDecimal total = bankloan_loan.add(add);
-		return BankLoan_updateLoan(total, true);
-	}
-	
-	public boolean BankLoan_subsLoan(BigDecimal substract){
-
-		BigDecimal total = bankloan_loan.subtract(substract);
-		return BankLoan_updateLoan(total, true);
-	}
-	
-	public synchronized boolean BankLoan_updateLoan(BigDecimal newLoan, boolean updateFromDatabase){
-		bankloan_loan = newLoan;
+			BigDecimal total = bankloan_loan.subtract(substract);
+			return updateLoan(total, true);
+		}
 		
-		//Actualizar la base de datos
-		if(updateFromDatabase)
-			try {
-				Statement stm = AllBanks.getDBC().createStatement();
-				stm.executeUpdate("UPDATE bankloan_accounts SET loan = '" + newLoan.doubleValue() + "' WHERE owner = '" + player.getName() + "'");
-				stm.close();
-				return true;
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		public synchronized boolean updateLoan(BigDecimal newLoan, boolean updateFromDatabase){
+			bankloan_loan = newLoan;
+			
+			//Actualizar la base de datos
+			if(updateFromDatabase)
+				try {
+					Statement stm = AllBanks.getDBC().createStatement();
+					stm.executeUpdate("UPDATE bankloan_accounts SET loan = '" + newLoan.doubleValue() + "' WHERE owner = '" + player.getName() + "'");
+					stm.close();
+					return true;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			
+			return false;
+		}
 		
-		return false;
-	}
-	
-	public BigDecimal BankLoan_getLoan(){
-		return bankloan_loan;
+		public BigDecimal getLoan(){
+			return bankloan_loan;
+		}
 	}
 
-	public boolean BankMoney_addMoney(BigDecimal add){
-		BigDecimal total = bankmoney_money.add(add);
-		return BankMoney_updateMoney(total, true);
-	}
-	
-	public boolean BankMoney_subsMoney(BigDecimal substract){
-		BigDecimal total = bankmoney_money.subtract(substract);
-		return BankMoney_updateMoney(total, true);
-	}
-	
-	public synchronized boolean BankMoney_updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
-		bankmoney_money = newMoney;
+	public class BankMoney{
+		public boolean addMoney(BigDecimal add){
+			BigDecimal total = bankmoney_money.add(add);
+			return updateMoney(total, true);
+		}
 		
-		//Actualizar la base de datos
-		if(updateFromDatabase)
-			try {
-				Statement stm = AllBanks.getDBC().createStatement();
-				stm.executeUpdate("UPDATE bankmoney_accounts SET money = '" + newMoney + "' WHERE owner = '" + player.getName() + "'");
-				stm.close();
-				return true;
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		public boolean subsMoney(BigDecimal substract){
+			BigDecimal total = bankmoney_money.subtract(substract);
+			return updateMoney(total, true);
+		}
 		
-		return false;
-	}
-	
-	public BigDecimal BankMoney_getMoney(){
-		return bankmoney_money;
-	}
-	
-	public synchronized boolean BankXP_updateXP(int newXP, boolean updateFromDatabase){
-		bankxp_xp = newXP;
+		public synchronized boolean updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
+			bankmoney_money = newMoney;
+			
+			//Actualizar la base de datos
+			if(updateFromDatabase)
+				try {
+					Statement stm = AllBanks.getDBC().createStatement();
+					stm.executeUpdate("UPDATE bankmoney_accounts SET money = '" + newMoney + "' WHERE owner = '" + player.getName() + "'");
+					stm.close();
+					return true;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			
+			return false;
+		}
 		
-		System.out.println("UPDATED XP -> " + newXP + "->" + bankxp_xp);
+		public BigDecimal getMoney(){
+			return bankmoney_money;
+		}
+	}
+	
+	public class BankXP{
+		public synchronized boolean updateXP(int newXP, boolean updateFromDatabase){
+			bankxp_xp = newXP;
+			
+			//Actualizar la base de datos
+			if(updateFromDatabase)
+				try {
+					Statement stm = AllBanks.getDBC().createStatement();
+					stm.executeUpdate("UPDATE bankxp_accounts SET xp = '" + newXP + "' WHERE owner = '" + player.getName() + "'");
+					stm.close();
+					return true;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			
+			return false;
+		}
 		
-		//Actualizar la base de datos
-		if(updateFromDatabase)
-			try {
-				Statement stm = AllBanks.getDBC().createStatement();
-				stm.executeUpdate("UPDATE bankxp_accounts SET xp = '" + newXP + "' WHERE owner = '" + player.getName() + "'");
-				stm.close();
-				return true;
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+		public boolean addXP(int addXP){
+			int total = bankxp_xp + addXP;
+			return updateXP(total, true);
+		}
 		
-		return false;
+		public boolean subsXP(int subsXP){
+			int total = bankxp_xp - subsXP;
+			return updateXP(total, true);
+		}
+		
+		public int getRawXP(){
+			return bankxp_xp;
+		}
+		
+		public int getLvlForRawXP(){
+			return Util.XPConversionUtil.convertExpToLevel(bankxp_xp);
+		}
 	}
 	
-	public boolean BankXP_addXP(int addXP){
-		int total = bankxp_xp + addXP;
-		return BankXP_updateXP(total, true);
-	}
-	
-	public boolean BankXP_subsXP(int subsXP){
-		int total = bankxp_xp - subsXP;
-		return BankXP_updateXP(total, true);
-	}
-	
-	public int BankXP_getRawXP(){
-		return bankxp_xp;
-	}
-	
-	public int BankXP_getLvlForRawXP(){
-		return Util.XPConversionUtil.convertExpToLevel(bankxp_xp);
+	public class BankTime{
+		public synchronized boolean updateTime(int newTime, boolean updateFromDatabase){
+			banktime_time = newTime;
+			
+			//Actualizar la base de datos
+			if(updateFromDatabase)
+				try {
+					Statement stm = AllBanks.getDBC().createStatement();
+					stm.executeUpdate("UPDATE banktime_accounts SET time = '" + newTime + "' WHERE owner = '" + player.getName() + "'");
+					stm.close();
+					return true;
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			
+			return false;
+		}
+		
+		public boolean updateTimePlusOne(){
+			return updateTime(banktime_time + 1, true);
+		}
+		
+		public int getTime(){
+			return banktime_time;
+		}
+		
+		public boolean subsTime(int subsTime){
+			int total = banktime_time - subsTime;
+			return updateTime(total, true);
+		}
+		
+		public boolean addTime(int addTime){
+			int total = banktime_time + addTime;
+			return updateTime(total, true);
+		}
 	}
 }
