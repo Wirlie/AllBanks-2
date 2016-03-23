@@ -47,7 +47,6 @@ public class Banks {
 		BANK_MONEY("Money"),
 		BANK_SELL("Sell"),
 		BANK_BUY("Buy"),
-		BANK_USER("User"),
 		BANK_LAND("Land"),
 		ATM("ATM"), 
 		BANK_CHEST("Chest"), 
@@ -103,8 +102,6 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.sell.new");
 			case BANK_TIME:
 				return p.hasPermission("allbanks.sign.time.new");
-			case BANK_USER:
-				return p.hasPermission("allbanks.sign.user.new");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.new");
 			default:
@@ -126,8 +123,6 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.sell.destroy");
 			case BANK_TIME:
 				return p.hasPermission("allbanks.sign.time.destroy");
-			case BANK_USER:
-				return p.hasPermission("allbanks.sign.user.destroy");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.destroy");
 			default:
@@ -149,8 +144,6 @@ public class Banks {
 				return p.hasPermission("allbanks.sign.sell.use");
 			case BANK_TIME:
 				return p.hasPermission("allbanks.sign.time.use");
-			case BANK_USER:
-				return p.hasPermission("allbanks.sign.user.use");
 			case BANK_XP:
 				return p.hasPermission("allbanks.sign.xp.use");
 			default:
@@ -214,11 +207,6 @@ public class Banks {
 			}
 			break;
 		case BANK_TIME:
-			if(nextStep > 2){
-				nextStep = 0;
-			}
-			break;
-		case BANK_USER:
 			if(nextStep > 2){
 				nextStep = 0;
 			}
@@ -384,15 +372,6 @@ public class Banks {
 				break;
 			}
 			break;
-		case BANK_USER:
-			switch(step){
-			default:
-				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
-				break;
-			}
-			break;
 		case BANK_XP:
 			switch(step){
 			case 0:
@@ -407,7 +386,6 @@ public class Banks {
 				break;
 			case 1:
 				//retirar xp
-				//depositar xp
 				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_XP.toString(false));
 				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP_getRawXP()) + " (" + ba.BankXP_getLvlForRawXP() + " lvl)");
 				

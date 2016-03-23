@@ -291,8 +291,6 @@ public class PlayerChatBSListener implements Listener {
 				break;
 			case BANK_TIME:
 				break;
-			case BANK_USER:
-				break;
 			case BANK_XP:
 				switch(step){
 				case 0:
