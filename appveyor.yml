@@ -21,7 +21,7 @@ cache:
 after_build:
   - echo "Variable APPVEYOR_BUILD_FOLDER:"
   - echo %APPVEYOR_BUILD_FOLDER%
-  - xcopy /s C:\projects\allbanks-2\AllBanks\target\ %APPVEYOR_BUILD_FOLDER%
+  - xcopy /s C:\projects\allbanks-2\AllBanks\target\ C:\projects\allbanks-2\AllBanks
 artifacts:
 - path: AllBanks.zip
   name: AllBanksZIP
