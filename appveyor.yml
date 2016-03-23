@@ -23,3 +23,12 @@ after_build:
 artifacts:
 - path: allbanks.jar
   name: "AllBanks SNAPSHOT"
+deploy:
+  provider: FTP
+  protocol: ftps
+  host: workgroupweb.skn1.com
+  username: yayito21
+  password:
+    secure: JiAp6325
+  folder: allbanks
+  artifact: allbanks.jar
