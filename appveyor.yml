@@ -24,11 +24,11 @@ artifacts:
 - path: allbanks.jar
   name: "AllBanks SNAPSHOT"
 deploy:
-  provider: FTP
-  protocol: ftps
-  host: workgroupweb.skn1.com
-  username: yayito21
-  password:
-    secure: JiAp6325
-  folder: allbanks
-  artifact: allbanks.jar
+  release: allbanks-build-$(appveyor_build_version)
+  description: 'SNAPSHOT'
+  provider: GitHub
+  auth_token:
+    secure: c01ee79641fdf372bdb51e645fd5b77d79b8606a # your encrypted token from GitHub
+  artifact: allbanks.jar          # upload all NuGet packages to release assets
+  draft: false
+  prerelease: false
