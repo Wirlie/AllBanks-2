@@ -58,7 +58,7 @@ public class PlayerChatBSListener implements Listener {
 			switch(btype){
 			case ATM:
 				break;
-			case BANK_BUY:
+			case SHOP:
 				break;
 			case BANK_CHEST:
 				break;
@@ -286,8 +286,6 @@ public class PlayerChatBSListener implements Listener {
 					
 					break;
 				}
-				break;
-			case BANK_SELL:
 				break;
 			case BANK_TIME:
 				break;

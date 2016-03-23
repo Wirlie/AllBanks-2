@@ -64,10 +64,8 @@ public class SignChangeListener implements Listener {
 				btype = BankType.BANK_XP;
 			}else if(lines[1].equalsIgnoreCase("BankChest") || lines[1].equalsIgnoreCase("Chest")){
 				btype = BankType.BANK_CHEST;
-			}else if(lines[1].equalsIgnoreCase("BankSell") || lines[1].equalsIgnoreCase("Sell")){
-				btype = BankType.BANK_SELL;
-			}else if(lines[1].equalsIgnoreCase("BankBuy") || lines[1].equalsIgnoreCase("Buy")){
-				btype = BankType.BANK_BUY;
+			}else if(lines[1].equalsIgnoreCase("Shop")){
+				btype = BankType.SHOP;
 			}else if(lines[1].equalsIgnoreCase("BankTime") || lines[1].equalsIgnoreCase("Time")){
 				btype = BankType.BANK_TIME;
 			}else if(lines[1].equalsIgnoreCase("BankMoney") || lines[1].equalsIgnoreCase("Money")){

@@ -45,8 +45,7 @@ public class Banks {
 		BANK_XP("XP"),
 		BANK_TIME("Time"),
 		BANK_MONEY("Money"),
-		BANK_SELL("Sell"),
-		BANK_BUY("Buy"),
+		SHOP("Shop"),
 		BANK_LAND("Land"),
 		ATM("ATM"), 
 		BANK_CHEST("Chest"), 
@@ -90,16 +89,14 @@ public class Banks {
 			switch(btype){
 			case ATM:
 				return p.hasPermission("allbanks.sign.atm.new");
-			case BANK_BUY:
-				return p.hasPermission("allbanks.sign.buy.new");
+			case SHOP:
+				return p.hasPermission("allbanks.sign.shop.new");
 			case BANK_LAND:
 				return p.hasPermission("allbanks.sign.land.new");
 			case BANK_LOAN:
 				return p.hasPermission("allbanks.sign.loan.new");
 			case BANK_MONEY:
 				return p.hasPermission("allbanks.sign.money.new");
-			case BANK_SELL:
-				return p.hasPermission("allbanks.sign.sell.new");
 			case BANK_TIME:
 				return p.hasPermission("allbanks.sign.time.new");
 			case BANK_XP:
@@ -111,16 +108,14 @@ public class Banks {
 			switch(btype){
 			case ATM:
 				return p.hasPermission("allbanks.sign.atm.destroy");
-			case BANK_BUY:
-				return p.hasPermission("allbanks.sign.buy.destroy");
+			case SHOP:
+				return p.hasPermission("allbanks.sign.shop.destroy");
 			case BANK_LAND:
 				return p.hasPermission("allbanks.sign.land.destroy");
 			case BANK_LOAN:
 				return p.hasPermission("allbanks.sign.loan.destroy");
 			case BANK_MONEY:
 				return p.hasPermission("allbanks.sign.money.destroy");
-			case BANK_SELL:
-				return p.hasPermission("allbanks.sign.sell.destroy");
 			case BANK_TIME:
 				return p.hasPermission("allbanks.sign.time.destroy");
 			case BANK_XP:
@@ -132,16 +127,14 @@ public class Banks {
 			switch(btype){
 			case ATM:
 				return p.hasPermission("allbanks.sign.atm.use");
-			case BANK_BUY:
-				return p.hasPermission("allbanks.sign.buy.use");
+			case SHOP:
+				return p.hasPermission("allbanks.sign.shop.use");
 			case BANK_LAND:
 				return p.hasPermission("allbanks.sign.land.use");
 			case BANK_LOAN:
 				return p.hasPermission("allbanks.sign.loan.use");
 			case BANK_MONEY:
 				return p.hasPermission("allbanks.sign.money.use");
-			case BANK_SELL:
-				return p.hasPermission("allbanks.sign.sell.use");
 			case BANK_TIME:
 				return p.hasPermission("allbanks.sign.time.use");
 			case BANK_XP:
@@ -176,7 +169,7 @@ public class Banks {
 				nextStep = 0;
 			}
 			break;
-		case BANK_BUY:
+		case SHOP:
 			if(nextStep > 2){
 				nextStep = 0;
 			}
@@ -198,11 +191,6 @@ public class Banks {
 			break;
 		case BANK_MONEY:
 			if(nextStep >= 2){
-				nextStep = 0;
-			}
-			break;
-		case BANK_SELL:
-			if(nextStep > 2){
 				nextStep = 0;
 			}
 			break;
@@ -256,7 +244,7 @@ public class Banks {
 				break;
 			}
 			break;
-		case BANK_BUY:
+		case SHOP:
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
@@ -347,15 +335,6 @@ public class Banks {
 					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP1_INFO, replaceMap, true);
 				}
 				break;
-			default:
-				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
-				break;
-			}
-			break;
-		case BANK_SELL:
-			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
 				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
