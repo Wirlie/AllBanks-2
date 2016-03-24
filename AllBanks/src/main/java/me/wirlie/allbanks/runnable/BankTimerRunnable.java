@@ -23,7 +23,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.data.BankAccount;
+import me.wirlie.allbanks.data.BankSession;
 
 /**
  * @author Wirlie
@@ -45,6 +47,13 @@ public class BankTimerRunnable extends BukkitRunnable {
 			if(!ba.BankTime.updateTimePlusOne()){
 				AllBanks.getInstance().getLogger().warning("SQLException (updateTimePlusOne())...");
 				continue;
+			}else{
+				BankSession tryBs = BankSession.getSession(p);
+				if(tryBs != null){
+					if(tryBs.getBankType().equals(BankType.BANK_TIME)){
+						tryBs.reloadSign();
+					}
+				}
 			}
 		}
 	}

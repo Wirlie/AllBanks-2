@@ -18,19 +18,25 @@
  */
 package me.wirlie.allbanks;
 
+import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
 
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
@@ -464,9 +470,69 @@ public class Banks {
 		replaceMap.put("%1%", String.valueOf(currentChestCursor));
 		
 		Inventory inv = Bukkit.getServer().createInventory(null, 9 * 6, "ab:virtualchest:" + currentChestCursor);
-		//TODO Falta añadir un proceso para obtener el contenido del cofre
+		
+		Iterator<Entry<Integer, ItemStack>> it = getVirtualChestContents(p.getName(), currentChestCursor).entrySet().iterator();
+		while(it.hasNext()){
+			Entry<Integer, ItemStack> entry = it.next();
+			inv.setItem(entry.getKey(), entry.getValue());
+		}
+		
 		//StringsID.BANKCHEST_VIRTUAL_INVENTORY.toString(replaceMap, false)
 		p.openInventory(inv);
+	}
+	
+	public static HashMap<Integer, ItemStack> getVirtualChestContents(String owner, int virtualChest){
+		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
+		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
+		
+		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + ".yml");
+		if(!virtualChestFile.exists())
+			try {
+				virtualChestFile.createNewFile();
+				return new HashMap<Integer, ItemStack>();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(virtualChestFile);
+		HashMap<Integer, ItemStack> returnList = new HashMap<Integer, ItemStack>();
+		
+		for(String key : yaml.getConfigurationSection(String.valueOf(virtualChest)).getKeys(false)){
+			ItemStack getItemStack = yaml.getItemStack(String.valueOf(virtualChest) + "." + key, null);
+			if(getItemStack != null){
+				returnList.put(Integer.parseInt(key), getItemStack);
+			}
+		}
+		
+		return returnList;
+	}
+	
+	public static void setVirtualChestContents(String owner, int chestNumber, HashMap<Integer, ItemStack> contents){
+		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
+		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
+		
+		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + ".yml");
+		if(!virtualChestFile.exists())
+			try {
+				virtualChestFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		
+		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(virtualChestFile);
+		
+		Iterator<Entry<Integer, ItemStack>> it = contents.entrySet().iterator();
+		while(it.hasNext()){
+			Entry<Integer, ItemStack> entry = it.next();
+			yaml.set(String.valueOf(chestNumber) + "." + String.valueOf(entry.getKey()), entry.getValue());
+		}
+		
+		try {
+			yaml.save(virtualChestFile);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 	
 }
