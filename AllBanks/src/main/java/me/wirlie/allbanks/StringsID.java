@@ -73,6 +73,10 @@ public enum StringsID {
 	BANKTIME_STEP0_INFO(44),
 	BANKTIME_DO_YOU_DO_NOT_HAVE_TIME(45),
 	BANKTIME_SUCCESS(46),
+	BANKCHEST_CHEST_NUMBER(47),
+	BANKCHEST_STEP0_INFO(48),
+	BANKCHEST_VIRTUAL_INVENTORY(49),
+	BANKLOAN_INTEREST_CHARGED(50),
 	
 	;
 	
@@ -95,5 +99,9 @@ public enum StringsID {
 	
 	public String toString(boolean prefix){
 		return Translation.get(getPath(), new HashMap<String, String>(), prefix)[0];
+	}
+	
+	public String toString(HashMap<String, String> replaceMap, boolean prefix){
+		return Translation.get(getPath(), replaceMap, prefix)[0];
 	}
 }

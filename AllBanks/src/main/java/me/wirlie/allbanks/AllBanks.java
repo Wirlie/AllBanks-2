@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -33,11 +34,15 @@ import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.listeners.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.PlayerMoveListener;
 import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
 import me.wirlie.allbanks.listeners.SignInteractListener;
+import me.wirlie.allbanks.listeners.VirtualChestClose;
+import me.wirlie.allbanks.runnable.BankLoanRunnable;
+import me.wirlie.allbanks.runnable.BankTimerRunnable;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -88,6 +93,60 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SignBreakListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerChatBSListener(), this);
+		Bukkit.getPluginManager().registerEvents(new VirtualChestClose(), this);
+		Bukkit.getPluginManager().registerEvents(new ChargeLoanOnPlayerJoin(), this);
+		
+		//Runnables
+		
+		//Para BankTime
+		int runSeconds = getConfig().getInt("banks.bank-time.add-minute-every", 60);
+		if(runSeconds <= 0){ runSeconds = 60; }
+		new BankTimerRunnable().runTaskTimer(this, 20 * runSeconds, 20 * runSeconds);
+		
+		//Para BankLoan
+		int collectLoanEvery = Util.ConfigUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));
+		if(collectLoanEvery == -1 || collectLoanEvery == 0){ 
+			//No se puede usar el sistema cuando el tiempo es inválido.
+			getLogger().severe("Invalid configuration in Config.yml.");
+			getLogger().severe("banks.bank-loan.collect-interest-every is not valid.");
+			getLogger().severe("Please set a numeric value more than 0.");
+			getLogger().severe("BankLoan: Collect Loan System disabled...");
+		}else{
+			
+			File bankLoanData = new File(getDataFolder() + File.separator + "BankLoanData.yml");
+			
+			if(!bankLoanData.exists())
+				try {
+					bankLoanData.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			
+			YamlConfiguration yaml = YamlConfiguration.loadConfiguration(bankLoanData);
+			
+			long lastExec = yaml.getLong("last-system-execution", 0);
+			long currentTime = new Date().getTime();
+			long nextCollection = collectLoanEvery - ((currentTime - lastExec) / 1000);
+			
+			if(lastExec == 0){
+				getLogger().info("[CollectLoanSystem] Initializing system...");
+				getLogger().info("[CollectLoanSystem] Next execution: " + collectLoanEvery + " seconds.");
+				new BankLoanRunnable().runTaskTimer(this, collectLoanEvery * 20, collectLoanEvery * 20);
+				
+				//Si no hay un tiempo establecido de ultima ejecución hay que establecerlo.
+				yaml.set("last-system-execution", currentTime);
+				try {
+					yaml.save(bankLoanData);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}else{
+				if(nextCollection < 10) nextCollection = 10;
+				getLogger().info("[CollectLoanSystem] Initializing system...");
+				getLogger().info("[CollectLoanSystem] Next execution: " + nextCollection + " seconds.");
+				new BankLoanRunnable().runTaskTimer(this, nextCollection * 20, collectLoanEvery * 20);
+			}
+		}
 	}
 	
 	@Override
@@ -140,6 +199,7 @@ public class AllBanks extends JavaPlugin {
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankmoney_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, money TEXT NOT NULL)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankxp_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, xp NUMBER)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS banktime_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, time NUMBER)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_pending_charges (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, amount TEXT NOT NULL)");
 			stm.close();
 		}catch (SQLException e){
 			e.printStackTrace();

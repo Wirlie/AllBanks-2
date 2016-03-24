@@ -4,12 +4,16 @@ pl:
 banks:
   bank-loan:
     #Interest (in percent) for the loan. (For example 2% -> 5000 = 100)
-    interest: 2
+    interest: 1
     #How much can a player borrow? (Default: 5000)
     max-loan: 5000
     #This configuration accept these "time values": day(s), hour(s), minute(s), second(s)
     #You can set multiple time values, for example: "1 days, 20 hours, 15 minutes, 1 second" = (1440 * 60) + (1200 * 60) + (15 * 60) + 1 = 156901 seconds.
     collect-interest-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+    #Stop interest collection if player have a balance minor than 500 (-500).
+    #It is useful when the player has left the server for several days, 
+    #it prevents that balance of the player reaches high negative amounts (Impossibles for paying)...
+    stop-collect-if-player-balance-is-minor-than: -500
   bank-money:
     # How much money can save the player in the bank?
     # -1 = unlimited
@@ -19,3 +23,5 @@ banks:
     pay-per-minute: 1.00
     # Add one minute every 60 seconds.
     add-minute-every: 60
+  bank-chest:
+    max-virtual-chests-per-player: 1
