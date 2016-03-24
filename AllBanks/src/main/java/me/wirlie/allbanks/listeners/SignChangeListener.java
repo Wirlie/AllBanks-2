@@ -58,7 +58,7 @@ public class SignChangeListener implements Listener {
 					e.getBlock().breakNaturally();
 			}
 			
-			if(lines[1].equalsIgnoreCase("BankLoan")){
+			if(lines[1].equalsIgnoreCase("BankLoan") || lines[1].equalsIgnoreCase("loan")){
 				btype = BankType.BANK_LOAN;
 			}else if(lines[1].equalsIgnoreCase("BankXP") || lines[1].equalsIgnoreCase("XP")){
 				btype = BankType.BANK_XP;
