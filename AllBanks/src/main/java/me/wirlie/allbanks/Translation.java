@@ -182,7 +182,7 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		return lang.getFile();
 	}
 
-	//FIXME Quitar esto ya que es solo para forzar una actualización de los idiomas.
+	//TODO Quitar esto ya que es solo para forzar una actualización de los idiomas.
 	static boolean isupdtodate = false;
 	
 	private static void ensureLanguageFileIsUpToDate(Languages lang){
