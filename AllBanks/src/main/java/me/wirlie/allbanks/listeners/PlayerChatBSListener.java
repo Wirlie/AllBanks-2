@@ -27,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks.BankType;
@@ -61,6 +62,22 @@ public class PlayerChatBSListener implements Listener {
 			case SHOP:
 				break;
 			case BANK_CHEST:
+				switch(step){
+				case 0:
+					
+					if(e.getMessage().equalsIgnoreCase("open")){
+						//Abrir cofre virtual
+						e.setCancelled(true);
+					}else{
+						return;
+					}
+					
+					int currentChestCursor = ba.BankChest.getCurrentChestCursor();
+					
+					Banks.openVirtualChest(p, currentChestCursor);
+					
+					break;
+				}
 				break;
 			case BANK_LAND:
 				break;

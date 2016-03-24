@@ -24,11 +24,13 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
@@ -268,8 +270,12 @@ public class Banks {
 				HashMap<String, String> replaceMap = new HashMap<String, String>();
 				replaceMap.put("%1%", String.valueOf(ba.BankChest.getCurrentChestCursor()));
 				
-				sign.setLine(2, ChatColor.GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(false));
+				sign.setLine(2, ChatColor.GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(replaceMap, false));
 				sign.setLine(3, "");
+				
+				if(p != null && playerMessages){
+					Translation.getAndSendMessage(p, StringsID.BANKCHEST_STEP0_INFO, true);
+				}
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
@@ -444,6 +450,23 @@ public class Banks {
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
+	}
+
+	/**
+	 * @param p
+	 * @param currentChestCursor
+	 */
+	public static void openVirtualChest(Player p, int currentChestCursor) {
+		if(p == null) throw new IllegalArgumentException("Player can not be null!!");
+		if(currentChestCursor <= 0) throw new IllegalArgumentException("invalid ChestCursor");
+		
+		HashMap<String, String> replaceMap = new HashMap<String, String>();
+		replaceMap.put("%1%", String.valueOf(currentChestCursor));
+		
+		Inventory inv = Bukkit.getServer().createInventory(null, 9 * 6, "ab:virtualchest:" + currentChestCursor);
+		//TODO Falta añadir un proceso para obtener el contenido del cofre
+		//StringsID.BANKCHEST_VIRTUAL_INVENTORY.toString(replaceMap, false)
+		p.openInventory(inv);
 	}
 	
 }

@@ -53,6 +53,7 @@ public class BankAccount {
 	public BankMoney BankMoney = new BankMoney();
 	public BankXP BankXP = new BankXP();
 	public BankTime BankTime = new BankTime();
+	public BankChest BankChest = new BankChest();
 	
 	public static class Cache{
 		
@@ -142,12 +143,45 @@ public class BankAccount {
 	BigDecimal bankmoney_money = BigDecimal.ZERO;
 	int bankxp_xp = 0;
 	int banktime_time = 0;
+	//los cofres comienzan a contar desde 1 (1, 2, 3, 4, 5, 6) pero se establece en 0 por que al inicio se usa switchToNextChestCursor() y este cambia el valor a 1 (valor inicial).
+	int bankchest_chest = 0;
 	
 	/**
 	 * @param uniqueId
 	 */
 	public BankAccount(Player p) {
 		this.player = p;
+	}
+	
+	public class BankChest{
+		//BankChest no trabajará con SQLite por razones de seguridad (ej, una falla de la base de datos podría hacer perder los datos, ademas que, ItemStack es serializable en Yaml)
+		public int getCurrentChestCursor(){
+			return bankchest_chest;
+		}
+		
+		public void setChestCursor(int newCursor){
+			bankchest_chest = newCursor;
+		}
+		
+		public int getNextChestCursor(){
+			int max_virtuals_chests = AllBanks.getInstance().getConfig().getInt("banks.bank-chest.max-virtual-chests-per-player", 1);
+			
+			//Mínimo un cofre virtual por jugador.
+			if(max_virtuals_chests <= 0) max_virtuals_chests = 1;
+			
+			int nextChest = getCurrentChestCursor() + 1;
+			if(nextChest > max_virtuals_chests){
+				//Regresar cursor al cofre 1.
+				return 1;
+			}else{
+				//Progresar en 1 el cursor.
+				return nextChest;
+			}
+		}
+		
+		public void switchToNextChest(){
+			setChestCursor(getNextChestCursor());
+		}
 	}
 	
 	public class BankLoan{
