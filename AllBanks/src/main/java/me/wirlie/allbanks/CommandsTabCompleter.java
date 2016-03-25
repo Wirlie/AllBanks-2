@@ -18,6 +18,7 @@
  */
 package me.wirlie.allbanks;
 
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.command.Command;
@@ -33,7 +34,31 @@ public class CommandsTabCompleter implements TabCompleter {
 
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		
-		return null;
+		if(args.length == 1){
+			return Arrays.asList(
+					"database"
+					);
+		}
+		
+		if(args.length == 2){
+			if(args[0].equalsIgnoreCase("database")){
+				return Arrays.asList(
+						"try-update",
+						"try-query"
+						);
+			}
+		}
+		
+		if(args.length == 3){
+			if(args[0].equalsIgnoreCase("database") && args[1].equalsIgnoreCase("try-update") ||
+					args[0].equalsIgnoreCase("database") && args[1].equalsIgnoreCase("try-query")){
+				return Arrays.asList(
+						"{SQL_SENTENCE}"
+						);
+			}
+		}
+		
+		return Arrays.asList("");
 	}
 
 }
