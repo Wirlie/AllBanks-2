@@ -26,7 +26,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import me.wirlie.allbanks.Banks;
@@ -37,11 +36,6 @@ import me.wirlie.allbanks.Banks;
  *
  */
 public class VirtualChestClose implements Listener{
-
-	@EventHandler
-	public void onVirtualChestMove(InventoryMoveItemEvent e){
-		System.out.println("MOVE");
-	}
 	
 	@EventHandler
 	public void onVirtualChestInteractt(InventoryClickEvent e){
@@ -52,7 +46,14 @@ public class VirtualChestClose implements Listener{
 			Player p = (Player) e.getWhoClicked();
 			
 			if(!e.getAction().equals(InventoryAction.PLACE_ALL) && !e.getAction().equals(InventoryAction.PLACE_ONE)){
-				//El resto de las acciones no pueden ser procesadas...
+				/* Las acciones que no pertenezcan a Place (colocar objeto) no pueden ser procesadas en esta
+				 * función, ya que, el método rawSlot() devuelve el slot origen desde donde se dió el clic
+				 * y no hay manera de saber hacia dónde se movió un objeto (ej: shift + clic) lo cual hace
+				 * impreciso el guardar el inventario de un cofre virtual. Cabe destacar, que ésta función
+				 * no es escencial para el funcionamiento de BankChest, únicamente es un método alternativo
+				 * para prevenir pérdidas de datos al momento de por ejemplo una interrupción inesperada del
+				 * servidor.
+				 */
 				return;
 			}
 			
@@ -71,7 +72,7 @@ public class VirtualChestClose implements Listener{
 			for(int i = 0; i < inv.getSize(); i++){
 				ItemStack get = inv.getItem(i);
 				
-				//Fix... no sé por que el evento no actualiza el inventario apropiadamente
+				//Fix: El inventario del evento (e.getInventory) no se actualiza apropiadamente.
 				if(i == e.getRawSlot())
 					armMap.put(i, e.getCursor());
 				else

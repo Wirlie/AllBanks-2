@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Util;
@@ -164,7 +165,23 @@ public class BankAccount {
 		}
 		
 		public int getNextChestCursor(){
-			int max_virtuals_chests = AllBanks.getInstance().getConfig().getInt("banks.bank-chest.max-virtual-chests-per-player", 1);
+			
+			int max_virtuals_chests = 0;
+			boolean overrideConfiguration = false;
+			
+			for(PermissionAttachmentInfo pinfo : player.getEffectivePermissions()){
+				if(pinfo.getPermission().startsWith("allbanks.banks.bankchest.virtualchests.")){
+					try{
+						max_virtuals_chests = Integer.parseInt(pinfo.getPermission().replace("allbanks.banks.bankchest.virtualchests.", ""));
+						overrideConfiguration = true;
+					}catch(NumberFormatException e){
+						overrideConfiguration = false;
+					}
+				}
+			}
+			
+			if(!overrideConfiguration)
+				max_virtuals_chests = AllBanks.getInstance().getConfig().getInt("banks.bank-chest.max-virtual-chests-per-player", 1);
 			
 			//Mínimo un cofre virtual por jugador.
 			if(max_virtuals_chests <= 0) max_virtuals_chests = 1;

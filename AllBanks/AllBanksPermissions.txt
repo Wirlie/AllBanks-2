@@ -1,0 +1,33 @@
+#================== Special permissions ===============
+#Override cfg: banks.bank-chest.max-virtual-chests-per-player
+allbanks.banks.bankchest.virtualchests.{INTEGER}
+
+#Override cfg: banks.bank-time.pay-per-minute
+allbanks.banks.banktime.payperminute.{DOUBLE}
+
+#Override cfg: banks.bank-loan.max-loan
+allbanks.banks.bankloan.maxloan.{DOUBLE}
+
+#Override cfg: banks.bank-money.max-money-player-can-save
+allbanks.banks.bankmoney.maxmoney.{DOUBLE}
+
+#=================== General permissions ===================
+
+# ~~~~~~~~~~ SIGNS ~~~~~~~~~~
+
+#SIGN TYPE			# NEW SIGN						# DESTROY SIGN						# USE SIGN
+ATM					allbanks.sign.atm.new			allbanks.sign.atm.destroy			allbanks.sign.atm.use
+SHOP				allbanks.sign.shop.new			allbanks.sign.shop.destroy			allbanks.sign.shop.use
+BANK_LAND			allbanks.sign.land.new			allbanks.sign.land.destroy			allbanks.sign.land.use
+BANK_LOAN			allbanks.sign.loan.new			allbanks.sign.loan.destroy			allbanks.sign.loan.use
+BANK_MONEY			allbanks.sign.money.new			allbanks.sign.money.destroy			allbanks.sign.money.use
+BANK_TIME			allbanks.sign.time.new			allbanks.sign.time.destroy			allbanks.sign.time.use
+BANK_XP				allbanks.sign.xp.new			allbanks.sign.xp.destroy			allbanks.sign.xp.use
+BANK_CHEST			allbanks.sign.chest.new			allbanks.sign.chest.destroy			allbanks.sign.chest.use
+
+# ~~~~~~~~~~ COMMANDS ~~~~~~~~~~
+
+#MAIN COMMAND: allbanks
+#LABEL/ARGS								#PERMISSION
+database try-query {SQL...}				allbanks.commands.database.executequery
+database try-update {SQL...}			allbanks.commands.database.executequery

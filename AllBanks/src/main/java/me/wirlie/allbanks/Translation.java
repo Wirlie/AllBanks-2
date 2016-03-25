@@ -103,7 +103,7 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		String[] split = translation.split("%BREAK%");
 		
 		if(prefix){
-			String prefixStr = ChatColor.LIGHT_PURPLE + "All" + ChatColor.DARK_PURPLE + "Banks" + ChatColor.GOLD + " >> " + ChatColor.RESET;
+			String prefixStr = ChatColor.DARK_AQUA + "All" + ChatColor.AQUA + "Banks" + ChatColor.GOLD + ChatColor.BOLD + " >> " + ChatColor.RESET;
 			
 			for(int i = 0; i < split.length; i++){
 				split[i] = prefixStr + split[i];

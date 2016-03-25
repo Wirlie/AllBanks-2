@@ -37,6 +37,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
@@ -302,7 +303,22 @@ public class Banks {
 		case BANK_LOAN:
 			switch(step){
 			case 0:
-				BigDecimal maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan.getLoan());
+				BigDecimal maxBorrow = BigDecimal.ZERO;
+				boolean overrideConfiguration = false;
+				
+				for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+					if(pinfo.getPermission().startsWith("allbanks.banks.bankloan.maxloan.")){
+						try{
+							maxBorrow = new BigDecimal(Double.parseDouble(pinfo.getPermission().replace("allbanks.banks.bankloan.maxloan.", ""))).subtract(ba.BankLoan.getLoan());
+							overrideConfiguration = true;
+						}catch(NumberFormatException e2){
+							overrideConfiguration = false;
+						}
+					}
+				}
+				
+				if(!overrideConfiguration)
+					maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan.getLoan());
 				
 				sign.setLine(2, ChatColor.YELLOW + StringsID.ASK.toString(false));
 				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));

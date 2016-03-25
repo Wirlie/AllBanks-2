@@ -104,7 +104,6 @@ public class PlayerChatBSListener implements Listener {
 					String[] splitDecimal = e.getMessage().split("\\D");
 					
 					if(splitDecimal.length >= 2 && splitDecimal[1].length() > 2){
-						System.out.println(splitDecimal[1]);
 						//Los decimales son mayores a 2
 						Translation.getAndSendMessage(p, StringsID.ONLY_TWO_DECIMALS, true);
 						return;
@@ -229,7 +228,24 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					BigDecimal maxLimitSave = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-money.max-money-player-can-save", -1));
+					
+					BigDecimal maxLimitSave = BigDecimal.ZERO;
+					boolean overrideConfiguration = false;
+					
+					for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+						if(pinfo.getPermission().startsWith("allbanks.banks.bankmoney.maxmoney.")){
+							try{
+								maxLimitSave = new BigDecimal(Double.parseDouble(pinfo.getPermission().replace("allbanks.banks.bankmoney.maxmoney.", "")));
+								overrideConfiguration = true;
+							}catch(NumberFormatException e2){
+								overrideConfiguration = false;
+							}
+						}
+					}
+					
+					if(!overrideConfiguration)
+						maxLimitSave = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-money.max-money-player-can-save", -1));
+					
 					boolean unlimitedSave = false;
 					
 					if(maxLimitSave.compareTo(new BigDecimal(-1)) == 0){

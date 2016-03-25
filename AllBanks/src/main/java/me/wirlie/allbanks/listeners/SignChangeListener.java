@@ -100,6 +100,9 @@ public class SignChangeListener implements Listener {
 			new BukkitRunnable(){
 
 				public void run() {
+					if(e.getBlock().getType().equals(Material.AIR))
+						return;
+					
 					Banks.registerSign(e.getBlock().getLocation(), p);
 					Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
 				}

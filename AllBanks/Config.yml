@@ -25,3 +25,5 @@ banks:
     add-minute-every: 60
   bank-chest:
     max-virtual-chests-per-player: 1
+  shop:
+    max-shop-per-user: -1

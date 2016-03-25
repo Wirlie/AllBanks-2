@@ -28,6 +28,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -78,6 +79,12 @@ public class SignInteractListener implements Listener {
 							return;
 						}
 						
+					}
+					
+					//Comprobar si tiene permisos para usar el letrero
+					if(!Banks.playerHasPermissions(p, AllBanksAction.USE_SIGN, btype)){
+						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						return;
 					}
 					
 					//Comprobar si el usuario está en sesión
