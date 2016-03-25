@@ -25,6 +25,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
@@ -100,15 +101,32 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					String[] splitDecimal = String.valueOf(msgValue.toPlainString()).split("\\D");
+					String[] splitDecimal = e.getMessage().split("\\D");
 					
 					if(splitDecimal.length >= 2 && splitDecimal[1].length() > 2){
+						System.out.println(splitDecimal[1]);
 						//Los decimales son mayores a 2
 						Translation.getAndSendMessage(p, StringsID.ONLY_TWO_DECIMALS, true);
 						return;
 					}
 					
-					BigDecimal maxLoan = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan"));
+					BigDecimal maxLoan = BigDecimal.ZERO; 
+					boolean overrideConfiguration = false;
+					
+					for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+						if(pinfo.getPermission().startsWith("allbanks.banks.bankloan.maxloan.")){
+							try{
+								maxLoan = new BigDecimal(Double.parseDouble(pinfo.getPermission().replace("allbanks.banks.bankloan.maxloan.", "")));
+								overrideConfiguration = true;
+							}catch(NumberFormatException e2){
+								overrideConfiguration = false;
+							}
+						}
+					}
+					
+					if(!overrideConfiguration)
+						maxLoan = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan"));
+					
 					BigDecimal userLoan = ba.BankLoan.getLoan();
 					BigDecimal maxBorrow = maxLoan.subtract(userLoan);
 					
@@ -151,7 +169,7 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					String[] splitDecimal2 = String.valueOf(msgValue2.toPlainString()).split("\\D");
+					String[] splitDecimal2 = e.getMessage().split("\\D");
 					
 					if(splitDecimal2.length >= 2 && splitDecimal2[1].length() > 2){
 						//Los decimales son mayores a 2
@@ -203,7 +221,7 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					String[] splitDecimal = String.valueOf(msgValue.toPlainString()).split("\\D");
+					String[] splitDecimal = e.getMessage().split("\\D");
 					
 					if(splitDecimal.length >= 2 && splitDecimal[1].length() > 2){
 						//Los decimales son mayores a 2
@@ -274,7 +292,7 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					String[] splitDecimal2 = String.valueOf(msgValue2.toPlainString()).split("\\D");
+					String[] splitDecimal2 = e.getMessage().split("\\D");
 					
 					if(splitDecimal2.length >= 2 && splitDecimal2[1].length() > 2){
 						//Los decimales son mayores a 2
@@ -337,7 +355,23 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					BigDecimal payPerMinute = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-time.pay-per-minute", 0.00));
+					BigDecimal payPerMinute = BigDecimal.ZERO;
+					boolean overrideConfiguration = false;
+					
+					for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+						if(pinfo.getPermission().startsWith("allbanks.banks.banktime.payperminute.")){
+							try{
+								payPerMinute = new BigDecimal(Double.parseDouble(pinfo.getPermission().replace("allbanks.banks.banktime.payperminute.", "")));
+								overrideConfiguration = true;
+							}catch(NumberFormatException e2){
+								overrideConfiguration = false;
+							}
+						}
+					}
+					
+					if(!overrideConfiguration)
+						payPerMinute = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-time.pay-per-minute", 0.00));
+					
 					BigDecimal pay = payPerMinute.multiply(new BigDecimal(changeAmount));
 					
 					if(ba.BankTime.subsTime(changeAmount)){
