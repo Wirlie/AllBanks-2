@@ -28,6 +28,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.Util;
@@ -54,11 +55,20 @@ public class SignBreakListener implements Listener {
 					
 					if(Banks.playerHasPermissions(e.getPlayer(), AllBanksAction.DESTROY_SIGN, btype)){
 						if(btype != null){
-							Banks.removeSign(s.getLocation());
-							Translation.getAndSendMessage(e.getPlayer(), StringsID.BANK_REMOVED, true);
-							//Cerrar sesión
-							BankSession.closeSession(e.getPlayer());
-							e.setCancelled(false);
+							if(Banks.removeAllBanksSign(s.getLocation())){
+								Translation.getAndSendMessage(e.getPlayer(), StringsID.BANK_REMOVED, true);
+								//Cerrar sesión
+								BankSession.closeSession(e.getPlayer());
+								e.setCancelled(false);
+							}else{
+								if(DatabaseUtil.databaseIsLocked()){
+									DatabaseUtil.sendDatabaseLockedMessage(e.getPlayer());
+								}else{
+									Translation.getAndSendMessage(e.getPlayer(), StringsID.SQL_EXCEPTION_PROBLEM, true);
+								}
+								
+								e.setCancelled(true);
+							}
 						}
 					}else{
 						//sin permisos

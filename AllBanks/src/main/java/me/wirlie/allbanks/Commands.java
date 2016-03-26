@@ -29,6 +29,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 
 /**
@@ -69,10 +70,12 @@ public class Commands implements CommandExecutor {
 						}
 						
 						//Intentar ejecutar
+						Statement stm = null;
+						ResultSet res = null;
+						
 						try{
-							Statement stm = AllBanks.getDBC().createStatement();
-							
-							ResultSet res = stm.executeQuery(query);
+							stm = AllBanks.getDBC().createStatement();
+							res = stm.executeQuery(query);
 							int numColumns = res.getMetaData().getColumnCount();
 							
 							for(int i = 0; i < 10; i++){
@@ -91,17 +94,19 @@ public class Commands implements CommandExecutor {
 							
 							Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_QUERY_SUCCESS, (sender instanceof Player));
 							
-							res.close();
-							stm.close();
 						}catch(SQLException e){
-							
-							Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_INVALID_QUERY, (sender instanceof Player));
-							sender.sendMessage(ChatColor.RED + e.getMessage());
-							
-							AllBanks.getInstance().getLogger().info("Dont worry, the database can not process your Query:");
-							AllBanks.getInstance().getLogger().info("Syntax: " + query);
-							
-							e.printStackTrace();
+							DatabaseUtil.checkDatabaseIsLocked(e);
+							if(!DatabaseUtil.databaseIsLocked()){
+								Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_INVALID_QUERY, (sender instanceof Player));
+								sender.sendMessage(ChatColor.RED + e.getMessage());
+							}
+						}finally{
+							try {
+								res.close();
+								stm.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
 						}
 					}else{
 						//No cumple con: /ab database query <QUERY>
@@ -129,8 +134,10 @@ public class Commands implements CommandExecutor {
 						}
 						
 						//Intentar ejecutar
+						Statement stm = null;
+						
 						try{
-							Statement stm = AllBanks.getDBC().createStatement();
+							stm = AllBanks.getDBC().createStatement();
 							stm.executeUpdate(query);
 							
 							Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_QUERY_SUCCESS, (sender instanceof Player));
@@ -140,14 +147,17 @@ public class Commands implements CommandExecutor {
 							
 							stm.close();
 						}catch(SQLException e){
-							
-							Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_INVALID_QUERY, (sender instanceof Player));
-							sender.sendMessage(ChatColor.RED + e.getMessage());
-							
-							AllBanks.getInstance().getLogger().info("Dont worry, SQLite can not process your Query:");
-							AllBanks.getInstance().getLogger().info("Syntax: " + query);
-							
-							e.printStackTrace();
+							DatabaseUtil.checkDatabaseIsLocked(e);
+							if(!DatabaseUtil.databaseIsLocked()){
+								Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_INVALID_QUERY, (sender instanceof Player));
+								sender.sendMessage(ChatColor.RED + e.getMessage());
+							}
+						}finally{
+							try {
+								stm.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
 						}
 					}else{
 						//No cumple con: /ab database query <QUERY>

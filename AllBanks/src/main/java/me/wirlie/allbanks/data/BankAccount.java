@@ -32,6 +32,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Util;
+import me.wirlie.allbanks.Util.DatabaseUtil;
 
 /**
  * Esta clase permitirá almacenar los datos recopilados de la base de datos, con el fin de
@@ -310,15 +311,26 @@ public class BankAccount {
 			banktime_time = newTime;
 			
 			//Actualizar la base de datos
-			if(updateFromDatabase)
+			if(updateFromDatabase){
+				
+				if(DatabaseUtil.databaseIsLocked()) return false;
+				
+				Statement stm = null;
+				
 				try {
-					Statement stm = AllBanks.getDBC().createStatement();
+					stm = AllBanks.getDBC().createStatement();
 					stm.executeUpdate("UPDATE banktime_accounts SET time = '" + newTime + "' WHERE owner = '" + player.getName() + "'");
-					stm.close();
 					return true;
 				} catch (SQLException e) {
-					e.printStackTrace();
+					DatabaseUtil.checkDatabaseIsLocked(e);
+				} finally {
+					try {
+						stm.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			}
 			
 			return false;
 		}

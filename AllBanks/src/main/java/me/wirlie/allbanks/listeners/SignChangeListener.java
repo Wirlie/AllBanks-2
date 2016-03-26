@@ -103,8 +103,12 @@ public class SignChangeListener implements Listener {
 					if(e.getBlock().getType().equals(Material.AIR))
 						return;
 					
-					Banks.registerSign(e.getBlock().getLocation(), p);
-					Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
+					if(Banks.registerAllBanksSign(e.getBlock().getLocation(), p)){
+						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
+					}else{
+						e.getBlock().breakNaturally();
+						Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
+					}
 				}
 
 			}.runTaskLater(AllBanks.getInstance(), 10);
