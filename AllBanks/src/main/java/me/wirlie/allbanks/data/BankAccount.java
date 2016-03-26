@@ -377,6 +377,7 @@ public class BankAccount {
 					stm.executeUpdate("UPDATE banktime_accounts SET time = '" + newTime + "' WHERE owner = '" + player.getName() + "'");
 
 					banktime_time = newTime;
+					
 					return true;
 				} catch (SQLException e) {
 					DatabaseUtil.checkDatabaseIsLocked(e);
