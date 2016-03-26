@@ -35,6 +35,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 
 /**
@@ -45,16 +46,24 @@ import me.wirlie.allbanks.data.BankAccount;
 public class BankLoanRunnable extends BukkitRunnable {
 
 	public synchronized void run() {
+		
+		if(DatabaseUtil.databaseIsLocked()){
+			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Database is locked! Aborting...");
+			return;
+		}
 
 		long currentTime = new Date().getTime();
 		int affectedAccounts = 0;
 		
 		AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Reading Database...");
 		
+		Statement stm = null;
+		ResultSet res = null;
+		
 		try {
-			Statement stm = AllBanks.getDBC().createStatement();
+			stm = AllBanks.getDBC().createStatement();
 			//Seleccionar los préstamos mayores a 0 optimizará los resultados.
-			ResultSet res = stm.executeQuery("SELECT * FROM bankloan_accounts WHERE loan > 0");
+			res = stm.executeQuery("SELECT * FROM bankloan_accounts WHERE loan > 0");
 			
 			while(res.next()){
 				BigDecimal loan = new BigDecimal(res.getString("loan"));
@@ -86,13 +95,17 @@ public class BankLoanRunnable extends BukkitRunnable {
 				affectedAccounts++;
 				
 			}
-			
-			res.close();
-			stm.close();
 
 			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
 		} catch (SQLException e) {
-			e.printStackTrace();
+			DatabaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			try {
+				stm.close();
+				res.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		//Actualizar datos

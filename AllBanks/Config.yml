@@ -1,6 +1,15 @@
 cfg-version: "v1.0"
 pl:
   language: "EsMx"
+  enable-metrics: true
+  check-for-updates: true
+  auto-update: false
+lottery:
+  ticket-cost: 50
+  get-winer-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+  min-tickets-needed: 20
+  max-tickets-per-player: 5
+  broadcast-message: true
 banks:
   bank-loan:
     #Interest (in percent) for the loan. (For example 2% -> 5000 = 100)

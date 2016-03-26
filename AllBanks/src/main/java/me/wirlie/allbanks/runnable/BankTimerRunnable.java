@@ -45,7 +45,6 @@ public class BankTimerRunnable extends BukkitRunnable {
 			}
 			
 			if(!ba.BankTime.updateTimePlusOne()){
-				AllBanks.getInstance().getLogger().warning("SQLException (updateTimePlusOne())...");
 				continue;
 			}else{
 				BankSession tryBs = BankSession.getSession(p);

@@ -18,12 +18,14 @@
  */
 package me.wirlie.allbanks;
 
+import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 /**
@@ -32,6 +34,54 @@ import org.bukkit.entity.Player;
  *
  */
 public class Util {
+	
+	public static class DatabaseUtil{
+		
+		static boolean  databaseLocked = false;
+		
+		public static boolean checkDatabaseIsLocked(SQLException e){
+			
+			e.printStackTrace();
+			
+			if(e.getMessage().contains("database is locked")){
+				
+				sendServerMessage();
+				databaseLocked = true;
+				return true;
+			}
+			
+			return false;
+		}
+		
+		public static boolean databaseIsLocked(){
+			if(databaseLocked) sendServerMessage();
+			return databaseLocked;
+		}
+		
+		public static void sendServerMessage(){
+			AllBanks.getInstance().getLogger().severe("Database is locked!! Please restart your server for unlock the database...");
+			AllBanks.getInstance().getLogger().severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.");
+		}
+		
+		public static boolean databaseIsLocked(Player p){
+			if(databaseLocked) sendDatabaseLockedMessage(p);
+			return databaseLocked;
+		}
+		
+		public static boolean databaseIsLocked(CommandSender s){
+			if(databaseLocked) sendDatabaseLockedMessage(s);
+			return databaseLocked;
+		}
+		
+		public static void sendDatabaseLockedMessage(Player p){
+			Translation.getAndSendMessage(p, StringsID.DATABASE_IS_LOCKED_PLEASE_RESTART_SERVER, true);
+		}
+		
+		public static void sendDatabaseLockedMessage(CommandSender s){
+			Translation.getAndSendMessage(s, StringsID.DATABASE_IS_LOCKED_PLEASE_RESTART_SERVER, true);
+		}
+		
+	}
 	
 	public static class XPConversionUtil{
 	    

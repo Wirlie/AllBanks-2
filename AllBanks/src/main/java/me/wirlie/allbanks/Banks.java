@@ -39,6 +39,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
 
@@ -91,6 +92,13 @@ public class Banks {
 		
 		if(btype == null){
 			return true;
+		}
+		
+		if(DatabaseUtil.databaseIsLocked()){
+			if(!btype.equals(BankType.BANK_CHEST)){
+				//Actualmente BankChest es el único banco que no necesita a la base de datos.
+				DatabaseUtil.sendDatabaseLockedMessage(p);
+			}
 		}
 		
 		switch(action){
@@ -444,34 +452,75 @@ public class Banks {
 		sign.update();
 	}
 	
-	public static void registerSign(Location signLoc, Player owner){
+	public static boolean registerAllBanksSign(Location signLoc, Player owner){
+		
+		if(DatabaseUtil.databaseIsLocked()) return false;
+		
+		Statement stm = null;
+		
 		try{
-			Statement stm = AllBanks.getDBC().createStatement();
+			stm = AllBanks.getDBC().createStatement();
 			stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
+			return true;
 		}catch(SQLException e){
-			e.printStackTrace();
-		}
-	}
-	
-	public static boolean signIsRegistered(Location signLoc){
-		try{
-			Statement stm = AllBanks.getDBC().createStatement();
-			ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
-			return res.next();
-		}catch(SQLException e){
-			e.printStackTrace();
+			DatabaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			if(stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 		}
 		
 		return false;
 	}
 	
-	public static void removeSign(Location signLoc){
+	public static boolean signIsRegistered(Location signLoc){
+		
+		if(DatabaseUtil.databaseIsLocked()) return false;
+		
+		Statement stm = null;
 		try{
-			Statement stm = AllBanks.getDBC().createStatement();
-			stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+			stm = AllBanks.getDBC().createStatement();
+			ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+			return res.next();
 		}catch(SQLException e){
-			e.printStackTrace();
+			DatabaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			if(stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 		}
+		
+		return false;
+	}
+	
+	public static boolean removeAllBanksSign(Location signLoc){
+		
+		if(DatabaseUtil.databaseIsLocked()) return false;
+		
+		Statement stm = null;
+		
+		try{
+			stm = AllBanks.getDBC().createStatement();
+			stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+			return true;
+		}catch(SQLException e){
+			DatabaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			if(stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		
+		return false;
 	}
 
 	/**

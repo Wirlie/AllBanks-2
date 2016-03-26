@@ -32,6 +32,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 
 /**
@@ -43,9 +44,15 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e){
+		
+		if(DatabaseUtil.databaseIsLocked()) return;
+		
+		Statement stm = null;
+		ResultSet res = null;
+		
 		try {
-			Statement stm = AllBanks.getDBC().createStatement();
-			ResultSet res = stm.executeQuery("SELECT * FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
+			stm = AllBanks.getDBC().createStatement();
+			res = stm.executeQuery("SELECT * FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
 		
 			BigDecimal totalCharge = BigDecimal.ZERO;
 			
@@ -54,11 +61,7 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 				totalCharge = totalCharge.add(amount);
 			}
 			
-			res.close();
-			
 			stm.executeUpdate("DELETE FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
-			
-			stm.close();
 			
 			BigDecimal minPlayerBalance = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -500));
 			BigDecimal currentPlayerBalance = new BigDecimal(AllBanks.getEconomy().getBalance(e.getPlayer()));
@@ -89,10 +92,15 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 				
 			}.runTaskLater(AllBanks.getInstance(), 20 * 2);
 			
-			res.close();
-			stm.close();
 		} catch (SQLException e1) {
-			e1.printStackTrace();
+			DatabaseUtil.checkDatabaseIsLocked(e1);
+		} finally {
+			try {
+				stm.close();
+				res.close();
+			} catch (SQLException e1) {
+				e1.printStackTrace();
+			}
 		}
 	}
 }
