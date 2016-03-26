@@ -30,6 +30,7 @@ import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.data.BankSession;
@@ -67,7 +68,12 @@ public class SignInteractListener implements Listener {
 					
 					//Seguridad: Comprobar si el banco está registrado en AllBanks
 					if(!Banks.signIsRegistered(s.getLocation())){
-						Translation.getAndSendMessage(p, StringsID.BANK_NOT_REGISTERED_ON_ALLBANKS, true);
+						if(DatabaseUtil.databaseIsLocked()){
+							DatabaseUtil.sendDatabaseLockedMessage(p);
+						}else{
+							Translation.getAndSendMessage(p, StringsID.BANK_NOT_REGISTERED_ON_ALLBANKS, true);
+						}
+						
 						return;
 					}
 					

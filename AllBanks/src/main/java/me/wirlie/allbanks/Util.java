@@ -78,7 +78,7 @@ public class Util {
 		}
 		
 		public static void sendDatabaseLockedMessage(CommandSender s){
-			Translation.getAndSendMessage(s, StringsID.DATABASE_IS_LOCKED_PLEASE_RESTART_SERVER, true);
+			Translation.getAndSendMessage(s, StringsID.DATABASE_IS_LOCKED_PLEASE_RESTART_SERVER, false);
 		}
 		
 	}

@@ -70,6 +70,11 @@ public class Commands implements CommandExecutor {
 						}
 						
 						//Intentar ejecutar
+						if(DatabaseUtil.databaseIsLocked()){
+							DatabaseUtil.sendDatabaseLockedMessage(sender);
+							return true;
+						}
+						
 						Statement stm = null;
 						ResultSet res = null;
 						
@@ -134,6 +139,11 @@ public class Commands implements CommandExecutor {
 						}
 						
 						//Intentar ejecutar
+						if(DatabaseUtil.databaseIsLocked()){
+							DatabaseUtil.sendDatabaseLockedMessage(sender);
+							return true;
+						}
+						
 						Statement stm = null;
 						
 						try{

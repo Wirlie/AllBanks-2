@@ -78,6 +78,13 @@ public class SignBreakListener implements Listener {
 					
 					
 				}else{
+					
+					if(DatabaseUtil.databaseIsLocked()){
+						DatabaseUtil.sendDatabaseLockedMessage(e.getPlayer());
+						e.setCancelled(true);
+						return;
+					}
+					
 					//banco no registrado...
 					s.getBlock().breakNaturally();
 					e.setCancelled(false);

@@ -24,6 +24,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
 
@@ -35,12 +36,17 @@ import me.wirlie.allbanks.data.BankSession;
 public class BankTimerRunnable extends BukkitRunnable {
 
 	public void run() {
+		
+		if(DatabaseUtil.databaseIsLocked()){
+			AllBanks.getInstance().getLogger().info("[BankTimeRunnable] Database is locked! Aborting...");
+			return;
+		}
+		
 		for(Player p : Bukkit.getOnlinePlayers()){
 			BankAccount ba = BankAccount.Cache.get(p.getUniqueId());
 			
 			if(ba == null){
 				//Ops... error
-				AllBanks.getInstance().getLogger().warning("Null value for BankAccount (BankTimerRunnable#run())...");
 				continue;
 			}
 			
