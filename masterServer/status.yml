@@ -1,0 +1,54 @@
+#Example of masterserver status...
+
+#Example for AllBanks v1.0.0 (v1_0_0)
+allbanks-v1_0_0:
+  general:
+  
+    # A problem has occurred?
+    warning: false
+    
+    # What is the level of the problem?
+    # 0 = None
+    # 1 = Low (suggest an update)
+    # 2 = High (is necessary an update)
+    # 3 = Severe (is necessary an update, autoupdate)
+    warning-level: 0
+    
+    warning-message: "Operating, no problems have been reported."
+    
+    # Update to AllBanks version X.X.X (if necessary for fix several bugs)
+    update-to: 1.0.0
+    
+    resources-branch: "master"
+    new-resources-required: false
+    required-resources:
+      - "Config.yml"
+  banks:
+    bankloan:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    bankmoney:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    banktime:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    bankxp:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    bankchest:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    bankland:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    shop:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+    atm:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
+  modules:
+    lottery:
+      warning: false
+      warning-message: "Operating, no problems have been reported."
