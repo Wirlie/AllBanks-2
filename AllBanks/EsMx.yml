@@ -16,6 +16,7 @@
 ###########################################################################################################################
 
 language-version: "1.0"
+%LOTTERY_PREFIX%: "&3Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
 2: "Deshabilitando plugin.%BREAK%Guardando Base de Datos local"
@@ -69,3 +70,6 @@ language-version: "1.0"
 50: "&eAllBanks te ha cobrado &f%1% &eporque debes un préstamo de &f%2% &een BankLoan."
 51: "&cLa base de datos de AllBanks está bloqueada, se debe reiniciar el servidor para desbloquear la base de datos."
 52: "&cNo se ha podido procesar tu solicitud ya que ha ocurrido un problema con la base de datos de AllBanks."
+53: "&c%1% no es un número válido."
+54: "%LOTTERY_PREFIX%&cNo puedes comprar %1% boleto(s).%BREAK%%LOTTERY_PREFIX%Sólo puedes comprar %2% boleto(s) más."
+55: "%LOTTERY_PREFIX%&aCompraste &f%1% &aboletos para la lotería."

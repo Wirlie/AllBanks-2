@@ -42,8 +42,19 @@ public class Util {
 		public static boolean checkDatabaseIsLocked(SQLException e){
 			
 			e.printStackTrace();
+
+			AllBanksLogger.getLogger().severe("SQLException:");
+			
+			AllBanksLogger.getLogger().severe(e.getLocalizedMessage());
+			
+			for(StackTraceElement ste : e.getStackTrace()){
+				AllBanksLogger.getLogger().severe("    " + ste.toString());
+			}
 			
 			if(e.getMessage().contains("database is locked")){
+				
+				AllBanksLogger.getLogger().severe("Database is locked!! Please restart your server for unlock the database...");
+				AllBanksLogger.getLogger().severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.");
 				
 				sendServerMessage();
 				databaseLocked = true;
@@ -78,7 +89,7 @@ public class Util {
 		}
 		
 		public static void sendDatabaseLockedMessage(CommandSender s){
-			Translation.getAndSendMessage(s, StringsID.DATABASE_IS_LOCKED_PLEASE_RESTART_SERVER, false);
+			Translation.getAndSendMessage(s, StringsID.DATABASE_IS_LOCKED_PLEASE_RESTART_SERVER, (s instanceof Player));
 		}
 		
 	}

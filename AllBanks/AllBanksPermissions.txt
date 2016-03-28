@@ -11,6 +11,9 @@ allbanks.banks.bankloan.maxloan.{DOUBLE}
 #Override cfg: banks.bank-money.max-money-player-can-save
 allbanks.banks.bankmoney.maxmoney.{DOUBLE}
 
+#Override cfg: lottery.max-tickets-per-player
+allbanks.lottery.maxtickets.{INTEGER}
+
 #=================== General permissions ===================
 
 # ~~~~~~~~~~ SIGNS ~~~~~~~~~~

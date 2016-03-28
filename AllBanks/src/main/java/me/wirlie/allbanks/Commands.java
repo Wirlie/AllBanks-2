@@ -21,6 +21,7 @@ package me.wirlie.allbanks;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.BlockCommandSender;
@@ -28,6 +29,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
@@ -182,6 +184,126 @@ public class Commands implements CommandExecutor {
 			}else{
 				//No cumple con los requisitos: /ab database <arg>
 				return false;
+			}
+		}else if(mainAction.equalsIgnoreCase("lottery")){
+			if(DatabaseUtil.databaseIsLocked()){
+				DatabaseUtil.sendDatabaseLockedMessage(sender);
+				return true;
+			}
+			
+			if(args.length >= 2){
+				if(args[1].equalsIgnoreCase("buyticket")){
+					if(args.length == 3){
+						
+						int amount = 0;
+						
+						try{
+							amount = Integer.parseInt(args[2]);
+							
+							if(amount <= 0){
+								Translation.getAndSendMessage(sender, StringsID.ONLY_VALID_NUMBER_MORE_THAN_0, true);
+								return true;
+							}
+						}catch(NumberFormatException e){
+							//No es un número válido
+							HashMap<String, String> replaceMap = new HashMap<String, String>();
+							replaceMap.put("%1%", args[2]);
+							Translation.getAndSendMessage(sender, StringsID.NO_VALID_NUMBER, replaceMap, true);
+							return true;
+						}
+						
+						//Bien intentar comprar un ticket
+						Statement stm = null;
+						ResultSet res = null;
+						int currentTicketsBought = 0;
+						
+						try{
+							stm = AllBanks.getDBC().createStatement();
+							res = stm.executeQuery("SELECT owner FROM lottery_tickets WHERE owner = '" + sender.getName() + "'");
+							
+							while(res.next()){
+								currentTicketsBought++;
+							}
+						}catch(SQLException e){
+							DatabaseUtil.checkDatabaseIsLocked(e);
+							Translation.getAndSendMessage(sender, StringsID.SQL_EXCEPTION_PROBLEM, true);
+							return true;
+						}finally{
+							try {
+								stm.close();
+								res.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						int maxBuy = AllBanks.getInstance().getConfig().getInt("lottery.max-tickets-per-player", 5);
+						
+						for(PermissionAttachmentInfo pinfo : sender.getEffectivePermissions()){
+							if(pinfo.getPermission().startsWith("allbanks.lottery.maxtickets.")){
+								try{
+									maxBuy = Integer.parseInt(pinfo.getPermission().replace("allbanks.lottery.maxtickets.", ""));
+								}catch(NumberFormatException e2){
+									
+								}
+							}
+						}
+						
+						//No se pueden permitir valores negativos.
+						if(maxBuy < 0) maxBuy = 0;
+						
+						int canBuy = maxBuy - currentTicketsBought;
+						
+						if(canBuy - amount <= 0){
+							//Ya no puede comprar más tickets
+							HashMap<String, String> replaceMap = new HashMap<String, String>();
+							replaceMap.put("%1%", String.valueOf(amount));
+							replaceMap.put("%2%", String.valueOf(canBuy));
+							Translation.getAndSendMessage(sender, StringsID.LOTTERY_CAN_NOT_BUY_MORE_TICKETS, replaceMap, true);
+							return true;
+						}
+						
+						//Comprar
+						try{
+							stm = AllBanks.getDBC().createStatement();
+							for(int i = 0; i < canBuy; i++){
+								stm.executeUpdate("INSERT INTO lottery_tickets (owner) VALUES ('" + sender.getName() + "')");
+							}
+						}catch(SQLException e){
+							DatabaseUtil.checkDatabaseIsLocked(e);
+							Translation.getAndSendMessage(sender, StringsID.SQL_EXCEPTION_PROBLEM, true);
+							return true;
+						}finally{
+							try {
+								stm.close();
+							} catch (SQLException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						//Bien, todo se ha procesado con éxito
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						replaceMap.put("%1%", String.valueOf(amount));
+						Translation.getAndSendMessage(sender, StringsID.LOTTERY_BUY_TICKETS_SUCCESS, replaceMap, true);
+						
+						return true;
+					}else{
+						//No válido /ab lottery buyticket [INT]
+						return false;
+					}
+				}else if(args[1].equalsIgnoreCase("check")){
+					//Mostrar el estado actual de la lotería (cuantos participantes hay, cuando se buscará el próximo ganador).
+					
+				}else if(args[1].equalsIgnoreCase("force")){
+					//Forzar para buscar un ganador
+					
+				}else if(args[1].equalsIgnoreCase("enable")){
+					//Habilitar lotería
+					
+				}else if(args[1].equalsIgnoreCase("disable")){
+					//Deshabilitar lotería
+					
+				}
 			}
 		}
 		

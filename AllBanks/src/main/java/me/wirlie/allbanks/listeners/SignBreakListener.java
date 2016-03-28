@@ -18,13 +18,16 @@
  */
 package me.wirlie.allbanks.listeners;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
+import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
@@ -45,6 +48,8 @@ public class SignBreakListener implements Listener {
 	public void onPlayerBreakBank(BlockBreakEvent e){
 		if(e.getBlock().getType().equals(Material.WALL_SIGN)){
 			Sign s = (Sign) e.getBlock().getState();
+			Location signLoc = s.getLocation();
+			Player p = e.getPlayer();
 			
 			if(Util.ChatFormatUtil.removeChatFormat(s.getLine(0)).equalsIgnoreCase("AllBanks")){
 				//Bien, es un letrero de AB
@@ -53,18 +58,18 @@ public class SignBreakListener implements Listener {
 					
 					BankType btype = BankType.getByString(Util.ChatFormatUtil.removeChatFormat(s.getLine(1)));
 					
-					if(Banks.playerHasPermissions(e.getPlayer(), AllBanksAction.DESTROY_SIGN, btype)){
+					if(Banks.playerHasPermissions(p, AllBanksAction.DESTROY_SIGN, btype)){
 						if(btype != null){
 							if(Banks.removeAllBanksSign(s.getLocation())){
-								Translation.getAndSendMessage(e.getPlayer(), StringsID.BANK_REMOVED, true);
+								Translation.getAndSendMessage(p, StringsID.BANK_REMOVED, true);
 								//Cerrar sesión
-								BankSession.closeSession(e.getPlayer());
+								BankSession.closeSession(p);
 								e.setCancelled(false);
 							}else{
 								if(DatabaseUtil.databaseIsLocked()){
-									DatabaseUtil.sendDatabaseLockedMessage(e.getPlayer());
+									DatabaseUtil.sendDatabaseLockedMessage(p);
 								}else{
-									Translation.getAndSendMessage(e.getPlayer(), StringsID.SQL_EXCEPTION_PROBLEM, true);
+									Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 								}
 								
 								e.setCancelled(true);
@@ -72,8 +77,10 @@ public class SignBreakListener implements Listener {
 						}
 					}else{
 						//sin permisos
-						Translation.getAndSendMessage(e.getPlayer(), StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						e.setCancelled(true);
+						AllBanksLogger.getLogger().warning("BREAK-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to destroy a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
+						
 					}
 					
 					

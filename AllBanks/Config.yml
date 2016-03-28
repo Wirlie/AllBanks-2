@@ -7,7 +7,6 @@ pl:
 lottery:
   ticket-cost: 50
   get-winer-every: "0 days, 24 hours, 0 minutes, 0 seconds"
-  min-tickets-needed: 20
   max-tickets-per-player: 5
   broadcast-message: true
 banks:

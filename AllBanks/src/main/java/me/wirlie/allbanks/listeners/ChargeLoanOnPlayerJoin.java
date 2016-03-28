@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.Util.DatabaseUtil;
@@ -88,6 +89,9 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 					Translation.getAndSendMessage(e.getPlayer(), StringsID.BANKLOAN_INTEREST_CHARGED, replaceMap, true);
 					
 					AllBanks.getEconomy().withdrawPlayer(e.getPlayer(), totalChargeFinal.doubleValue());
+					
+					AllBanksLogger.getLogger().info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).");
+					
 				}
 				
 			}.runTaskLater(AllBanks.getInstance(), 20 * 2);

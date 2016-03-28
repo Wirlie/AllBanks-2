@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 
@@ -78,6 +79,7 @@ public class BankAccount {
 			assert(bs != null);
 			
 			if(!cache.containsKey(bs.getPlayer().getUniqueId())){
+				AllBanksLogger.getLogger().info("BankAccount : Cache : Reading database, try to get the bank account for " + bs.getPlayer().getName());
 				cache.put(bs.getPlayer().getUniqueId(), getAccountFromDataBase(bs.getPlayer()));
 			}
 			
@@ -118,6 +120,7 @@ public class BankAccount {
 				return ba;
 				
 			}catch(SQLException e){
+				AllBanksLogger.getLogger().info("failed! SQLException:");
 				DatabaseUtil.checkDatabaseIsLocked(e);
 			}finally{
 				try {

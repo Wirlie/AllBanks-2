@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.Util.DatabaseUtil;
@@ -56,6 +57,7 @@ public class BankLoanRunnable extends BukkitRunnable {
 		int affectedAccounts = 0;
 		
 		AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Reading Database...");
+		AllBanksLogger.getLogger().info("BankTimerRunnable: Executed (reading database).");
 		
 		Statement stm = null;
 		ResultSet res = null;
@@ -96,6 +98,7 @@ public class BankLoanRunnable extends BukkitRunnable {
 				
 			}
 
+			AllBanksLogger.getLogger().info("BankTimerRunnable: " + affectedAccounts + " accounts modified.");
 			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
 		} catch (SQLException e) {
 			DatabaseUtil.checkDatabaseIsLocked(e);

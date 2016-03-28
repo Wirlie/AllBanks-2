@@ -19,6 +19,7 @@
 package me.wirlie.allbanks.listeners;
 
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -28,6 +29,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -45,6 +47,7 @@ public class SignChangeListener implements Listener {
 	public void onSignChange(final SignChangeEvent e){
 		String[] lines = e.getLines();
 		final Player p = e.getPlayer();
+		final Location signLoc = e.getBlock().getLocation();
 		
 		if(lines[0].equalsIgnoreCase("AllBanks") || lines[0].equalsIgnoreCase("[AllBanks]") || lines[0].equalsIgnoreCase("All Banks")){
 			
@@ -91,6 +94,8 @@ public class SignChangeListener implements Listener {
 				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				e.setCancelled(true);
 				e.getBlock().breakNaturally();
+				
+				AllBanksLogger.getLogger().warning("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to create a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
 				return;
 			}
 			
@@ -105,6 +110,8 @@ public class SignChangeListener implements Listener {
 					
 					if(Banks.registerAllBanksSign(e.getBlock().getLocation(), p)){
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
+						AllBanksLogger.getLogger().info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
+						
 					}else{
 						e.getBlock().breakNaturally();
 						Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);

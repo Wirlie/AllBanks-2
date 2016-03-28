@@ -27,6 +27,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Util;
+import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
@@ -72,6 +73,7 @@ public class SignInteractListener implements Listener {
 							DatabaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.BANK_NOT_REGISTERED_ON_ALLBANKS, true);
+							AllBanksLogger.getLogger().warning("SECURITY: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a not registered bank at location (w:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ")");
 						}
 						
 						return;
@@ -90,6 +92,7 @@ public class SignInteractListener implements Listener {
 					//Comprobar si tiene permisos para usar el letrero
 					if(!Banks.playerHasPermissions(p, AllBanksAction.USE_SIGN, btype)){
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						AllBanksLogger.getLogger().warning("Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a bank sign. (Deny cause: permissions)(Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").");
 						return;
 					}
 					
@@ -103,6 +106,8 @@ public class SignInteractListener implements Listener {
 							return;
 						}else if(bs == null){
 							//Nulo ???
+							//#TG-ERR-1
+							AllBanksLogger.getLogger().warning("An unknown error had happens... (bs == null). SingInteractListener [TG-ERR-1]");
 							return;
 						}
 						
@@ -110,6 +115,7 @@ public class SignInteractListener implements Listener {
 						bs.updateStepAndSwitchSign();
 					}else{
 						//Iniciar nueva sesión
+						AllBanksLogger.getLogger().info("BANK-INTERACT: Player " + p.getName() + " (" + p.getDisplayName() + ") has used a bank (type: " + btype.toString() + ") (Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").");
 						bs = BankSession.startSession(p, new BankSession(p, (Sign) b.getState(), btype, 0));
 						
 						//Bien, establecer el paso en 0 ya que si no se establece en 0 el paso actualizado sería 1.

@@ -100,6 +100,9 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		
 		translation = Util.ChatFormatUtil.replaceChatFormat(translation);
 		
+		//Especial
+		translation = translation.replace("%LOTTERY_PREFIX%", trYaml.getString("%LOTTERY_PREFIX%", ""));
+		
 		String[] split = translation.split("%BREAK%");
 		
 		if(prefix){
@@ -126,6 +129,10 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 	}
 	
 	public static void getAndSendMessage(CommandSender s, String strPath, HashMap<String, String> replaceMap, boolean prefix){
+		s.sendMessage(get(strPath, replaceMap, prefix));
+	}
+	
+	public static void getAndSendMessage(CommandSender s, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
 		s.sendMessage(get(strPath, replaceMap, prefix));
 	}
 	
