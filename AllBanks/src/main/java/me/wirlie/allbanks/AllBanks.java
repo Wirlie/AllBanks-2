@@ -41,6 +41,8 @@ import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
 import me.wirlie.allbanks.listeners.SignInteractListener;
 import me.wirlie.allbanks.listeners.VirtualChestClose;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 import me.wirlie.allbanks.runnable.BankLoanRunnable;
 import me.wirlie.allbanks.runnable.BankTimerRunnable;
 import net.milkbowl.vault.economy.Economy;
@@ -68,12 +70,12 @@ public class AllBanks extends JavaPlugin {
 		//Logger
 		AllBanksLogger.initializeLogger();
 		
-		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion(), Util.getLineNumber());
+		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion(), new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		//Version del servidor
 		verifyServerVersion();
 		
-		AllBanksLogger.info("Initializing database...", Util.getLineNumber());
+		AllBanksLogger.info("Initializing database...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		dbc = db.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
 		
 		//Instalar DB
@@ -90,26 +92,26 @@ public class AllBanks extends JavaPlugin {
 		Console.sendMessage(StringsID.ENABLING);
 		
 		//comando
-		AllBanksLogger.info("Commands: Set executor (/allbanks).", Util.getLineNumber());
+		AllBanksLogger.info("Commands: Set executor (/allbanks).", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginCommand("allbanks").setExecutor(new Commands());
-		AllBanksLogger.info("Commands: Set tab completer (/allbanks).", Util.getLineNumber());
+		AllBanksLogger.info("Commands: Set tab completer (/allbanks).", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandsTabCompleter());
 		
 		//Registrar listener
-		AllBanksLogger.info("Registering events...", Util.getLineNumber());
-		AllBanksLogger.info("SignChangeListener", Util.getLineNumber());
+		AllBanksLogger.info("Registering events...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+		AllBanksLogger.info("SignChangeListener", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
-		AllBanksLogger.info("SignInteractListener", Util.getLineNumber());
+		AllBanksLogger.info("SignInteractListener", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
-		AllBanksLogger.info("PlayerMoveListener", Util.getLineNumber());
+		AllBanksLogger.info("PlayerMoveListener", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
-		AllBanksLogger.info("SignBreakListener", Util.getLineNumber());
+		AllBanksLogger.info("SignBreakListener", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new SignBreakListener(), this);
-		AllBanksLogger.info("PlayerChatBSListener", Util.getLineNumber());
+		AllBanksLogger.info("PlayerChatBSListener", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new PlayerChatBSListener(), this);
-		AllBanksLogger.info("VirtualChestClose", Util.getLineNumber());
+		AllBanksLogger.info("VirtualChestClose", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new VirtualChestClose(), this);
-		AllBanksLogger.info("ChargeLoanOnPlayerJoin", Util.getLineNumber());
+		AllBanksLogger.info("ChargeLoanOnPlayerJoin", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Bukkit.getPluginManager().registerEvents(new ChargeLoanOnPlayerJoin(), this);
 		
 		//Runnables
@@ -120,25 +122,25 @@ public class AllBanks extends JavaPlugin {
 		new BankTimerRunnable().runTaskTimer(this, 20 * runSeconds, 20 * runSeconds);
 		
 		//Para BankLoan
-		AllBanksLogger.info("Enabling BankLoanRunnable...", Util.getLineNumber());
-		AllBanksLogger.info("Reading Config.yml -> banks.bank-loan.collect-interest-every", Util.getLineNumber());
+		AllBanksLogger.info("Enabling BankLoanRunnable...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+		AllBanksLogger.info("Reading Config.yml -> banks.bank-loan.collect-interest-every", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		int collectLoanEvery = Util.ConfigUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));
 		
 		if(collectLoanEvery == -1 || collectLoanEvery == 0){ 
 
-			AllBanksLogger.severe("Invalid configuration :", Util.getLineNumber());
+			AllBanksLogger.severe("Invalid configuration :", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			//No se puede usar el sistema cuando el tiempo es inválido.
 			getLogger().severe("Invalid configuration in Config.yml.");
 			getLogger().severe("banks.bank-loan.collect-interest-every is not valid.");
 			getLogger().severe("Please set a numeric value more than 0.");
 			getLogger().severe("BankLoan: Collect Loan System disabled...");
 			
-			AllBanksLogger.severe("Invalid configuration in Config.yml.", Util.getLineNumber());
-			AllBanksLogger.severe("banks.bank-loan.collect-interest-every is not valid.", Util.getLineNumber());
-			AllBanksLogger.severe("Please set a numeric value more than 0.", Util.getLineNumber());
-			AllBanksLogger.severe("BankLoan: Collect Loan System disabled...", Util.getLineNumber());
+			AllBanksLogger.severe("Invalid configuration in Config.yml.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+			AllBanksLogger.severe("banks.bank-loan.collect-interest-every is not valid.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+			AllBanksLogger.severe("Please set a numeric value more than 0.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+			AllBanksLogger.severe("BankLoan: Collect Loan System disabled...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 
-			AllBanksLogger.info("Aborting enabling of BankLoanRunnable...", Util.getLineNumber());
+			AllBanksLogger.info("Aborting enabling of BankLoanRunnable...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		}else{
 			
 			File bankLoanData = new File(getDataFolder() + File.separator + "BankLoanData.yml");
@@ -160,10 +162,10 @@ public class AllBanks extends JavaPlugin {
 				getLogger().info("[CollectLoanSystem] Initializing system...");
 				getLogger().info("[CollectLoanSystem] Next execution: " + collectLoanEvery + " seconds.");
 				
-				AllBanksLogger.info("BankLoanRunnable: Initializing system...", Util.getLineNumber());
-				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.", Util.getLineNumber());
+				AllBanksLogger.info("BankLoanRunnable: Initializing system...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				
-				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)", Util.getLineNumber());
+				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				
 				new BankLoanRunnable().runTaskTimer(this, collectLoanEvery * 20, collectLoanEvery * 20);
 				
@@ -180,10 +182,10 @@ public class AllBanks extends JavaPlugin {
 				getLogger().info("[CollectLoanSystem] Initializing system...");
 				getLogger().info("[CollectLoanSystem] Next execution: " + nextCollection + " seconds.");
 				
-				AllBanksLogger.info("BankLoanRunnable: Initializing system...", Util.getLineNumber());
-				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.", Util.getLineNumber());
+				AllBanksLogger.info("BankLoanRunnable: Initializing system...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				
-				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)", Util.getLineNumber());
+				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				
 				new BankLoanRunnable().runTaskTimer(this, nextCollection * 20, collectLoanEvery * 20);
 			}
@@ -193,7 +195,7 @@ public class AllBanks extends JavaPlugin {
 	@Override
 	public void onDisable(){
 		Console.sendMessage(StringsID.DISABLING);
-		AllBanksLogger.info("Disabling AllBanks...", Util.getLineNumber());
+		AllBanksLogger.info("Disabling AllBanks...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		//Cerrar todas las sesiones.
 		Collection<BankSession> sessions = BankSession.getAllActiveSessions();
@@ -202,7 +204,7 @@ public class AllBanks extends JavaPlugin {
 			bs.closeSession();
 		}
 		
-		AllBanksLogger.info("Closing database connections...", Util.getLineNumber());
+		AllBanksLogger.info("Closing database connections...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		for(Connection c : db.multipleConnections.values()){
 			try {
@@ -218,14 +220,14 @@ public class AllBanks extends JavaPlugin {
 	private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
         	Console.sendMessage(ChatColor.RED + "[Error] Ops! Vault plugin is required for AllBanks...");
-        	AllBanksLogger.severe("Vault plugin is required for AllBanks...", Util.getLineNumber());
+        	AllBanksLogger.severe("Vault plugin is required for AllBanks...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
         	return false;
         }
         
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
         	Console.sendMessage(ChatColor.RED + "[Error] Ops! An economy plugin is required for AllBanks...");
-        	AllBanksLogger.severe("An economy plugin is required for AllBanks...", Util.getLineNumber());
+        	AllBanksLogger.severe("An economy plugin is required for AllBanks...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
         	return false;
         }
         
@@ -242,12 +244,12 @@ public class AllBanks extends JavaPlugin {
 		Statement stm = null;
 		
 		if(Util.DatabaseUtil.databaseIsLocked()){
-			AllBanksLogger.severe("Database is locked! Database installation aborted.", Util.getLineNumber());
+			AllBanksLogger.severe("Database is locked! Database installation aborted.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			return;
 		}
 		
 		try{
-			AllBanksLogger.info("Try to install the database...", Util.getLineNumber());
+			AllBanksLogger.info("Try to install the database...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			stm = dbc.createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS signs (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, location TEXT NOT NULL)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, loan TEXT NOT NULL)");
@@ -256,9 +258,9 @@ public class AllBanks extends JavaPlugin {
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS banktime_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, time NUMBER)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_pending_charges (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, amount TEXT NOT NULL)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS lottery_tickets (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL)");
-			AllBanksLogger.info("Success: 0 problems found.", Util.getLineNumber());
+			AllBanksLogger.info("Success: 0 problems found.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		}catch (SQLException e){
-			AllBanksLogger.info("Ops! An SQLException has ocurred...", Util.getLineNumber());
+			AllBanksLogger.info("Ops! An SQLException has ocurred...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			Util.DatabaseUtil.checkDatabaseIsLocked(e);
 		}finally{
 			if(stm != null)
@@ -283,7 +285,7 @@ public class AllBanks extends JavaPlugin {
 	}
 	
 	public static void ensureConfigIsUpToDate(){
-		AllBanksLogger.info("Checking if Config.yml is up to date...", Util.getLineNumber());
+		AllBanksLogger.info("Checking if Config.yml is up to date...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		File cfgFile = new File(getInstance().getDataFolder() + File.separator + "Config.yml");
 		if(!cfgFile.exists()) ensureConfigExists();
@@ -292,7 +294,7 @@ public class AllBanks extends JavaPlugin {
 		String version = loadCfg.getString("cfg-version", "-1");
 		
 		if(version.equals("-1")){
-			AllBanksLogger.warning("cfg-version can not resolved... updating Config.yml", Util.getLineNumber());
+			AllBanksLogger.warning("cfg-version can not resolved... updating Config.yml", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			//No se encontró la versión, forzaremos una actualización
 			ensureConfigExists(true);
 			//Cargar de nuevo la versión
@@ -301,7 +303,7 @@ public class AllBanks extends JavaPlugin {
 			if(version.equals("-1")){
 				//Error
 				try {
-					AllBanksLogger.severe("Exception: Can't get 'cfg-version' from Config.yml.", Util.getLineNumber());
+					AllBanksLogger.severe("Exception: Can't get 'cfg-version' from Config.yml.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 					throw new Exception("Can't get 'cfg-version' from Config.yml.");
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -310,7 +312,7 @@ public class AllBanks extends JavaPlugin {
 		}else{
 			//Bien, procesar
 			if(!version.equalsIgnoreCase(getInstance().getDescription().getVersion())){
-				AllBanksLogger.info("Changes detected, updating Config.yml...", Util.getLineNumber());
+				AllBanksLogger.info("Changes detected, updating Config.yml...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				//Distintas versiones, intentar actualizar nativamente.
 				UpdateConfigWithNativeFile();
 				//Actualizar
@@ -324,51 +326,51 @@ public class AllBanks extends JavaPlugin {
 		File Config = new File(getInstance().getDataFolder() + File.separator + "Config.yml");
 		File tempConfig = new File(getInstance().getDataFolder() + File.separator + "TMP-Config.yml");
 
-		AllBanksLogger.info("Renaming Config.yml to TMP-Config.yml", Util.getLineNumber());
+		AllBanksLogger.info("Renaming Config.yml to TMP-Config.yml", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Config.renameTo(tempConfig);
 		
 		//guardar nueva configuración
-		AllBanksLogger.info("Saving native resource: Config.yml", Util.getLineNumber());
+		AllBanksLogger.info("Saving native resource: Config.yml", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		getInstance().saveResource("Config.yml", true);
 		
 		//Comenzar a comparar
-		AllBanksLogger.info("Loading: TMP-Config.yml", Util.getLineNumber());
+		AllBanksLogger.info("Loading: TMP-Config.yml", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		YamlConfiguration nativeCfg = YamlConfiguration.loadConfiguration(Config);
-		AllBanksLogger.info("Loading: Config.yml", Util.getLineNumber());
+		AllBanksLogger.info("Loading: Config.yml", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		YamlConfiguration userCfg = YamlConfiguration.loadConfiguration(tempConfig);
 		
-		AllBanksLogger.info("Searching for changes...", Util.getLineNumber());
+		AllBanksLogger.info("Searching for changes...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		for(String key : nativeCfg.getKeys(true)){
 			Object obj = userCfg.get(key, null);
 			
 			if(obj == null){
 				userCfg.set(key, nativeCfg.get(key));
-				AllBanksLogger.info("New entry: " + key, Util.getLineNumber());
+				AllBanksLogger.info("New entry: " + key, new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			}
 		}
 		
 		//Actualizar la versión
-		AllBanksLogger.info("Updating cfg-version...", Util.getLineNumber());
+		AllBanksLogger.info("Updating cfg-version...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		userCfg.set("cfg-version", getInstance().getDescription().getVersion());
 		
 		//guardar
-		AllBanksLogger.info("Saving changes...", Util.getLineNumber());
+		AllBanksLogger.info("Saving changes...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		try {
 			userCfg.save(tempConfig);
-			AllBanksLogger.info("Success!", Util.getLineNumber());
+			AllBanksLogger.info("Success!", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		} catch (IOException e) {
 			getInstance().getLogger().severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)");
 			e.printStackTrace();
-			AllBanksLogger.severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)", Util.getLineNumber());
+			AllBanksLogger.severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		}
 		
 		//eliminar configuración nativa
-		AllBanksLogger.info("Removing temporal file (Config.yml)", Util.getLineNumber());
+		AllBanksLogger.info("Removing temporal file (Config.yml)", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		Config.delete();
 		//Cambiar configuración temporal a su estado normal
-		AllBanksLogger.info("Renaming TMP-Config.yml to Config.yml (restore file)", Util.getLineNumber());
+		AllBanksLogger.info("Renaming TMP-Config.yml to Config.yml (restore file)", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		tempConfig.renameTo(Config);
-		AllBanksLogger.info("Success: 0 problems found.", Util.getLineNumber());
+		AllBanksLogger.info("Success: 0 problems found.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 	}
 	
 	public static AllBanks getInstance(){
@@ -381,7 +383,7 @@ public class AllBanks extends JavaPlugin {
 	
 	private void verifyServerVersion() {
 		
-		AllBanksLogger.info("Verifying compatibles versions...", Util.getLineNumber());
+		AllBanksLogger.info("Verifying compatibles versions...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		String rawVersion = Bukkit.getServer().getBukkitVersion();
 		//String[] version = Bukkit.getServer().getBukkitVersion().split("-");
@@ -403,10 +405,10 @@ public class AllBanks extends JavaPlugin {
 		replaceMap.put("%1%", rawVersion);
 		
 		if(compatible){
-			AllBanksLogger.info("You are using a compatible version of CraftBukkit.", Util.getLineNumber());
+			AllBanksLogger.info("You are using a compatible version of CraftBukkit.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			Console.sendMessage(StringsID.YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
 		}else{
-			AllBanksLogger.info("You are not using a compatible version of CraftBukkit.", Util.getLineNumber());
+			AllBanksLogger.info("You are not using a compatible version of CraftBukkit.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			Console.sendMessage(StringsID.YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
 		}
 		

@@ -33,12 +33,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -58,7 +58,7 @@ public class BankLoanRunnable extends BukkitRunnable {
 		int affectedAccounts = 0;
 		
 		AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Reading Database...");
-		AllBanksLogger.info("BankTimerRunnable: Executed (reading database).", Util.getLineNumber());
+		AllBanksLogger.info("BankTimerRunnable: Executed (reading database).", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		Statement stm = null;
 		ResultSet res = null;
@@ -99,7 +99,7 @@ public class BankLoanRunnable extends BukkitRunnable {
 				
 			}
 
-			AllBanksLogger.info("BankTimerRunnable: " + affectedAccounts + " accounts modified.", Util.getLineNumber());
+			AllBanksLogger.info("BankTimerRunnable: " + affectedAccounts + " accounts modified.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
 		} catch (SQLException e) {
 			DatabaseUtil.checkDatabaseIsLocked(e);

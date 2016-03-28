@@ -29,13 +29,13 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -96,7 +96,7 @@ public class SignChangeListener implements Listener {
 				e.setCancelled(true);
 				e.getBlock().breakNaturally();
 				
-				AllBanksLogger.warning("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to create a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", Util.getLineNumber());
+				AllBanksLogger.warning("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to create a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				return;
 			}
 			
@@ -111,7 +111,7 @@ public class SignChangeListener implements Listener {
 					
 					if(Banks.registerAllBanksSign(e.getBlock().getLocation(), p)){
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
-						AllBanksLogger.info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", Util.getLineNumber());
+						AllBanksLogger.info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 						
 					}else{
 						e.getBlock().breakNaturally();

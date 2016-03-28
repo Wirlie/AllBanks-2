@@ -28,16 +28,15 @@ import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
 public class Util {
-	
-	public static int getLineNumber() {
-	    return Thread.currentThread().getStackTrace()[2].getLineNumber();
-	}
 	
 	public static class DatabaseUtil{
 		
@@ -47,18 +46,18 @@ public class Util {
 			
 			e.printStackTrace();
 
-			AllBanksLogger.severe("SQLException:", Util.getLineNumber());
+			AllBanksLogger.severe("SQLException:", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			
-			AllBanksLogger.severe(e.getLocalizedMessage(), Util.getLineNumber());
+			AllBanksLogger.severe(e.getLocalizedMessage(), new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			
 			for(StackTraceElement ste : e.getStackTrace()){
-				AllBanksLogger.severe("    " + ste.toString(), Util.getLineNumber());
+				AllBanksLogger.severe("    " + ste.toString(), new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 			}
 			
 			if(e.getMessage().contains("database is locked")){
 				
-				AllBanksLogger.severe("Database is locked!! Please restart your server for unlock the database...", Util.getLineNumber());
-				AllBanksLogger.severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.", Util.getLineNumber());
+				AllBanksLogger.severe("Database is locked!! Please restart your server for unlock the database...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+				AllBanksLogger.severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 				
 				sendServerMessage();
 				databaseLocked = true;

@@ -23,12 +23,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.AllBanksLogger;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -44,7 +44,7 @@ public class BankTimerRunnable extends BukkitRunnable {
 			return;
 		}
 		
-		AllBanksLogger.info("BankTimerRunnable: Executed.", Util.getLineNumber());
+		AllBanksLogger.info("BankTimerRunnable: Executed.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 		
 		int total = 0;
 		for(Player p : Bukkit.getOnlinePlayers()){
@@ -69,7 +69,7 @@ public class BankTimerRunnable extends BukkitRunnable {
 			}
 		}
 		
-		AllBanksLogger.info("BankTimerRunnable: " + total + " entries updated.", Util.getLineNumber());
+		AllBanksLogger.info("BankTimerRunnable: " + total + " entries updated.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 	}
 
 }

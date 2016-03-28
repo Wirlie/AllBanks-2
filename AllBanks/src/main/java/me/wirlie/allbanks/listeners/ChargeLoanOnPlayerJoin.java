@@ -30,12 +30,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -91,7 +91,7 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 					
 					AllBanks.getEconomy().withdrawPlayer(e.getPlayer(), totalChargeFinal.doubleValue());
 					
-					AllBanksLogger.info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).", Util.getLineNumber());
+					AllBanksLogger.info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 					
 				}
 				

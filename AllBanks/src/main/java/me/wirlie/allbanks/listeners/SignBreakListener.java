@@ -27,7 +27,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
-import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
@@ -36,6 +35,8 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -79,7 +80,7 @@ public class SignBreakListener implements Listener {
 						//sin permisos
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						e.setCancelled(true);
-						AllBanksLogger.warning("BREAK-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to destroy a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", Util.getLineNumber());
+						AllBanksLogger.warning("BREAK-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to destroy a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 						
 					}
 					

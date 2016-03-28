@@ -27,7 +27,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Util;
-import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
@@ -35,6 +34,8 @@ import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -73,7 +74,7 @@ public class SignInteractListener implements Listener {
 							DatabaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.BANK_NOT_REGISTERED_ON_ALLBANKS, true);
-							AllBanksLogger.warning("SECURITY: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a not registered bank at location (w:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ")", Util.getLineNumber());
+							AllBanksLogger.warning("SECURITY: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a not registered bank at location (w:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ")", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 						}
 						
 						return;
@@ -92,7 +93,7 @@ public class SignInteractListener implements Listener {
 					//Comprobar si tiene permisos para usar el letrero
 					if(!Banks.playerHasPermissions(p, AllBanksAction.USE_SIGN, btype)){
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-						AllBanksLogger.warning("Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a bank sign. (Deny cause: permissions)(Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").", Util.getLineNumber());
+						AllBanksLogger.warning("Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a bank sign. (Deny cause: permissions)(Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 						return;
 					}
 					
@@ -107,7 +108,7 @@ public class SignInteractListener implements Listener {
 						}else if(bs == null){
 							//Nulo ???
 							//#TG-ERR-1
-							AllBanksLogger.warning("An unknown error had happens... (bs == null). SingInteractListener [TG-ERR-1]", Util.getLineNumber());
+							AllBanksLogger.warning("An unknown error had happens... (bs == null). SingInteractListener [TG-ERR-1]", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 							return;
 						}
 						
@@ -115,7 +116,7 @@ public class SignInteractListener implements Listener {
 						bs.updateStepAndSwitchSign();
 					}else{
 						//Iniciar nueva sesión
-						AllBanksLogger.info("BANK-INTERACT: Player " + p.getName() + " (" + p.getDisplayName() + ") has used a bank (type: " + btype.toString() + ") (Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").", Util.getLineNumber());
+						AllBanksLogger.info("BANK-INTERACT: Player " + p.getName() + " (" + p.getDisplayName() + ") has used a bank (type: " + btype.toString() + ") (Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
 						bs = BankSession.startSession(p, new BankSession(p, (Sign) b.getState(), btype, 0));
 						
 						//Bien, establecer el paso en 0 ya que si no se establece en 0 el paso actualizado sería 1.
