@@ -45,19 +45,22 @@ public class AllBanksLogger {
 		SEVERE;
 	}
 	
-	public static void info(String message, AllBanksLoggerInfo threadInfo){
-		writeMessage(message, threadInfo, AllBanksLoggerLevel.INFO);
+	public static void info(String message){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO);
 	}
 	
-	public static void warning(String message, AllBanksLoggerInfo threadInfo){
-		writeMessage(message, threadInfo, AllBanksLoggerLevel.WARNING);
+	public static void warning(String message){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.WARNING);
 	}
 	
-	public static void severe(String message, AllBanksLoggerInfo threadInfo){
-		writeMessage(message, threadInfo, AllBanksLoggerLevel.SEVERE);
+	public static void severe(String message){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.SEVERE);
 	}
 	
-	public static void writeMessage(String message, AllBanksLoggerInfo threadInfo, AllBanksLoggerLevel level){
+	public static void writeMessage(String message, StackTraceElement threadInfo, AllBanksLoggerLevel level){
 		if(message == null || threadInfo == null) return;
 		
 		Calendar calendar = Calendar.getInstance();

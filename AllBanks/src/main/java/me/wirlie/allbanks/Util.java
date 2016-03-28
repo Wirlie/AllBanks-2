@@ -29,7 +29,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.logger.AllBanksLogger;
-import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -46,18 +45,18 @@ public class Util {
 			
 			e.printStackTrace();
 
-			AllBanksLogger.severe("SQLException:", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+			AllBanksLogger.severe("SQLException:");
 			
-			AllBanksLogger.severe(e.getLocalizedMessage(), new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+			AllBanksLogger.severe(e.getLocalizedMessage());
 			
 			for(StackTraceElement ste : e.getStackTrace()){
-				AllBanksLogger.severe("    " + ste.toString(), new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+				AllBanksLogger.severe("    " + ste.toString());
 			}
 			
 			if(e.getMessage().contains("database is locked")){
 				
-				AllBanksLogger.severe("Database is locked!! Please restart your server for unlock the database...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
-				AllBanksLogger.severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+				AllBanksLogger.severe("Database is locked!! Please restart your server for unlock the database...");
+				AllBanksLogger.severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.");
 				
 				sendServerMessage();
 				databaseLocked = true;

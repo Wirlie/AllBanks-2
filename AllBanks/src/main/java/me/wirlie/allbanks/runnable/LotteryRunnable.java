@@ -21,7 +21,6 @@ package me.wirlie.allbanks.runnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.logger.AllBanksLogger;
-import me.wirlie.allbanks.logger.AllBanksLoggerInfo;
 
 /**
  * @author Wirlie
@@ -37,7 +36,7 @@ public class LotteryRunnable {
 		
 		runEvery = getLotteryTime();
 		
-		AllBanksLogger.info("[Lottery] Initializing lottery...", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+		AllBanksLogger.info("[Lottery] Initializing lottery...");
 		
 		if(runEvery <= 0){
 			//inválido
@@ -45,15 +44,15 @@ public class LotteryRunnable {
 			AllBanks.getInstance().getLogger().severe("[Lottery] Invalid configuration value: " + runEvery);
 			AllBanks.getInstance().getLogger().severe("[Lottery] on: lottery.get-winer-every");
 			
-			AllBanksLogger.severe("[Lottery] Can not start runnable!", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
-			AllBanksLogger.severe("[Lottery] Invalid configuration value: " + runEvery, new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
-			AllBanksLogger.severe("[Lottery] on: lottery.get-winer-every", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+			AllBanksLogger.severe("[Lottery] Can not start runnable!");
+			AllBanksLogger.severe("[Lottery] Invalid configuration value: " + runEvery);
+			AllBanksLogger.severe("[Lottery] on: lottery.get-winer-every");
 			
 			initialized = true;
 			return;
 		}
 		
-		AllBanksLogger.info("[Lottery] Initialized!", new AllBanksLoggerInfo(Thread.currentThread().getStackTrace()[1]));
+		AllBanksLogger.info("[Lottery] Initialized!");
 		
 		initialized = true;
 	}
