@@ -79,7 +79,7 @@ public class BankAccount {
 			assert(bs != null);
 			
 			if(!cache.containsKey(bs.getPlayer().getUniqueId())){
-				AllBanksLogger.getLogger().info("BankAccount : Cache : Reading database, try to get the bank account for " + bs.getPlayer().getName());
+				AllBanksLogger.info("BankAccount : Cache : Reading database, try to get the bank account for " + bs.getPlayer().getName(), Util.getLineNumber());
 				cache.put(bs.getPlayer().getUniqueId(), getAccountFromDataBase(bs.getPlayer()));
 			}
 			
@@ -120,7 +120,7 @@ public class BankAccount {
 				return ba;
 				
 			}catch(SQLException e){
-				AllBanksLogger.getLogger().info("failed! SQLException:");
+				AllBanksLogger.info("failed! SQLException:", Util.getLineNumber());
 				DatabaseUtil.checkDatabaseIsLocked(e);
 			}finally{
 				try {

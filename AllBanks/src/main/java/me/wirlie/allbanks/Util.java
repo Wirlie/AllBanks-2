@@ -35,6 +35,10 @@ import org.bukkit.entity.Player;
  */
 public class Util {
 	
+	public static int getLineNumber() {
+	    return Thread.currentThread().getStackTrace()[2].getLineNumber();
+	}
+	
 	public static class DatabaseUtil{
 		
 		static boolean  databaseLocked = false;
@@ -43,18 +47,18 @@ public class Util {
 			
 			e.printStackTrace();
 
-			AllBanksLogger.getLogger().severe("SQLException:");
+			AllBanksLogger.severe("SQLException:", Util.getLineNumber());
 			
-			AllBanksLogger.getLogger().severe(e.getLocalizedMessage());
+			AllBanksLogger.severe(e.getLocalizedMessage(), Util.getLineNumber());
 			
 			for(StackTraceElement ste : e.getStackTrace()){
-				AllBanksLogger.getLogger().severe("    " + ste.toString());
+				AllBanksLogger.severe("    " + ste.toString(), Util.getLineNumber());
 			}
 			
 			if(e.getMessage().contains("database is locked")){
 				
-				AllBanksLogger.getLogger().severe("Database is locked!! Please restart your server for unlock the database...");
-				AllBanksLogger.getLogger().severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.");
+				AllBanksLogger.severe("Database is locked!! Please restart your server for unlock the database...", Util.getLineNumber());
+				AllBanksLogger.severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.", Util.getLineNumber());
 				
 				sendServerMessage();
 				databaseLocked = true;

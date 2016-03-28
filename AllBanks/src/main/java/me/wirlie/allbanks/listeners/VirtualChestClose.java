@@ -31,6 +31,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.Util;
 
 /**
  * @author Wirlie
@@ -82,7 +83,7 @@ public class VirtualChestClose implements Listener{
 				
 			}
 			
-			AllBanksLogger.getLogger().info("BANK-CHEST: (Event: InventoryClick) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.");
+			AllBanksLogger.info("BANK-CHEST: (Event: InventoryClick) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.", Util.getLineNumber());
 			Banks.setVirtualChestContents(p.getName(), chestNumber, armMap);
 		}
 	}
@@ -112,7 +113,7 @@ public class VirtualChestClose implements Listener{
 			
 			Player p = (Player) e.getPlayer();
 			
-			AllBanksLogger.getLogger().info("BANK-CHEST: (Event: InventoryClose) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.");
+			AllBanksLogger.info("BANK-CHEST: (Event: InventoryClose) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.", Util.getLineNumber());
 			Banks.setVirtualChestContents(e.getPlayer().getName(), chestNumber, armMap);
 		}
 	}

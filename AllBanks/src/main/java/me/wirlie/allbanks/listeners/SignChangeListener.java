@@ -33,6 +33,7 @@ import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
 
@@ -95,7 +96,7 @@ public class SignChangeListener implements Listener {
 				e.setCancelled(true);
 				e.getBlock().breakNaturally();
 				
-				AllBanksLogger.getLogger().warning("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to create a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
+				AllBanksLogger.warning("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to create a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", Util.getLineNumber());
 				return;
 			}
 			
@@ -110,7 +111,7 @@ public class SignChangeListener implements Listener {
 					
 					if(Banks.registerAllBanksSign(e.getBlock().getLocation(), p)){
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
-						AllBanksLogger.getLogger().info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
+						AllBanksLogger.info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").", Util.getLineNumber());
 						
 					}else{
 						e.getBlock().breakNaturally();

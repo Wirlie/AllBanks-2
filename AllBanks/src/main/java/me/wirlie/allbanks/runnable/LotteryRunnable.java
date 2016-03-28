@@ -36,7 +36,7 @@ public class LotteryRunnable {
 		
 		runEvery = getLotteryTime();
 		
-		AllBanksLogger.getLogger().info("[Lottery] Initializing lottery...");
+		AllBanksLogger.info("[Lottery] Initializing lottery...", Util.getLineNumber());
 		
 		if(runEvery <= 0){
 			//inválido
@@ -44,15 +44,15 @@ public class LotteryRunnable {
 			AllBanks.getInstance().getLogger().severe("[Lottery] Invalid configuration value: " + runEvery);
 			AllBanks.getInstance().getLogger().severe("[Lottery] on: lottery.get-winer-every");
 			
-			AllBanksLogger.getLogger().severe("[Lottery] Can not start runnable!");
-			AllBanksLogger.getLogger().severe("[Lottery] Invalid configuration value: " + runEvery);
-			AllBanksLogger.getLogger().severe("[Lottery] on: lottery.get-winer-every");
+			AllBanksLogger.severe("[Lottery] Can not start runnable!", Util.getLineNumber());
+			AllBanksLogger.severe("[Lottery] Invalid configuration value: " + runEvery, Util.getLineNumber());
+			AllBanksLogger.severe("[Lottery] on: lottery.get-winer-every", Util.getLineNumber());
 			
 			initialized = true;
 			return;
 		}
 		
-		AllBanksLogger.getLogger().info("[Lottery] Initialized!");
+		AllBanksLogger.info("[Lottery] Initialized!", Util.getLineNumber());
 		
 		initialized = true;
 	}

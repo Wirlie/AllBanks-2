@@ -33,6 +33,7 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.AllBanksLogger;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 
@@ -90,7 +91,7 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 					
 					AllBanks.getEconomy().withdrawPlayer(e.getPlayer(), totalChargeFinal.doubleValue());
 					
-					AllBanksLogger.getLogger().info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).");
+					AllBanksLogger.info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).", Util.getLineNumber());
 					
 				}
 				

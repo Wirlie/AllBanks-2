@@ -16,7 +16,7 @@
 ###########################################################################################################################
 
 language-version: "1.0"
-%LOTTERY_PREFIX%: "&3Lotería &6&l>>&r "
+LOTTERY_PREFIX: "&3Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
 2: "Deshabilitando plugin.%BREAK%Guardando Base de Datos local"

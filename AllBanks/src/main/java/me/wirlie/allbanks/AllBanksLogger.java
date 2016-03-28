@@ -20,9 +20,14 @@ package me.wirlie.allbanks;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
@@ -35,17 +40,46 @@ public class AllBanksLogger {
 	
 	private static boolean initializedLogger = false;
 	
-	public static Logger getLogger(){
+	private static Logger getLogger(){
 		initializeLogger();
 		
-		return Logger.getLogger("AllBanks");  
+		return Logger.getLogger("AllBanksInternal");  
+	}
+	
+	public static void info(String message, int lineNumber){
+		getLogger().info(lineNumber + ">>>" + message);
+	}
+	
+	public static void warning(String message, int lineNumber){
+		getLogger().warning(lineNumber + ">>>" + message);
+	}
+	
+	public static void severe(String message, int lineNumber){
+		getLogger().severe(lineNumber + ">>>" + message);
 	}
 	
 	protected static void initializeLogger(){
 		if(initializedLogger) return;
 		
-		Logger logger = Logger.getLogger("AllBanks");  
-	    FileHandler fh;  
+		Logger logger = Logger.getLogger("AllBanksInternal");
+		logger.setUseParentHandlers(false);
+		
+		for(Handler h : logger.getHandlers()){
+			if(h instanceof FileHandler)
+				logger.removeHandler(h);
+		}
+		
+		//limpiar archivos .lck si es que hay
+		File dirLog = new File(AllBanks.getInstance().getDataFolder() + File.separator + "logs");
+    	
+		for(File f : dirLog.listFiles()){
+			if(f.getName().endsWith("lck")){
+				//añadir a la lista para remover al cerrar el servidor
+				f.delete();
+			}
+		}
+		
+	    FileHandler fh = null;  
 	    
 	    Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(new Date());
@@ -53,10 +87,46 @@ public class AllBanksLogger {
 	    try {  
 
 	        // This block configure the logger with handler and formatter  
-	        fh = new FileHandler(AllBanks.getInstance() + File.separator + "logs" + File.separator + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"+ calendar.get(Calendar.YEAR) + "-" + calendar.getTimeInMillis() + ".log");  
-	        logger.addHandler(fh);
-	        SimpleFormatter formatter = new SimpleFormatter();  
-	        fh.setFormatter(formatter);  
+	    	
+	    	if(!dirLog.exists()){
+	    		dirLog.mkdirs();
+	    	}
+	    	
+	    	fh = new FileHandler(AllBanks.getInstance().getDataFolder() + File.separator + "logs" + File.separator + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"+ calendar.get(Calendar.YEAR) + "-" + calendar.getTimeInMillis() + ".log");  
+
+	    	fh.setFormatter(new SimpleFormatter());
+	    	
+	    	logger.addHandler(fh);
+	        
+	    	fh.setFormatter(new Formatter() {
+	            @Override
+	            public String format(LogRecord record) {
+	                SimpleDateFormat logTime = new SimpleDateFormat("HH:mm:ss");
+	                Calendar cal = new GregorianCalendar();
+	                cal.setTimeInMillis(record.getMillis());
+	                
+	                String msg = record.getMessage();
+	                String lineNumber = "";
+	                
+	                String[] split = msg.split(">>>");
+	                if(split.length == 2){
+	                	msg = split[1];
+	                	lineNumber = " : Line " + split[0];
+	                }
+	                
+	                return "[" + logTime.format(cal.getTime())
+	                		+ " " + record.getLevel() + "] "
+	                        + record.getMessage()
+	                        + " (source: "
+	                        + record.getSourceClassName().substring(
+	                                record.getSourceClassName().lastIndexOf(".")+1,
+	                                record.getSourceClassName().length())
+	                        
+	                        + "."
+	                        + record.getSourceMethodName()
+	                        + "()" + lineNumber + ")" + "\n";
+	            }
+	        });  
 
 	        // the following statement is used to log any messages 
 	        String pm_am_prefix = "";

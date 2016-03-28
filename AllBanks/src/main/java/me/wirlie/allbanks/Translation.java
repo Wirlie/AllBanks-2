@@ -101,7 +101,7 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		translation = Util.ChatFormatUtil.replaceChatFormat(translation);
 		
 		//Especial
-		translation = translation.replace("%LOTTERY_PREFIX%", trYaml.getString("%LOTTERY_PREFIX%", ""));
+		translation = translation.replace("%LOTTERY_PREFIX%", trYaml.getString("LOTTERY_PREFIX", ""));
 		
 		String[] split = translation.split("%BREAK%");
 		
