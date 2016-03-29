@@ -42,6 +42,10 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  *
  */
 public class ChargeLoanOnPlayerJoin implements Listener {
+	
+	public ChargeLoanOnPlayerJoin(){
+		AllBanksLogger.info("ChargeLoanOnPlayerJoin");
+	}
 
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e){

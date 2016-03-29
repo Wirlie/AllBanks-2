@@ -98,19 +98,12 @@ public class AllBanks extends JavaPlugin {
 		
 		//Registrar listener
 		AllBanksLogger.info("Registering events...");
-		AllBanksLogger.info("SignChangeListener");
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
-		AllBanksLogger.info("SignInteractListener");
 		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
-		AllBanksLogger.info("PlayerMoveListener");
 		Bukkit.getPluginManager().registerEvents(new PlayerMoveListener(), this);
-		AllBanksLogger.info("SignBreakListener");
 		Bukkit.getPluginManager().registerEvents(new SignBreakListener(), this);
-		AllBanksLogger.info("PlayerChatBSListener");
 		Bukkit.getPluginManager().registerEvents(new PlayerChatBSListener(), this);
-		AllBanksLogger.info("VirtualChestClose");
 		Bukkit.getPluginManager().registerEvents(new VirtualChestClose(), this);
-		AllBanksLogger.info("ChargeLoanOnPlayerJoin");
 		Bukkit.getPluginManager().registerEvents(new ChargeLoanOnPlayerJoin(), this);
 		
 		//Runnables
@@ -158,11 +151,8 @@ public class AllBanks extends JavaPlugin {
 			long nextCollection = collectLoanEvery - ((currentTime - lastExec) / 1000);
 			
 			if(lastExec == 0){
-				getLogger().info("[CollectLoanSystem] Initializing system...");
-				getLogger().info("[CollectLoanSystem] Next execution: " + collectLoanEvery + " seconds.");
-				
-				AllBanksLogger.info("BankLoanRunnable: Initializing system...");
-				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.");
+				AllBanksLogger.info("BankLoanRunnable: Initializing system...", true);
+				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.", true);
 				
 				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)");
 				
@@ -178,11 +168,8 @@ public class AllBanks extends JavaPlugin {
 				}
 			}else{
 				if(nextCollection < 10) nextCollection = 10;
-				getLogger().info("[CollectLoanSystem] Initializing system...");
-				getLogger().info("[CollectLoanSystem] Next execution: " + nextCollection + " seconds.");
-				
-				AllBanksLogger.info("BankLoanRunnable: Initializing system...");
-				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.");
+				AllBanksLogger.info("BankLoanRunnable: Initializing system...", true);
+				AllBanksLogger.info("BankLoanRunnable: Next execution: " + nextCollection + " seconds.", true);
 				
 				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)");
 				

@@ -36,6 +36,7 @@ import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * @author Wirlie
@@ -44,6 +45,10 @@ import me.wirlie.allbanks.data.BankSession;
  */
 public class PlayerChatBSListener implements Listener {
 
+	public PlayerChatBSListener(){
+		AllBanksLogger.info("PlayerChatBSListener");
+	}
+	
 	@EventHandler
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		Player p = e.getPlayer();

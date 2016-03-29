@@ -43,6 +43,10 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  */
 public class SignInteractListener implements Listener {
 	
+	public SignInteractListener(){
+		AllBanksLogger.info("SignInteractListener");
+	}
+	
 	@EventHandler
 	public void onPlayerInteractWithAllBanksSign(PlayerInteractEvent e){
 		

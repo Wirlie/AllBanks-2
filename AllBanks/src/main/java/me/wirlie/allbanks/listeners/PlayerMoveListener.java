@@ -25,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
 
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * @author Wirlie
@@ -32,6 +33,10 @@ import me.wirlie.allbanks.data.BankSession;
  *
  */
 public class PlayerMoveListener implements Listener {
+	
+	public PlayerMoveListener(){
+		AllBanksLogger.info("PlayerMoveListener");
+	}
 	
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e){

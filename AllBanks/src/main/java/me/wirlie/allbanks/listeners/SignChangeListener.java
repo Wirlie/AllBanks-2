@@ -42,6 +42,10 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  *
  */
 public class SignChangeListener implements Listener {
+	
+	public SignChangeListener(){
+		AllBanksLogger.info("SignChangeListener");
+	}
 
 	@EventHandler
 	public void onSignChange(final SignChangeEvent e){

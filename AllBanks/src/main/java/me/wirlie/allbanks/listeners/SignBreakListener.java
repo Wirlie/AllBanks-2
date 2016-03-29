@@ -44,6 +44,10 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  */
 public class SignBreakListener implements Listener {
 
+	public SignBreakListener(){
+		AllBanksLogger.info("SignBreakListener");
+	}
+	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerBreakBank(BlockBreakEvent e){
 		if(e.getBlock().getType().equals(Material.WALL_SIGN)){

@@ -47,27 +47,57 @@ public class AllBanksLogger {
 	
 	public static void info(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO);
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO, false);
+	}
+	
+	public static void info(String message, boolean showOnMainConsole){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO, showOnMainConsole);
+	}
+	
+	public static void warning(String message, boolean showOnMainConsole){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.WARNING, showOnMainConsole);
 	}
 	
 	public static void warning(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.WARNING);
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.WARNING, false);
+	}
+	
+	public static void severe(String message, boolean showOnMainConsole){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.SEVERE, showOnMainConsole);
 	}
 	
 	public static void severe(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
-		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.SEVERE);
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.SEVERE, false);
 	}
 	
-	public static void writeMessage(String message, StackTraceElement threadInfo, AllBanksLoggerLevel level){
+	public static void writeMessage(String message, StackTraceElement threadInfo, AllBanksLoggerLevel level, boolean showOnMainConsole){
 		if(message == null || threadInfo == null) return;
+		
+		if(showOnMainConsole){
+			switch(level){
+			case INFO:
+				AllBanks.getInstance().getLogger().info(message);
+				break;
+			case SEVERE:
+				AllBanks.getInstance().getLogger().severe(message);
+				break;
+			case WARNING:
+				AllBanks.getInstance().getLogger().warning(message);
+				break;
+			
+			}
+		}
 		
 		Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(new Date());
 	    
-		String prefix = "[" + level.toString() + " " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]";
-		String subfix = "(FileSource: " + threadInfo.getClassName() + "." + threadInfo.getMethodName() + "():" + threadInfo.getLineNumber() + ")";
+		String prefix = "[" + level.toString() + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]";
+		String subfix = "(FileSource: " + threadInfo.getClassName().substring(threadInfo.getClassName().lastIndexOf(".") + 1) + "." + threadInfo.getMethodName() + "():" + threadInfo.getLineNumber() + ")";
 		String writeMessage = prefix + " " + message + " " + subfix;
 		
 		try{

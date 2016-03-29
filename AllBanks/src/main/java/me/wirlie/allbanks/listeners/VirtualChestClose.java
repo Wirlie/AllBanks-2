@@ -39,6 +39,10 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  */
 public class VirtualChestClose implements Listener{
 	
+	public VirtualChestClose(){
+		AllBanksLogger.info("VirtualChestClose");
+	}
+	
 	@EventHandler
 	public void onVirtualChestInteractt(InventoryClickEvent e){
 		final Inventory inv = e.getInventory();
