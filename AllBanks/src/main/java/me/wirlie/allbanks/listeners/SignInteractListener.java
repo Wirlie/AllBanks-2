@@ -105,6 +105,9 @@ public class SignInteractListener implements Listener {
 						//¿Ya está usando otro banco?
 						bs = BankSession.getSession(p);
 						if(bs != null && !bs.getSign().equals(s)){
+							//Aunque esté intentando usar otro banco, esto demuestra que no está ausente.
+							bs.updateLastUse();
+							
 							//Esta intentando usar otro banco.
 							Translation.getAndSendMessage(p, StringsID.ALREADY_USING_ANOTHER_BANK, true);
 							return;
@@ -114,6 +117,9 @@ public class SignInteractListener implements Listener {
 							AllBanksLogger.warning("An unknown error had happens... (bs == null). SingInteractListener [TG-ERR-1]");
 							return;
 						}
+						
+						//Actualizar ultimo uso, para evitar un cierre automático por falta de actividad
+						bs.updateLastUse();
 						
 						//Bien, cambiar paso
 						bs.updateStepAndSwitchSign();

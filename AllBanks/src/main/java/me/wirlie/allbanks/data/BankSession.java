@@ -19,6 +19,7 @@
 package me.wirlie.allbanks.data;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.UUID;
 
@@ -26,7 +27,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
@@ -46,6 +49,23 @@ public class BankSession {
 	/*
 	 * Funciones para las sesiones activas. (activeSessions) 
 	 */
+	
+	public static int expireInactiveSessionBeforeSeconds = 120;
+	
+	static{
+		//Auto ejecutar un runnable que cheque las sesiones expiradas.
+		new BukkitRunnable(){
+
+			public void run() {
+				for(BankSession bs : activeSessions.values()){
+					if(bs.sessionExpired()){
+						bs.closeSession();
+					}
+				}
+			}
+			
+		}.runTaskTimer(AllBanks.getInstance(), 20, 20);
+	}
 	
 	/**
 	 * Este HashMap contiene las sesiones activas en una especie de "caché".
@@ -201,6 +221,9 @@ public class BankSession {
 	/** Letrero con el cual se está trabajando en esta sesión. */
 	Sign sign;
 	
+	/** Último uso de esta sesión, formato Time **/
+	long lastUse = new Date().getTime();
+	
 	/**
 	 * Inicializar una nueva instancia de {@link BankSession}
 	 * @param player - Jugador.
@@ -290,5 +313,20 @@ public class BankSession {
 	
 	public void reloadSign(){
 		Banks.switchSignToStep(btype, sign, step, false);
+	}
+	
+	public void updateLastUse(){
+		this.lastUse = new Date().getTime();
+	}
+	
+	public boolean sessionExpired(){
+		long currentTime = new Date().getTime();
+		int diferenceSeconds = (int) ((currentTime - lastUse) / 1000);
+		
+		if(diferenceSeconds >= expireInactiveSessionBeforeSeconds){
+			return true;
+		}
+		
+		return false;
 	}
 }

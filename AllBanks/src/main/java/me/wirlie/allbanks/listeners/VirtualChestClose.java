@@ -30,6 +30,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
@@ -50,6 +51,12 @@ public class VirtualChestClose implements Listener{
 		if(inv.getName().startsWith("ab:virtualchest:")){
 			
 			Player p = (Player) e.getWhoClicked();
+			
+			BankSession bs = BankSession.getSession(p);
+			if(bs != null){
+				//Actualizar ultimo uso, para evitar un cierre automático por falta de actividad
+				bs.updateLastUse();
+			}
 			
 			if(!e.getAction().equals(InventoryAction.PLACE_ALL) && !e.getAction().equals(InventoryAction.PLACE_ONE)){
 				/* Las acciones que no pertenezcan a Place (colocar objeto) no pueden ser procesadas en esta
@@ -118,6 +125,12 @@ public class VirtualChestClose implements Listener{
 			
 			AllBanksLogger.info("BANK-CHEST: (Event: InventoryClose) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.");
 			Banks.setVirtualChestContents(e.getPlayer().getName(), chestNumber, armMap);
+			
+			BankSession bs = BankSession.getSession(p);
+			if(bs != null){
+				//Actualizar ultimo uso, para evitar un cierre automático por falta de actividad
+				bs.updateLastUse();
+			}
 		}
 	}
 	

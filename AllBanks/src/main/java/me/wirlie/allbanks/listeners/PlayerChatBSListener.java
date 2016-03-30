@@ -57,6 +57,9 @@ public class PlayerChatBSListener implements Listener {
 		
 		if(bs != null){
 			//Ok, el jugador se encuentra en una sesión del banco.
+			
+			//Actualizar ultimo uso, para evitar un cierre automático por falta de actividad
+			bs.updateLastUse();
 
 			BankAccount ba = BankAccount.Cache.get(p.getUniqueId());
 			
