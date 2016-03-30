@@ -80,6 +80,10 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 				totalCharge = currentPlayerBalance.subtract(minPlayerBalance);
 			}
 			
+			if(totalCharge.intValueExact() == 0){
+				return;
+			}
+			
 			final BigDecimal totalChargeFinal = totalCharge;
 			
 			new BukkitRunnable(){

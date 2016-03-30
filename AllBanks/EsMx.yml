@@ -16,7 +16,7 @@
 ###########################################################################################################################
 
 language-version: "1.0"
-LOTTERY_PREFIX: "&3Lotería &6&l>>&r "
+LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
 2: "Deshabilitando plugin.%BREAK%Guardando Base de Datos local"
@@ -73,3 +73,11 @@ LOTTERY_PREFIX: "&3Lotería &6&l>>&r "
 53: "&c%1% no es un número válido."
 54: "%LOTTERY_PREFIX%&cNo puedes comprar %1% boleto(s).%BREAK%%LOTTERY_PREFIX%Sólo puedes comprar %2% boleto(s) más."
 55: "%LOTTERY_PREFIX%&aCompraste &f%1% &aboletos para la lotería."
+56: "&cAún no hay estadísticas suficientes, inténtalo más tarde."
+57: "&5 %BREAK%%LOTTERY_PREFIX% %BREAK%  &bGanadores totales: &f%1% %BREAK%  &bTickets totales: &f%2% %BREAK%  &bÚltimo ganador: &e%3% %BREAK%&2Próxima lotería: %BREAK%  &bTiempo restante: &f%4% segundos %BREAK%  &bParticipantes: &f%5% %BREAK%  &bDinero total: &f%6% %BREAK%&2Precios: %BREAK%  &bCosto de ticket: &f%7%"
+58: "&eLa lotería ha sido habilitada."
+59: "&eLa lotería ha sido deshabilitada."
+60: "%LOTTERY_PREFIX%&b&l¡&e&l%1% &b&lha ganado la lotería!"
+61: "&a¡Haz ganado la lotería! AllBanks te ha pagado &f%1%&a."
+62: "&cEste comando sólo puede ser usado por un jugador."
+63: "&b&lLa lotería fue forzada por un administrador."

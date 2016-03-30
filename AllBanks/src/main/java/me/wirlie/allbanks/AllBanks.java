@@ -44,6 +44,7 @@ import me.wirlie.allbanks.listeners.VirtualChestClose;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.runnable.BankLoanRunnable;
 import me.wirlie.allbanks.runnable.BankTimerRunnable;
+import me.wirlie.allbanks.runnable.LotteryRunnable;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -175,6 +176,15 @@ public class AllBanks extends JavaPlugin {
 				
 				new BankLoanRunnable().runTaskTimer(this, nextCollection * 20, collectLoanEvery * 20);
 			}
+		
+			//BankLottery
+			LotteryRunnable.initializeLottery();
+			try {
+				LotteryRunnable.startRunnable();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 	}
 	
@@ -243,7 +253,6 @@ public class AllBanks extends JavaPlugin {
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankxp_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, xp NUMBER)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS banktime_accounts (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, time NUMBER)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS bankloan_pending_charges (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL, amount TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS lottery_tickets (id INTEGER PRIMARY KEY AUTOINCREMENT, owner TEXT NOT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
 			AllBanksLogger.info("Ops! An SQLException has ocurred...");

@@ -33,6 +33,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -145,7 +146,6 @@ public class Banks {
 				break;
 			}
 			
-			//TODO Cierto, faltan los permisos para cuando el banco se usa.
 		case USE_SIGN:
 			switch(btype){
 			case ATM:
@@ -562,7 +562,10 @@ public class Banks {
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(virtualChestFile);
 		HashMap<Integer, ItemStack> returnList = new HashMap<Integer, ItemStack>();
 		
-		for(String key : yaml.getConfigurationSection(String.valueOf(virtualChest)).getKeys(false)){
+		ConfigurationSection cfgSection = yaml.getConfigurationSection(String.valueOf(virtualChest));
+		if(cfgSection == null) return new HashMap<Integer, ItemStack>();
+		
+		for(String key : cfgSection.getKeys(false)){
 			ItemStack getItemStack = yaml.getItemStack(String.valueOf(virtualChest) + "." + key, null);
 			if(getItemStack != null){
 				returnList.put(Integer.parseInt(key), getItemStack);

@@ -42,7 +42,8 @@ public class AllBanksLogger {
 	public enum AllBanksLoggerLevel{
 		INFO,
 		WARNING,
-		SEVERE;
+		SEVERE,
+		DEBUG;
 	}
 	
 	public static void info(String message){
@@ -53,6 +54,16 @@ public class AllBanksLogger {
 	public static void info(String message, boolean showOnMainConsole){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO, showOnMainConsole);
+	}
+	
+	public static void debug(String message){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.DEBUG, false);
+	}
+	
+	public static void debug(String message, boolean showOnMainConsole){
+		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
+		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.DEBUG, showOnMainConsole);
 	}
 	
 	public static void warning(String message, boolean showOnMainConsole){
@@ -89,6 +100,9 @@ public class AllBanksLogger {
 			case WARNING:
 				AllBanks.getInstance().getLogger().warning(message);
 				break;
+			case DEBUG:
+				AllBanks.getInstance().getLogger().info(message);
+				break;
 			
 			}
 		}
@@ -96,7 +110,16 @@ public class AllBanksLogger {
 		Calendar calendar = Calendar.getInstance();
 	    calendar.setTime(new Date());
 	    
-		String prefix = "[" + level.toString() + " " + calendar.get(Calendar.HOUR_OF_DAY) + ":" + calendar.get(Calendar.MINUTE) + ":" + calendar.get(Calendar.SECOND) + "]";
+	    String hours = String.valueOf(calendar.get(Calendar.HOUR_OF_DAY));
+	    if(calendar.get(Calendar.HOUR_OF_DAY) < 10) hours = "0" + hours;
+
+	    String minutes = String.valueOf(calendar.get(Calendar.MINUTE));
+	    if(calendar.get(Calendar.MINUTE) < 10) minutes = "0" + minutes;
+	    
+	    String seconds = String.valueOf(calendar.get(Calendar.SECOND));
+	    if(calendar.get(Calendar.SECOND) < 10) seconds = "0" + seconds;
+	    
+		String prefix = "[" + level.toString() + " " + hours + ":" + minutes + ":" + seconds + "]";
 		String subfix = "(FileSource: " + threadInfo.getClassName().substring(threadInfo.getClassName().lastIndexOf(".") + 1) + "." + threadInfo.getMethodName() + "():" + threadInfo.getLineNumber() + ")";
 		String writeMessage = prefix + " " + message + " " + subfix;
 		

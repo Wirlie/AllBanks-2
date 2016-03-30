@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -74,7 +75,7 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		}
 	}
 	
-	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix){
+	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
 		File trFile = ensureLanguageFileExists(getLangByConfig());
 		YamlConfiguration trYaml = YamlConfiguration.loadConfiguration(trFile);
 		String translation = trYaml.getString(strPath, null);
@@ -101,7 +102,11 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		translation = Util.ChatFormatUtil.replaceChatFormat(translation);
 		
 		//Especial
-		translation = translation.replace("%LOTTERY_PREFIX%", trYaml.getString("LOTTERY_PREFIX", ""));
+		translation = translation.replace("%LOTTERY_PREFIX%", Util.ChatFormatUtil.replaceChatFormat(trYaml.getString("LOTTERY_PREFIX", "")));
+		
+		if(commandSender){
+			translation = Util.ChatFormatUtil.supressChatFormat(translation);
+		}
 		
 		String[] split = translation.split("%BREAK%");
 		
@@ -116,24 +121,44 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		return split;
 	}
 	
+	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
+		return get(strPath.getPath(), replaceMap, prefix, commandSender);
+	}
+	
 	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
-		return get(strPath.getPath(), replaceMap, prefix);
+		return get(strPath.getPath(), replaceMap, prefix, false);
+	}
+	
+	public static String[] get(StringsID strPath, boolean prefix, boolean commandSender){
+		return get(strPath.getPath(), new HashMap<String, String>(), prefix, commandSender);
 	}
 	
 	public static String[] get(StringsID strPath, boolean prefix){
-		return get(strPath.getPath(), new HashMap<String, String>(), prefix);
+		return get(strPath.getPath(), new HashMap<String, String>(), prefix, false);
 	}
 	
 	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix){
-		p.sendMessage(get(strPath, replaceMap, prefix));
+		p.sendMessage(get(strPath, replaceMap, prefix, false));
+	}
+	
+	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
+		p.sendMessage(get(strPath, replaceMap, prefix, commandSender));
 	}
 	
 	public static void getAndSendMessage(CommandSender s, String strPath, HashMap<String, String> replaceMap, boolean prefix){
-		s.sendMessage(get(strPath, replaceMap, prefix));
+		if(s instanceof ConsoleCommandSender){
+			s.sendMessage(get(strPath, replaceMap, prefix, true));
+		}else{
+			s.sendMessage(get(strPath, replaceMap, prefix, false));
+		}
 	}
 	
 	public static void getAndSendMessage(CommandSender s, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
-		s.sendMessage(get(strPath, replaceMap, prefix));
+		if(s instanceof ConsoleCommandSender){
+			s.sendMessage(get(strPath, replaceMap, prefix, true));
+		}else{
+			s.sendMessage(get(strPath, replaceMap, prefix, false));
+		}
 	}
 	
 	public static void getAndSendMessage(Player p, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){

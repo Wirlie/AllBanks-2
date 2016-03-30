@@ -5,6 +5,7 @@ pl:
   check-for-updates: true
   auto-update: false
 lottery:
+  enable: true
   ticket-cost: 50
   get-winer-every: "0 days, 24 hours, 0 minutes, 0 seconds"
   max-tickets-per-player: 5

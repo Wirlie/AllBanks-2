@@ -81,7 +81,15 @@ public enum StringsID {
 	SQL_EXCEPTION_PROBLEM(52),
 	NO_VALID_NUMBER(53),
 	LOTTERY_CAN_NOT_BUY_MORE_TICKETS(54),
-	LOTTERY_BUY_TICKETS_SUCCESS(55),
+	LOTTERY_BUY_TICKETS_SUCCESS(55), 
+	LOTTERY_CHECK_ERROR_NO_LOTTERY_FILE(56),
+	LOTTER_CHECK_INFO(57),
+	LOTTERY_COMMAND_ENABLE(58),
+	LOTTERY_COMMAND_DISABLE(59),
+	LOTTERY_BROADCAST_WINNER(60),
+	LOTTERY_YOU_WON_THE_LOTTERY(61),
+	COMMAND_ONLY_FOR_PLAYER(62),
+	LOTTERY_BROADCAST_FORCE_BY_ADMIN(63),
 	
 	;
 	
@@ -99,14 +107,14 @@ public enum StringsID {
 	
 	@Override
 	public String toString(){
-		return Translation.get(getPath(), new HashMap<String, String>(), true)[0];
+		return Translation.get(getPath(), new HashMap<String, String>(), true, false)[0];
 	}
 	
 	public String toString(boolean prefix){
-		return Translation.get(getPath(), new HashMap<String, String>(), prefix)[0];
+		return Translation.get(getPath(), new HashMap<String, String>(), prefix, false)[0];
 	}
 	
 	public String toString(HashMap<String, String> replaceMap, boolean prefix){
-		return Translation.get(getPath(), replaceMap, prefix)[0];
+		return Translation.get(getPath(), replaceMap, prefix, false)[0];
 	}
 }
