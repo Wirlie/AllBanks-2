@@ -60,7 +60,7 @@ public class SignBreakListener implements Listener {
 				if(Banks.signIsRegistered(s.getLocation())){
 					//Bien, se trata de un banco registrado
 					
-					BankType btype = BankType.getByString(Util.ChatFormatUtil.removeChatFormat(s.getLine(1)));
+					BankType btype = BankType.getTypeByString(Util.ChatFormatUtil.removeChatFormat(s.getLine(1)));
 					
 					if(Banks.playerHasPermissions(p, AllBanksAction.DESTROY_SIGN, btype)){
 						if(btype != null){

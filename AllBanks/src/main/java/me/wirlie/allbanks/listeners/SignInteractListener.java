@@ -63,7 +63,7 @@ public class SignInteractListener implements Listener {
 				
 				//Se puede tratar de un letrero AllBanks.
 				String btypeStr = Util.ChatFormatUtil.removeChatFormat(s.getLine(1));
-				BankType btype = BankType.getByString(btypeStr);
+				BankType btype = BankType.getTypeByString(btypeStr);
 				
 				if(btype != null){
 					

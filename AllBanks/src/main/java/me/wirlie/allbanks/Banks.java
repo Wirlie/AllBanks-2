@@ -72,7 +72,9 @@ public class Banks {
 			return display;
 		}
 		
-		public static BankType getByString(String string){
+		
+		public static BankType getTypeByString(String string){
+			
 			for(BankType b : BankType.values()){
 				if(b.getDisplay().equalsIgnoreCase(string)){
 					return b;
