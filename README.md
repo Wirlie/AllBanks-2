@@ -14,10 +14,10 @@ https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/master/artifacts
 More info: https://github.com/Wirlie/AllBanks-2/issues/3
 
 ### Latest Release:
-None.
+https://www.spigotmc.org/resources/allbanks.21032/download?version=79385
 
 | Changelog     | Release type |
 |---------------|-----------|
-| Not available | Not available |
+| Not available | RELEASE |
 
 Full changelog: Not available
