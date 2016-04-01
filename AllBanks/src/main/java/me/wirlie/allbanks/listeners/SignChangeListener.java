@@ -112,6 +112,12 @@ public class SignChangeListener implements Listener {
 					if(e.getBlock().getType().equals(Material.AIR))
 						return;
 					
+					if(btypefinal.equals(BankType.BANK_LAND) || btypefinal.equals(BankType.SHOP) || btypefinal.equals(BankType.ATM)) {
+						Translation.getAndSendMessage(p, StringsID.NOT_YET_IMPLEMENTED, true);
+						e.getBlock().breakNaturally();
+						return;
+					}
+					
 					if(Banks.registerAllBanksSign(e.getBlock().getLocation(), p)){
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
 						AllBanksLogger.info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");

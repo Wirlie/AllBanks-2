@@ -1,14 +1,24 @@
+# do not edit this.
 cfg-version: "v1.0"
 pl:
-  language: "EsMx"
+  # Language (Supported languages: EnUs and EsMx)
+  language: "EnUs"
+  # Not yet implemented.
   enable-metrics: true
+  # Not yet implemented.
   check-for-updates: true
+  # Not yet implemented.
   auto-update: false
 lottery:
+  # Enable lottery??
   enable: true
+  # Ticket cost.
   ticket-cost: 50
+  # Get winner every X time:
   get-winer-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+  # Max tickets per player:
   max-tickets-per-player: 5
+  # Broadcast message when the Lottery gets a winner.
   broadcast-message: true
 banks:
   bank-loan:
@@ -33,6 +43,8 @@ banks:
     # Add one minute every 60 seconds.
     add-minute-every: 60
   bank-chest:
+    # Number of max virtual chest per player.
     max-virtual-chests-per-player: 1
   shop:
+    # Not yet implemented.
     max-shop-per-user: -1
