@@ -18,12 +18,14 @@
  */
 package me.wirlie.allbanks.listeners;
 
+import java.io.File;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -32,6 +34,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util;
+import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -50,68 +54,116 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 	@EventHandler
 	public void onPlayerJoin(final PlayerJoinEvent e){
 		
-		if(DatabaseUtil.databaseIsLocked()) return;
-		
-		Statement stm = null;
-		ResultSet res = null;
-		
-		try {
-			stm = AllBanks.getDBC().createStatement();
-			res = stm.executeQuery("SELECT * FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
-		
-			BigDecimal totalCharge = BigDecimal.ZERO;
-			
-			while(res.next()){
-				BigDecimal amount = new BigDecimal(res.getString("amount"));
-				totalCharge = totalCharge.add(amount);
+		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+			if(!Util.FlaFile_pendingCharges.exists()) {
+				Util.FlaFile_pendingCharges.mkdirs();
 			}
 			
-			stm.executeUpdate("DELETE FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
+			File pendingChargeFile = new File(Util.FlaFile_pendingCharges + File.separator + e.getPlayer().getName() + ".yml");
 			
-			BigDecimal minPlayerBalance = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -500));
-			BigDecimal currentPlayerBalance = new BigDecimal(AllBanks.getEconomy().getBalance(e.getPlayer()));
+			if(pendingChargeFile.exists()) {
+				//cobrar
+				YamlConfiguration pendingChargeFileYAML = YamlConfiguration.loadConfiguration(pendingChargeFile);
 			
-			if(currentPlayerBalance.compareTo(minPlayerBalance) == -1){
-				//es menor...
-				return;
-			}
-			
-			if(currentPlayerBalance.subtract(totalCharge).compareTo(minPlayerBalance) == -1){
-				totalCharge = currentPlayerBalance.subtract(minPlayerBalance);
-			}
-			
-			if(totalCharge.intValueExact() == 0){
-				return;
-			}
-			
-			final BigDecimal totalChargeFinal = totalCharge;
-			
-			new BukkitRunnable(){
-
-				public void run() {
-					BankAccount ba = BankAccount.Cache.get(e.getPlayer().getUniqueId());
-					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(totalChargeFinal.doubleValue()));
-					replaceMap.put("%2%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
-					
-					Translation.getAndSendMessage(e.getPlayer(), StringsID.BANKLOAN_INTEREST_CHARGED, replaceMap, true);
-					
-					AllBanks.getEconomy().withdrawPlayer(e.getPlayer(), totalChargeFinal.doubleValue());
-					
-					AllBanksLogger.info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).");
-					
+				BigDecimal totalCharge = new BigDecimal(pendingChargeFileYAML.getString("amount"));
+				
+				BigDecimal minPlayerBalance = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -500));
+				BigDecimal currentPlayerBalance = new BigDecimal(AllBanks.getEconomy().getBalance(e.getPlayer()));
+				
+				if(currentPlayerBalance.compareTo(minPlayerBalance) == -1){
+					//es menor...
+					return;
 				}
 				
-			}.runTaskLater(AllBanks.getInstance(), 20 * 2);
+				if(currentPlayerBalance.subtract(totalCharge).compareTo(minPlayerBalance) == -1){
+					totalCharge = currentPlayerBalance.subtract(minPlayerBalance);
+				}
+				
+				final BigDecimal totalChargeFinal = totalCharge;
+				
+				new BukkitRunnable(){
+					
+					public void run() {
+						BankAccount ba = BankAccount.Cache.get(e.getPlayer().getUniqueId());
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						replaceMap.put("%1%", AllBanks.getEconomy().format(totalChargeFinal.doubleValue()));
+						replaceMap.put("%2%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
+						
+						Translation.getAndSendMessage(e.getPlayer(), StringsID.BANKLOAN_INTEREST_CHARGED, replaceMap, true);
+						
+						AllBanks.getEconomy().withdrawPlayer(e.getPlayer(), totalChargeFinal.doubleValue());
+						
+						AllBanksLogger.info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).");
+						
+					}
+					
+				}.runTaskLater(AllBanks.getInstance(), 20 * 2);
+			}
 			
-		} catch (SQLException e1) {
-			DatabaseUtil.checkDatabaseIsLocked(e1);
-		} finally {
+		} else {
+			if(DatabaseUtil.databaseIsLocked()) return;
+			
+			Statement stm = null;
+			ResultSet res = null;
+			
 			try {
-				stm.close();
-				res.close();
+				stm = AllBanks.getDataBaseConnection().createStatement();
+				res = stm.executeQuery("SELECT * FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
+			
+				BigDecimal totalCharge = BigDecimal.ZERO;
+				
+				while(res.next()){
+					BigDecimal amount = new BigDecimal(res.getString("amount"));
+					totalCharge = totalCharge.add(amount);
+				}
+				
+				stm.executeUpdate("DELETE FROM bankloan_pending_charges WHERE owner = '" + e.getPlayer().getName() + "'");
+				
+				BigDecimal minPlayerBalance = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -500));
+				BigDecimal currentPlayerBalance = new BigDecimal(AllBanks.getEconomy().getBalance(e.getPlayer()));
+				
+				if(currentPlayerBalance.compareTo(minPlayerBalance) == -1){
+					//es menor...
+					return;
+				}
+				
+				if(currentPlayerBalance.subtract(totalCharge).compareTo(minPlayerBalance) == -1){
+					totalCharge = currentPlayerBalance.subtract(minPlayerBalance);
+				}
+				
+				if(totalCharge.intValueExact() == 0){
+					return;
+				}
+				
+				final BigDecimal totalChargeFinal = totalCharge;
+				
+				new BukkitRunnable(){
+	
+					public void run() {
+						BankAccount ba = BankAccount.Cache.get(e.getPlayer().getUniqueId());
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						replaceMap.put("%1%", AllBanks.getEconomy().format(totalChargeFinal.doubleValue()));
+						replaceMap.put("%2%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
+						
+						Translation.getAndSendMessage(e.getPlayer(), StringsID.BANKLOAN_INTEREST_CHARGED, replaceMap, true);
+						
+						AllBanks.getEconomy().withdrawPlayer(e.getPlayer(), totalChargeFinal.doubleValue());
+						
+						AllBanksLogger.info("BankLoan: Charged " + AllBanks.getEconomy().format(totalChargeFinal.doubleValue()) + " from " + e.getPlayer().getName() + " (" + e.getPlayer().getDisplayName() + ") (cause: has a loan at the bank).");
+						
+					}
+					
+				}.runTaskLater(AllBanks.getInstance(), 20 * 2);
+				
 			} catch (SQLException e1) {
-				e1.printStackTrace();
+				DatabaseUtil.checkDatabaseIsLocked(e1);
+			} finally {
+				try {
+					stm.close();
+					res.close();
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 			}
 		}
 	}

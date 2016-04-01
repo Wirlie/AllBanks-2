@@ -27,20 +27,35 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
+import me.wirlie.allbanks.logger.AllBanksLogger;
+
 /**
  * @author Wirlie
  *
  */
 
-public class DataBase {
-    private static DataBase instance = new DataBase();
+public class DataBaseSQLite {
+    private static DataBaseSQLite instance = new DataBaseSQLite();
     public Connection connection = null;
     public Statement statement;
     public static boolean setstatus = false;
     HashMap<String, Connection> multipleConnections = new HashMap<String, Connection>();
 
-    public static synchronized DataBase getInstance() {
+    public static synchronized DataBaseSQLite getInstance() {
         return instance;
+    }
+    
+    public static boolean tryForClass() {
+    	try {
+    		AllBanksLogger.info("Try for class: org.sqlite.JDBC");
+    		Class.forName("org.sqlite.JDBC");
+    		AllBanksLogger.info("Success!");
+    		return true;
+    	}catch (ClassNotFoundException e) {
+    		AllBanksLogger.severe("Error!");
+            e.printStackTrace();
+            return false;
+        }
     }
     
     public Connection setConnection(String path, String NameConnection) {

@@ -9,6 +9,14 @@ pl:
   check-for-updates: true
   # Not yet implemented.
   auto-update: false
+  # Available storage systems: FlatFile, SQLite (default) and MySQL
+  storage-system: "SQLite"
+  # If you set "storage-system" with MySQL these configurations are required:
+  mysql-host: "localhost"
+  mysql-user: "root"
+  mysql-pass: "root"
+  mysql-database: "databaseName"
+  mysql-port: 3306
 lottery:
   # Enable lottery??
   enable: true

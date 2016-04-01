@@ -40,6 +40,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
@@ -456,70 +457,118 @@ public class Banks {
 	
 	public static boolean registerAllBanksSign(Location signLoc, Player owner){
 		
-		if(DatabaseUtil.databaseIsLocked()) return false;
-		
-		Statement stm = null;
-		
-		try{
-			stm = AllBanks.getDBC().createStatement();
-			stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
-			return true;
-		}catch(SQLException e){
-			DatabaseUtil.checkDatabaseIsLocked(e);
-		}finally{
-			if(stm != null)
+		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+			
+			if(!Util.FlatFile_signFolder.exists()) {
+				Util.FlatFile_signFolder.mkdirs();
+			}
+			
+			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
+			if(!signFile.exists()) {
 				try {
-					stm.close();
-				} catch (SQLException e) {
+					signFile.createNewFile();
+				} catch (IOException e) {
 					e.printStackTrace();
 				}
+			}
+			
+			YamlConfiguration yaml = YamlConfiguration.loadConfiguration(signFile);
+			yaml.set("location", Util.StrLocUtil.convertLocationToString(signLoc, true));
+			yaml.set("owner", owner.getName());
+			
+			try {
+				yaml.save(signFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return true;
+		}else{
+			if(DatabaseUtil.databaseIsLocked()) return false;
+			
+			Statement stm = null;
+			
+			try{
+				stm = AllBanks.getDataBaseConnection().createStatement();
+				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
+				return true;
+			}catch(SQLException e){
+				DatabaseUtil.checkDatabaseIsLocked(e);
+			}finally{
+				if(stm != null)
+					try {
+						stm.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			}
+			
 		}
-		
+
 		return false;
 	}
 	
 	public static boolean signIsRegistered(Location signLoc){
-		
-		if(DatabaseUtil.databaseIsLocked()) return false;
-		
-		Statement stm = null;
-		try{
-			stm = AllBanks.getDBC().createStatement();
-			ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
-			return res.next();
-		}catch(SQLException e){
-			DatabaseUtil.checkDatabaseIsLocked(e);
-		}finally{
-			if(stm != null)
-				try {
-					stm.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+			if(!Util.FlatFile_signFolder.exists()) {
+				Util.FlatFile_signFolder.mkdirs();
+			}
+			
+			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
+			return signFile.exists();
+		}else{
+			if(DatabaseUtil.databaseIsLocked()) return false;
+			
+			Statement stm = null;
+			try{
+				stm = AllBanks.getDataBaseConnection().createStatement();
+				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+				return res.next();
+			}catch(SQLException e){
+				DatabaseUtil.checkDatabaseIsLocked(e);
+			}finally{
+				if(stm != null)
+					try {
+						stm.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			}
 		}
 		
 		return false;
 	}
 	
 	public static boolean removeAllBanksSign(Location signLoc){
-		
-		if(DatabaseUtil.databaseIsLocked()) return false;
-		
-		Statement stm = null;
-		
-		try{
-			stm = AllBanks.getDBC().createStatement();
-			stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+			if(!Util.FlatFile_signFolder.exists()) {
+				Util.FlatFile_signFolder.mkdirs();
+			}
+			
+			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
+			if(!signFile.exists()) return false;
+			
+			signFile.delete();
 			return true;
-		}catch(SQLException e){
-			DatabaseUtil.checkDatabaseIsLocked(e);
-		}finally{
-			if(stm != null)
-				try {
-					stm.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		} else {
+			if(DatabaseUtil.databaseIsLocked()) return false;
+			
+			Statement stm = null;
+			
+			try{
+				stm = AllBanks.getDataBaseConnection().createStatement();
+				stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+				return true;
+			}catch(SQLException e){
+				DatabaseUtil.checkDatabaseIsLocked(e);
+			}finally{
+				if(stm != null)
+					try {
+						stm.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			}
 		}
 		
 		return false;

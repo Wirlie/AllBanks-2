@@ -18,6 +18,7 @@
  */
 package me.wirlie.allbanks;
 
+import java.io.File;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,6 +37,11 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  *
  */
 public class Util {
+	
+	//Directorios
+	public static File FlatFile_signFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "SignData");
+	public static File FlaFile_bankAccountFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "BankAccount");
+	public static File FlaFile_pendingCharges = new File(AllBanks.getInstance().getDataFolder() + File.separator + "PendingCharge");
 	
 	public static class DatabaseUtil{
 		

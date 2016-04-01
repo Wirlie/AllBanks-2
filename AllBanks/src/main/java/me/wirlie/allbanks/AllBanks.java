@@ -55,12 +55,20 @@ import net.milkbowl.vault.economy.Economy;
 public class AllBanks extends JavaPlugin {
 	
 	private static AllBanks AllBanksInstance;
-	private static DataBase db = new DataBase();
+	private static DataBaseSQLite dbSQLite = new DataBaseSQLite();
+	private static DataBaseMySQL dbMySQL = new DataBaseMySQL();
 	private static Connection dbc;
+	private static StorageType storageMethod = StorageType.SQLITE;
 	
 	private static Economy econ = null;
 
 	public final static String[] COMPATIBLE_VERSIONS = {"1.9-R0.1-SNAPSHOT"};
+	
+	public enum StorageType{
+		FLAT_FILE,
+		SQLITE,
+		MYSQL;
+	}
 	
 	@Override
 	public void onEnable(){
@@ -72,14 +80,55 @@ public class AllBanks extends JavaPlugin {
 		
 		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion());
 		
+		//Método de almacenamiento.
+		String storageStr = getConfig().getString("pl.storage-system", "SQLite");
+		
+		if(storageStr.equalsIgnoreCase("sqlite")) {
+			storageMethod = StorageType.SQLITE;
+		}else if(storageStr.equalsIgnoreCase("mysql")) {
+			storageMethod = StorageType.MYSQL;
+		}else if(storageStr.equalsIgnoreCase("flatfile")){
+			storageMethod = StorageType.FLAT_FILE;
+		}
+		
+		//intentar
+		switch(getStorageMethod()) {
+		case FLAT_FILE:
+			//Sin acciones
+    		AllBanksLogger.info("Storage Method: FlatFile");
+			break;
+		case MYSQL:
+    		AllBanksLogger.info("Storage Method: MySQL");
+			if(!DataBaseMySQL.tryForClass()) {
+	    		AllBanksLogger.warning("Ops! DriverManager not found, setting storage method: FlatFile");
+	    		storageMethod = StorageType.FLAT_FILE;
+			}
+			break;
+		case SQLITE:
+    		AllBanksLogger.info("Storage Method: SQLite");
+			if(!DataBaseSQLite.tryForClass()) {
+	    		AllBanksLogger.warning("Ops! DriverManager not found, setting storage method: FlatFile");
+	    		storageMethod = StorageType.FLAT_FILE;
+			}
+			break;
+		
+		}
+		
 		//Version del servidor
 		verifyServerVersion();
 		
-		AllBanksLogger.info("Initializing database...");
-		dbc = db.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
+		if(getStorageMethod().equals(StorageType.MYSQL)) {
+			AllBanksLogger.info("Initializing MySQL database...");
+			dbc = dbMySQL.setConnection("global");
+		}else {
+			AllBanksLogger.info("Initializing SQLite database...");
+			dbc = dbSQLite.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
+		}
 		
 		//Instalar DB
-		installDatabase();
+		if(getStorageMethod().equals(StorageType.MYSQL) || getStorageMethod().equals(StorageType.SQLITE)) {
+			installDatabase();
+		}
 		
 		//Economy
 		if(!setupEconomy()){
@@ -202,15 +251,29 @@ public class AllBanks extends JavaPlugin {
 		
 		AllBanksLogger.info("Closing database connections...");
 		
-		for(Connection c : db.multipleConnections.values()){
-			try {
-				c.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		if(getStorageMethod().equals(StorageType.SQLITE)) {
+			for(Connection c : dbSQLite.multipleConnections.values()){
+				try {
+					c.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
+			
+			dbSQLite.multipleConnections.clear();
 		}
 		
-		db.multipleConnections.clear();
+		if(getStorageMethod().equals(StorageType.MYSQL)) {
+			for(Connection c : dbMySQL.multipleConnections.values()){
+				try {
+					c.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+
+			dbMySQL.multipleConnections.clear();
+		}
 	}
 	
 	private boolean setupEconomy() {
@@ -372,8 +435,12 @@ public class AllBanks extends JavaPlugin {
 		return AllBanksInstance;
 	}
 	
-	public static Connection getDBC(){
+	public static Connection getDataBaseConnection(){
 		return dbc;
+	}
+	
+	public static StorageType getStorageMethod() {
+		return storageMethod;
 	}
 	
 	private void verifyServerVersion() {

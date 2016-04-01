@@ -37,6 +37,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -72,6 +73,11 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 					
+					if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_AVAILABLE_ON_DATABASE, true);
+						return true;
+					}
+					
 					if(args.length >= 2){
 						String query = "";
 						
@@ -89,7 +95,7 @@ public class Commands implements CommandExecutor {
 						ResultSet res = null;
 						
 						try{
-							stm = AllBanks.getDBC().createStatement();
+							stm = AllBanks.getDataBaseConnection().createStatement();
 							res = stm.executeQuery(query);
 							int numColumns = res.getMetaData().getColumnCount();
 							
@@ -141,6 +147,11 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 					
+					if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_AVAILABLE_ON_DATABASE, true);
+						return true;
+					}
+					
 					if(args.length >= 2){
 						String query = "";
 			
@@ -157,7 +168,7 @@ public class Commands implements CommandExecutor {
 						Statement stm = null;
 						
 						try{
-							stm = AllBanks.getDBC().createStatement();
+							stm = AllBanks.getDataBaseConnection().createStatement();
 							stm.executeUpdate(query);
 							
 							Translation.getAndSendMessage(sender, StringsID.COMMANDS_DATABASE_QUERY_SUCCESS, (sender instanceof Player));

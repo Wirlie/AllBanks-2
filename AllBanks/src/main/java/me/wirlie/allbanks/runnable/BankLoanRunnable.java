@@ -35,6 +35,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util;
+import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -59,21 +61,20 @@ public class BankLoanRunnable extends BukkitRunnable {
 		AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Reading Database...");
 		AllBanksLogger.info("BankTimerRunnable: Executed (reading database).");
 		
-		Statement stm = null;
-		ResultSet res = null;
-		
-		try {
-			stm = AllBanks.getDBC().createStatement();
-			//Seleccionar los préstamos mayores a 0 optimizará los resultados.
-			res = stm.executeQuery("SELECT * FROM bankloan_accounts WHERE loan > 0");
+		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+			if(!Util.FlaFile_bankAccountFolder.exists()) {
+				Util.FlaFile_bankAccountFolder.mkdirs();
+			}
 			
-			while(res.next()){
-				BigDecimal loan = new BigDecimal(res.getString("loan"));
+			for(File baFile : Util.FlaFile_bankAccountFolder.listFiles()) {
+				YamlConfiguration baFileYAML = YamlConfiguration.loadConfiguration(baFile);
+				
+				BigDecimal loan = new BigDecimal(baFileYAML.getString("loan"));
 				BigDecimal taxPercent = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.interest", 1)).divide(new BigDecimal(100));
 				BigDecimal chargeLoan = loan.multiply(taxPercent);
 				BigDecimal minPlayerBalance = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -500));
 				
-				Player player = Bukkit.getPlayer(res.getString("owner"));
+				Player player = Bukkit.getPlayer(baFileYAML.getString("owner"));
 				
 				if(player != null){
 					
@@ -88,26 +89,88 @@ public class BankLoanRunnable extends BukkitRunnable {
 						AllBanks.getEconomy().withdrawPlayer(player, chargeLoan.doubleValue());
 					}
 				}else{
-					//El jugador se encuentra fuera de línea...
-					Statement stm2 = AllBanks.getDBC().createStatement();
-					stm2.executeUpdate("INSERT INTO bankloan_pending_charges (owner, amount) VALUES ('" + res.getString("owner") + "', '" + chargeLoan.toPlainString() + "')");
-					stm2.close();
+					if(!Util.FlaFile_pendingCharges.exists()) {
+						Util.FlaFile_pendingCharges.mkdirs();
+					}
+					
+					File pendingChargeFile = new File(Util.FlaFile_pendingCharges + File.separator + baFileYAML.getString("owner") + ".yml");
+					
+					if(!pendingChargeFile.exists()) {
+						try {
+							pendingChargeFile.createNewFile();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					
+					YamlConfiguration pendingChargeFileYAML = YamlConfiguration.loadConfiguration(pendingChargeFile);
+					
+					BigDecimal currentAmount = new BigDecimal(pendingChargeFileYAML.getString("amount", "0"));
+					BigDecimal newAmount = currentAmount.add(chargeLoan);
+					
+					pendingChargeFileYAML.set("amount", String.valueOf(newAmount.doubleValue()));
+					
+					try {
+						pendingChargeFileYAML.save(pendingChargeFile);
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
 				
 				affectedAccounts++;
 				
 			}
-
-			AllBanksLogger.info("BankTimerRunnable: " + affectedAccounts + " accounts modified.");
-			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
-		} catch (SQLException e) {
-			DatabaseUtil.checkDatabaseIsLocked(e);
-		}finally{
+		} else {
+			Statement stm = null;
+			ResultSet res = null;
+		
 			try {
-				stm.close();
-				res.close();
+				stm = AllBanks.getDataBaseConnection().createStatement();
+				//Seleccionar los préstamos mayores a 0 optimizará los resultados.
+				res = stm.executeQuery("SELECT * FROM bankloan_accounts WHERE loan > 0");
+				
+				while(res.next()){
+					BigDecimal loan = new BigDecimal(res.getString("loan"));
+					BigDecimal taxPercent = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.interest", 1)).divide(new BigDecimal(100));
+					BigDecimal chargeLoan = loan.multiply(taxPercent);
+					BigDecimal minPlayerBalance = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -500));
+					
+					Player player = Bukkit.getPlayer(res.getString("owner"));
+					
+					if(player != null){
+						
+						if(AllBanks.getEconomy().getBalance(player) > minPlayerBalance.doubleValue()){
+							BankAccount ba = BankAccount.Cache.get(player.getUniqueId());
+							HashMap<String, String> replaceMap = new HashMap<String, String>();
+							replaceMap.put("%1%", AllBanks.getEconomy().format(chargeLoan.doubleValue()));
+							replaceMap.put("%2%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
+							
+							Translation.getAndSendMessage(player, StringsID.BANKLOAN_INTEREST_CHARGED, replaceMap, true);
+							
+							AllBanks.getEconomy().withdrawPlayer(player, chargeLoan.doubleValue());
+						}
+					}else{
+						//El jugador se encuentra fuera de línea...
+						Statement stm2 = AllBanks.getDataBaseConnection().createStatement();
+						stm2.executeUpdate("INSERT INTO bankloan_pending_charges (owner, amount) VALUES ('" + res.getString("owner") + "', '" + chargeLoan.toPlainString() + "')");
+						stm2.close();
+					}
+					
+					affectedAccounts++;
+					
+				}
+	
+				AllBanksLogger.info("BankTimerRunnable: " + affectedAccounts + " accounts modified.");
+				AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
 			} catch (SQLException e) {
-				e.printStackTrace();
+				DatabaseUtil.checkDatabaseIsLocked(e);
+			}finally{
+				try {
+					stm.close();
+					res.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 		
