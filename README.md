@@ -8,11 +8,6 @@
 ##### Download latest AllBanks file (SNAPSHOT) (.jar provided by AppVeyor):
 https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/master/artifacts
 
-##### Release progress:
-![Progress](http://progressed.io/bar/100)
-
-More info: https://github.com/Wirlie/AllBanks-2/issues/3
-
 ### Latest Release: AllBanks v1.0.0
 https://www.spigotmc.org/resources/allbanks.21032/
 
@@ -20,4 +15,7 @@ https://www.spigotmc.org/resources/allbanks.21032/
 |---------------|-----------|
 | Initial release | RELEASE |
 
-Full changelog: Not available
+### Full changelog:
+
+###### AllBanks v1.0.0
+- Initial commit.
