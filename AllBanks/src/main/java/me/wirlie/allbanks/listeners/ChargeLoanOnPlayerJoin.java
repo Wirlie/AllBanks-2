@@ -55,11 +55,11 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 	public void onPlayerJoin(final PlayerJoinEvent e){
 		
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-			if(!Util.FlaFile_pendingCharges.exists()) {
-				Util.FlaFile_pendingCharges.mkdirs();
+			if(!Util.FlatFile_pendingCharges.exists()) {
+				Util.FlatFile_pendingCharges.mkdirs();
 			}
 			
-			File pendingChargeFile = new File(Util.FlaFile_pendingCharges + File.separator + e.getPlayer().getName() + ".yml");
+			File pendingChargeFile = new File(Util.FlatFile_pendingCharges + File.separator + e.getPlayer().getName() + ".yml");
 			
 			if(pendingChargeFile.exists()) {
 				//cobrar

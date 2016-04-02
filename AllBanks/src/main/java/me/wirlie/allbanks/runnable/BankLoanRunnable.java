@@ -62,11 +62,11 @@ public class BankLoanRunnable extends BukkitRunnable {
 		AllBanksLogger.info("BankTimerRunnable: Executed (reading database).");
 		
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-			if(!Util.FlaFile_bankAccountFolder.exists()) {
-				Util.FlaFile_bankAccountFolder.mkdirs();
+			if(!Util.FlatFile_bankAccountFolder.exists()) {
+				Util.FlatFile_bankAccountFolder.mkdirs();
 			}
 			
-			for(File baFile : Util.FlaFile_bankAccountFolder.listFiles()) {
+			for(File baFile : Util.FlatFile_bankAccountFolder.listFiles()) {
 				YamlConfiguration baFileYAML = YamlConfiguration.loadConfiguration(baFile);
 				
 				BigDecimal loan = new BigDecimal(baFileYAML.getString("loan"));
@@ -89,11 +89,11 @@ public class BankLoanRunnable extends BukkitRunnable {
 						AllBanks.getEconomy().withdrawPlayer(player, chargeLoan.doubleValue());
 					}
 				}else{
-					if(!Util.FlaFile_pendingCharges.exists()) {
-						Util.FlaFile_pendingCharges.mkdirs();
+					if(!Util.FlatFile_pendingCharges.exists()) {
+						Util.FlatFile_pendingCharges.mkdirs();
 					}
 					
-					File pendingChargeFile = new File(Util.FlaFile_pendingCharges + File.separator + baFileYAML.getString("owner") + ".yml");
+					File pendingChargeFile = new File(Util.FlatFile_pendingCharges + File.separator + baFileYAML.getString("owner") + ".yml");
 					
 					if(!pendingChargeFile.exists()) {
 						try {

@@ -48,8 +48,8 @@ public class Util {
 	
 	//Directorios
 	public static File FlatFile_signFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "SignData");
-	public static File FlaFile_bankAccountFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "BankAccount");
-	public static File FlaFile_pendingCharges = new File(AllBanks.getInstance().getDataFolder() + File.separator + "PendingCharge");
+	public static File FlatFile_bankAccountFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "BankAccount");
+	public static File FlatFile_pendingCharges = new File(AllBanks.getInstance().getDataFolder() + File.separator + "PendingCharge");
 	
 	//Reflection Util, Internal method, used as shorthand to grab our method in a nice friendly manner
 	public static class ReflectionUtil{

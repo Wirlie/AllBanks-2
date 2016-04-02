@@ -94,13 +94,13 @@ public class BankAccount {
 			
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 				
-				if(!Util.FlaFile_bankAccountFolder.exists()) {
-					Util.FlaFile_bankAccountFolder.mkdirs();
+				if(!Util.FlatFile_bankAccountFolder.exists()) {
+					Util.FlatFile_bankAccountFolder.mkdirs();
 				}
 				
 				BankAccount ba = new BankAccount(p);
 				
-				File baFile = new File(Util.FlaFile_bankAccountFolder + File.separator + p.getName() + ".yml");
+				File baFile = new File(Util.FlatFile_bankAccountFolder + File.separator + p.getName() + ".yml");
 				if(baFile.exists()) {
 					YamlConfiguration baFileYAML = YamlConfiguration.loadConfiguration(baFile);
 					
@@ -172,11 +172,11 @@ public class BankAccount {
 		 */
 		private static void registerNewAccountInDataBase(Player p) {
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-				if(!Util.FlaFile_bankAccountFolder.exists()) {
-					Util.FlaFile_bankAccountFolder.mkdirs();
+				if(!Util.FlatFile_bankAccountFolder.exists()) {
+					Util.FlatFile_bankAccountFolder.mkdirs();
 				}
 				
-				File baFile = new File(Util.FlaFile_bankAccountFolder + File.separator + p.getName() + ".yml");
+				File baFile = new File(Util.FlatFile_bankAccountFolder + File.separator + p.getName() + ".yml");
 				if(!baFile.exists()) {
 					try {
 						baFile.createNewFile();
@@ -300,11 +300,11 @@ public class BankAccount {
 		
 		public synchronized boolean updateLoan(BigDecimal newLoan, boolean updateFromDatabase){
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-				if(!Util.FlaFile_bankAccountFolder.exists()) {
-					Util.FlaFile_bankAccountFolder.mkdirs();
+				if(!Util.FlatFile_bankAccountFolder.exists()) {
+					Util.FlatFile_bankAccountFolder.mkdirs();
 				}
 				
-				File baFile = new File(Util.FlaFile_bankAccountFolder + File.separator + player.getName() + ".yml");
+				File baFile = new File(Util.FlatFile_bankAccountFolder + File.separator + player.getName() + ".yml");
 				if(!baFile.exists()) {
 					try {
 						baFile.createNewFile();
@@ -369,11 +369,11 @@ public class BankAccount {
 		
 		public synchronized boolean updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-				if(!Util.FlaFile_bankAccountFolder.exists()) {
-					Util.FlaFile_bankAccountFolder.mkdirs();
+				if(!Util.FlatFile_bankAccountFolder.exists()) {
+					Util.FlatFile_bankAccountFolder.mkdirs();
 				}
 				
-				File baFile = new File(Util.FlaFile_bankAccountFolder + File.separator + player.getName() + ".yml");
+				File baFile = new File(Util.FlatFile_bankAccountFolder + File.separator + player.getName() + ".yml");
 				if(!baFile.exists()) {
 					try {
 						baFile.createNewFile();
@@ -428,11 +428,11 @@ public class BankAccount {
 	public class BankXP{
 		public synchronized boolean updateXP(int newXP, boolean updateFromDatabase){
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-				if(!Util.FlaFile_bankAccountFolder.exists()) {
-					Util.FlaFile_bankAccountFolder.mkdirs();
+				if(!Util.FlatFile_bankAccountFolder.exists()) {
+					Util.FlatFile_bankAccountFolder.mkdirs();
 				}
 				
-				File baFile = new File(Util.FlaFile_bankAccountFolder + File.separator + player.getName() + ".yml");
+				File baFile = new File(Util.FlatFile_bankAccountFolder + File.separator + player.getName() + ".yml");
 				if(!baFile.exists()) {
 					try {
 						baFile.createNewFile();
@@ -503,11 +503,11 @@ public class BankAccount {
 	public class BankTime{
 		public synchronized boolean updateTime(int newTime, boolean updateFromDatabase){
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
-				if(!Util.FlaFile_bankAccountFolder.exists()) {
-					Util.FlaFile_bankAccountFolder.mkdirs();
+				if(!Util.FlatFile_bankAccountFolder.exists()) {
+					Util.FlatFile_bankAccountFolder.mkdirs();
 				}
 				
-				File baFile = new File(Util.FlaFile_bankAccountFolder + File.separator + player.getName() + ".yml");
+				File baFile = new File(Util.FlatFile_bankAccountFolder + File.separator + player.getName() + ".yml");
 				if(!baFile.exists()) {
 					try {
 						baFile.createNewFile();
