@@ -18,9 +18,11 @@
  */
 package me.wirlie.allbanks;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Sound;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -32,11 +34,16 @@ import org.bukkit.command.TabCompleter;
  */
 public class CommandsTabCompleter implements TabCompleter {
 
+	private static List<String> soundListName = new ArrayList<String>();
+	private static List<String> soundListNamePossibleArgs = new ArrayList<String>();
+	
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		
 		if(args.length == 1){
 			return Arrays.asList(
-					"database"
+					"database",
+					"testsound",
+					"lottery"
 					);
 		}
 		
@@ -46,6 +53,46 @@ public class CommandsTabCompleter implements TabCompleter {
 						"try-update",
 						"try-query"
 						);
+			}else if(args[0].equalsIgnoreCase("lottery")){
+				return Arrays.asList(
+						"buyticket",
+						"info",
+						"force",
+						"enable",
+						"disable"
+						);
+			}else if(args[0].equalsIgnoreCase("testsound")){
+				
+				if(soundListName.isEmpty()) {
+					for(Sound s : Sound.values()) {
+						soundListName.add(s.toString());
+					}
+				} else {
+					if(!args[1].equalsIgnoreCase(" ")) {
+						
+						boolean match = false;
+						for(String s : soundListName) {
+							if(args[1].equalsIgnoreCase(s)) {
+								match = true;
+							}
+						}
+						
+						if(match) {
+							return soundListNamePossibleArgs;
+						}
+						
+						for(String s : soundListName) {
+							if(s.startsWith(args[1])) {
+								soundListNamePossibleArgs.add(s);
+							}
+						}
+						
+						return soundListNamePossibleArgs;
+					}
+				}
+				
+				
+				return soundListName;
 			}
 		}
 		
@@ -55,6 +102,10 @@ public class CommandsTabCompleter implements TabCompleter {
 				return Arrays.asList(
 						"{SQL_SENTENCE}"
 						);
+			}else if(args[0].equalsIgnoreCase("lottery") && args[1].equalsIgnoreCase("buyticket")) {
+				return Arrays.asList("0");
+			}else if(args[0].equalsIgnoreCase("testsound")){
+				return Arrays.asList("0");
 			}
 		}
 		

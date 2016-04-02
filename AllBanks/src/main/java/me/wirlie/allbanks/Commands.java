@@ -29,6 +29,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -59,7 +60,47 @@ public class Commands implements CommandExecutor {
 		
 		String mainAction = args[0];
 		
-		if(mainAction.equalsIgnoreCase("database")){
+		//REMOVE Remover esto, es un comando "debug"
+		if(mainAction.equalsIgnoreCase("testsound")){
+			if(!sender.hasPermission("allbanks.commands.testsound")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+				return true;
+			}
+			
+			if(args.length >= 3){
+				String soundName = args[1];
+				float soundVariant = 1;
+				
+				try {
+					soundVariant = (float) Double.parseDouble(args[2]);
+				} catch(NumberFormatException e) {
+					try {
+						soundVariant = Integer.parseInt(args[2]);
+					} catch(NumberFormatException e2) {
+						soundVariant = 1;
+					}
+				}
+				
+				if(sender instanceof Player) {
+					Player p = (Player) sender;
+					p.playSound(p.getLocation(), Sound.valueOf(soundName), 10, soundVariant);
+					System.out.println(soundVariant);
+				}
+				
+				return true;
+			}else if(args.length >= 2) {
+				String soundName = args[1];
+				
+				if(sender instanceof Player) {
+					Player p = (Player) sender;
+					p.playSound(p.getLocation(), Sound.valueOf(soundName), 10, 0);
+				}
+				
+				return true;
+			}
+				
+			
+		}else if(mainAction.equalsIgnoreCase("database")){
 			if(args.length >= 2){
 				if(args[1].equalsIgnoreCase("try-query")){
 					
