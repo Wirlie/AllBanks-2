@@ -67,7 +67,8 @@ public class SignBreakListener implements Listener {
 							if(Banks.removeAllBanksSign(s.getLocation())){
 								Translation.getAndSendMessage(p, StringsID.BANK_REMOVED, true);
 								//Cerrar sesión
-								BankSession.closeSession(p);
+								if(BankSession.checkSession(p))
+									BankSession.closeSession(p);
 								e.setCancelled(false);
 							}else{
 								if(DatabaseUtil.databaseIsLocked()){

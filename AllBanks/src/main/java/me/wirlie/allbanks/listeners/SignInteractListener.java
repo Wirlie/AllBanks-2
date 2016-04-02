@@ -24,6 +24,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Util;
@@ -31,6 +32,8 @@ import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
+import me.wirlie.allbanks.Util.SoundUtil;
+import me.wirlie.allbanks.Util.SoundUtil.SoundType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.data.BankSession;
@@ -57,6 +60,10 @@ public class SignInteractListener implements Listener {
 		
 		if(b.getType().equals(Material.WALL_SIGN)){
 			
+			if(!e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+				return;
+			}
+			
 			Sign s = (Sign) b.getState();
 			
 			if(Util.ChatFormatUtil.removeChatFormat(s.getLine(0)).equalsIgnoreCase("AllBanks")){
@@ -79,6 +86,9 @@ public class SignInteractListener implements Listener {
 							Translation.getAndSendMessage(p, StringsID.BANK_NOT_REGISTERED_ON_ALLBANKS, true);
 							AllBanksLogger.warning("SECURITY: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a not registered bank at location (w:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ")");
 						}
+
+						//Sonido
+						SoundUtil.sendSound(p, SoundType.DENY);
 						
 						return;
 					}
@@ -88,6 +98,9 @@ public class SignInteractListener implements Listener {
 					if(bs2 != null){
 						if(!bs2.getPlayer().equals(p)){
 							Translation.getAndSendMessage(p, StringsID.BANK_USED_WITH_ANOTHER_PLAYER, true);
+							
+							//Sonido
+							SoundUtil.sendSound(p, SoundType.DENY);
 							return;
 						}
 						
@@ -97,6 +110,9 @@ public class SignInteractListener implements Listener {
 					if(!Banks.playerHasPermissions(p, AllBanksAction.USE_SIGN, btype)){
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						AllBanksLogger.warning("Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a bank sign. (Deny cause: permissions)(Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").");
+						
+						//Sonido
+						SoundUtil.sendSound(p, SoundType.DENY);
 						return;
 					}
 					
@@ -110,11 +126,15 @@ public class SignInteractListener implements Listener {
 							
 							//Esta intentando usar otro banco.
 							Translation.getAndSendMessage(p, StringsID.ALREADY_USING_ANOTHER_BANK, true);
+							
+							//Sonido
+							SoundUtil.sendSound(p, SoundType.DENY);
+						
 							return;
 						}else if(bs == null){
 							//Nulo ???
 							//#TG-ERR-1
-							AllBanksLogger.warning("An unknown error had happens... (bs == null). SingInteractListener [TG-ERR-1]");
+							AllBanksLogger.warning("An unknown error has occurred... (bs == null). SingInteractListener [TG-ERR-1]");
 							return;
 						}
 						
@@ -123,6 +143,9 @@ public class SignInteractListener implements Listener {
 						
 						//Bien, cambiar paso
 						bs.updateStepAndSwitchSign();
+
+						//Sonido de uso
+						SoundUtil.sendSound(p, SoundType.SWITCH_BANK_STEP);
 					}else{
 						//Iniciar nueva sesión
 						AllBanksLogger.info("BANK-INTERACT: Player " + p.getName() + " (" + p.getDisplayName() + ") has used a bank (type: " + btype.toString() + ") (Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").");
@@ -130,6 +153,9 @@ public class SignInteractListener implements Listener {
 						
 						//Bien, establecer el paso en 0 ya que si no se establece en 0 el paso actualizado sería 1.
 						bs.updateStepAndSwitchSign(0);
+						
+						//Sonido
+						SoundUtil.sendSound(p, SoundType.SUCCESS);
 					}
 				}
 			}

@@ -18,6 +18,8 @@
  */
 package me.wirlie.allbanks.listeners;
 
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,6 +34,7 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.Util.EffectUtil;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -122,6 +125,7 @@ public class SignChangeListener implements Listener {
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
 						AllBanksLogger.info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
 						
+						EffectUtil.playFireworkEffect(signLoc.add(0.5, 0, 0.5), 1, Type.STAR, -1, Color.LIME, Color.WHITE, Color.GREEN);
 					}else{
 						e.getBlock().breakNaturally();
 						Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);

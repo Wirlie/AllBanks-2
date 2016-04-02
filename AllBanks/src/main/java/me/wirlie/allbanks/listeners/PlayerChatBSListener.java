@@ -32,6 +32,8 @@ import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.Util.DatabaseUtil;
+import me.wirlie.allbanks.Util.SoundUtil;
+import me.wirlie.allbanks.Util.SoundUtil.SoundType;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.data.BankAccount;
@@ -85,6 +87,8 @@ public class PlayerChatBSListener implements Listener {
 					int currentChestCursor = ba.BankChest.getCurrentChestCursor();
 					
 					Banks.openVirtualChest(p, currentChestCursor);
+					
+					SoundUtil.sendSound(p, SoundType.VIRTUAL_CHEST_OPEN);
 					
 					break;
 				}
@@ -156,6 +160,7 @@ public class PlayerChatBSListener implements Listener {
 						
 						//Actualizar letrero
 						bs.reloadSign();
+						
 					}else{
 						if(DatabaseUtil.databaseIsLocked()){
 							DatabaseUtil.sendDatabaseLockedMessage(p);

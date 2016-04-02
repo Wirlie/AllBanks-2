@@ -49,6 +49,7 @@ public class DataBaseMySQL {
             e.printStackTrace();
             return false;
         }
+    	
     }
     
     public Connection setConnection(String NameConnection) {
@@ -69,6 +70,8 @@ public class DataBaseMySQL {
         }
         catch (SQLException e) {
             e.printStackTrace();
+            //No se puede ejecutar AllBanks.
+            
         }
         
         return null;

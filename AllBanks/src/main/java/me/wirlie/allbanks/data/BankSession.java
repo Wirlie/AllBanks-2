@@ -25,6 +25,7 @@ import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -146,6 +147,9 @@ public class BankSession {
 	 */
 	public static void closeSession(Player p){
 		closeSession(p.getUniqueId());
+		
+		//Sonido
+		p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 9, 1);
 	}
 	
 	/**
