@@ -19,15 +19,23 @@
 package me.wirlie.allbanks;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.sql.SQLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.FireworkEffect.Type;
 import org.bukkit.Location;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.logger.AllBanksLogger;
 
@@ -42,6 +50,90 @@ public class Util {
 	public static File FlatFile_signFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "SignData");
 	public static File FlaFile_bankAccountFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "BankAccount");
 	public static File FlaFile_pendingCharges = new File(AllBanks.getInstance().getDataFolder() + File.separator + "PendingCharge");
+	
+	//Reflection Util, Internal method, used as shorthand to grab our method in a nice friendly manner
+	public static class ReflectionUtil{
+		public static Method getMethod(Class<?> cl, String method) {
+			for(Method m : cl.getMethods()) {
+				if(m.getName().equals(method)) {
+					return m;
+				}
+			}
+			return null;
+		}
+	}
+	
+	public static class EffectUtil{
+		public static void playFireworkEffect(Location loc, int power, Type type, long detonateDelay, Color... fireworkColors) {
+			final Firework fw = (Firework) loc.getWorld().spawn(loc, Firework.class);
+			FireworkMeta meta = fw.getFireworkMeta();
+			FireworkEffect effect = FireworkEffect.builder()
+					.flicker(false)
+					.trail(true)
+					.with(type)
+					.withColor(fireworkColors)
+					.build();
+			meta.addEffect(effect);
+			meta.setPower(power);
+			fw.setFireworkMeta(meta);
+			
+			if(detonateDelay >= 0) {
+				new BukkitRunnable() {
+	
+					public void run() {
+						fw.detonate();
+					}
+					
+				}.runTaskLater(AllBanks.getInstance(), detonateDelay);
+			}
+		}
+	}
+	
+	public static class SoundUtil{
+		public static enum SoundType{
+			SUCCESS,
+			DENY,
+			SWITCH_BANK_STEP,
+			VIRTUAL_CHEST_OPEN,
+			VIRTUAL_CHEST_CLOSE,
+			NEW_BANK;
+		}
+		
+		public static void sendSound(Player p, SoundType stype) {
+			
+			Sound sendSound = null;
+			float soundPitch = 1;
+			
+			switch(stype) {
+			case SUCCESS:
+				sendSound = Sound.ENTITY_PLAYER_LEVELUP;
+				soundPitch = 1;
+				break;
+			case DENY:
+				sendSound = Sound.BLOCK_NOTE_PLING;
+				soundPitch = (float) 0.7;
+				break;
+			case SWITCH_BANK_STEP:
+				sendSound = Sound.BLOCK_NOTE_HAT;
+				soundPitch = 1;
+				break;
+			case VIRTUAL_CHEST_OPEN:
+				sendSound = Sound.BLOCK_CHEST_OPEN;
+				soundPitch = 1;
+				break;
+			case VIRTUAL_CHEST_CLOSE:
+				sendSound = Sound.BLOCK_CHEST_CLOSE;
+				soundPitch = 1;
+				break;
+			case NEW_BANK:
+				sendSound = Sound.ENTITY_FIREWORK_BLAST;
+				soundPitch = 1;
+				break;
+			}
+			
+			p.playSound(p.getLocation(), sendSound, 5, soundPitch);
+		}
+	}
 	
 	public static class DatabaseUtil{
 		
