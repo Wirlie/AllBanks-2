@@ -7,7 +7,15 @@
 | **develop** | [![Build status](https://ci.appveyor.com/api/projects/status/3tcj45g7880hre7m/branch/develop?svg=true)](https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/develop) | [![Build Status](https://travis-ci.org/Wirlie/AllBanks-2.svg?branch=develop)](https://travis-ci.org/Wirlie/AllBanks-2) | AllBanks 1.0.1-RELEASE | Work in progress | 1.9 |
 
 ##### Download latest AllBanks file (SNAPSHOT) (.jar provided by AppVeyor):
-https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/master/artifacts
+https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/develop/artifacts
 
-### Latest Release: AllBanks v1.0.0
+##### Download latest release (AllBanks 1.0.0):
+AppVeyor: https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/master/artifacts
+Spigot: https://www.spigotmc.org/resources/allbanks-2.21032/history
+BukkitDev: http://dev.bukkit.org/bukkit-plugins/allbanks-2/files/1-all-banks-v1-0-0/
+
+### AllBanks on Spigot:
 https://www.spigotmc.org/resources/allbanks.21032/
+
+### AllBanks on BukkitDev:
+http://dev.bukkit.org/bukkit-plugins/allbanks-2/
