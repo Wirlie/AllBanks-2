@@ -53,6 +53,13 @@ public class CommandsTabCompleter implements TabCompleter {
 						"try-update",
 						"try-query"
 						);
+			}else if(args[0].equalsIgnoreCase("toprank")){
+				return Arrays.asList(
+						"bankxp",
+						"bankmoney",
+						"banktime",
+						"lottery"
+						);
 			}else if(args[0].equalsIgnoreCase("lottery")){
 				return Arrays.asList(
 						"buyticket",

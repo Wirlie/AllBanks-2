@@ -26,6 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -34,9 +35,11 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.Util.DatabaseUtil;
@@ -50,15 +53,18 @@ import me.wirlie.allbanks.runnable.LotteryRunnable;
  *
  */
 public class Commands implements CommandExecutor {
+	
+	public static TreeMap<Integer, String> bankMoneyTopRankCache = new TreeMap<Integer, String>();
+	public static long bankMoneyTopRankCacheTime = 0;
 
-	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
 		
 		if(args.length == 0){
 			//TODO Agregar un mensaje que muestre información referente al plugin.
 			return true;
 		}
 		
-		String mainAction = args[0];
+		final String mainAction = args[0];
 		
 		//REMOVE Remover esto, es un comando "debug"
 		if(mainAction.equalsIgnoreCase("testsound")){
@@ -99,6 +105,48 @@ public class Commands implements CommandExecutor {
 				return true;
 			}
 				
+			
+		}else if(mainAction.equalsIgnoreCase("toprank")){
+			if(!sender.hasPermission("allbanks.commands.toprank")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+				return true;
+			}
+			
+			if(args.length >= 2){
+				
+				if(sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender){
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+					return true;
+				}
+				
+				if(args[1].equalsIgnoreCase("bankmoney")) {
+					
+					//Generar toprank del bankmoney
+					new BukkitRunnable() {
+	
+						public void run() {
+							Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
+							
+							if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+								//FlatFile
+								File dataFolder = Util.FlatFile_bankAccountFolder;
+								if(!dataFolder.exists()) {
+									Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+									return;
+								}
+								
+								long difInSeconds = (new Date().getTime() - bankMoneyTopRankCacheTime) / 1000;
+								
+							}else {
+								//DataBase
+							}
+						}
+						
+					}.runTaskAsynchronously(AllBanks.getInstance());
+					
+					return true;
+				}
+			}
 			
 		}else if(mainAction.equalsIgnoreCase("database")){
 			if(args.length >= 2){
