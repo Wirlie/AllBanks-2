@@ -68,7 +68,7 @@ public class Commands implements CommandExecutor {
 		
 		//REMOVE Remover esto, es un comando "debug"
 		if(mainAction.equalsIgnoreCase("testsound")){
-			if(!sender.hasPermission("allbanks.commands.testsound")){
+			if(!Util.hasPermission(sender, "allbanks.commands.testsound")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 				return true;
 			}
@@ -107,7 +107,7 @@ public class Commands implements CommandExecutor {
 				
 			
 		}else if(mainAction.equalsIgnoreCase("toprank")){
-			if(!sender.hasPermission("allbanks.commands.toprank")){
+			if(!Util.hasPermission(sender, "allbanks.commands.toprank")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 				return true;
 			}
@@ -157,7 +157,7 @@ public class Commands implements CommandExecutor {
 						return true;
 					}
 					
-					if(!sender.hasPermission("allbanks.commands.database.executequery")){
+					if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 						return true;
 					}
@@ -231,7 +231,7 @@ public class Commands implements CommandExecutor {
 						return true;
 					}	
 					
-					if(!sender.hasPermission("allbanks.commands.database.executequery")){
+					if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 						return true;
 					}
@@ -308,7 +308,7 @@ public class Commands implements CommandExecutor {
 							return true;
 						}
 						
-						if(!sender.hasPermission("allbanks.commands.lottery.buyticket")){
+						if(!Util.hasPermission(sender, "allbanks.commands.lottery.buyticket")){
 							Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 							return true;
 						}
@@ -424,7 +424,7 @@ public class Commands implements CommandExecutor {
 					}
 				}else if(args[1].equalsIgnoreCase("info")){
 					
-					if(!sender.hasPermission("allbanks.commands.lottery.info")){
+					if(!Util.hasPermission(sender, "allbanks.commands.lottery.info")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return true;
 					}
@@ -473,7 +473,7 @@ public class Commands implements CommandExecutor {
 					return true;
 				}else if(args[1].equalsIgnoreCase("force")){
 					//Forzar para buscar un ganador
-					if(!sender.hasPermission("allbanks.commands.lottery.force")){
+					if(!Util.hasPermission(sender, "allbanks.commands.lottery.force")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return true;
 					}
@@ -497,7 +497,7 @@ public class Commands implements CommandExecutor {
 					AllBanksLogger.warning("[Lottery] Lottery forced by " + sender.getName());
 					return true;
 				}else if(args[1].equalsIgnoreCase("enable")){
-					if(!sender.hasPermission("allbanks.commands.lottery.enable")){
+					if(!Util.hasPermission(sender, "allbanks.commands.lottery.enable")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return true;
 					}
@@ -522,7 +522,7 @@ public class Commands implements CommandExecutor {
 					AllBanksLogger.warning("[Lottery] Lottery enabled by " + sender.getName());
 					return true;
 				}else if(args[1].equalsIgnoreCase("disable")){
-					if(!sender.hasPermission("allbanks.commands.lottery.disable")){
+					if(!Util.hasPermission(sender, "allbanks.commands.lottery.disable")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return true;
 					}

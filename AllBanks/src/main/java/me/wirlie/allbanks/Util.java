@@ -21,6 +21,7 @@ package me.wirlie.allbanks;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,6 +51,58 @@ public class Util {
 	public static File FlatFile_signFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "SignData");
 	public static File FlatFile_bankAccountFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "BankAccount");
 	public static File FlatFile_pendingCharges = new File(AllBanks.getInstance().getDataFolder() + File.separator + "PendingCharge");
+	
+	public static boolean hasPermission(Player p, String str) {
+		
+		boolean permRegistered = false;
+		
+		if(Bukkit.getPluginManager().getPermission(str) != null) {
+			permRegistered = true;
+		}
+		
+		if(!p.hasPermission(str) && permRegistered) {
+			//No tiene permiso desde el registro.
+			return false;
+		} else if(!p.hasPermission(str)){
+			List<String> defaultPermissions = AllBanks.getInstance().getConfig().getStringList("default-permissions");
+			if(defaultPermissions.contains(str)) {
+				//Es un permiso default
+				return true;
+			}else {
+				//No es un permiso default, no tiene permiso
+				return false;
+			}
+		} else {
+			//en este resultado, hasPermission es true
+			return true;
+		}
+	}
+	
+	public static boolean hasPermission(CommandSender s, String str) {
+		
+		boolean permRegistered = false;
+		
+		if(Bukkit.getPluginManager().getPermission(str) != null) {
+			permRegistered = true;
+		}
+		
+		if(!s.hasPermission(str) && permRegistered) {
+			//No tiene permiso desde el registro.
+			return false;
+		} else if(!s.hasPermission(str)){
+			List<String> defaultPermissions = AllBanks.getInstance().getConfig().getStringList("default-permissions");
+			if(defaultPermissions.contains(str)) {
+				//Es un permiso default
+				return true;
+			}else {
+				//No es un permiso default, no tiene permiso
+				return false;
+			}
+		} else {
+			//en este resultado, hasPermission es true
+			return true;
+		}
+	}
 	
 	//Reflection Util, Internal method, used as shorthand to grab our method in a nice friendly manner
 	public static class ReflectionUtil{

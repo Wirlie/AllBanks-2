@@ -109,42 +109,42 @@ public class Banks {
 		case NEW_SIGN:
 			switch(btype){
 			case ATM:
-				return p.hasPermission("allbanks.sign.atm.new");
+				return Util.hasPermission(p, "allbanks.sign.atm.new");
 			case SHOP:
-				return p.hasPermission("allbanks.sign.shop.new");
+				return Util.hasPermission(p, "allbanks.sign.shop.new");
 			case BANK_LAND:
-				return p.hasPermission("allbanks.sign.land.new");
+				return Util.hasPermission(p, "allbanks.sign.land.new");
 			case BANK_LOAN:
-				return p.hasPermission("allbanks.sign.loan.new");
+				return Util.hasPermission(p, "allbanks.sign.loan.new");
 			case BANK_MONEY:
-				return p.hasPermission("allbanks.sign.money.new");
+				return Util.hasPermission(p, "allbanks.sign.money.new");
 			case BANK_TIME:
-				return p.hasPermission("allbanks.sign.time.new");
+				return Util.hasPermission(p, "allbanks.sign.time.new");
 			case BANK_XP:
-				return p.hasPermission("allbanks.sign.xp.new");
+				return Util.hasPermission(p, "allbanks.sign.xp.new");
 			case BANK_CHEST:
-				return p.hasPermission("allbanks.sign.chest.new");
+				return Util.hasPermission(p, "allbanks.sign.chest.new");
 			case DEFAULT:
 				break;
 			}
 		case DESTROY_SIGN:
 			switch(btype){
 			case ATM:
-				return p.hasPermission("allbanks.sign.atm.destroy");
+				return Util.hasPermission(p, "allbanks.sign.atm.destroy");
 			case SHOP:
-				return p.hasPermission("allbanks.sign.shop.destroy");
+				return Util.hasPermission(p, "allbanks.sign.shop.destroy");
 			case BANK_LAND:
-				return p.hasPermission("allbanks.sign.land.destroy");
+				return Util.hasPermission(p, "allbanks.sign.land.destroy");
 			case BANK_LOAN:
-				return p.hasPermission("allbanks.sign.loan.destroy");
+				return Util.hasPermission(p, "allbanks.sign.loan.destroy");
 			case BANK_MONEY:
-				return p.hasPermission("allbanks.sign.money.destroy");
+				return Util.hasPermission(p, "allbanks.sign.money.destroy");
 			case BANK_TIME:
-				return p.hasPermission("allbanks.sign.time.destroy");
+				return Util.hasPermission(p, "allbanks.sign.time.destroy");
 			case BANK_XP:
-				return p.hasPermission("allbanks.sign.xp.destroy");
+				return Util.hasPermission(p, "allbanks.sign.xp.destroy");
 			case BANK_CHEST:
-				return p.hasPermission("allbanks.sign.chest.destroy");
+				return Util.hasPermission(p, "allbanks.sign.chest.destroy");
 			case DEFAULT:
 				break;
 			}
@@ -152,21 +152,21 @@ public class Banks {
 		case USE_SIGN:
 			switch(btype){
 			case ATM:
-				return p.hasPermission("allbanks.sign.atm.use");
+				return Util.hasPermission(p, "allbanks.sign.atm.use");
 			case SHOP:
-				return p.hasPermission("allbanks.sign.shop.use");
+				return Util.hasPermission(p, "allbanks.sign.shop.use");
 			case BANK_LAND:
-				return p.hasPermission("allbanks.sign.land.use");
+				return Util.hasPermission(p, "allbanks.sign.land.use");
 			case BANK_LOAN:
-				return p.hasPermission("allbanks.sign.loan.use");
+				return Util.hasPermission(p, "allbanks.sign.loan.use");
 			case BANK_MONEY:
-				return p.hasPermission("allbanks.sign.money.use");
+				return Util.hasPermission(p, "allbanks.sign.money.use");
 			case BANK_TIME:
-				return p.hasPermission("allbanks.sign.time.use");
+				return Util.hasPermission(p, "allbanks.sign.time.use");
 			case BANK_XP:
-				return p.hasPermission("allbanks.sign.xp.use");
+				return Util.hasPermission(p, "allbanks.sign.xp.use");
 			case BANK_CHEST:
-				return p.hasPermission("allbanks.sign.chest.use");
+				return Util.hasPermission(p, "allbanks.sign.chest.use");
 			case DEFAULT:
 				break;
 			}
