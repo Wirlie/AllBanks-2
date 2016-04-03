@@ -91,7 +91,6 @@ public class BankAccount {
 		}
 		
 		private static BankAccount getAccountFromDataBase(Player p){
-			
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 				
 				if(!Util.FlatFile_bankAccountFolder.exists()) {
@@ -118,7 +117,7 @@ public class BankAccount {
 				}
 				
 				return ba;
-			}else {
+			} else {
 				
 				if(DatabaseUtil.databaseIsLocked()) return null;
 				
@@ -130,7 +129,7 @@ public class BankAccount {
 					
 					//nueva instancia de bank account
 					BankAccount ba = new BankAccount(p);
-					
+
 					//BankLoan
 					result = stm.executeQuery("SELECT bankloan.*, bankmoney.*, bankxp.*, banktime.* FROM bankloan_accounts AS bankloan LEFT JOIN bankmoney_accounts AS bankmoney ON bankmoney.owner = bankloan.owner LEFT JOIN bankxp_accounts AS bankxp ON bankxp.owner = bankloan.owner LEFT JOIN banktime_accounts AS banktime ON bankloan.owner = banktime.owner WHERE bankloan.owner = '" + p.getName() + "'");
 					
@@ -299,6 +298,8 @@ public class BankAccount {
 		}
 		
 		public synchronized boolean updateLoan(BigDecimal newLoan, boolean updateFromDatabase){
+			bankloan_loan = newLoan;
+			
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 				if(!Util.FlatFile_bankAccountFolder.exists()) {
 					Util.FlatFile_bankAccountFolder.mkdirs();
@@ -368,6 +369,9 @@ public class BankAccount {
 		}
 		
 		public synchronized boolean updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
+			
+			bankmoney_money = newMoney;
+			
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 				if(!Util.FlatFile_bankAccountFolder.exists()) {
 					Util.FlatFile_bankAccountFolder.mkdirs();
@@ -427,6 +431,9 @@ public class BankAccount {
 	
 	public class BankXP{
 		public synchronized boolean updateXP(int newXP, boolean updateFromDatabase){
+			
+			bankxp_xp = newXP;
+			
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 				if(!Util.FlatFile_bankAccountFolder.exists()) {
 					Util.FlatFile_bankAccountFolder.mkdirs();
@@ -502,6 +509,9 @@ public class BankAccount {
 	
 	public class BankTime{
 		public synchronized boolean updateTime(int newTime, boolean updateFromDatabase){
+			
+			banktime_time = newTime;
+			
 			if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 				if(!Util.FlatFile_bankAccountFolder.exists()) {
 					Util.FlatFile_bankAccountFolder.mkdirs();
