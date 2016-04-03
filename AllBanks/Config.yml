@@ -1,5 +1,5 @@
 # do not edit this.
-cfg-version: "v1.0.1"
+cfg-version: "v1.0.2"
 # These permissions are given to all Players, it is useful if you want to use AllBanks without a Permission-Plugin.
 # Note: For example, if you set "allbanks.sign.loan.use" into a default permission, and you do want to deny this for a specific group/player, 
 # you can use "-" before it ("-allbanks.sign.loan.use") in your Permission-Plugin.
@@ -16,10 +16,11 @@ pl:
   prefix: "&3All&bBanks &6&l>> &r"
   # Not yet implemented.
   enable-metrics: true
-  # Not yet implemented.
-  check-for-updates: true
-  # Not yet implemented.
-  auto-update: false
+  updater:
+    # Check for new updates
+    check-for-updates: true
+    # Update AllBanks if a new version was found.
+    auto-update: true
   # Available storage systems: FlatFile, SQLite (default) and MySQL
   storage-system: "SQLite"
   # If you set "storage-system" with MySQL these configurations are required:

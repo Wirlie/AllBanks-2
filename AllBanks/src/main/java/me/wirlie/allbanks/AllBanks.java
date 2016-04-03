@@ -18,14 +18,23 @@
  */
 package me.wirlie.allbanks;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -33,6 +42,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import me.wirlie.allbanks.Updater.UpdateResult;
+import me.wirlie.allbanks.Updater.UpdateType;
 import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.listeners.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.PlayerChatBSListener;
@@ -225,16 +236,37 @@ public class AllBanks extends JavaPlugin {
 				
 				new BankLoanRunnable().runTaskTimer(this, nextCollection * 20, collectLoanEvery * 20);
 			}
-		
-			//BankLottery
-			LotteryRunnable.initializeLottery();
-			try {
-				LotteryRunnable.startRunnable();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			
 		}
+		
+		//BankLottery
+		LotteryRunnable.initializeLottery();
+		try {
+			LotteryRunnable.startRunnable();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		//Updater
+		boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
+		boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);
+		
+		UpdateType uptype = UpdateType.DEFAULT;
+		
+		if(checkForUpdates && !forceUpdate) {
+			uptype = UpdateType.NO_DOWNLOAD;
+		}
+		
+		if(!checkForUpdates && forceUpdate) {
+			uptype = UpdateType.NO_VERSION_CHECK;
+		}
+		
+		if(checkForUpdates || forceUpdate) {
+			Updater updater = new Updater(this, 98949, this.getFile(), uptype, true);
+			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+			    this.getLogger().info("New version available! " + updater.getLatestName());
+			}
+		}
+		
 	}
 	
 	@Override
@@ -375,7 +407,132 @@ public class AllBanks extends JavaPlugin {
 				UpdateConfigWithNativeFile();
 				//Actualizar
 				getInstance().reloadConfig();
+				//Tratar de añadir comentarios al archivo
+				FixConfigComments();
 			}
+		}
+	}
+	
+	public static void FixConfigComments() {
+		//Definir archivo
+		File configFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + "Config.yml");
+		if(!configFile.exists()) return;
+		
+		try {
+			//Cargar archivo
+			FileInputStream inputStream = new FileInputStream(configFile);
+			//Crear stream
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+			//Crear buffer
+			BufferedReader read = new BufferedReader(inputStreamReader);
+			
+			//Lineas del archivo leido
+			List<String> lines = new ArrayList<String>();
+			//Nuevas lineas, para la escritura del archivo
+			List<String> newLines = new ArrayList<String>();
+			
+			//While(true), esto hace que el bucle nunca termine
+			while(true) {
+				String line;
+				try {
+					//Leer linea
+					line = read.readLine();
+					//Si la linea es nula, esto quiere decir que se ha alcanzado el fin del archivo asi que rompemos el bucle.
+					if(line == null) break;
+					//Si el bucle continua, añadimos la linea al listado
+					lines.add(line);
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+			for(String line : lines) {
+				
+				if(line.contains("cfg-version:")) {
+					newLines.add("# do not edit this.");
+				}else if(line.contains("default-permissions:")) {
+					newLines.add("# These permissions are given to all Players, it is useful if you want to use AllBanks without a Permission-Plugin.");
+					newLines.add("# Note: For example, if you set \"allbanks.sign.loan.use\" into a default permission, and you do want to deny this for a specific group/player, ");
+					newLines.add("# you can use \"-\" before it (\"-allbanks.sign.loan.use\") in your Permission-Plugin.");
+				}else if(line.contains("language:")) {
+					newLines.add("  # Language (Supported languages: EnUs and EsMx)");
+				}else if(line.contains("prefix:")) {
+					newLines.add("  # Set chat prefix (colors supported)");
+				}else if(line.contains("enable-metrics:")) {
+					newLines.add("  # Enable metrics");
+				}else if(line.contains("check-for-updates:")) {
+					newLines.add("    # Check for new updates");
+				}else if(line.contains("auto-update:")) {
+					newLines.add("    # Update AllBanks if a new version was found.");
+				}else if(line.contains("storage-system:")) {
+					newLines.add("  # Available storage systems: FlatFile, SQLite (default) and MySQL");
+				}else if(line.contains("mysql-host:")) {
+					newLines.add("# If you set \"storage-system\" with MySQL these configurations are required:");
+				}else if(line.contains("ticket-cost:")) {
+					newLines.add("  # Ticket cost.");
+				}else if(line.contains("get-winer-every:")) {
+					newLines.add("  # Get winner every X time:");
+				}else if(line.contains("max-tickets-per-player:")) {
+					newLines.add("  # Max tickets per player:");
+				}else if(line.contains("broadcast-message:")) {
+					newLines.add("  # Broadcast message when the Lottery gets a winner.");
+				}else if(line.contains("interest:")) {
+					newLines.add("    #Interest (in percent) for the loan. (For example 2% -> 5000 = 100)");
+				}else if(line.contains("max-loan:")) {
+					newLines.add("    #How much can a player borrow? (Default: 5000)");
+				}else if(line.contains("collect-interest-every:")) {
+					newLines.add("    #This configuration accept these \"time values\": day(s), hour(s), minute(s), second(s)");
+					newLines.add("    #You can set multiple time values, for example: \"1 days, 20 hours, 15 minutes, 1 second\" = (1440 * 60) + (1200 * 60) + (15 * 60) + 1 = 156901 seconds.");
+				}else if(line.contains("stop-collect-if-player-balance-is-minor-than:")) {
+					newLines.add("    #Stop interest collection if player have a balance minor than 500 (-500).");
+					newLines.add("    #It is useful when the player has left the server for several days, ");
+					newLines.add("    #it prevents that balance of the player reaches high negative amounts (Impossibles for paying)...");
+				}else if(line.contains("max-money-player-can-save:")) {
+					newLines.add("    # How much money can save the player in the bank?");
+					newLines.add("    # -1 = unlimited");
+				}else if(line.contains("pay-per-minute:")) {
+					newLines.add("    # Pay $1 per minute. Example: 10 minutes = 10 x 1 = $10");
+				}else if(line.contains("add-minute-every:")) {
+					newLines.add("    # Add one minute every 60 seconds.");
+				}else if(line.contains("max-virtual-chests-per-player:")) {
+					newLines.add("    # Number of max virtual chest per player.");
+				}else if(line.contains("max-shop-per-user:")) {
+					newLines.add("    # Number of shops per player.");
+					newLines.add("    # -1 = unlimited");
+				}
+				
+				newLines.add(line);
+			}
+			
+			try {
+				read.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			//Escribir
+			FileOutputStream outpuStream = new FileOutputStream(configFile, false);
+			OutputStreamWriter outpuStreamWriter = new OutputStreamWriter(outpuStream);
+			BufferedWriter write = new BufferedWriter(outpuStreamWriter);
+			
+			for(String s : newLines) {
+				try {
+					write.write(s);
+					write.newLine();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			try {
+				write.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 	
