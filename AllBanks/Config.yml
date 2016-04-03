@@ -12,6 +12,8 @@ default-permissions:
 pl:
   # Language (Supported languages: EnUs and EsMx)
   language: "EnUs"
+  # Set chat prefix (colors supported)
+  prefix: "&3All&bBanks &6&l>> &r"
   # Not yet implemented.
   enable-metrics: true
   # Not yet implemented.
@@ -65,3 +67,5 @@ banks:
   shop:
     # Not yet implemented.
     max-shop-per-user: -1
+topranks:
+  update-cache-every: "5 minutes"

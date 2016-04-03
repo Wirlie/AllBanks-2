@@ -37,8 +37,9 @@ import org.bukkit.entity.Player;
  */
 public class Translation{
 	
-static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File.separator + "language");
-	
+	private static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File.separator + "language");
+	private static String prefixStr = Util.ChatFormatUtil.replaceChatFormat(AllBanks.getInstance().getConfig().getString("pl.prefix", ChatColor.DARK_AQUA + "All" + ChatColor.AQUA + "Banks" + ChatColor.GOLD + ChatColor.BOLD + " >> " + ChatColor.RESET));
+
 	public enum Languages{
 		ES_MX(new File(languageDir + File.separator + "EsMx.yml"), "EsMx.yml"),
 		EN_US(new File(languageDir + File.separator + "EnUs.yml"), "EnUs.yml");
@@ -73,6 +74,23 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 				langDir.mkdirs();
 			}
 		}
+	}
+	
+	public static HashMap<String, String> splitStringIntoReplaceHashMap(String splitRegex, String... args){
+		HashMap<String, String> returnMap = new HashMap<String, String>();
+		
+		for(String s : args) {
+			String[] parts = s.split(splitRegex);
+			if(parts.length >= 2) {
+				returnMap.put(parts[0], parts[1]);
+			}
+		}
+		
+		return returnMap;
+	}
+	
+	public static String getPluginPrefix() {
+		return prefixStr;
 	}
 	
 	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
@@ -111,8 +129,6 @@ static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File
 		String[] split = translation.split("%BREAK%");
 		
 		if(prefix){
-			String prefixStr = ChatColor.DARK_AQUA + "All" + ChatColor.AQUA + "Banks" + ChatColor.GOLD + ChatColor.BOLD + " >> " + ChatColor.RESET;
-			
 			for(int i = 0; i < split.length; i++){
 				split[i] = prefixStr + split[i];
 			}

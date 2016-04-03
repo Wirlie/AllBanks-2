@@ -366,6 +366,78 @@ public class Util {
 	}
 
 	public static class ConfigUtil{
+		
+		public static String convertSecondsIntoTimeAgo(int seconds, boolean fullString) {
+			return convertSecondsIntoTimeAgo(seconds, fullString, 2);
+		}
+		
+		public static String convertSecondsIntoTimeAgo(int seconds, int maxShow) {
+			return convertSecondsIntoTimeAgo(seconds, false, maxShow);
+		}
+		
+		private static String convertSecondsIntoTimeAgo(int seconds, boolean fullString, int maxShow) {
+			//Semanas
+			int weeks = (int) Math.floor(seconds / (60 * 60 * 24 * 7));
+			seconds -= weeks * (60 * 60 * 24 * 7);
+			
+			//Días
+			int days = (int) Math.floor(seconds / (60 * 60 * 24)); 
+			seconds -= days * (60 * 60 * 24);
+			
+			//Horas
+			int hours = (int) Math.floor(seconds / (60 * 60)); 
+			seconds -= hours * (60 * 60);
+			
+			//Minutos
+			int minutes = (int) Math.floor(seconds / (60)); 
+			seconds -= minutes * (60);
+			
+			String returnStr = "";
+			int showed = 0;
+			
+			if(weeks > 0) {
+				if(showed < maxShow || fullString) {
+					returnStr += weeks + " " + Translation.get(StringsID.WEEKS, false)[0];
+					showed++;
+				}
+			}
+			
+			if(days > 0) {
+				if(showed < maxShow || fullString) {
+					returnStr += ((showed == 0) ? "" : ", ") + days + " " + Translation.get(StringsID.DAYS, false)[0];
+					showed++;
+				}
+			}
+			
+			if(hours > 0) {
+				if(showed < maxShow || fullString) {
+					returnStr += ((showed == 0) ? "" : ", ") + hours + " " + Translation.get(StringsID.HOURS, false)[0];
+					showed++;
+				}
+			}
+			
+			if(minutes > 0) {
+				if(showed < maxShow || fullString) {
+					returnStr += ((showed == 0) ? "" : ", ") + minutes + " " + Translation.get(StringsID.MINUTES, false)[0];
+					showed++;
+				}
+			}
+			
+			if(seconds > 0) {
+				if(showed < maxShow || fullString) {
+					returnStr += ((showed == 0) ? "" : ", ") + seconds + " " + Translation.get(StringsID.SECONDS, false)[0];
+					showed++;
+				}
+			}
+			
+			if(seconds <= 0 && showed == 0) {
+				returnStr += ((showed == 0) ? "" : ", ") + 0 + " " + Translation.get(StringsID.SECONDS, false)[0];
+				showed++;
+			}
+			
+			return returnStr;
+		}
+		
 		/**
 		 * Bueno, esto realmente ayuda con la configuración banks.bank-loan.collect-interest-every
 		 * ya que se encuentra en formato 0 days, 0 hours, 0 minutes, 0 seconds y es necesario

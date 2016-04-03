@@ -24,9 +24,13 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.TreeMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,6 +46,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks.StorageType;
+import me.wirlie.allbanks.Util.ConfigUtil;
 import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -54,9 +59,30 @@ import me.wirlie.allbanks.runnable.LotteryRunnable;
  */
 public class Commands implements CommandExecutor {
 	
-	public static TreeMap<Integer, String> bankMoneyTopRankCache = new TreeMap<Integer, String>();
-	public static long bankMoneyTopRankCacheTime = 0;
+	private static Map<String, BigDecimal> bankMoneyTopRankCache = new HashMap<String, BigDecimal>();
+	private static long bankMoneyTopRankCacheTime = 0;
+	private static boolean bankMoneyTopRankNeedsUpdate = true;
+	private static boolean bankMoneyTopRankFirstUse = true;
 
+	static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+	        new Comparator<Map.Entry<K,V>>() {
+
+	            public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+	            	int res = e2.getValue().compareTo(e1.getValue());
+	                if (e1.getKey().equals(e2.getKey())) {
+	                    return res; // Code will now handle equality properly
+	                } else {
+	                    return res != 0 ? res : 1; // While still adding all entries
+	                }
+	            }
+	            
+	        }
+	    );
+	    sortedEntries.addAll(map.entrySet());
+	    return sortedEntries;
+	}
+	
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
 		
 		if(args.length == 0){
@@ -107,10 +133,6 @@ public class Commands implements CommandExecutor {
 				
 			
 		}else if(mainAction.equalsIgnoreCase("toprank")){
-			if(!Util.hasPermission(sender, "allbanks.commands.toprank")){
-				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
-				return true;
-			}
 			
 			if(args.length >= 2){
 				
@@ -121,11 +143,24 @@ public class Commands implements CommandExecutor {
 				
 				if(args[1].equalsIgnoreCase("bankmoney")) {
 					
+					if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankmoney")){
+						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+						return true;
+					}
+					
 					//Generar toprank del bankmoney
 					new BukkitRunnable() {
 	
 						public void run() {
-							Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
+							long time = new Date().getTime();
+							long difInSeconds = (time - bankMoneyTopRankCacheTime) / 1000;
+							
+							boolean update = (difInSeconds > ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("topranks.update-cache-every", "5 seconds")) && bankMoneyTopRankNeedsUpdate || bankMoneyTopRankFirstUse);
+							
+							if(update) {
+								Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
+								bankMoneyTopRankCacheTime = time;
+							}
 							
 							if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 								//FlatFile
@@ -135,10 +170,67 @@ public class Commands implements CommandExecutor {
 									return;
 								}
 								
-								long difInSeconds = (new Date().getTime() - bankMoneyTopRankCacheTime) / 1000;
-								
+								if(update) {
+									//Para evitar una sobrecarga, cada 5 minutos se puede generar un nuevo re-mapeo
+									Map<String, BigDecimal> topRankMap = new HashMap<String, BigDecimal>();
+									for(File f : dataFolder.listFiles()) {
+										YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
+										topRankMap.put(yaml.getString("owner"), new BigDecimal(yaml.getString("money")));
+									}
+									
+									//guardar en el caché
+									bankMoneyTopRankCache = topRankMap;
+									
+									bankMoneyTopRankFirstUse = false;
+								}
 							}else {
 								//DataBase
+								
+								if(update) {
+									try {
+										Statement stm = AllBanks.getDataBaseConnection().createStatement();
+										ResultSet res = stm.executeQuery("SELECT * FROM bankmoney_accounts");
+										
+										Map<String, BigDecimal> topRankMap = new HashMap<String, BigDecimal>();
+										
+										while(res.next()) {
+											BigDecimal money = new BigDecimal(res.getString("money"));
+											String owner = res.getString("owner");
+											
+											topRankMap.put(owner, money);
+										}
+										
+										//guardar en el caché
+										bankMoneyTopRankCache = topRankMap;
+										bankMoneyTopRankFirstUse = false;
+									} catch(SQLException e) {
+										DatabaseUtil.checkDatabaseIsLocked(e);
+									}
+								}
+							}
+								
+							//Mostrar al usuario
+							SortedSet<Entry<String, BigDecimal>> data = entriesSortedByValues(bankMoneyTopRankCache);
+							Object[] dataArray = data.toArray();
+							
+							int page = 0;
+							int minIndex = page * 20;
+							int maxIndex = minIndex + 20;
+							
+							if(difInSeconds == (time / 1000)) {
+								difInSeconds = 0;
+							}
+							
+							Translation.getAndSendMessage(sender, StringsID.TOPRANK_BANKMONEY_HEADER, true);
+							Translation.getAndSendMessage(sender, StringsID.TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
+							
+							for(int i = minIndex; i < maxIndex; i++) {
+								if(dataArray.length <= i) break;
+								
+								@SuppressWarnings("unchecked")
+								Entry<String, BigDecimal> entrydata = (Entry<String, BigDecimal>) dataArray[i];
+								
+								sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + (i + 1) + ": " + ChatColor.YELLOW + AllBanks.getEconomy().format(entrydata.getValue().doubleValue()) + ChatColor.GRAY + " - " + ChatColor.AQUA + entrydata.getKey());
 							}
 						}
 						
