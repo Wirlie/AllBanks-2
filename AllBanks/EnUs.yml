@@ -3,7 +3,7 @@
 ##
 ## AllBanks v1.0
 
-language-version: "1.0"
+language-version: "1.0.1"
 
 1: "Enabling plugin.%BREAK%Starting local database..."
 2: "Disabling plugin.%BREAK%Saving local database..."
@@ -70,3 +70,12 @@ language-version: "1.0"
 63: "&b&lThe lottery was forced by an administrator."
 64: "&cThis bank is not implemented yet, please wait for the next updates of AllBanks."
 65: "&cThis command only works with a DataBase"
+66: "&eGenerating top ranks, please wait..."
+67: "&cNo stats availables."
+68: " %BREAK%&5Top Ranks - BankMoney"
+69: "&fLast update: &b%1% ago."
+70: "Week(s)"
+71: "Day(s)"
+72: "Hour(s)"
+73: "Minute(s)"
+74: "Second(s)"
