@@ -61,8 +61,9 @@ public class Commands implements CommandExecutor {
 	
 	private static Map<String, BigDecimal> bankMoneyTopRankCache = new HashMap<String, BigDecimal>();
 	private static long bankMoneyTopRankCacheTime = 0;
-	private static boolean bankMoneyTopRankNeedsUpdate = true;
-	private static boolean bankMoneyTopRankFirstUse = true;
+	
+	private static Map<String, Integer> bankXPTopRankCache = new HashMap<String, Integer>();
+	private static long bankXPTopRankCacheTime = 0;
 
 	static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
 	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
@@ -138,10 +139,26 @@ public class Commands implements CommandExecutor {
 				
 				if(sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-					return true;
+					//return true;
 				}
 				
 				if(args[1].equalsIgnoreCase("bankmoney")) {
+					
+					int page = 1;
+					
+					if(args.length >= 3) {
+						try {
+							page = Integer.parseInt(args[2]);
+							
+							if(page < 1) {
+								page = 1;
+							}
+						}catch(NumberFormatException e) {
+							page = 1;
+						}
+					}
+					
+					final int finalPage = page;
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankmoney")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
@@ -155,11 +172,14 @@ public class Commands implements CommandExecutor {
 							long time = new Date().getTime();
 							long difInSeconds = (time - bankMoneyTopRankCacheTime) / 1000;
 							
-							boolean update = (difInSeconds > ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("topranks.update-cache-every", "5 seconds")) && bankMoneyTopRankNeedsUpdate || bankMoneyTopRankFirstUse);
+							boolean bankMoneyTopRankFirstUse = (bankMoneyTopRankCacheTime == 0) ? true : false;
+							
+							boolean update = (difInSeconds > ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("topranks.update-cache-every", "5 seconds")) || bankMoneyTopRankFirstUse);
 							
 							if(update) {
 								Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
 								bankMoneyTopRankCacheTime = time;
+								difInSeconds = 0;
 							}
 							
 							if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
@@ -198,6 +218,12 @@ public class Commands implements CommandExecutor {
 											String owner = res.getString("owner");
 											
 											topRankMap.put(owner, money);
+											
+										}
+										
+										if(topRankMap.isEmpty()) {
+											Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+											return;
 										}
 										
 										//guardar en el caché
@@ -208,13 +234,8 @@ public class Commands implements CommandExecutor {
 									}
 								}
 							}
-								
-							//Mostrar al usuario
-							SortedSet<Entry<String, BigDecimal>> data = entriesSortedByValues(bankMoneyTopRankCache);
-							Object[] dataArray = data.toArray();
 							
-							int page = 0;
-							int minIndex = page * 20;
+							int minIndex = (finalPage - 1) * 20;
 							int maxIndex = minIndex + 20;
 							
 							if(difInSeconds == (time / 1000)) {
@@ -223,6 +244,10 @@ public class Commands implements CommandExecutor {
 							
 							Translation.getAndSendMessage(sender, StringsID.TOPRANK_BANKMONEY_HEADER, true);
 							Translation.getAndSendMessage(sender, StringsID.TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
+							
+							//Mostrar al usuario
+							SortedSet<Entry<String, BigDecimal>> data = entriesSortedByValues(bankMoneyTopRankCache);
+							Object[] dataArray = data.toArray();
 							
 							for(int i = minIndex; i < maxIndex; i++) {
 								if(dataArray.length <= i) break;
@@ -237,6 +262,121 @@ public class Commands implements CommandExecutor {
 					}.runTaskAsynchronously(AllBanks.getInstance());
 					
 					return true;
+				}else if(args[1].equalsIgnoreCase("bankxp")) {
+					
+					int page = 1;
+					
+					if(args.length >= 3) {
+						try {
+							page = Integer.parseInt(args[2]);
+							
+							if(page < 1) {
+								page = 1;
+							}
+						}catch(NumberFormatException e) {
+							page = 1;
+						}
+					}
+					
+					final int finalPage = page;
+					
+					if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankxp")){
+						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+						return true;
+					}
+					
+					new BukkitRunnable() {
+						public void run() {
+							long time = new Date().getTime();
+							long difInSeconds = (time - bankXPTopRankCacheTime) / 1000;
+
+							boolean bankXPTopRankFirstUse = (bankXPTopRankCacheTime == 0) ? true : false;
+							
+							boolean update = (difInSeconds > ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("topranks.update-cache-every", "5 seconds")) || bankXPTopRankFirstUse);
+							
+							
+							if(update) {
+								Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
+								bankXPTopRankCacheTime = time;
+								difInSeconds = 0;
+							}
+							
+							if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
+								//FlatFile
+								File dataFolder = Util.FlatFile_bankAccountFolder;
+								if(!dataFolder.exists()) {
+									Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+									return;
+								}
+								
+								if(update) {
+									//Para evitar una sobrecarga, cada 5 minutos se puede generar un nuevo re-mapeo
+									Map<String, Integer> topRankMap = new HashMap<String, Integer>();
+									for(File f : dataFolder.listFiles()) {
+										YamlConfiguration yaml = YamlConfiguration.loadConfiguration(f);
+										topRankMap.put(yaml.getString("owner"), yaml.getInt("xp"));
+									}
+									
+									//guardar en el caché
+									bankXPTopRankCache = topRankMap;
+									
+									bankXPTopRankFirstUse = false;
+								}
+							}else {
+								//DataBase
+								
+								if(update) {
+									try {
+										Statement stm = AllBanks.getDataBaseConnection().createStatement();
+										ResultSet res = stm.executeQuery("SELECT * FROM bankxp_accounts");
+										
+										Map<String, Integer> topRankMap = new HashMap<String, Integer>();
+										
+										while(res.next()) {
+											int xp = res.getInt("xp");
+											String owner = res.getString("owner");
+											
+											topRankMap.put(owner, xp);
+										}
+										
+										if(topRankMap.isEmpty()) {
+											Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+											return;
+										}
+										
+										//guardar en el caché
+										bankXPTopRankCache = topRankMap;
+										bankXPTopRankFirstUse = false;
+									} catch(SQLException e) {
+										DatabaseUtil.checkDatabaseIsLocked(e);
+									}
+								}
+							}
+							
+							int minIndex = (finalPage - 1) * 20;
+							int maxIndex = minIndex + 20;
+							
+							if(difInSeconds == (time / 1000)) {
+								difInSeconds = 0;
+							}
+							
+							Translation.getAndSendMessage(sender, StringsID.TOPRANK_BANKXP_HEADER, true);
+							Translation.getAndSendMessage(sender, StringsID.TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
+							
+							//Mostrar al usuario
+							SortedSet<Entry<String, Integer>> data = entriesSortedByValues(bankXPTopRankCache);
+							Object[] dataArray = data.toArray();
+							
+							for(int i = minIndex; i < maxIndex; i++) {
+								if(dataArray.length <= i) break;
+								
+								@SuppressWarnings("unchecked")
+								Entry<String, Integer> entrydata = (Entry<String, Integer>) dataArray[i];
+								
+								sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + (i + 1) + ": " + ChatColor.YELLOW + Util.XPConversionUtil.convertExpToLevel(entrydata.getValue()) + " " + Translation.get(StringsID.LEVELS, false)[0] + ChatColor.GRAY + " - " + ChatColor.AQUA + entrydata.getKey());
+							}
+						}
+					}.runTaskAsynchronously(AllBanks.getInstance());
 				}
 			}
 			

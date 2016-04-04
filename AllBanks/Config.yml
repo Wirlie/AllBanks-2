@@ -9,6 +9,8 @@ default-permissions:
   - "allbanks.sign.time.use"
   - "allbanks.sign.xp.use"
   - "allbanks.sign.chest.use"
+  - "allbanks.commands.toprank.bankxp"
+  - "allbanks.commands.toprank.bankmoney"
 pl:
   # Language (Supported languages: EnUs and EsMx)
   language: "EnUs"

@@ -50,7 +50,8 @@ public class CommandsTabCompleter implements TabCompleter {
 						);
 			}else if(args[0].equalsIgnoreCase("toprank")){
 				return Arrays.asList(
-						"bankmoney"
+						"bankmoney",
+						"bankxp"
 						);
 			}else if(args[0].equalsIgnoreCase("lottery")){
 				return Arrays.asList(
@@ -71,8 +72,8 @@ public class CommandsTabCompleter implements TabCompleter {
 						);
 			}else if(args[0].equalsIgnoreCase("lottery") && args[1].equalsIgnoreCase("buyticket")) {
 				return Arrays.asList("0");
-			}else if(args[0].equalsIgnoreCase("testsound")){
-				return Arrays.asList("0");
+			}else if(args[0].equalsIgnoreCase("toprank") && args[1].equalsIgnoreCase("bankmoney")){
+				return Arrays.asList("1");
 			}
 		}
 		

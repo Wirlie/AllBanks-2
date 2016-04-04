@@ -101,6 +101,8 @@ public enum StringsID {
 	HOURS(72),
 	MINUTES(73),
 	SECONDS(74),
+	LEVELS(75),
+	TOPRANK_BANKXP_HEADER(76),
 	
 	;
 	
