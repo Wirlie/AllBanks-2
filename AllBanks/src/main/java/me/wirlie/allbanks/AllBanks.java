@@ -41,7 +41,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
 
 import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
