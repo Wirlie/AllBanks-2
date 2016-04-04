@@ -73,7 +73,17 @@ public class AllBanks extends JavaPlugin {
 	
 	private static Economy econ = null;
 
-	public final static String[] COMPATIBLE_VERSIONS = {"1.9-R0.1-SNAPSHOT"};
+	public final static String[] COMPATIBLE_VERSIONS = {
+			"1.8",
+			"1.8.3",
+			"1.8.4",
+			"1.8.5",
+			"1.8.6",
+			"1.8.7",
+			"1.8.8",
+			"1.9",
+			"1.9.2",
+			};
 	
 	public enum StorageType{
 		FLAT_FILE,

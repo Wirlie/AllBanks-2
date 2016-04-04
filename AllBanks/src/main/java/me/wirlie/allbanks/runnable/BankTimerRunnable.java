@@ -46,6 +46,7 @@ public class BankTimerRunnable extends BukkitRunnable {
 		AllBanksLogger.info("BankTimerRunnable: Executed.");
 		
 		int total = 0;
+		
 		for(Player p : Bukkit.getOnlinePlayers()){
 			BankAccount ba = BankAccount.Cache.get(p.getUniqueId());
 			
