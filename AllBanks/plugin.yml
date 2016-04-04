@@ -1,4 +1,4 @@
-name: AllBanks
+name: AllBanks2
 version: 1.0.2
 main: me.wirlie.allbanks.AllBanks
 commands:
