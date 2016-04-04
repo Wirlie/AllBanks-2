@@ -93,7 +93,7 @@ public class Translation{
 		return prefixStr;
 	}
 	
-	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
+	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean consoleSender){
 		File trFile = ensureLanguageFileExists(getLangByConfig());
 		YamlConfiguration trYaml = YamlConfiguration.loadConfiguration(trFile);
 		String translation = trYaml.getString(strPath, null);
@@ -122,7 +122,7 @@ public class Translation{
 		//Especial
 		translation = translation.replace("%LOTTERY_PREFIX%", Util.ChatFormatUtil.replaceChatFormat(trYaml.getString("LOTTERY_PREFIX", "")));
 		
-		if(commandSender){
+		if(consoleSender){
 			translation = Util.ChatFormatUtil.supressChatFormat(translation);
 		}
 		

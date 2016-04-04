@@ -48,6 +48,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.Util.ConfigUtil;
 import me.wirlie.allbanks.Util.DatabaseUtil;
+import me.wirlie.allbanks.Util.SoundUtil;
+import me.wirlie.allbanks.Util.SoundUtil.SoundType;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.runnable.LotteryRunnable;
@@ -86,17 +88,77 @@ public class Commands implements CommandExecutor {
 	
 	public boolean onCommand(final CommandSender sender, final Command cmd, final String label, final String[] args) {
 		
+		boolean senderIsPlayer = false;
+		
+		if(sender instanceof Player) {
+			senderIsPlayer = true;
+		}
+		
 		if(args.length == 0){
-			//TODO Agregar un mensaje que muestre información referente al plugin.
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_MAIN_INFO, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
 			return true;
 		}
 		
 		final String mainAction = args[0];
 		
-		//REMOVE Remover esto, es un comando "debug"
-		if(mainAction.equalsIgnoreCase("testsound")){
+		if(mainAction.equalsIgnoreCase("?") || mainAction.equalsIgnoreCase("help")) {
+			//Comando de ayuda
+			if(!Util.hasPermission(sender, "allbanks.commands.help")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+				if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
+				return true;
+			}
+			
+			int page = 1;
+			
+			if(args.length > 1) {
+				try {
+					page = Integer.parseInt(args[1]);
+					
+					if(page < 1) {
+						page = 1;
+					}
+					
+				}catch(NumberFormatException e) {
+					page = 1;
+				}
+			}
+			
+			int maxPages = 1;
+			if(page > maxPages) page = maxPages;
+			
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + page, "%2%>>>" + maxPages), true);
+			
+			switch(page) {
+			case 1:
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab ? " + ChatColor.AQUA + "[page]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_HELP_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "[bankmoney|bankxp]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "info" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_INFO_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "buyticket [amount]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_BUYTICKET_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "[enable|disable]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab reload" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_RELOAD_DESC.toString(false));
+				
+				break;
+			}
+			
+			return true;
+		}else if(mainAction.equalsIgnoreCase("reload")){
+			if(!Util.hasPermission(sender, "allbanks.commands.reload")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+				if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
+				return true;
+			}
+			
+			AllBanks.getInstance().reloadConfig();
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_RELOAD_SUCCESS, true);
+			
+			return true;
+		}else if(mainAction.equalsIgnoreCase("testsound")){
+			//REMOVE Remover esto, es un comando "debug"
 			if(!Util.hasPermission(sender, "allbanks.commands.testsound")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+				if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 				return true;
 			}
 			
@@ -139,7 +201,7 @@ public class Commands implements CommandExecutor {
 				
 				if(sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-					//return true;
+					return true;
 				}
 				
 				if(args[1].equalsIgnoreCase("bankmoney")) {
@@ -162,6 +224,7 @@ public class Commands implements CommandExecutor {
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankmoney")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -177,7 +240,7 @@ public class Commands implements CommandExecutor {
 							boolean update = (difInSeconds > ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("topranks.update-cache-every", "5 seconds")) || bankMoneyTopRankFirstUse);
 							
 							if(update) {
-								Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_GENERATING, true);
 								bankMoneyTopRankCacheTime = time;
 								difInSeconds = 0;
 							}
@@ -186,7 +249,7 @@ public class Commands implements CommandExecutor {
 								//FlatFile
 								File dataFolder = Util.FlatFile_bankAccountFolder;
 								if(!dataFolder.exists()) {
-									Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+									Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_NO_STATS, true);
 									return;
 								}
 								
@@ -222,7 +285,7 @@ public class Commands implements CommandExecutor {
 										}
 										
 										if(topRankMap.isEmpty()) {
-											Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+											Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_NO_STATS, true);
 											return;
 										}
 										
@@ -242,8 +305,8 @@ public class Commands implements CommandExecutor {
 								difInSeconds = 0;
 							}
 							
-							Translation.getAndSendMessage(sender, StringsID.TOPRANK_BANKMONEY_HEADER, true);
-							Translation.getAndSendMessage(sender, StringsID.TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_BANKMONEY_HEADER, true);
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
 							
 							//Mostrar al usuario
 							SortedSet<Entry<String, BigDecimal>> data = entriesSortedByValues(bankMoneyTopRankCache);
@@ -282,6 +345,7 @@ public class Commands implements CommandExecutor {
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankxp")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -296,7 +360,7 @@ public class Commands implements CommandExecutor {
 							
 							
 							if(update) {
-								Translation.getAndSendMessage(sender, StringsID.TOPRANK_GENERATING, true);
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_GENERATING, true);
 								bankXPTopRankCacheTime = time;
 								difInSeconds = 0;
 							}
@@ -305,7 +369,7 @@ public class Commands implements CommandExecutor {
 								//FlatFile
 								File dataFolder = Util.FlatFile_bankAccountFolder;
 								if(!dataFolder.exists()) {
-									Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+									Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_NO_STATS, true);
 									return;
 								}
 								
@@ -340,7 +404,7 @@ public class Commands implements CommandExecutor {
 										}
 										
 										if(topRankMap.isEmpty()) {
-											Translation.getAndSendMessage(sender, StringsID.TOPRANK_NO_STATS, true);
+											Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_NO_STATS, true);
 											return;
 										}
 										
@@ -360,8 +424,8 @@ public class Commands implements CommandExecutor {
 								difInSeconds = 0;
 							}
 							
-							Translation.getAndSendMessage(sender, StringsID.TOPRANK_BANKXP_HEADER, true);
-							Translation.getAndSendMessage(sender, StringsID.TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_BANKXP_HEADER, true);
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_TOPRANK_LATEST_UPDATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ConfigUtil.convertSecondsIntoTimeAgo((int) difInSeconds, 1)), true);
 							
 							//Mostrar al usuario
 							SortedSet<Entry<String, Integer>> data = entriesSortedByValues(bankXPTopRankCache);
@@ -391,6 +455,7 @@ public class Commands implements CommandExecutor {
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -465,6 +530,7 @@ public class Commands implements CommandExecutor {
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -542,6 +608,7 @@ public class Commands implements CommandExecutor {
 						
 						if(!Util.hasPermission(sender, "allbanks.commands.lottery.buyticket")){
 							Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+							if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 							return true;
 						}
 						
@@ -658,6 +725,7 @@ public class Commands implements CommandExecutor {
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.lottery.info")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -707,6 +775,7 @@ public class Commands implements CommandExecutor {
 					//Forzar para buscar un ganador
 					if(!Util.hasPermission(sender, "allbanks.commands.lottery.force")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -731,6 +800,7 @@ public class Commands implements CommandExecutor {
 				}else if(args[1].equalsIgnoreCase("enable")){
 					if(!Util.hasPermission(sender, "allbanks.commands.lottery.enable")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 					
@@ -756,6 +826,7 @@ public class Commands implements CommandExecutor {
 				}else if(args[1].equalsIgnoreCase("disable")){
 					if(!Util.hasPermission(sender, "allbanks.commands.lottery.disable")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+						if(senderIsPlayer) SoundUtil.sendSound((Player) sender, SoundType.DENY);
 						return true;
 					}
 
