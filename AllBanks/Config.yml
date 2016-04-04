@@ -16,7 +16,7 @@ pl:
   language: "EnUs"
   # Set chat prefix (colors supported)
   prefix: "&3All&bBanks &6&l>> &r"
-  # Not yet implemented.
+  # Enable metrics (like MCStats)
   enable-metrics: true
   updater:
     # Check for new updates

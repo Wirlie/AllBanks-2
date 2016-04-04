@@ -41,6 +41,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.mcstats.Metrics;
 
 import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
@@ -273,8 +274,24 @@ public class AllBanks extends JavaPlugin {
 		if(checkForUpdates || forceUpdate) {
 			Updater updater = new Updater(this, 98949, this.getFile(), uptype, true);
 			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-			    this.getLogger().info("New version available! " + updater.getLatestName());
+			    this.getLogger().info("[Updater] New version available! " + updater.getLatestName());
+			}else if(updater.getResult() == UpdateResult.NO_UPDATE) {
+				this.getLogger().info("[Updater] No updates found. Your AllBanks plugin is up to date.");
+			}else {
+				this.getLogger().info("[Updater] A problem was ocurred: " + updater.getResult());
 			}
+		}
+		
+		//MCStats
+		if(getConfig().getBoolean("pl.enable-metrics", true)) {
+			try {
+		        Metrics metrics = new Metrics(this);
+		        metrics.start();
+		        getLogger().info("Metrics started!");
+		    } catch (IOException e) {
+		        getLogger().info("Metrics failed...");
+		        e.printStackTrace();
+		    }
 		}
 		
 	}
@@ -470,7 +487,7 @@ public class AllBanks extends JavaPlugin {
 				}else if(line.contains("prefix:")) {
 					newLines.add("  # Set chat prefix (colors supported)");
 				}else if(line.contains("enable-metrics:")) {
-					newLines.add("  # Enable metrics");
+					newLines.add("  # Enable metrics (like MCStats)");
 				}else if(line.contains("check-for-updates:")) {
 					newLines.add("    # Check for new updates");
 				}else if(line.contains("auto-update:")) {
