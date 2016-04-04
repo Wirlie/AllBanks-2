@@ -38,7 +38,9 @@ public class CommandsTabCompleter implements TabCompleter {
 			return Arrays.asList(
 					"database",
 					"lottery",
-					"toprank"
+					"toprank",
+					"help",
+					"reload"
 					);
 		}
 		
@@ -52,6 +54,10 @@ public class CommandsTabCompleter implements TabCompleter {
 				return Arrays.asList(
 						"bankmoney",
 						"bankxp"
+						);
+			}else if(args[0].equalsIgnoreCase("help")){
+				return Arrays.asList(
+						"1"
 						);
 			}else if(args[0].equalsIgnoreCase("lottery")){
 				return Arrays.asList(

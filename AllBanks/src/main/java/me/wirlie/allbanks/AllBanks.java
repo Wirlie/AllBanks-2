@@ -610,11 +610,14 @@ public class AllBanks extends JavaPlugin {
 		return storageMethod;
 	}
 	
-	private void verifyServerVersion() {
+	private static void verifyServerVersion() {
 		
 		AllBanksLogger.info("Verifying compatibles versions...");
 		
-		String rawVersion = Bukkit.getServer().getBukkitVersion();
+		String rawBukkitVersion = Bukkit.getServer().getBukkitVersion();
+		String rawVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
+		
+		
 		//String[] version = Bukkit.getServer().getBukkitVersion().split("-");
 		
 		//String mcversion = version[0];
@@ -631,7 +634,7 @@ public class AllBanks extends JavaPlugin {
 		}
 		
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
-		replaceMap.put("%1%", rawVersion);
+		replaceMap.put("%1%", rawBukkitVersion);
 		
 		if(compatible){
 			AllBanksLogger.info("You are using a compatible version of CraftBukkit.");
