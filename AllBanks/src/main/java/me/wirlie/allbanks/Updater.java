@@ -4,7 +4,10 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -15,6 +18,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Check for updates on BukkitDev for a given plugin, and download the updates if needed.
@@ -578,34 +583,66 @@ public class Updater {
     }
 
     /**
-     * <b>If you wish to run mathematical versioning checks, edit this method.</b>
-     * <p>
-     * With default behavior, Updater will NOT verify that a remote version available on BukkitDev
-     * which is not this version is indeed an "update".
-     * If a version is present on BukkitDev that is not the version that is currently running,
-     * Updater will assume that it is a newer version.
-     * This is because there is no standard versioning scheme, and creating a calculation that can
-     * determine whether a new update is actually an update is sometimes extremely complicated.
-     * </p>
-     * <p>
-     * Updater will call this method from {@link #versionCheck()} before deciding whether
-     * the remote version is actually an update.
-     * If you have a specific versioning scheme with which a mathematical determination can
-     * be reliably made to decide whether one version is higher than another, you may
-     * revise this method, using the local and remote version parameters, to execute the
-     * appropriate check.
-     * </p>
-     * <p>
-     * Returning a value of <b>false</b> will tell the update process that this is NOT a new version.
-     * Without revision, this method will always consider a remote version at all different from
-     * that of the local version a new update.
-     * </p>
-     * @param localVersion the current version
-     * @param remoteVersion the remote version
-     * @return true if Updater should consider the remote version an update, false if not.
+     * This method was replaced instead the original function because the original function not 
+     * calculate if a local version is bigger or smaller than the remote version and vice versa.
+     * 
+     * I tested this function, and it works.
+     * 
+     * @author Wirlie
+     * @since AllBanks 1.0.2
+     * 
      */
     public boolean shouldUpdate(String localVersion, String remoteVersion) {
-        return !localVersion.equalsIgnoreCase(remoteVersion);
+
+    	List<String> localVersionSplit = new ArrayList<String>(Arrays.asList(localVersion.split("\\D")));
+    	List<String> remoteVersionSplit = new ArrayList<String>(Arrays.asList(remoteVersion.split("\\D")));
+    	
+    	int maxParameters = (localVersionSplit.size() > remoteVersionSplit.size()) ? localVersionSplit.size() : remoteVersionSplit.size();
+    	
+    	if(localVersionSplit.size() != maxParameters) {
+    		//Igualar local al remoto
+    		int excedent = maxParameters - localVersionSplit.size();
+    		for(int i = 0; i < excedent; i++) {
+    			localVersionSplit.add("0");
+    		}
+    	}else {
+    		//Igualare remoto al local
+    		int excedent = maxParameters - remoteVersionSplit.size();
+    		for(int i = 0; i < excedent; i++) {
+    			remoteVersionSplit.add("0");
+    		}
+    	}
+    	
+    	for(int i = 0; i < maxParameters; i++) {
+    		//Comprobar si es posible comparar ambos parámetros en ambos splits
+			try {
+				int localvp = Integer.parseInt(localVersionSplit.get(i));
+				int remotevp = Integer.parseInt(remoteVersionSplit.get(i));
+
+				if(localvp < remotevp) {
+					//Este argumento es mayor. EJ: Local 1.0.0   Remote 2.0.0   if(1 < 2)
+					AllBanksLogger.debug("[Updater] New update found, debug:");
+					AllBanksLogger.debug("[Updater] Local: " + localVersion + " < Remote: " + remoteVersion);
+					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " < remotevp: " + remotevp);
+					return true;
+				}else {
+					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " > remotevp: " + remotevp);
+					continue;
+				}
+			}catch (NumberFormatException e) {
+				AllBanksLogger.warning("[Updater] Invalid version string: ");
+				AllBanksLogger.warning("[Updater] Local -> " + localVersion);
+				AllBanksLogger.warning("[Updater] Remote -> " + remoteVersion);
+				
+				//Si falla, checamos de la manera nativa
+				return !localVersion.equalsIgnoreCase(remoteVersion);
+			}
+    	}
+    	
+    	AllBanksLogger.debug("[Updater] No updates found, debug:");
+		AllBanksLogger.debug("[Updater] Local: " + localVersion + " >= Remote: " + remoteVersion);
+		
+        return false;
     }
 
     /**
