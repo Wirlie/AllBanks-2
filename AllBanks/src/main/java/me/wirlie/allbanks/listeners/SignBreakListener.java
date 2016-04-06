@@ -30,12 +30,12 @@ import org.bukkit.event.block.BlockBreakEvent;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.AllBanksAction;
 import me.wirlie.allbanks.Banks.BankType;
-import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.ChatUtil;
+import me.wirlie.allbanks.util.DataBaseUtil;
 
 /**
  * @author Wirlie
@@ -55,12 +55,12 @@ public class SignBreakListener implements Listener {
 			Location signLoc = s.getLocation();
 			Player p = e.getPlayer();
 			
-			if(Util.ChatFormatUtil.removeChatFormat(s.getLine(0)).equalsIgnoreCase("AllBanks")){
+			if(ChatUtil.removeChatFormat(s.getLine(0)).equalsIgnoreCase("AllBanks")){
 				//Bien, es un letrero de AB
 				if(Banks.signIsRegistered(s.getLocation())){
 					//Bien, se trata de un banco registrado
 					
-					BankType btype = BankType.getTypeByString(Util.ChatFormatUtil.removeChatFormat(s.getLine(1)));
+					BankType btype = BankType.getTypeByString(ChatUtil.removeChatFormat(s.getLine(1)));
 					
 					if(Banks.playerHasPermissions(p, AllBanksAction.DESTROY_SIGN, btype)){
 						if(btype != null){
@@ -71,8 +71,8 @@ public class SignBreakListener implements Listener {
 									BankSession.closeSession(p);
 								e.setCancelled(false);
 							}else{
-								if(DatabaseUtil.databaseIsLocked()){
-									DatabaseUtil.sendDatabaseLockedMessage(p);
+								if(DataBaseUtil.databaseIsLocked()){
+									DataBaseUtil.sendDatabaseLockedMessage(p);
 								}else{
 									Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 								}
@@ -91,8 +91,8 @@ public class SignBreakListener implements Listener {
 					
 				}else{
 					
-					if(DatabaseUtil.databaseIsLocked()){
-						DatabaseUtil.sendDatabaseLockedMessage(e.getPlayer());
+					if(DataBaseUtil.databaseIsLocked()){
+						DataBaseUtil.sendDatabaseLockedMessage(e.getPlayer());
 						e.setCancelled(true);
 						return;
 					}

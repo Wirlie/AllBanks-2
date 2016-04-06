@@ -32,8 +32,8 @@ import org.bukkit.scheduler.BukkitTask;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.ConfigurationUtil;
 
 /**
  * @author Wirlie
@@ -158,7 +158,7 @@ public class LotteryRunnable extends BukkitRunnable {
 	public static int getLotteryTime(){
 		String readCfg = AllBanks.getInstance().getConfig().getString("lottery.get-winer-every", "24 hours");
 		
-		int seconds = Util.ConfigUtil.convertTimeValueToSeconds(readCfg);
+		int seconds = ConfigurationUtil.convertTimeValueToSeconds(readCfg);
 
 		if(seconds <= 0){
 			//Invalido

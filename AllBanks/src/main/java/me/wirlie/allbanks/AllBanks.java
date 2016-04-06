@@ -56,6 +56,8 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.runnable.BankLoanRunnable;
 import me.wirlie.allbanks.runnable.BankTimerRunnable;
 import me.wirlie.allbanks.runnable.LotteryRunnable;
+import me.wirlie.allbanks.util.ConfigurationUtil;
+import me.wirlie.allbanks.util.DataBaseUtil;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -187,7 +189,7 @@ public class AllBanks extends JavaPlugin {
 		//Para BankLoan
 		AllBanksLogger.info("Enabling BankLoanRunnable...");
 		AllBanksLogger.info("Reading Config.yml -> banks.bank-loan.collect-interest-every");
-		int collectLoanEvery = Util.ConfigUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));
+		int collectLoanEvery = ConfigurationUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));
 		
 		if(collectLoanEvery == -1 || collectLoanEvery == 0){ 
 
@@ -360,7 +362,7 @@ public class AllBanks extends JavaPlugin {
 		
 		Statement stm = null;
 		
-		if(Util.DatabaseUtil.databaseIsLocked()){
+		if(DataBaseUtil.databaseIsLocked()){
 			AllBanksLogger.severe("Database is locked! Database installation aborted.");
 			return;
 		}
@@ -377,7 +379,7 @@ public class AllBanks extends JavaPlugin {
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
 			AllBanksLogger.info("Ops! An SQLException has ocurred...");
-			Util.DatabaseUtil.checkDatabaseIsLocked(e);
+			DataBaseUtil.checkDatabaseIsLocked(e);
 		}finally{
 			if(stm != null)
 				try {

@@ -21,6 +21,7 @@ allbanks.lottery.maxtickets.{INTEGER}
 #SIGN TYPE			# NEW SIGN						# DESTROY SIGN						# USE SIGN
 ATM					allbanks.sign.atm.new			allbanks.sign.atm.destroy			allbanks.sign.atm.use
 SHOP				allbanks.sign.shop.new			allbanks.sign.shop.destroy			allbanks.sign.shop.use
+ADMIN SHOP			allbanks.sign.shop.admin
 BANK_LAND			allbanks.sign.land.new			allbanks.sign.land.destroy			allbanks.sign.land.use
 BANK_LOAN			allbanks.sign.loan.new			allbanks.sign.loan.destroy			allbanks.sign.loan.use
 BANK_MONEY			allbanks.sign.money.new			allbanks.sign.money.destroy			allbanks.sign.money.use

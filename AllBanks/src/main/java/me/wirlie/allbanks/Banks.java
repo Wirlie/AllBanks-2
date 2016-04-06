@@ -41,9 +41,12 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.util.ConfigurationUtil;
+import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.StringLocationUtil;
+import me.wirlie.allbanks.util.Util;
 
 /**
  * @author Wirlie
@@ -98,10 +101,10 @@ public class Banks {
 			return true;
 		}
 		
-		if(DatabaseUtil.databaseIsLocked()){
+		if(DataBaseUtil.databaseIsLocked()){
 			if(!btype.equals(BankType.BANK_CHEST)){
 				//Actualmente BankChest es el único banco que no necesita a la base de datos.
-				DatabaseUtil.sendDatabaseLockedMessage(p);
+				DataBaseUtil.sendDatabaseLockedMessage(p);
 			}
 		}
 		
@@ -338,7 +341,7 @@ public class Banks {
 				if(p != null && playerMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
 					replaceMap.put("%1%", String.valueOf(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.interest", 0)));
-					replaceMap.put("%2%", String.valueOf(Util.ConfigUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("banks.bank-loan.collect-interest-every"))));
+					replaceMap.put("%2%", String.valueOf(ConfigurationUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("banks.bank-loan.collect-interest-every"))));
 					Translation.getAndSendMessage(p, StringsID.BANKLOAN_STEP0_INFO, replaceMap, true);
 				}
 				break;
@@ -473,7 +476,7 @@ public class Banks {
 			}
 			
 			YamlConfiguration yaml = YamlConfiguration.loadConfiguration(signFile);
-			yaml.set("location", Util.StrLocUtil.convertLocationToString(signLoc, true));
+			yaml.set("location", StringLocationUtil.convertLocationToString(signLoc, true));
 			yaml.set("owner", owner.getName());
 			
 			try {
@@ -484,16 +487,16 @@ public class Banks {
 			
 			return true;
 		}else{
-			if(DatabaseUtil.databaseIsLocked()) return false;
+			if(DataBaseUtil.databaseIsLocked()) return false;
 			
 			Statement stm = null;
 			
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
+				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + StringLocationUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
 				return true;
 			}catch(SQLException e){
-				DatabaseUtil.checkDatabaseIsLocked(e);
+				DataBaseUtil.checkDatabaseIsLocked(e);
 			}finally{
 				if(stm != null)
 					try {
@@ -517,15 +520,15 @@ public class Banks {
 			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
 			return signFile.exists();
 		}else{
-			if(DatabaseUtil.databaseIsLocked()) return false;
+			if(DataBaseUtil.databaseIsLocked()) return false;
 			
 			Statement stm = null;
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLoc, true) + "'");
 				return res.next();
 			}catch(SQLException e){
-				DatabaseUtil.checkDatabaseIsLocked(e);
+				DataBaseUtil.checkDatabaseIsLocked(e);
 			}finally{
 				if(stm != null)
 					try {
@@ -551,16 +554,16 @@ public class Banks {
 			signFile.delete();
 			return true;
 		} else {
-			if(DatabaseUtil.databaseIsLocked()) return false;
+			if(DataBaseUtil.databaseIsLocked()) return false;
 			
 			Statement stm = null;
 			
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.StrLocUtil.convertLocationToString(signLoc, true) + "'");
+				stm.executeUpdate("DELETE FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLoc, true) + "'");
 				return true;
 			}catch(SQLException e){
-				DatabaseUtil.checkDatabaseIsLocked(e);
+				DataBaseUtil.checkDatabaseIsLocked(e);
 			}finally{
 				if(stm != null)
 					try {

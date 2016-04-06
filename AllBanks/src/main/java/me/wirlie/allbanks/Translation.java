@@ -30,6 +30,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.util.ChatUtil;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
@@ -38,7 +40,7 @@ import org.bukkit.entity.Player;
 public class Translation{
 	
 	private static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File.separator + "language");
-	private static String prefixStr = Util.ChatFormatUtil.replaceChatFormat(AllBanks.getInstance().getConfig().getString("pl.prefix", ChatColor.DARK_AQUA + "All" + ChatColor.AQUA + "Banks" + ChatColor.GOLD + ChatColor.BOLD + " >> " + ChatColor.RESET));
+	private static String prefixStr = ChatUtil.replaceChatFormat(AllBanks.getInstance().getConfig().getString("pl.prefix", ChatColor.DARK_AQUA + "All" + ChatColor.AQUA + "Banks" + ChatColor.GOLD + ChatColor.BOLD + " >> " + ChatColor.RESET));
 
 	public enum Languages{
 		ES_MX(new File(languageDir + File.separator + "EsMx.yml"), "EsMx.yml"),
@@ -117,13 +119,13 @@ public class Translation{
 			}
 		}
 		
-		translation = Util.ChatFormatUtil.replaceChatFormat(translation);
+		translation = ChatUtil.replaceChatFormat(translation);
 		
 		//Especial
-		translation = translation.replace("%LOTTERY_PREFIX%", Util.ChatFormatUtil.replaceChatFormat(trYaml.getString("LOTTERY_PREFIX", "")));
+		translation = translation.replace("%LOTTERY_PREFIX%", ChatUtil.replaceChatFormat(trYaml.getString("LOTTERY_PREFIX", "")));
 		
 		if(consoleSender){
-			translation = Util.ChatFormatUtil.supressChatFormat(translation);
+			translation = ChatUtil.supressChatFormat(translation);
 		}
 		
 		String[] split = translation.split("%BREAK%");

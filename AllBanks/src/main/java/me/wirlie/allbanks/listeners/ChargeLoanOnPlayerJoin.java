@@ -34,11 +34,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.Util;
 
 /**
  * @author Wirlie
@@ -101,7 +101,7 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 			}
 			
 		} else {
-			if(DatabaseUtil.databaseIsLocked()) return;
+			if(DataBaseUtil.databaseIsLocked()) return;
 			
 			Statement stm = null;
 			ResultSet res = null;
@@ -156,7 +156,7 @@ public class ChargeLoanOnPlayerJoin implements Listener {
 				}.runTaskLater(AllBanks.getInstance(), 20 * 2);
 				
 			} catch (SQLException e1) {
-				DatabaseUtil.checkDatabaseIsLocked(e1);
+				DataBaseUtil.checkDatabaseIsLocked(e1);
 			} finally {
 				try {
 					stm.close();

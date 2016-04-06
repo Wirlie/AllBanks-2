@@ -35,11 +35,11 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.Util;
 
 /**
  * @author Wirlie
@@ -50,7 +50,7 @@ public class BankLoanRunnable extends BukkitRunnable {
 
 	public synchronized void run() {
 		
-		if(DatabaseUtil.databaseIsLocked()){
+		if(DataBaseUtil.databaseIsLocked()){
 			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Database is locked! Aborting...");
 			return;
 		}
@@ -163,7 +163,7 @@ public class BankLoanRunnable extends BukkitRunnable {
 				AllBanksLogger.info("BankTimerRunnable: " + affectedAccounts + " accounts modified.");
 				AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
 			} catch (SQLException e) {
-				DatabaseUtil.checkDatabaseIsLocked(e);
+				DataBaseUtil.checkDatabaseIsLocked(e);
 			}finally{
 				try {
 					stm.close();

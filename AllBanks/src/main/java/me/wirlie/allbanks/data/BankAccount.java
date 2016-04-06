@@ -34,10 +34,11 @@ import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.Util;
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.ExperienceConversionUtil;
+import me.wirlie.allbanks.util.Util;
 
 /**
  * Esta clase permitirá almacenar los datos recopilados de la base de datos, con el fin de
@@ -119,7 +120,7 @@ public class BankAccount {
 				return ba;
 			} else {
 				
-				if(DatabaseUtil.databaseIsLocked()) return null;
+				if(DataBaseUtil.databaseIsLocked()) return null;
 				
 				Statement stm = null;
 				ResultSet result = null;
@@ -152,7 +153,7 @@ public class BankAccount {
 					
 				}catch(SQLException e){
 					AllBanksLogger.info("failed! SQLException:");
-					DatabaseUtil.checkDatabaseIsLocked(e);
+					DataBaseUtil.checkDatabaseIsLocked(e);
 				}finally{
 					try {
 						stm.close();
@@ -206,7 +207,7 @@ public class BankAccount {
 					stm.executeUpdate("INSERT INTO bankxp_accounts (owner, xp) VALUES ('" + p.getName() + "', 0)");
 					stm.executeUpdate("INSERT INTO banktime_accounts (owner, time) VALUES ('" + p.getName() + "', 0)");
 				} catch (SQLException e) {
-					DatabaseUtil.checkDatabaseIsLocked(e);
+					DataBaseUtil.checkDatabaseIsLocked(e);
 				} finally {
 					try {
 						stm.close();
@@ -325,7 +326,7 @@ public class BankAccount {
 				
 				return true;
 			} else {
-				if(DatabaseUtil.databaseIsLocked()) return false;
+				if(DataBaseUtil.databaseIsLocked()) return false;
 				
 				//Actualizar la base de datos
 				if(updateFromDatabase){
@@ -339,7 +340,7 @@ public class BankAccount {
 						
 						return true;
 					} catch (SQLException e) {
-						DatabaseUtil.checkDatabaseIsLocked(e);
+						DataBaseUtil.checkDatabaseIsLocked(e);
 					} finally {
 						try {
 							stm.close();
@@ -397,7 +398,7 @@ public class BankAccount {
 				
 				return true;
 			} else {
-				if(DatabaseUtil.databaseIsLocked()) return false;
+				if(DataBaseUtil.databaseIsLocked()) return false;
 				
 				//Actualizar la base de datos
 				if(updateFromDatabase){
@@ -410,7 +411,7 @@ public class BankAccount {
 						bankmoney_money = newMoney;
 						return true;
 					} catch (SQLException e) {
-						DatabaseUtil.checkDatabaseIsLocked(e);
+						DataBaseUtil.checkDatabaseIsLocked(e);
 					} finally {
 						try {
 							stm.close();
@@ -459,7 +460,7 @@ public class BankAccount {
 				
 				return true;
 			} else {
-				if(DatabaseUtil.databaseIsLocked()) return false;
+				if(DataBaseUtil.databaseIsLocked()) return false;
 				
 				//Actualizar la base de datos
 				if(updateFromDatabase){
@@ -474,7 +475,7 @@ public class BankAccount {
 						
 						return true;
 					} catch (SQLException e) {
-						DatabaseUtil.checkDatabaseIsLocked(e);
+						DataBaseUtil.checkDatabaseIsLocked(e);
 					} finally {
 						try {
 							stm.close();
@@ -503,7 +504,7 @@ public class BankAccount {
 		}
 		
 		public int getLvlForRawXP(){
-			return Util.XPConversionUtil.convertExpToLevel(bankxp_xp);
+			return ExperienceConversionUtil.convertExpToLevel(bankxp_xp);
 		}
 	}
 	
@@ -540,7 +541,7 @@ public class BankAccount {
 				//Actualizar la base de datos
 				if(updateFromDatabase){
 					
-					if(DatabaseUtil.databaseIsLocked()) return false;
+					if(DataBaseUtil.databaseIsLocked()) return false;
 					
 					Statement stm = null;
 					
@@ -552,7 +553,7 @@ public class BankAccount {
 						
 						return true;
 					} catch (SQLException e) {
-						DatabaseUtil.checkDatabaseIsLocked(e);
+						DataBaseUtil.checkDatabaseIsLocked(e);
 					} finally {
 						try {
 							stm.close();

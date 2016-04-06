@@ -24,10 +24,10 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks.BankType;
-import me.wirlie.allbanks.Util.DatabaseUtil;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.DataBaseUtil;
 
 /**
  * @author Wirlie
@@ -38,7 +38,7 @@ public class BankTimerRunnable extends BukkitRunnable {
 
 	public void run() {
 		
-		if(DatabaseUtil.databaseIsLocked()){
+		if(DataBaseUtil.databaseIsLocked()){
 			AllBanks.getInstance().getLogger().info("[BankTimeRunnable] Database is locked! Aborting...");
 			return;
 		}

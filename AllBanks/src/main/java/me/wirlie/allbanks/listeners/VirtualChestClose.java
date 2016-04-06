@@ -30,10 +30,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.wirlie.allbanks.Banks;
-import me.wirlie.allbanks.Util.SoundUtil;
-import me.wirlie.allbanks.Util.SoundUtil.SoundType;
 import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.InteractiveUtil;
+import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 
 /**
  * @author Wirlie
@@ -128,7 +128,7 @@ public class VirtualChestClose implements Listener{
 			AllBanksLogger.info("BANK-CHEST: (Event: InventoryClose) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.");
 			Banks.setVirtualChestContents(e.getPlayer().getName(), chestNumber, armMap);
 			
-			SoundUtil.sendSound(p, SoundType.VIRTUAL_CHEST_CLOSE);
+			InteractiveUtil.sendSound(p, SoundType.VIRTUAL_CHEST_CLOSE);
 			
 			BankSession bs = BankSession.getSession(p);
 			if(bs != null){

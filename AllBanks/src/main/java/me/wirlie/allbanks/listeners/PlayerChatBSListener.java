@@ -30,15 +30,15 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Util;
-import me.wirlie.allbanks.Util.DatabaseUtil;
-import me.wirlie.allbanks.Util.SoundUtil;
-import me.wirlie.allbanks.Util.SoundUtil.SoundType;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.ExperienceConversionUtil;
+import me.wirlie.allbanks.util.InteractiveUtil;
+import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 
 /**
  * @author Wirlie
@@ -88,7 +88,7 @@ public class PlayerChatBSListener implements Listener {
 					
 					Banks.openVirtualChest(p, currentChestCursor);
 					
-					SoundUtil.sendSound(p, SoundType.VIRTUAL_CHEST_OPEN);
+					InteractiveUtil.sendSound(p, SoundType.VIRTUAL_CHEST_OPEN);
 					
 					break;
 				}
@@ -162,8 +162,8 @@ public class PlayerChatBSListener implements Listener {
 						bs.reloadSign();
 						
 					}else{
-						if(DatabaseUtil.databaseIsLocked()){
-							DatabaseUtil.sendDatabaseLockedMessage(p);
+						if(DataBaseUtil.databaseIsLocked()){
+							DataBaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						}
@@ -214,8 +214,8 @@ public class PlayerChatBSListener implements Listener {
 							//Actualizar letrero
 							bs.reloadSign();
 						}else{
-							if(DatabaseUtil.databaseIsLocked()){
-								DatabaseUtil.sendDatabaseLockedMessage(p);
+							if(DataBaseUtil.databaseIsLocked()){
+								DataBaseUtil.sendDatabaseLockedMessage(p);
 							}else{
 								Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 							}
@@ -315,8 +315,8 @@ public class PlayerChatBSListener implements Listener {
 						Translation.getAndSendMessage(p, StringsID.BANKMONEY_SUCCESS_DEPOSIT, replaceMap, true);
 						bs.reloadSign();
 					}else{
-						if(DatabaseUtil.databaseIsLocked()){
-							DatabaseUtil.sendDatabaseLockedMessage(p);
+						if(DataBaseUtil.databaseIsLocked()){
+							DataBaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						}
@@ -366,8 +366,8 @@ public class PlayerChatBSListener implements Listener {
 						Translation.getAndSendMessage(p, StringsID.BANKMONEY_SUCCESS_WITHDRAW, replaceMap, true);
 						bs.reloadSign();
 					}else{
-						if(DatabaseUtil.databaseIsLocked()){
-							DatabaseUtil.sendDatabaseLockedMessage(p);
+						if(DataBaseUtil.databaseIsLocked()){
+							DataBaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						}
@@ -438,8 +438,8 @@ public class PlayerChatBSListener implements Listener {
 						
 						bs.reloadSign();
 					}else{
-						if(DatabaseUtil.databaseIsLocked()){
-							DatabaseUtil.sendDatabaseLockedMessage(p);
+						if(DataBaseUtil.databaseIsLocked()){
+							DataBaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						}
@@ -465,7 +465,7 @@ public class PlayerChatBSListener implements Listener {
 					
 					if(e.getMessage().endsWith("lvl")){
 						int levels = Integer.parseInt(rawMsg);
-						depositXP = Util.XPConversionUtil.getExpToLevel(levels);
+						depositXP = ExperienceConversionUtil.getExpToLevel(levels);
 					}else{
 						depositXP = Integer.parseInt(e.getMessage());
 					}
@@ -475,18 +475,18 @@ public class PlayerChatBSListener implements Listener {
 						return;
 					}
 					
-					if(Util.XPConversionUtil.getTotalExperience(p) < depositXP){
+					if(ExperienceConversionUtil.getTotalExperience(p) < depositXP){
 						Translation.getAndSendMessage(p, StringsID.BANKXP_ERROR_DEPOSIT_INS_XP, true);
 						return;
 					}
 					
 					if(ba.BankXP.addXP(depositXP)){
-						Util.XPConversionUtil.setTotalExpToPlayer(p, Util.XPConversionUtil.getTotalExperience(p) - depositXP);
+						ExperienceConversionUtil.setTotalExpToPlayer(p, ExperienceConversionUtil.getTotalExperience(p) - depositXP);
 						Translation.getAndSendMessage(p, StringsID.BANKXP_DEPOSIT_SUCCESS, true);
 						bs.reloadSign();
 					}else{
-						if(DatabaseUtil.databaseIsLocked()){
-							DatabaseUtil.sendDatabaseLockedMessage(p);
+						if(DataBaseUtil.databaseIsLocked()){
+							DataBaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						}
@@ -508,7 +508,7 @@ public class PlayerChatBSListener implements Listener {
 					
 					if(e.getMessage().endsWith("lvl")){
 						int levels = Integer.parseInt(rawMsg2);
-						withdrawXP = Util.XPConversionUtil.getExpToLevel(levels);
+						withdrawXP = ExperienceConversionUtil.getExpToLevel(levels);
 					}else{
 						withdrawXP = Integer.parseInt(e.getMessage());
 					}
@@ -525,12 +525,12 @@ public class PlayerChatBSListener implements Listener {
 					
 					//Quitar experiencia
 					if(ba.BankXP.subsXP(withdrawXP)){
-						Util.XPConversionUtil.setTotalExpToPlayer(p, Util.XPConversionUtil.getTotalExperience(p) + withdrawXP);
+						ExperienceConversionUtil.setTotalExpToPlayer(p, ExperienceConversionUtil.getTotalExperience(p) + withdrawXP);
 						Translation.getAndSendMessage(p, StringsID.BANKXP_WITHDRAW_SUCCESS, true);
 						bs.reloadSign();
 					}else{
-						if(DatabaseUtil.databaseIsLocked()){
-							DatabaseUtil.sendDatabaseLockedMessage(p);
+						if(DataBaseUtil.databaseIsLocked()){
+							DataBaseUtil.sendDatabaseLockedMessage(p);
 						}else{
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						}
