@@ -18,11 +18,47 @@
  */
 package me.wirlie.allbanks.util;
 
+import java.math.BigDecimal;
+import java.util.regex.Pattern;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
 public class ShopUtil {
+
+	/**
+	 * @param string
+	 * @return
+	 */
+	public static boolean validatePriceLine(String s) {
+
+		Pattern r = Pattern.compile("^((S:[0-9]{1,}(|(\\.[0-9]{1,})))|(S:[0-9]{1,}(|(\\.[0-9]{1,}))) (B:[0-9]{1,}(|(\\.[0-9]{1,})))|(B:[0-9]{1,}(|(\\.[0-9]{1,}))) (S:[0-9]{1,}(|(\\.[0-9]{1,})))|(B:[0-9]{1,}(|(\\.[0-9]{1,}))))$");
+		
+		return r.matcher(s).matches();
+	}
+	
+	public static BigDecimal getBuyPrice(String priceLine) {
+		String[] str = priceLine.split(" ");
+		for(String s : str) {
+			if(s.startsWith("B:")) {
+				return new BigDecimal(s.replace("B:", ""));
+			}
+		}
+		
+		return null;
+	}
+	
+	public static BigDecimal getSellPrice(String priceLine) {
+		String[] str = priceLine.split(" ");
+		for(String s : str) {
+			if(s.startsWith("S:")) {
+				return new BigDecimal(s.replace("S:", ""));
+			}
+		}
+		
+		return null;
+	}
 
 }

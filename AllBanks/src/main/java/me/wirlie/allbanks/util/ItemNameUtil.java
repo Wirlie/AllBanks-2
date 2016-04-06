@@ -461,11 +461,11 @@ public class ItemNameUtil {
 			.put("RECORD_12" , 			"Record 12")
 			.build();
 	
-	public String getItemName(ItemStack item) {
+	public static String getItemName(ItemStack item) {
 		return getItemName(item.getType());
 	}
 	
-	public String getItemName(Material material) {
+	public static String getItemName(Material material) {
 		if(itemIsOnBlackList(material)) return null;
 		
 		if(itemNames.containsKey(material.toString())) {
@@ -477,15 +477,15 @@ public class ItemNameUtil {
 		}
 	}
 	
-	public boolean itemIsOnBlackList(Material material) {
+	public static boolean itemIsOnBlackList(Material material) {
 			return blackList.contains(material);
 	}
 	
-	public boolean itemIsOnBlackList(ItemStack item) {
+	public static boolean itemIsOnBlackList(ItemStack item) {
 		return itemIsOnBlackList(item.getType());
 	}
 	
-	public Material getItemByShortName(String shortName) {
+	public static Material getItemByShortName(String shortName) {
 		if(itemNames.containsValue(shortName)) {
 			return Material.valueOf(itemNames.inverse().get(shortName));
 		}

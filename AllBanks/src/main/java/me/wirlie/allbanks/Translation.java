@@ -231,21 +231,21 @@ public class Translation{
 		
 		return lang.getFile();
 	}
-
-	//TODO Quitar esto ya que es solo para forzar una actualización de los idiomas.
-	static boolean isupdtodate = false;
+	
+	static boolean firstExecution = false;
 	
 	private static void ensureLanguageFileIsUpToDate(Languages lang){
 		YamlConfiguration readLanguage = YamlConfiguration.loadConfiguration(lang.getFile());
 		
 		String version = readLanguage.getString("language-version", "null");
 		
-		if(!version.equalsIgnoreCase(AllBanks.getInstance().getDescription().getVersion()) || !isupdtodate){
+		if(!version.equalsIgnoreCase(AllBanks.getInstance().getDescription().getVersion()) || !firstExecution){
 			
-			isupdtodate = true;
+			firstExecution = true;
 			
 			//No concuerda, intentar actualizar.
-			Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResource() + " " + version + " to " + AllBanks.getInstance().getDescription().getVersion());
+			if(firstExecution)
+				Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResource() + " " + version + " to " + AllBanks.getInstance().getDescription().getVersion());
 			
 			AllBanks.getInstance().saveResource(lang.getResource(), true);
 			File nativeLangFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResource());

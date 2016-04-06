@@ -42,6 +42,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -54,6 +55,7 @@ import me.wirlie.allbanks.util.DataBaseUtil;
 import me.wirlie.allbanks.util.ExperienceConversionUtil;
 import me.wirlie.allbanks.util.InteractiveUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.util.ItemNameUtil;
 import me.wirlie.allbanks.util.Util;
 
 /**
@@ -140,6 +142,7 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "[enable|disable]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab reload" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_RELOAD_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab iteminfo" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_ITEMINFO_DESC.toString(false));
 				
 				break;
 			}
@@ -853,6 +856,26 @@ public class Commands implements CommandExecutor {
 					return true;
 				}
 			}
+		}else if(mainAction.equalsIgnoreCase("iteminfo")){
+			if(!(sender instanceof Player)) {
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return true;
+			}
+			
+			if(!Util.hasPermission(sender, "allbanks.commands.iteminfo")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				if(senderIsPlayer) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
+				return true;
+			}
+			
+			Player p = (Player) sender;
+			ItemStack itemHand = p.getInventory().getItemInMainHand();
+
+			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + ItemNameUtil.getItemName(itemHand));
+			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
+			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ItemNameUtil.getItemName(itemHand) + ":" + ChatColor.GRAY + itemHand.getDurability());
+			
+			return true;
 		}
 		
 		return false;
