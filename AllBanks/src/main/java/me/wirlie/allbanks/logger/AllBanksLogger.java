@@ -151,4 +151,22 @@ public class AllBanksLogger {
  
 		initializedLogger = true;
 	}
+
+	/**
+	 * @param string
+	 */
+	public static void writeRawMessage(String message) {
+		try{
+			FileOutputStream outputStream = new FileOutputStream(fileLog, true);
+	        OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
+	        BufferedWriter bufferedWriter = new BufferedWriter(outputStreamWriter);
+	         
+	        bufferedWriter.write(message);
+	        bufferedWriter.newLine();
+	         
+	        bufferedWriter.close();
+		} catch (IOException e) {
+	        e.printStackTrace();
+	    }
+	}
 }
