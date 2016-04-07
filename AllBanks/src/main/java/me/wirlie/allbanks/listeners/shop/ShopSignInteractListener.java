@@ -113,49 +113,51 @@ public class ShopSignInteractListener implements Listener {
 				}
 			}
 		}else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
-			if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM)).equalsIgnoreCase("???")) {
-				
-				String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
-				
-				if(owner.equalsIgnoreCase(p.getName()) || owner.equalsIgnoreCase(Shops.ADMIN_TAG) && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
-					ItemStack item = p.getInventory().getItemInMainHand();
+			if(sign.getLine(Shops.LINE_HEADER).equalsIgnoreCase(Shops.HEADER_FORMAT)) {
+				if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM)).equalsIgnoreCase("???")) {
 					
-					if(!item.getType().equals(Material.AIR)) {
+					String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
+					
+					if(owner.equalsIgnoreCase(p.getName()) || owner.equalsIgnoreCase(Shops.ADMIN_TAG) && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+						ItemStack item = p.getInventory().getItemInMainHand();
 						
-						if(item.getDurability() > 0) {
-							sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item) + ":" + item.getDurability());
-						} else {
-							sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item));
+						if(!item.getType().equals(Material.AIR)) {
+							
+							if(item.getDurability() > 0) {
+								sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item) + ":" + item.getDurability());
+							} else {
+								sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item));
+							}
+							
+							sign.update();
+							
+							Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
+							InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+							e.setCancelled(true);
 						}
-						
-						sign.update();
-						
-						Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
-						InteractiveUtil.sendSound(p, SoundType.SUCCESS);
-						e.setCancelled(true);
 					}
+				} else {
+					//Está usando el creativo, y si usa el clic izquierdo removerá el letrero por lo que no tiene caso procesar este evento.
+					if(p.getGameMode().equals(GameMode.CREATIVE)) return;
+					
+					//¿Está tratando de usar una tienda de sí mismo?
+					if(false && ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
+						InteractiveUtil.sendSound(p, SoundType.DENY);
+						return;
+					}
+					
+					//Bien, está usando la tienda de alguien más. (BUY)
+					
+					//No tiene la etiqueta B:X
+					if(!ShopUtil.signSupportSellAction(sign.getLine(Shops.LINE_PRICE))) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_SELL_ACTION, true);
+						return;
+					}
+					
+					//Bien, vamos a VENDER el objeto al jugador.
+					//TODO VENDER OBJETO
 				}
-			} else {
-				//Está usando el creativo, y si usa el clic izquierdo removerá el letrero por lo que no tiene caso procesar este evento.
-				if(p.getGameMode().equals(GameMode.CREATIVE)) return;
-				
-				//¿Está tratando de usar una tienda de sí mismo?
-				if(false && ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
-					Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
-					InteractiveUtil.sendSound(p, SoundType.DENY);
-					return;
-				}
-				
-				//Bien, está usando la tienda de alguien más. (BUY)
-				
-				//No tiene la etiqueta B:X
-				if(!ShopUtil.signSupportSellAction(sign.getLine(Shops.LINE_PRICE))) {
-					Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_SELL_ACTION, true);
-					return;
-				}
-				
-				//Bien, vamos a VENDER el objeto al jugador.
-				//TODO VENDER OBJETO
 			}
 		}
 	}
