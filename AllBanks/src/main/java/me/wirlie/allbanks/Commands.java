@@ -870,10 +870,12 @@ public class Commands implements CommandExecutor {
 			
 			Player p = (Player) sender;
 			ItemStack itemHand = p.getInventory().getItemInMainHand();
+			
+			String name = ItemNameUtil.getItemName(itemHand);
 
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + ItemNameUtil.getItemName(itemHand));
+			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
 			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ItemNameUtil.getItemName(itemHand) + ":" + ChatColor.GRAY + itemHand.getDurability());
+			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + ":" + itemHand.getDurability());
 			
 			return true;
 		}

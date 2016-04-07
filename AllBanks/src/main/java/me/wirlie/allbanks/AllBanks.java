@@ -52,7 +52,9 @@ import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
 import me.wirlie.allbanks.listeners.SignInteractListener;
 import me.wirlie.allbanks.listeners.VirtualChestClose;
+import me.wirlie.allbanks.listeners.shop.ShopSignBreakListener;
 import me.wirlie.allbanks.listeners.shop.ShopSignChangeListener;
+import me.wirlie.allbanks.listeners.shop.ShopSignInteractListener;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.runnable.BankLoanRunnable;
 import me.wirlie.allbanks.runnable.BankTimerRunnable;
@@ -180,6 +182,8 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new VirtualChestClose(), this);
 		Bukkit.getPluginManager().registerEvents(new ChargeLoanOnPlayerJoin(), this);
 		Bukkit.getPluginManager().registerEvents(new ShopSignChangeListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ShopSignInteractListener(), this);
+		Bukkit.getPluginManager().registerEvents(new ShopSignBreakListener(), this);
 		
 		//Runnables
 		

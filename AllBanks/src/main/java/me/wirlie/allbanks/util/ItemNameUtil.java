@@ -89,6 +89,8 @@ public class ItemNameUtil {
 			.add(Material.ACACIA_DOOR)
 			.add(Material.JUNGLE_DOOR)
 			.add(Material.DARK_OAK_DOOR)
+			.add(Material.WOODEN_DOOR)
+			.add(Material.CAULDRON)
 			.build();
 	
 	private static BiMap<String, String> itemNames = new ImmutableBiMap.Builder<String, String>()
@@ -143,7 +145,6 @@ public class ItemNameUtil {
 			.put("WORKBENCH" , 			"CraftingTable")
 			.put("SOIL" , 				"Farmland")
 			.put("FURNACE" , 			"Furnace")
-			.put("WOODEN_DOOR" , 		"OakDoor")
 			.put("LADDER" , 			"Ladder")
 			.put("RAILS" , 				"Rails")
 			.put("COBBLESTONE_STAIRS" , "CobbleStairs")
@@ -157,7 +158,7 @@ public class ItemNameUtil {
 			.put("ICE" , 				"Ice")
 			.put("SNOW_BLOCK" , 		"SnowBlock")
 			.put("CACTUS" , 			"Cactus")
-			.put("CLAY" , 				"Clay")
+			.put("CLAY" , 				"ClayBlock")
 			.put("JUKEBOX" , 			"Jukebox")
 			.put("FENCE" , 				"OakFence")
 			.put("PUMPKIN" , 			"Pumpkin")
@@ -183,7 +184,6 @@ public class ItemNameUtil {
 			.put("NETHER_FENCE" , 		"NetherFence")
 			.put("NETHER_BRICK_STAIRS", "NetherStair")
 			.put("ENCHANTMENT_TABLE" , 	"EnchantTable")
-			.put("CAULDRON" , 			"Cauldron")
 			.put("ENDER_PORTAL_FRAME" , "EndFrame")
 			.put("ENDER_STONE" , 		"EndStone")
 			.put("DRAGON_EGG" , 		"DragonEgg")

@@ -36,7 +36,7 @@ lottery:
   enable: true
   # Ticket cost.
   ticket-cost: 50
-  # Get winner every X time:
+  # Get winner every X:
   get-winer-every: "0 days, 24 hours, 0 minutes, 0 seconds"
   # Max tickets per player:
   max-tickets-per-player: 5
@@ -67,8 +67,32 @@ banks:
   bank-chest:
     # Number of max virtual chest per player.
     max-virtual-chests-per-player: 1
-  shop:
-    # Not yet implemented.
-    max-shop-per-user: -1
+shop:
+  # Max Shops per user: -1 = unlimited
+  max-shop-per-user: -1
+  # Set the tag for the Admin Shop. Important: For example, if you set this configuration with "admin"
+  # and a player set your name with "admin", he can not use "AllBanks SHOP" for security reasons.
+  admin-tag: "admin"
+  # Set a list with the materials do you want to add to the black list, this means that all materials 
+  # included in this list are unable to be configured in a SHOP by a user (admins can configure these materials).
+  black-list:
+    - "AIR"
+  taxes:
+    # Enable the taxes system on the Shops?
+    enable-shop-taxes: false
+    # Collect tax every X:
+    collect-tax-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+    # Amount of the tax, note: this tax are collected for each Shop, this means that if a player have 5 shops and you set the tax 
+    # amount with "10.00" the player have to pay $50.00 to AllBanks.
+    tax: 10.00
+    # To prevent the abuse of this system, you can limit the Max Tax Amount that a player have to pay to AllBanks.
+    max-tax: 100.00
+    # Action when a player cannot pay the tax, supported actions: DISABLE_SHOP DESTROY_SHOP and NOTHING
+    # DISABLE_SHOP = Disable each shop that a player have on your own.
+    # DESTROY_SHOP = Destroy each shop that a player have on your own. (Not recommended, because the chest can be accessed by other players)
+    # NOTHING = Nothing happens.
+    action-when-player-cannot-pay-tax: "DISABLE_SHOP"
 topranks:
+  # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.
+  # Please do not set it with a minimal value (example: 1 second)
   update-cache-every: "5 minutes"

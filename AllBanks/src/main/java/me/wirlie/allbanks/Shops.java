@@ -24,7 +24,9 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.InteractiveUtil;
+import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 
 /**
@@ -34,19 +36,51 @@ import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
  */
 public class Shops {
 	
+	final public static int LINE_HEADER = 0;
+	final public static int LINE_OWNER = 1;
+	final public static int LINE_PRICE = 2;
+	final public static int LINE_ITEM = 3;
+	
+	final public static String ADMIN_TAG = AllBanks.getInstance().getConfig().getString("shop.admin-tag", "admin");
+	
+	final public static String HEADER_FORMAT = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "AllBanks SHOP";
+	final public static String HEADER = ChatUtil.removeChatFormat(HEADER_FORMAT);
+	
 	public static void makeNewShop(String[] lines, Block b, Player owner) {
 		if(!b.getType().equals(Material.WALL_SIGN) || lines.length < 4) {
 			b.breakNaturally();
 			return;
 		}
 		
+		//Validar cofre
+		if(!lines[LINE_OWNER].equalsIgnoreCase(ADMIN_TAG)) {
+			if(!ShopUtil.validateNearbyChest(b.getLocation())) {
+				Translation.getAndSendMessage(owner, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
+				InteractiveUtil.sendSound(owner, SoundType.DENY);
+				b.breakNaturally();
+				return;
+			}
+		}
+		
 		if(Banks.registerAllBanksSign(b.getLocation(), owner)) {
 			Sign sign = (Sign) b.getState();
 			
-			sign.setLine(0, ChatColor.WHITE + "" + ChatColor.BOLD + lines[0]);
-			sign.setLine(1, ChatColor.YELLOW + lines[1]);
-			sign.setLine(2, ChatColor.YELLOW + lines[2]);
-			sign.setLine(3, ChatColor.AQUA + lines[3]);
+			String[] splitLinePrice = lines[2].split(" ");
+			String BS_line = "";
+			
+			for(int i = 0; i < splitLinePrice.length; i++) {
+				if(i == 0) continue;
+				
+				if(i != (splitLinePrice.length - 1))
+					BS_line += splitLinePrice[i] + " ";
+				else
+					BS_line += splitLinePrice[i];
+			}
+			
+			sign.setLine(LINE_HEADER, HEADER_FORMAT);
+			sign.setLine(LINE_OWNER, ChatColor.DARK_AQUA + lines[1]);
+			sign.setLine(LINE_PRICE, ChatColor.DARK_RED + splitLinePrice[0] + " " + ChatColor.DARK_GREEN + BS_line);
+			sign.setLine(LINE_ITEM, ChatColor.DARK_AQUA + lines[3]);
 			
 			sign.update();
 			

@@ -21,6 +21,10 @@ package me.wirlie.allbanks.util;
 import java.math.BigDecimal;
 import java.util.regex.Pattern;
 
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
+
 /**
  * @author Wirlie
  * @since AllBanks v1.0
@@ -34,12 +38,29 @@ public class ShopUtil {
 	 */
 	public static boolean validatePriceLine(String s) {
 
-		Pattern r = Pattern.compile("^((S:[0-9]{1,}(|(\\.[0-9]{1,})))|(S:[0-9]{1,}(|(\\.[0-9]{1,}))) (B:[0-9]{1,}(|(\\.[0-9]{1,})))|(B:[0-9]{1,}(|(\\.[0-9]{1,}))) (S:[0-9]{1,}(|(\\.[0-9]{1,})))|(B:[0-9]{1,}(|(\\.[0-9]{1,}))))$");
+		Pattern r = Pattern.compile("^[0-9]{1,2} ((S:[0-9]{1,}(|(\\.[0-9]{1,2})))|(S:[0-9]{1,}(|(\\.[0-9]{1,2}))) (B:[0-9]{1,}(|(\\.[0-9]{1,2})))|(B:[0-9]{1,}(|(\\.[0-9]{1,2}))) (S:[0-9]{1,}(|(\\.[0-9]{1,2})))|(B:[0-9]{1,}(|(\\.[0-9]{1,2}))))$");
 		
 		return r.matcher(s).matches();
 	}
 	
+	public static boolean validateNearbyChest(Location loc) {
+		Location testLoc = loc.getBlock().getRelative(BlockFace.DOWN).getLocation();
+		return testLoc.getBlock().getType().equals(Material.CHEST);
+	}
+	
+	public static int getItemAmount(String priceLine) {
+		priceLine = ChatUtil.removeChatFormat(priceLine);
+		
+		String[] str = priceLine.split(" ");
+		try {
+			return Integer.parseInt(str[0]);
+		} catch(NumberFormatException e) {
+			return -1;
+		}
+	}
+	
 	public static BigDecimal getBuyPrice(String priceLine) {
+		priceLine = ChatUtil.removeChatFormat(priceLine);
 		String[] str = priceLine.split(" ");
 		for(String s : str) {
 			if(s.startsWith("B:")) {
@@ -51,6 +72,7 @@ public class ShopUtil {
 	}
 	
 	public static BigDecimal getSellPrice(String priceLine) {
+		priceLine = ChatUtil.removeChatFormat(priceLine);
 		String[] str = priceLine.split(" ");
 		for(String s : str) {
 			if(s.startsWith("S:")) {
@@ -59,6 +81,20 @@ public class ShopUtil {
 		}
 		
 		return null;
+	}
+
+	/**
+	 * @param line
+	 * @return
+	 */
+	public static boolean signSupportSellAction(String line) {
+		line = ChatUtil.removeChatFormat(line);
+		return (getSellPrice(line) == null) ? false : true;
+	}
+	
+	public static boolean signSupportBuyAction(String line) {
+		line = ChatUtil.removeChatFormat(line);
+		return (getBuyPrice(line) == null) ? false : true;
 	}
 
 }

@@ -36,6 +36,8 @@ import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.InteractiveUtil;
+import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 
 /**
  * @author Wirlie
@@ -85,7 +87,7 @@ public class SignBreakListener implements Listener {
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						e.setCancelled(true);
 						AllBanksLogger.warning("BREAK-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to destroy a bank sign. (Deny cause: permissions)(Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
-						
+						InteractiveUtil.sendSound(p, SoundType.DENY);
 					}
 					
 					

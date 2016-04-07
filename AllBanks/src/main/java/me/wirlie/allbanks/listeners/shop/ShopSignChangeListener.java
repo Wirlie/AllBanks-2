@@ -44,19 +44,20 @@ public class ShopSignChangeListener implements Listener {
 	public void onSignChange(final SignChangeEvent e){
 		String[] lines = e.getLines();
 		
-		if(lines[0].equalsIgnoreCase("AllBanks Shop") || lines[0].equalsIgnoreCase("AllBanksShop") || lines[0].equalsIgnoreCase("AB Shop") || lines[0].equalsIgnoreCase("ABShop")) {
+		if(lines[Shops.LINE_HEADER].equalsIgnoreCase("AllBanks Shop") || lines[0].equalsIgnoreCase("AllBanksShop") || lines[0].equalsIgnoreCase("AB Shop") || lines[0].equalsIgnoreCase("ABShop")) {
 			//Bien antes que nada, el usuario tiene permisos?
 			final Player p = e.getPlayer();
 			
 			if(!Util.hasPermission(p, "allbanks.sign.shop.new")) {
 				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				InteractiveUtil.sendSound(p, SoundType.DENY);
+				e.getBlock().breakNaturally();
 				return;
 			}
 			
 			boolean isAdminShop = false;
 			
-			if(lines[1].equalsIgnoreCase("admin")) {
+			if(lines[Shops.LINE_OWNER].equalsIgnoreCase(Shops.ADMIN_TAG)) {
 				if(!Util.hasPermission(p, "allbanks.sign.shop.admin")) {
 					Translation.getAndSendMessage(p, StringsID.SHOP_NO_PERMISSIONS_FOR_ADMIN_SHOP, true);
 					InteractiveUtil.sendSound(p, SoundType.DENY);
@@ -67,20 +68,35 @@ public class ShopSignChangeListener implements Listener {
 				}
 			}
 			
-			if(!isAdminShop) lines[1] = e.getPlayer().getName();
+			if(!isAdminShop) lines[Shops.LINE_OWNER] = e.getPlayer().getName();
 			
 			//Validar la línea de precio:
-			if(!ShopUtil.validatePriceLine(lines[2])) {
+			if(!ShopUtil.validatePriceLine(lines[Shops.LINE_PRICE])) {
 				Translation.getAndSendMessage(p, StringsID.SHOP_PRICE_LINE_NOT_VALID, true);
 				InteractiveUtil.sendSound(p, SoundType.DENY);
 				e.getBlock().breakNaturally();
 				return;
 			}
 			
+			//Validar la cantidad de objetos
+			int amount = ShopUtil.getItemAmount(lines[Shops.LINE_PRICE]);
+			
+			if(amount <= 0) {
+				e.getBlock().breakNaturally();
+				return;
+			}
+			
+			if(amount > 64) {
+				//es demasiado
+				Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_ITEM_MAX_64, true);
+				e.getBlock().breakNaturally();
+				return;
+			}
+			
 			//Validar el nombre de item
-			if(ItemNameUtil.getItemByShortName(lines[3]) == null) {
+			if(ItemNameUtil.getItemByShortName(lines[Shops.LINE_ITEM]) == null) {
 				//No pertenece a un nombre válido, pero puede ser configurado
-				lines[3] = "???";
+				lines[Shops.LINE_ITEM] = "???";
 			}
 			
 			final String[] finalLines = lines;
@@ -92,7 +108,7 @@ public class ShopSignChangeListener implements Listener {
 					Shops.makeNewShop(finalLines, e.getBlock(), p);
 				}
 				
-			}.runTaskLater(AllBanks.getInstance(), 20 * 2);
+			}.runTaskLater(AllBanks.getInstance(), 20 * 1);
 		}
 	}
 }

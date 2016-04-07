@@ -248,8 +248,8 @@ public class Banks {
 	 */
 	public static void switchSignToStep(BankType btype, Sign sign, int step, boolean playerMessages) {
 		
-		sign.setLine(0, ChatColor.AQUA + "AllBanks");
-		sign.setLine(1, ChatColor.WHITE + btype.getDisplay());
+		sign.setLine(0, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "AllBanks");
+		sign.setLine(1, ChatColor.DARK_GRAY + btype.getDisplay());
 		
 		//No en todos los bancos y pasos se requiere esta variable BS.
 		//Esta variable puede ser nula en ocasiones, nunca se debe descartar esto.
@@ -267,7 +267,7 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -276,7 +276,7 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -291,7 +291,7 @@ public class Banks {
 				HashMap<String, String> replaceMap = new HashMap<String, String>();
 				replaceMap.put("%1%", String.valueOf(ba.BankChest.getCurrentChestCursor()));
 				
-				sign.setLine(2, ChatColor.GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(replaceMap, false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(replaceMap, false));
 				sign.setLine(3, "");
 				
 				if(p != null && playerMessages){
@@ -300,7 +300,7 @@ public class Banks {
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -309,7 +309,7 @@ public class Banks {
 			switch(step){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -334,8 +334,8 @@ public class Banks {
 				if(!overrideConfiguration)
 					maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan.getLoan());
 				
-				sign.setLine(2, ChatColor.YELLOW + StringsID.ASK.toString(false));
-				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.ASK.toString(false));
+				sign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -346,8 +346,8 @@ public class Banks {
 				}
 				break;
 			case 1:
-				sign.setLine(2, ChatColor.YELLOW + StringsID.PAY.toString(false));
-				sign.setLine(3, ChatColor.YELLOW + AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.PAY.toString(false));
+				sign.setLine(3, ChatColor.DARK_BLUE + AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -358,7 +358,7 @@ public class Banks {
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -369,8 +369,8 @@ public class Banks {
 				//Depositar
 				BigDecimal moneyInBank = ba.BankMoney.getMoney();
 				
-				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT_MONEY.toString(false));
-				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.DEPOSIT_MONEY.toString(false));
+				sign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -383,8 +383,8 @@ public class Banks {
 				//Retirar
 				BigDecimal moneyInBank2 = ba.BankMoney.getMoney();
 				
-				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_MONEY.toString(false));
-				sign.setLine(3, ChatColor.GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.WITHDRAW_MONEY.toString(false));
+				sign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -395,7 +395,7 @@ public class Banks {
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -404,8 +404,8 @@ public class Banks {
 			switch(step){
 			case 0:
 				//Retirar tiempo (este banco solo tiene este estatus)
-				sign.setLine(2, ChatColor.YELLOW + StringsID.CHANGE_TIME.toString(false));
-				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankTime.getTime()));
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.CHANGE_TIME.toString(false));
+				sign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(ba.BankTime.getTime()));
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -416,7 +416,7 @@ public class Banks {
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
@@ -425,8 +425,8 @@ public class Banks {
 			switch(step){
 			case 0:
 				//depositar xp
-				sign.setLine(2, ChatColor.YELLOW + StringsID.DEPOSIT_XP.toString(false));
-				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.DEPOSIT_XP.toString(false));
+				sign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -435,8 +435,8 @@ public class Banks {
 				break;
 			case 1:
 				//retirar xp
-				sign.setLine(2, ChatColor.YELLOW + StringsID.WITHDRAW_XP.toString(false));
-				sign.setLine(3, ChatColor.GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
+				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.WITHDRAW_XP.toString(false));
+				sign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
 				
 				//Mensaje al jugador
 				if(p != null && playerMessages){
@@ -445,7 +445,7 @@ public class Banks {
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.GREEN + StringsID.CLICK_TO_USE.toString(false));
+				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
 				sign.setLine(3, "");
 				break;
 			}
