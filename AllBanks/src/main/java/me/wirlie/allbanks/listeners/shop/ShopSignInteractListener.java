@@ -115,7 +115,7 @@ public class ShopSignInteractListener implements Listener {
 					ItemStack shopItem = ShopUtil.getItemStack(sign);
 					
 					if(!ShopUtil.playerHaveItemsInYourInventory(p, shopItem, false)){
-						Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem)), true);
+						Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + ((shopItem.getDurability() > 0) ? ":" + shopItem.getDurability() : "")), true);
 						return;
 					}
 					

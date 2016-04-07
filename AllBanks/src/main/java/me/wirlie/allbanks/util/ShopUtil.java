@@ -136,9 +136,9 @@ public class ShopUtil {
 		for(ItemStack item : inv.getContents()) {
 			if(item == null || item.getType().equals(Material.AIR)) continue;
 			
-			if(!checkAmount && item.getType().equals(shopItem.getType())) 
+			if(!checkAmount && item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) 
 				return true;
-			else if (checkAmount && item.getType().equals(shopItem.getType())) {
+			else if (checkAmount && item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -157,7 +157,7 @@ public class ShopUtil {
 		for(ItemStack item : inv.getContents()) {
 			if(item == null || item.getType().equals(Material.AIR)) continue;
 			
-			if (item.getType().equals(shopItem.getType())) {
+			if (item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -198,7 +198,7 @@ public class ShopUtil {
 			ItemStack itemSlot = inv.getItem(slot);
 			if(itemSlot == null || itemSlot.getType().equals(Material.AIR)) continue;
 			
-			if(itemSlot.getType().equals(itemStack.getType()) && remainingItems > 0) {
+			if(itemSlot.getType().equals(itemStack.getType()) && itemSlot.getDurability() == itemStack.getDurability() && remainingItems > 0) {
 				remainingItems -= itemSlot.getAmount();
 				
 				if(remainingItems >= 0) {
@@ -235,7 +235,7 @@ public class ShopUtil {
 		for(int slot = 0; slot < inv.getSize(); slot++) {
 			if(inv.getItem(slot) == null || inv.getItem(slot).getType().equals(Material.AIR)) {
 				freeSpace += shopItem.getMaxStackSize();
-			}else if(inv.getItem(slot).getType().equals(shopItem.getType())) {
+			}else if(inv.getItem(slot).getType().equals(shopItem.getType()) && inv.getItem(slot).getDurability() == shopItem.getDurability()) {
 				int getStackFreeSpace = shopItem.getMaxStackSize() - inv.getItem(slot).getAmount();
 				if(getStackFreeSpace > 0) {
 					freeSpace += getStackFreeSpace;
@@ -268,7 +268,7 @@ public class ShopUtil {
 				putItem.setAmount(putAmount);
 				inv.setItem(slot, putItem);
 				remainingItems -= putAmount;
-			} else if(inv.getItem(slot).getType().equals(shopItem.getType())) {
+			} else if(inv.getItem(slot).getType().equals(shopItem.getType()) && inv.getItem(slot).getDurability() == shopItem.getDurability()) {
 				//¿Hay espacio disponible?
 				ItemStack slotItem = inv.getItem(slot);
 				int getStackFreeSpace = slotItem.getMaxStackSize() - slotItem.getAmount();
