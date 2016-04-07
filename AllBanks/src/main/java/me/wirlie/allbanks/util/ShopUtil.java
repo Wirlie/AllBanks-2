@@ -123,6 +123,30 @@ public class ShopUtil {
 	public static boolean signSupportBuyAction(Sign sign) {
 		return (getBuyPrice(sign) == null) ? false : true;
 	}
+	
+	public static Sign tryToGetRelativeSignByChest(Sign mainSign) {
+		Block chestB = mainSign.getBlock().getRelative(BlockFace.DOWN);
+		
+		//Intentar obtener los bloques de los 4 puntos cardinales
+		for(int i = 0; i < 4; i++) {
+			Block tryBlock = chestB.getRelative((i == 0) ? BlockFace.NORTH : ((i == 1) ? BlockFace.SOUTH : ((i == 2) ? BlockFace.EAST : BlockFace.WEST)));
+			
+			if(tryBlock.getType().equals(Material.CHEST)) {
+				//Bien, es el cofre que buscamos.
+				Block trySign = tryBlock.getRelative(BlockFace.UP);
+				
+				if(trySign.getType().equals(Material.WALL_SIGN)) {
+					Sign sign = (Sign) trySign.getState();
+					
+					if(sign.getLine(Shops.LINE_HEADER).equalsIgnoreCase(Shops.HEADER_FORMAT)) {
+						return sign;
+					}
+				}
+			}
+		}
+		
+		return null;
+	}
 
 	/**
 	 * @param itemStack

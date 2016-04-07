@@ -103,11 +103,17 @@ public class ShopSignInteractListener implements Listener {
 						return;
 					}
 					
-					//Bien, está usando la tienda de alguien más. (SELL)
+					//Bien, está usando la tienda de alguien más. (BUY)
 					
 					//No tiene la etiqueta S:X
 					if(!ShopUtil.signSupportBuyAction(sign)) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_BUY_ACTION, true);
+						return;
+					}
+					
+					//¿Tiene el cofre?
+					if(!ShopUtil.validateNearbyChest(sign.getLocation())) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
 						return;
 					}
 					
@@ -203,11 +209,17 @@ public class ShopSignInteractListener implements Listener {
 						return;
 					}
 					
-					//Bien, está usando la tienda de alguien más. (BUY)
+					//Bien, está usando la tienda de alguien más. (SELL)
 					
 					//No tiene la etiqueta B:X
 					if(!ShopUtil.signSupportSellAction(sign)) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_SELL_ACTION, true);
+						return;
+					}
+					
+					//¿Tiene el cofre?
+					if(!ShopUtil.validateNearbyChest(sign.getLocation())) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
 						return;
 					}
 					

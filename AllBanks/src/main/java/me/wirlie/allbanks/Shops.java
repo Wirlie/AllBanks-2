@@ -20,6 +20,7 @@ package me.wirlie.allbanks;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
@@ -59,6 +60,20 @@ public class Shops {
 				InteractiveUtil.sendSound(owner, SoundType.DENY);
 				b.breakNaturally();
 				return;
+			} else {
+				//Evitar que un cofre tenga 2 letreros de 2 personas distintas.
+				Sign relativeSign = ShopUtil.tryToGetRelativeSignByChest((Sign) b.getState());
+				
+				if(relativeSign != null) {
+					OfflinePlayer p = ShopUtil.getOwner(relativeSign);
+					
+					if(p != null) {
+						if(!p.getName().equalsIgnoreCase(owner.getName())) {
+							b.breakNaturally();
+							return;
+						}
+					}
+				}
 			}
 		}
 		
