@@ -18,6 +18,10 @@
  */
 package me.wirlie.allbanks.listeners.shop;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.HashMap;
+
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -31,6 +35,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
@@ -42,6 +47,7 @@ import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.util.ItemNameUtil;
 import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.Util;
+import net.milkbowl.vault.economy.EconomyResponse;
 
 /**
  * @author Wirlie
@@ -91,7 +97,7 @@ public class ShopSignInteractListener implements Listener {
 					//Bien, el banco se encuentra configurado adecuadamente.
 					
 					//¿Está tratando de usar una tienda de sí mismo?
-					if(false && ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;
@@ -100,16 +106,66 @@ public class ShopSignInteractListener implements Listener {
 					//Bien, está usando la tienda de alguien más. (SELL)
 					
 					//No tiene la etiqueta S:X
-					if(!ShopUtil.signSupportBuyAction(sign.getLine(Shops.LINE_PRICE))) {
+					if(!ShopUtil.signSupportBuyAction(sign)) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_BUY_ACTION, true);
 						return;
 					}
 					
-					//TODO COMPRAR OBJETO
 					//Bien, vamos a COMPRAR el objeto al jugador.
-					//ShopUtil.playerHaveItemsInYourInventory(sign.getLine(Shops.LINE_ITEM)){
+					ItemStack shopItem = ShopUtil.getItemStack(sign);
+					
+					if(!ShopUtil.playerHaveItemsInYourInventory(p, shopItem, false)){
+						Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem)), true);
+						return;
+					}
+					
+					//Bien, cuantos objetos tiene.
+					int totalItems = ShopUtil.getTotalItemsInPlayerInventory(p, shopItem);
+					int shopTotalItems = shopItem.getAmount();
+					//Para una "exactitud", si la división es infinita solo tomaremos 10 digitos decimales con el fin de hacer un poco más exacta la división
+					BigDecimal pricePerItem = ShopUtil.getBuyPrice(sign).divide(new BigDecimal(shopTotalItems), 10, RoundingMode.HALF_UP);
+					
+					if(totalItems > shopTotalItems) totalItems = shopTotalItems;
+
+					//Cuanto espacio hay en el cofre
+					int freeSpace = ShopUtil.checkShopChestFreeSpace(sign, shopItem);
+
+					if(freeSpace == 0) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_SHOPCHEST_NOT_HAVE_SPACE, true);
+						return;
+					}
+					
+					if(freeSpace < totalItems) {
+						totalItems = freeSpace;
+					}
+					
+					BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalItems));
+					
+					//Bien, ahora vamos a quitarle los objetos al jugador y a pagarle
+					if(!AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_OWNER_OF_SHOP_CANNOT_HAVE_MONEY_FOR_BUY, true);
+						return;
+					}
+					
+					EconomyResponse r = AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
+					if(r.transactionSuccess()) {
+						//Quitar objetos
+						ShopUtil.removeItemsFromPlayerInventory(p, shopItem, totalItems);
+						//Colocar objetos en el cofre
+						ShopUtil.putItemsToShopChest(sign, shopItem, totalItems);
+						//Pagar al jugador
+						AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
+						//Mensaje
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						replaceMap.put("%1%", String.valueOf(totalItems));
+						replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
+						replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
 						
-					//}
+						Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
+						return;
+					} else {
+						p.sendMessage(r.errorMessage);
+					}
 				}
 			}
 		}else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
@@ -150,7 +206,7 @@ public class ShopSignInteractListener implements Listener {
 					//Bien, está usando la tienda de alguien más. (BUY)
 					
 					//No tiene la etiqueta B:X
-					if(!ShopUtil.signSupportSellAction(sign.getLine(Shops.LINE_PRICE))) {
+					if(!ShopUtil.signSupportSellAction(sign)) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_SELL_ACTION, true);
 						return;
 					}

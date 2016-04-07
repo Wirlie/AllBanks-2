@@ -90,7 +90,7 @@ public class ShopSignBreakListener implements Listener {
 				}
 
 				//Está intentando remover su propio letrero?
-				if(owner.equalsIgnoreCase(p.getName())) {
+				if(owner.equalsIgnoreCase(p.getName()) || Util.hasPermission(p, "allbanks.shop.breakothers")) {
 					if(Banks.removeAllBanksSign(sign.getLocation())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 						InteractiveUtil.sendSound(p, SoundType.SUCCESS);

@@ -79,7 +79,7 @@ public class ShopSignChangeListener implements Listener {
 			}
 			
 			//Validar la cantidad de objetos
-			int amount = ShopUtil.getItemAmount(lines[Shops.LINE_PRICE]);
+			int amount = ShopUtil.getItemAmount(e.getLine(Shops.LINE_PRICE));
 			
 			if(amount <= 0) {
 				e.getBlock().breakNaturally();
@@ -94,7 +94,8 @@ public class ShopSignChangeListener implements Listener {
 			}
 			
 			//Validar el nombre de item
-			if(ItemNameUtil.getItemByShortName(lines[Shops.LINE_ITEM]) == null) {
+			String[] split = lines[Shops.LINE_ITEM].split(":");
+			if(ItemNameUtil.getItemByShortName(split[0]) == null) {
 				//No pertenece a un nombre válido, pero puede ser configurado
 				lines[Shops.LINE_ITEM] = "???";
 			}
