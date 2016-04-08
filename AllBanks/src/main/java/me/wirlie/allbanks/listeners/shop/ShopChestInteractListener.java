@@ -33,6 +33,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.util.DataBaseUtil;
 import me.wirlie.allbanks.util.ShopUtil;
+import me.wirlie.allbanks.util.Util;
 
 /**
  * @author Wirlie
@@ -50,6 +51,18 @@ public class ShopChestInteractListener implements Listener {
 		if(!b.getType().equals(Material.CHEST)) return;
 		
 		Block trySign = b.getRelative(BlockFace.UP);
+		
+		if(!trySign.getType().equals(Material.WALL_SIGN)) {
+			//Intentar con los bloques relativos
+			for(int i = 0; i < 4; i ++) {
+				Block tryRelativeBlock = b.getRelative((i == 0) ? BlockFace.NORTH : ((i == 1) ? BlockFace.SOUTH : ((i == 2) ? BlockFace.EAST : BlockFace.WEST)));
+
+				if(tryRelativeBlock.getType().equals(Material.CHEST)) {
+					trySign = tryRelativeBlock.getRelative(BlockFace.UP);
+					break;
+				}
+			}
+		}
 		
 		if(!trySign.getType().equals(Material.WALL_SIGN)) return;
 		
@@ -71,7 +84,7 @@ public class ShopChestInteractListener implements Listener {
 			}
 			
 			//Bien, comprobar si el cofre pertenece al jugador
-			if(!ShopUtil.getOwner(sign).getName().equalsIgnoreCase(p.getName())) {
+			if(!ShopUtil.getOwner(sign).getName().equalsIgnoreCase(p.getName()) && !Util.hasPermission(p, "allbanks.sign.shop.admin")) {
 				e.setCancelled(true);
 				return;
 			}
