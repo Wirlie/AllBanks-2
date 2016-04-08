@@ -1,5 +1,5 @@
 # do not edit this.
-cfg-version: "v1.0.2"
+cfg-version: "v1.0.3"
 # These permissions are given to all Players, it is useful if you want to use AllBanks without a Permission-Plugin.
 # Note: For example, if you set "allbanks.sign.loan.use" into a default permission, and you do want to deny this for a specific group/player, 
 # you can use "-" before it ("-allbanks.sign.loan.use") in your Permission-Plugin.
