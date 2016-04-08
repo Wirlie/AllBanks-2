@@ -152,7 +152,7 @@ public class ShopUtil {
 	 * @param itemStack
 	 * @return
 	 */
-	public static boolean playerHaveItemsInYourInventory(Player p, ItemStack shopItem, boolean checkAmount) {
+	public static boolean checkItemForPlayerInventory(Player p, ItemStack shopItem, boolean checkAmount) {
 		
 		PlayerInventory inv = p.getInventory();
 		int totalItems = 0;
@@ -174,8 +174,7 @@ public class ShopUtil {
 		return false;
 	}
 	
-	public static int getTotalItemsInPlayerInventory(Player p, ItemStack shopItem) {
-		PlayerInventory inv = p.getInventory();
+	public static int getTotalItemsInventory(Inventory inv, ItemStack shopItem) {
 		int totalItems = 0;
 		
 		for(ItemStack item : inv.getContents()) {
@@ -214,8 +213,7 @@ public class ShopUtil {
 	 * @param itemStack
 	 * @param totalItems
 	 */
-	public static synchronized void removeItemsFromPlayerInventory(Player p, ItemStack itemStack, int totalItems) {
-		PlayerInventory inv = p.getInventory();
+	public static synchronized void removeItemsFromInventory(Inventory inv, ItemStack itemStack, int totalItems) {
 		int remainingItems = totalItems;
 		
 		for(int slot = 0; slot < inv.getSize(); slot++) {
@@ -241,19 +239,25 @@ public class ShopUtil {
 			}
 		}
 	}
+	
+	public static synchronized int getInventoryFreeSpaceForItem(Sign sign, ItemStack shopItem) {
+		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
+		if(!tryChest.getType().equals(Material.CHEST)) return -1;
+		Chest chest = (Chest) tryChest.getState();
+		return getInventoryFreeSpaceForItem(chest.getInventory(), shopItem);
+	}
+	
+
+	public static synchronized int getInventoryFreeSpaceForItem(PlayerInventory inv, ItemStack shopItem) {
+		return getInventoryFreeSpaceForItem((Inventory) inv, shopItem);
+	}
 
 	/**
 	 * @param sign
 	 * @param shopItem
 	 * @return
 	 */
-	public static synchronized int checkShopChestFreeSpace(Sign sign, ItemStack shopItem) {
-		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		
-		if(!tryChest.getType().equals(Material.CHEST)) return -1;
-		
-		Chest chest = (Chest) tryChest.getState();
-		Inventory inv = chest.getInventory();
+	public static synchronized int getInventoryFreeSpaceForItem(Inventory inv, ItemStack shopItem) {
 		int freeSpace = 0;
 		
 		for(int slot = 0; slot < inv.getSize(); slot++) {
@@ -269,19 +273,21 @@ public class ShopUtil {
 		
 		return freeSpace;
 	}
+	
+	public static synchronized boolean putItemsToInventory(Sign sign, ItemStack shopItem, int totalItems) {
+		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
+		if(!tryChest.getType().equals(Material.CHEST)) return false;
+		Chest chest = (Chest) tryChest.getState();
+		
+		return putItemsToInventory(chest.getInventory(), shopItem, totalItems);
+	}
 
 	/**
 	 * @param sign
 	 * @param shopItem
 	 * @param totalItems
 	 */
-	public static synchronized boolean putItemsToShopChest(Sign sign, ItemStack shopItem, int totalItems) {
-		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		
-		if(!tryChest.getType().equals(Material.CHEST)) return false;
-		
-		Chest chest = (Chest) tryChest.getState();
-		Inventory inv = chest.getInventory();
+	public static synchronized boolean putItemsToInventory(Inventory inv, ItemStack shopItem, int totalItems) {
 		int remainingItems = totalItems;
 		for(int slot = 0; slot < inv.getSize(); slot++) {
 			if(remainingItems <= 0) break;
@@ -307,6 +313,19 @@ public class ShopUtil {
 		}
 		
 		return true;
+	}
+
+	/**
+	 * @param sign
+	 * @return
+	 */
+	public static Chest getNearbyChest(Sign sign) {
+		Block signBlock = sign.getBlock();
+		Block tryChestBlock = signBlock.getRelative(BlockFace.DOWN);
+		
+		if(!tryChestBlock.getType().equals(Material.CHEST)) return null;
+		
+		return (Chest) tryChestBlock.getState();
 	}
 
 }

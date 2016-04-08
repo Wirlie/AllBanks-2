@@ -120,13 +120,13 @@ public class ShopSignInteractListener implements Listener {
 					//Bien, vamos a COMPRAR el objeto al jugador.
 					ItemStack shopItem = ShopUtil.getItemStack(sign);
 					
-					if(!ShopUtil.playerHaveItemsInYourInventory(p, shopItem, false)){
+					if(!ShopUtil.checkItemForPlayerInventory(p, shopItem, false)){
 						Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + ((shopItem.getDurability() > 0) ? ":" + shopItem.getDurability() : "")), true);
 						return;
 					}
 					
 					//Bien, cuantos objetos tiene.
-					int totalItems = ShopUtil.getTotalItemsInPlayerInventory(p, shopItem);
+					int totalItems = ShopUtil.getTotalItemsInventory(p.getInventory(), shopItem);
 					int shopTotalItems = shopItem.getAmount();
 					//Para una "exactitud", si la división es infinita solo tomaremos 10 digitos decimales con el fin de hacer un poco más exacta la división
 					BigDecimal pricePerItem = ShopUtil.getBuyPrice(sign).divide(new BigDecimal(shopTotalItems), 10, RoundingMode.HALF_UP);
@@ -134,9 +134,9 @@ public class ShopSignInteractListener implements Listener {
 					if(totalItems > shopTotalItems) totalItems = shopTotalItems;
 
 					//Cuanto espacio hay en el cofre
-					int freeSpace = ShopUtil.checkShopChestFreeSpace(sign, shopItem);
+					int freeSpace = ShopUtil.getInventoryFreeSpaceForItem(sign, shopItem);
 
-					if(freeSpace == 0) {
+					if(freeSpace <= 0) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_SHOPCHEST_NOT_HAVE_SPACE, true);
 						return;
 					}
@@ -156,9 +156,9 @@ public class ShopSignInteractListener implements Listener {
 					EconomyResponse r = AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
 					if(r.transactionSuccess()) {
 						//Quitar objetos
-						ShopUtil.removeItemsFromPlayerInventory(p, shopItem, totalItems);
+						ShopUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
 						//Colocar objetos en el cofre
-						ShopUtil.putItemsToShopChest(sign, shopItem, totalItems);
+						ShopUtil.putItemsToInventory(sign, shopItem, totalItems);
 						//Pagar al jugador
 						AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
 						//Mensaje
@@ -203,7 +203,7 @@ public class ShopSignInteractListener implements Listener {
 					if(p.getGameMode().equals(GameMode.CREATIVE)) return;
 					
 					//¿Está tratando de usar una tienda de sí mismo?
-					if(false && ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;
@@ -211,7 +211,7 @@ public class ShopSignInteractListener implements Listener {
 					
 					//Bien, está usando la tienda de alguien más. (SELL)
 					
-					//No tiene la etiqueta B:X
+					//No tiene la etiqueta S:X
 					if(!ShopUtil.signSupportSellAction(sign)) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_SELL_ACTION, true);
 						return;
@@ -224,7 +224,51 @@ public class ShopSignInteractListener implements Listener {
 					}
 					
 					//Bien, vamos a VENDER el objeto al jugador.
-					//TODO VENDER OBJETO
+					int totalAmount = ShopUtil.getItemAmount(sign);
+					ItemStack shopItem = ShopUtil.getItemStack(sign);
+					BigDecimal pricePerItem = ShopUtil.getSellPrice(sign).divide(new BigDecimal(totalAmount), 10, RoundingMode.HALF_UP);
+					
+					int playerInvFreeSpace = ShopUtil.getInventoryFreeSpaceForItem(p.getInventory(), shopItem);
+					
+					if(playerInvFreeSpace <= 0) {
+						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_PLAYER_NOT_HAVE_SPACE, true);
+						return;
+					}
+					
+					if(playerInvFreeSpace < totalAmount) totalAmount = playerInvFreeSpace;
+					
+					//Tiene dinero, hay objetos suficientes en el inventario del cofre?
+					int totalItemsChest = ShopUtil.getTotalItemsInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem);
+					if(totalItemsChest < totalAmount) totalAmount = totalItemsChest;
+					
+					//¿Tiene el dinero?
+					BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalAmount));
+					
+					if(!AllBanks.getEconomy().has(p, totalCost.doubleValue())) {
+						//No tiene dinero para comprar esta cantidad de objetos.
+						Translation.getAndSendMessage(p, StringsID.YOU_DO_NOT_HAVE_MONEY, true);
+						return;
+					}
+					
+					
+					//Pagar/Cobrar
+					EconomyResponse r = AllBanks.getEconomy().withdrawPlayer(p, totalCost.doubleValue());
+					if(r.transactionSuccess()) {
+						//Bien, procesar
+						ShopUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
+						ShopUtil.putItemsToInventory(p.getInventory(), shopItem, totalAmount);
+						
+						AllBanks.getEconomy().depositPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
+						//Bien, mostrar mensaje.
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						replaceMap.put("%1%", String.valueOf(totalAmount));
+						replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
+						replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+						
+						Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_SELL, replaceMap, true);
+					}
+					
+					return;
 				}
 			}
 		}
