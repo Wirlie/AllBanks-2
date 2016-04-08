@@ -82,6 +82,7 @@ public class ShopSignChangeListener implements Listener {
 			int amount = ShopUtil.getItemAmount(e.getLine(Shops.LINE_PRICE));
 			
 			if(amount <= 0) {
+				Translation.getAndSendMessage(p, StringsID.ONLY_VALID_NUMBER_MORE_THAN_0, true);
 				e.getBlock().breakNaturally();
 				return;
 			}

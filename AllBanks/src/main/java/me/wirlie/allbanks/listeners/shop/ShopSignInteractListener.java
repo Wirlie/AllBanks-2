@@ -239,6 +239,13 @@ public class ShopSignInteractListener implements Listener {
 					
 					//Tiene dinero, hay objetos suficientes en el inventario del cofre?
 					int totalItemsChest = ShopUtil.getTotalItemsInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem);
+					
+					if(totalItemsChest <= 0) {
+						//Sin objetos
+						Translation.getAndSendMessage(p, StringsID.SHOP_OUT_OF_STOCK, true);
+						return;
+					}
+					
 					if(totalItemsChest < totalAmount) totalAmount = totalItemsChest;
 					
 					//¿Tiene el dinero?

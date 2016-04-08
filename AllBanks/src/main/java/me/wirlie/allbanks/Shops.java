@@ -70,6 +70,7 @@ public class Shops {
 					if(p != null) {
 						if(!p.getName().equalsIgnoreCase(owner.getName())) {
 							b.breakNaturally();
+							Translation.getAndSendMessage(owner, StringsID.SHOP_ANOTHER_SHOP_USES_THIS_CHEST, true);
 							return;
 						}
 					}
