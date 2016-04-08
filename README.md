@@ -10,11 +10,7 @@
 https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/develop/artifacts
 
 ##### Download latest release (AllBanks 1.0.2):
-AppVeyor: https://ci.appveyor.com/project/Wirlie/allbanks-2/build/76
-
-Spigot: https://www.spigotmc.org/resources/allbanks-2.21032/history
-
-BukkitDev: http://dev.bukkit.org/bukkit-plugins/allbanks-2/files/3-all-banks2-v1-0-2/
+https://github.com/Wirlie/AllBanks-2/releases
 
 ### AllBanks on Spigot:
 https://www.spigotmc.org/resources/allbanks.21032/
