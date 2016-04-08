@@ -84,7 +84,7 @@ public class ShopChestInteractListener implements Listener {
 			}
 			
 			//Bien, comprobar si el cofre pertenece al jugador
-			if(!ShopUtil.getOwner(sign).getName().equalsIgnoreCase(p.getName()) && !Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+			if(!ShopUtil.isAdminShop(sign) && !ShopUtil.getOwner(sign).getName().equalsIgnoreCase(p.getName()) && !Util.hasPermission(p, "allbanks.sign.shop.admin")) {
 				e.setCancelled(true);
 				return;
 			}

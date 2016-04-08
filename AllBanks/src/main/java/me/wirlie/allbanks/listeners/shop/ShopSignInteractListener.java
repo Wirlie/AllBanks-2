@@ -47,7 +47,6 @@ import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.util.ItemNameUtil;
 import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.Util;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 /**
  * @author Wirlie
@@ -82,10 +81,11 @@ public class ShopSignInteractListener implements Listener {
 				}
 				
 				String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
+				boolean isAdminShop = owner.equalsIgnoreCase(Shops.ADMIN_TAG);
 				
 				//La última línea tiene un ???
 				if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM)).equalsIgnoreCase("???")) {
-					if(owner.equalsIgnoreCase(p.getName()) || owner.equalsIgnoreCase(Shops.ADMIN_TAG) && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+					if(owner.equalsIgnoreCase(p.getName()) || isAdminShop && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURE_NEEDED, true);
 					} else {
 						Translation.getAndSendMessage(p, StringsID.SHOP_IS_NOT_CONFIGURED, true);
@@ -95,7 +95,6 @@ public class ShopSignInteractListener implements Listener {
 					return;
 				} else {
 					//Bien, el banco se encuentra configurado adecuadamente.
-					
 					//¿Está tratando de usar una tienda de sí mismo?
 					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
@@ -112,11 +111,10 @@ public class ShopSignInteractListener implements Listener {
 					}
 					
 					//¿Tiene el cofre?
-					if(!ShopUtil.validateNearbyChest(sign.getLocation())) {
+					if(!ShopUtil.validateNearbyChest(sign.getLocation()) && !isAdminShop) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
 						return;
 					}
-					
 					//Bien, vamos a COMPRAR el objeto al jugador.
 					ItemStack shopItem = ShopUtil.getItemStack(sign);
 					
@@ -130,11 +128,12 @@ public class ShopSignInteractListener implements Listener {
 					int shopTotalItems = shopItem.getAmount();
 					//Para una "exactitud", si la división es infinita solo tomaremos 10 digitos decimales con el fin de hacer un poco más exacta la división
 					BigDecimal pricePerItem = ShopUtil.getBuyPrice(sign).divide(new BigDecimal(shopTotalItems), 10, RoundingMode.HALF_UP);
-					
 					if(totalItems > shopTotalItems) totalItems = shopTotalItems;
 
 					//Cuanto espacio hay en el cofre
 					int freeSpace = ShopUtil.getInventoryFreeSpaceForItem(sign, shopItem);
+					
+					if(isAdminShop) freeSpace = Integer.MAX_VALUE;
 
 					if(freeSpace <= 0) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_SHOPCHEST_NOT_HAVE_SPACE, true);
@@ -148,17 +147,15 @@ public class ShopSignInteractListener implements Listener {
 					BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalItems));
 					
 					//Bien, ahora vamos a quitarle los objetos al jugador y a pagarle
-					if(!AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
+					if(!isAdminShop && !AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_OWNER_OF_SHOP_CANNOT_HAVE_MONEY_FOR_BUY, true);
 						return;
 					}
-					
-					EconomyResponse r = AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
-					if(r.transactionSuccess()) {
+					if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
 						//Quitar objetos
 						ShopUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
 						//Colocar objetos en el cofre
-						ShopUtil.putItemsToInventory(sign, shopItem, totalItems);
+						if(!isAdminShop) ShopUtil.putItemsToInventory(sign, shopItem, totalItems);
 						//Pagar al jugador
 						AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
 						//Mensaje
@@ -169,8 +166,6 @@ public class ShopSignInteractListener implements Listener {
 						
 						Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
 						return;
-					} else {
-						p.sendMessage(r.errorMessage);
 					}
 				}
 			}
@@ -202,6 +197,9 @@ public class ShopSignInteractListener implements Listener {
 					//Está usando el creativo, y si usa el clic izquierdo removerá el letrero por lo que no tiene caso procesar este evento.
 					if(p.getGameMode().equals(GameMode.CREATIVE)) return;
 					
+					String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
+					boolean isAdminShop = owner.equalsIgnoreCase(Shops.ADMIN_TAG);
+					
 					//¿Está tratando de usar una tienda de sí mismo?
 					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
@@ -218,7 +216,7 @@ public class ShopSignInteractListener implements Listener {
 					}
 					
 					//¿Tiene el cofre?
-					if(!ShopUtil.validateNearbyChest(sign.getLocation())) {
+					if(!isAdminShop && !ShopUtil.validateNearbyChest(sign.getLocation())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
 						return;
 					}
@@ -238,7 +236,7 @@ public class ShopSignInteractListener implements Listener {
 					if(playerInvFreeSpace < totalAmount) totalAmount = playerInvFreeSpace;
 					
 					//Tiene dinero, hay objetos suficientes en el inventario del cofre?
-					int totalItemsChest = ShopUtil.getTotalItemsInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem);
+					int totalItemsChest = (!isAdminShop) ? ShopUtil.getTotalItemsInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem) : totalAmount;
 					
 					if(totalItemsChest <= 0) {
 						//Sin objetos
@@ -259,13 +257,12 @@ public class ShopSignInteractListener implements Listener {
 					
 					
 					//Pagar/Cobrar
-					EconomyResponse r = AllBanks.getEconomy().withdrawPlayer(p, totalCost.doubleValue());
-					if(r.transactionSuccess()) {
+					if(AllBanks.getEconomy().withdrawPlayer(p, totalCost.doubleValue()).transactionSuccess()) {
 						//Bien, procesar
-						ShopUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
+						if(!isAdminShop) ShopUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
 						ShopUtil.putItemsToInventory(p.getInventory(), shopItem, totalAmount);
 						
-						AllBanks.getEconomy().depositPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
+						if(!isAdminShop) AllBanks.getEconomy().depositPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
 						//Bien, mostrar mensaje.
 						HashMap<String, String> replaceMap = new HashMap<String, String>();
 						replaceMap.put("%1%", String.valueOf(totalAmount));

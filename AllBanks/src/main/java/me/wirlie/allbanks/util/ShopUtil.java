@@ -328,4 +328,12 @@ public class ShopUtil {
 		return (Chest) tryChestBlock.getState();
 	}
 
+	/**
+	 * @param sign
+	 * @return
+	 */
+	public static boolean isAdminShop(Sign sign) {
+		return ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(Shops.ADMIN_TAG);
+	}
+
 }
