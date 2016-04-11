@@ -3,8 +3,8 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 env:
-	- AB_VERSION=1.8
-	- AB_VERSION=1.9
+  - AB_VERSION=1.8
+  - AB_VERSION=1.9
 script: 
   - if [[ $AB_VERSION == "1.8" ]] ; then cd "AllBanks 1.8" && mvn clean test -U fi
   - if [[ $AB_VERSION == "1.9" ]] ; then cd "AllBanks 1.9" && mvn clean test -U fi
