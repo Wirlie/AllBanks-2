@@ -28,7 +28,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Banks;
-import me.wirlie.allbanks.Banks.AllBanksAction;
+import me.wirlie.allbanks.Banks.PlayerAction;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -106,7 +106,7 @@ public class SignInteractListener implements Listener {
 					}
 					
 					//Comprobar si tiene permisos para usar el letrero
-					if(!Banks.playerHasPermissions(p, AllBanksAction.USE_SIGN, btype)){
+					if(!Banks.playerHasPermissions(p, PlayerAction.USE_SIGN, btype)){
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						AllBanksLogger.warning("Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a bank sign. (Deny cause: permissions)(Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").");
 						

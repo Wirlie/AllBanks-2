@@ -34,7 +34,7 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Banks.AllBanksAction;
+import me.wirlie.allbanks.Banks.PlayerAction;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.util.InteractiveUtil;
@@ -97,7 +97,7 @@ public class SignChangeListener implements Listener {
 			}
 			
 			//Checar permiso
-			if(!Banks.playerHasPermissions(p, AllBanksAction.NEW_SIGN, btype)){
+			if(!Banks.playerHasPermissions(p, PlayerAction.NEW_SIGN, btype)){
 				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				e.setCancelled(true);
 				e.getBlock().breakNaturally();

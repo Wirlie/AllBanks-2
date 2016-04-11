@@ -49,12 +49,19 @@ import me.wirlie.allbanks.util.StringLocationUtil;
 import me.wirlie.allbanks.util.Util;
 
 /**
+ * Esta clase se encarga de procesar acciones relacionado con los letreros de AllBanks
+ * en especial, aquellos que pertenecen a BANK_LOAN, BANK_XP, BANK_TIME, BANK_MONEY
+ * ATM, BANK_CHEST
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
 public class Banks {
 	
+	/**
+	 * Tipo de banco
+	 * @author Wirlie
+	 */
 	public static enum BankType{
 		BANK_LOAN("Loan"),
 		BANK_XP("XP"),
@@ -89,13 +96,25 @@ public class Banks {
 		}
 	}
 	
-	public static enum AllBanksAction{
+	/**
+	 * Acciones de un jugador
+	 * @author Wirlie
+	 *
+	 */
+	public static enum PlayerAction{
 		NEW_SIGN,
 		DESTROY_SIGN,
 		USE_SIGN;
 	}
 	
-	public static boolean playerHasPermissions(Player p, AllBanksAction action, BankType btype){
+	/**
+	 * Comprobar si un jugador tiene permisos para efectuar una acción.
+	 * @param p Jugador
+	 * @param action Accion del jugador
+	 * @param btype Tipo de banco
+	 * @return true si el jugador tiene permiso.
+	 */
+	public static boolean playerHasPermissions(Player p, PlayerAction action, BankType btype){
 		
 		if(btype == null){
 			return true;
@@ -182,6 +201,11 @@ public class Banks {
 		return false;
 	}
 	
+	/**
+	 * Cambiar un letrero a su estado inicial.
+	 * @param sign Letrero
+	 * @param btype Tipo de banco
+	 */
 	public static void switchSignToInitialState(Sign sign, BankType btype){
 		if(!sign.getBlock().getType().equals(Material.SIGN) && !sign.getBlock().getType().equals(Material.WALL_SIGN))
 			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
@@ -191,6 +215,11 @@ public class Banks {
 		
 	}
 	
+	/**
+	 * Obtener el siguiente paso de un banco.
+	 * @param bs Sesión de banco
+	 * @return Siguiente paso del banco.
+	 */
 	public static int getNextStep(BankSession bs){
 		int nextStep = bs.getStep() + 1;
 		
@@ -242,9 +271,10 @@ public class Banks {
 	}
 
 	/**
-	 * @param btype
-	 * @param sign
-	 * @param step
+	 * Cambiar un letrero a un paso en específico.
+	 * @param btype Tipo de banco.
+	 * @param sign Letrero de AllBanks.
+	 * @param step Paso al que se desea cambiar.
 	 */
 	public static void switchSignToStep(BankType btype, Sign sign, int step, boolean playerMessages) {
 		
@@ -458,6 +488,12 @@ public class Banks {
 		sign.update();
 	}
 	
+	/**
+	 * Registrar un letrero de AllBanks.
+	 * @param signLoc Localización del letrero a registrar.
+	 * @param owner Dueño del letrero.
+	 * @return true si el registro fue exitoso, false si ocurrió un error importante
+	 */
 	public static boolean registerAllBanksSign(Location signLoc, Player owner){
 		
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
@@ -511,6 +547,11 @@ public class Banks {
 		return false;
 	}
 	
+	/**
+	 * Comprobar si un letrero está registrado en AllBanks.
+	 * @param signLoc Localización del letrero a comprobar.
+	 * @return true si el letrero pertenece a AllBanks y se encuentra registrado.
+	 */
 	public static boolean signIsRegistered(Location signLoc){
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 			if(!Util.FlatFile_signFolder.exists()) {
@@ -542,6 +583,11 @@ public class Banks {
 		return false;
 	}
 	
+	/**
+	 * Remover un letrero de AllBanks previamente registrado.
+	 * @param signLoc Localización del letrero.
+	 * @return true si la operación fue exitosa y no han ocurrido problemas importantes.
+	 */
 	public static boolean removeAllBanksSign(Location signLoc){
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 			if(!Util.FlatFile_signFolder.exists()) {
@@ -578,8 +624,9 @@ public class Banks {
 	}
 
 	/**
-	 * @param p
-	 * @param currentChestCursor
+	 * Abrir un cofre virtual de AllBanks a un jugador.
+	 * @param p Jugador al que se desea mostrar el cofre virtual.
+	 * @param currentChestCursor Obtener el cofre # 
 	 */
 	public static void openVirtualChest(Player p, int currentChestCursor) {
 		if(p == null) throw new IllegalArgumentException("Player can not be null!!");
@@ -600,6 +647,13 @@ public class Banks {
 		p.openInventory(inv);
 	}
 	
+	/**
+	 * Obtiene el contenido de un cofre virtual de AllBanks.
+	 * @param owner Dueño del cofre virtual.
+	 * @param virtualChest Número de cofre.
+	 * @return se devuelve todo el contenido del cofre en un {@code HashMap<Integer, ItemStack>} que 
+	 * interpretado en términos simples es igual que: {@code HashMap<Slot, Item>}
+	 */
 	public static HashMap<Integer, ItemStack> getVirtualChestContents(String owner, int virtualChest){
 		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
 		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
@@ -629,6 +683,13 @@ public class Banks {
 		return returnList;
 	}
 	
+	/**
+	 * Establece el contenido de un cofre virtual.
+	 * @param owner Dueño
+	 * @param chestNumber Número de cofre
+	 * @param contents Nuevo contenido, formateado en un {@code HashMap<Integer, ItemStack>}<br> 
+	 * (que es lo mismo que decir: {@code HashMap<Slot, Item>}).
+	 */
 	public static void setVirtualChestContents(String owner, int chestNumber, HashMap<Integer, ItemStack> contents){
 		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
 		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();

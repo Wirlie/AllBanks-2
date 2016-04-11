@@ -28,7 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.wirlie.allbanks.Banks;
-import me.wirlie.allbanks.Banks.AllBanksAction;
+import me.wirlie.allbanks.Banks.PlayerAction;
 import me.wirlie.allbanks.Banks.BankType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -64,7 +64,7 @@ public class SignBreakListener implements Listener {
 					
 					BankType btype = BankType.getTypeByString(ChatUtil.removeChatFormat(s.getLine(1)));
 					
-					if(Banks.playerHasPermissions(p, AllBanksAction.DESTROY_SIGN, btype)){
+					if(Banks.playerHasPermissions(p, PlayerAction.DESTROY_SIGN, btype)){
 						if(btype != null){
 							if(Banks.removeAllBanksSign(s.getLocation())){
 								Translation.getAndSendMessage(p, StringsID.BANK_REMOVED, true);

@@ -23,14 +23,21 @@ import java.util.HashMap;
 import org.bukkit.Bukkit;
 
 /**
+ * Esta clase se encarga de enviar mensajes a la consola junto con el prefix de AllBanks.
  * @author Wirlie
- * @since AllBanks v1.0
  *
  */
 public class Console {
 	
+	/** Prefix de AllBanks sin formato **/
 	static String simplePrefix = "[" + AllBanks.getInstance().getDescription().getName() + "] ";
 	
+	/**
+	 * Enviar un mensaje a la consola.
+	 * @param strID ID del string ({@code StringsID})
+	 * @param replaceMap Mapa para reemplazar valores, este mapa debe tener el siguiente formato:<br>
+	 * {@code HashMap<String, String> = HashMap<Buscar, Reemplazar>}
+	 */
 	public static void sendMessage(StringsID strID, HashMap<String, String> replaceMap){
 		
 		for(String s : Translation.get(strID, replaceMap, false)){
@@ -38,10 +45,18 @@ public class Console {
 		}
 	}
 	
+	/**
+	 * Enviar un mensaje a la consola sin parámetros de reemplazo.
+	 * @param strID ID del string ({@code StringsID})
+	 */
 	public static void sendMessage(StringsID strID){
 		sendMessage(strID, new HashMap<String, String>());
 	}
 	
+	/**
+	 * Enviar un mensaje a la consola, desde una cadena de texto simple.
+	 * @param str Cadena de texto.
+	 */
 	public static void sendMessage(String str){
 		Bukkit.getConsoleSender().sendMessage(simplePrefix + str);
 	}

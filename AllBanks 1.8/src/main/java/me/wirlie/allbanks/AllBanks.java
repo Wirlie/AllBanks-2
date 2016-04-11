@@ -66,6 +66,7 @@ import me.wirlie.allbanks.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
 /**
+ * Clase principal de AllBanks.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -80,12 +81,20 @@ public class AllBanks extends JavaPlugin {
 	
 	private static Economy econ = null;
 	
+	/**
+	 * Resultados usados al momento de comparar versiones.
+	 * @author Wirlie
+	 *
+	 */
 	private enum VersionCheckResult{
 		COMPATIBLE,
 		NOT_COMPATIBLE,
 		PROCCEED_WITH_PRECAUTION
 	}
 
+	/**
+	 * Versiones compatibles con esta version.
+	 */
 	public final static String[] COMPATIBLE_VERSIONS = {
 			"1.8",
 			};
@@ -93,6 +102,11 @@ public class AllBanks extends JavaPlugin {
 	public static String INCOMPATIBLE_MIN = "1.7";
 	public static String INCOMPATIBLE_MAX = "1.9";
 	
+	/**
+	 * Tipo de almacenamiento que usará AllBanks para almacenar los datos.
+	 * @author Wirlie
+	 *
+	 */
 	public enum StorageType{
 		FLAT_FILE,
 		SQLITE,
@@ -355,6 +369,10 @@ public class AllBanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Instalar economía.
+	 * @return true si la instalación fue exitosa.
+	 */
 	private boolean setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
         	Console.sendMessage(ChatColor.RED + "[Error] Ops! Vault plugin is required for AllBanks...");
@@ -373,10 +391,17 @@ public class AllBanks extends JavaPlugin {
         return econ != null;
     }
 	
+	/**
+	 * Devolver la instancia de la economía.
+	 * @return Instancia de Economy.
+	 */
 	public static Economy getEconomy(){
 		return econ;
 	}
 	
+	/**
+	 * Instalar la base de datos de AllBanks (si el método de almacenamiento es SQLite o MySQL)
+	 */
 	public static void installDatabase(){
 		
 		Statement stm = null;
@@ -409,10 +434,17 @@ public class AllBanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Checar si la configuración existe, si no existe se guardará el archivo default.
+	 */
 	public static void ensureConfigExists(){
 		ensureConfigExists(false);
 	}
 	
+	/**
+	 * Checar si la configuración existe, si no existe se guardará el archivo default.
+	 * @param force Forzar el guardado del archivo Config.yml sin importar si ya existe.
+	 */
 	public static void ensureConfigExists(boolean force){
 		File cfgFile = new File(getInstance().getDataFolder() + File.separator + "Config.yml");
 		if(!cfgFile.exists() || force){
@@ -421,6 +453,9 @@ public class AllBanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Comprobar si la configuración se encuentra actualizada.
+	 */
 	public static void ensureConfigIsUpToDate(){
 		AllBanksLogger.info("Checking if Config.yml is up to date...");
 		
@@ -460,6 +495,10 @@ public class AllBanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Este método repara los comentarios del archivo Config.yml, ya que, Bukkit no conserva
+	 * los comentarios al momento de guardar/editar una variable.
+	 */
 	public static void FixConfigComments() {
 		//Definir archivo
 		File configFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + "Config.yml");
@@ -583,6 +622,9 @@ public class AllBanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Actualizar la configuración del usuario con la configuración nativa de AllBanks.
+	 */
 	public static void UpdateConfigWithNativeFile(){
 		//Copiar la anterior Configuración
 		File Config = new File(getInstance().getDataFolder() + File.separator + "Config.yml");
@@ -635,18 +677,34 @@ public class AllBanks extends JavaPlugin {
 		AllBanksLogger.info("Success: 0 problems found.");
 	}
 	
+	/**
+	 * Obtener instancia de AllBanks.
+	 * @return Instancia de AllBanks.
+	 */
 	public static AllBanks getInstance(){
 		return AllBanksInstance;
 	}
 	
+	/**
+	 * Obtener la conexión a la base de datos.
+	 * @return
+	 */
 	public static Connection getDataBaseConnection(){
 		return dbc;
 	}
 	
+	/**
+	 * Obtener el método de almacenamiento que actualmente AllBanks está usando.
+	 * @return Método de almacenamiento en uso.
+	 */
 	public static StorageType getStorageMethod() {
 		return storageMethod;
 	}
 	
+	/**
+	 * Verificar si la versión del servidor es compatible con esta version de AllBanks.
+	 * @return Resultado de la operación.
+	 */
 	private static VersionCheckResult verifyServerVersion() {
 		
 		AllBanksLogger.info("Verifying compatibles versions...");
