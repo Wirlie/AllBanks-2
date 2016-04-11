@@ -1,0 +1,76 @@
+# do not edit this.
+cfg-version: "v1.0.3"
+# These permissions are given to all Players, it is useful if you want to use AllBanks without a Permission-Plugin.
+# Note: For example, if you set "allbanks.sign.loan.use" into a default permission, and you do want to deny this for a specific group/player, 
+# you can use "-" before it ("-allbanks.sign.loan.use") in your Permission-Plugin.
+default-permissions:
+  - "allbanks.sign.loan.use"
+  - "allbanks.sign.money.use"
+  - "allbanks.sign.time.use"
+  - "allbanks.sign.xp.use"
+  - "allbanks.sign.chest.use"
+  - "allbanks.commands.toprank.bankxp"
+  - "allbanks.commands.toprank.bankmoney"
+  - "allbanks.sign.shop.new"
+pl:
+  # Language (Supported languages: EnUs and EsMx)
+  language: "EnUs"
+  # Set chat prefix (colors supported)
+  prefix: "&3All&bBanks &6&l>> &r"
+  # Enable metrics (like MCStats)
+  enable-metrics: true
+  updater:
+    # Check for new updates
+    check-for-updates: true
+    # Update AllBanks if a new version was found.
+    auto-update: true
+  # Available storage systems: FlatFile, SQLite (default) and MySQL
+  storage-system: "SQLite"
+  # If you set "storage-system" with MySQL these configurations are required:
+  mysql-host: "localhost"
+  mysql-user: "root"
+  mysql-pass: "root"
+  mysql-database: "databaseName"
+  mysql-port: 3306
+lottery:
+  # Enable lottery??
+  enable: true
+  # Ticket cost.
+  ticket-cost: 50
+  # Get winner every X:
+  get-winer-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+  # Max tickets per player:
+  max-tickets-per-player: 5
+  # Broadcast message when the Lottery gets a winner.
+  broadcast-message: true
+banks:
+  bank-loan:
+    #Interest (in percent) for the loan. (For example 2% -> 5000 = 100)
+    interest: 1
+    #How much can a player borrow? (Default: 5000)
+    max-loan: 5000
+    #This configuration accept these "time values": day(s), hour(s), minute(s), second(s)
+    #You can set multiple time values, for example: "1 days, 20 hours, 15 minutes, 1 second" = (1440 * 60) + (1200 * 60) + (15 * 60) + 1 = 156901 seconds.
+    collect-interest-every: "0 days, 24 hours, 0 minutes, 0 seconds"
+    #Stop interest collection if player have a balance minor than 500 (-500).
+    #It is useful when the player has left the server for several days, 
+    #it prevents that balance of the player reaches high negative amounts (Impossibles for paying)...
+    stop-collect-if-player-balance-is-minor-than: -500
+  bank-money:
+    # How much money can save the player in the bank?
+    # -1 = unlimited
+    max-money-player-can-save: -1
+  bank-time:
+    # Pay $1 per minute. Example: 10 minutes = 10 x 1 = $10
+    pay-per-minute: 1.00
+    # Add one minute every 60 seconds.
+    add-minute-every: 60
+  bank-chest:
+    # Number of max virtual chest per player.
+    max-virtual-chests-per-player: 1
+shop:
+  admin-tag: "admin"
+topranks:
+  # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.
+  # Please do not set it with a minimal value (example: 1 second)
+  update-cache-every: "5 minutes"
