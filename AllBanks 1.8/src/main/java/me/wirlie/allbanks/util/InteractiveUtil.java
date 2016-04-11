@@ -77,27 +77,27 @@ public class InteractiveUtil{
 		
 		switch(stype) {
 		case SUCCESS:
-			sendSound = Sound.ENTITY_PLAYER_LEVELUP;
+			sendSound = Sound.LEVEL_UP;
 			soundPitch = 1;
 			break;
 		case DENY:
-			sendSound = Sound.BLOCK_NOTE_PLING;
+			sendSound = Sound.NOTE_PLING;
 			soundPitch = (float) 0.7;
 			break;
 		case SWITCH_BANK_STEP:
-			sendSound = Sound.BLOCK_NOTE_HAT;
+			sendSound = Sound.NOTE_BASS_DRUM;
 			soundPitch = 1;
 			break;
 		case VIRTUAL_CHEST_OPEN:
-			sendSound = Sound.BLOCK_CHEST_OPEN;
+			sendSound = Sound.CHEST_OPEN;
 			soundPitch = 1;
 			break;
 		case VIRTUAL_CHEST_CLOSE:
-			sendSound = Sound.BLOCK_CHEST_CLOSE;
+			sendSound = Sound.CHEST_CLOSE;
 			soundPitch = 1;
 			break;
 		case NEW_BANK:
-			sendSound = Sound.ENTITY_FIREWORK_BLAST;
+			sendSound = Sound.FIREWORK_BLAST;
 			soundPitch = 1;
 			break;
 		}

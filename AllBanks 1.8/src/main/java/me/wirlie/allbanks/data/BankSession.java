@@ -153,7 +153,7 @@ public class BankSession {
 		closeSession(p.getUniqueId());
 		
 		//Sonido
-		p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 9, 1);
+		p.playSound(p.getLocation(), Sound.NOTE_PLING, 9, 1);
 	}
 	
 	/**

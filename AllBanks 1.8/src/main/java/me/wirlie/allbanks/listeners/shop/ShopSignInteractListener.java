@@ -176,7 +176,7 @@ public class ShopSignInteractListener implements Listener {
 					String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
 					
 					if(owner.equalsIgnoreCase(p.getName()) || owner.equalsIgnoreCase(Shops.ADMIN_TAG) && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
-						ItemStack item = p.getInventory().getItemInMainHand();
+						ItemStack item = p.getItemInHand();
 						
 						if(!item.getType().equals(Material.AIR)) {
 							

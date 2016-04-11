@@ -869,7 +869,7 @@ public class Commands implements CommandExecutor {
 			}//pushs
 			
 			Player p = (Player) sender;
-			ItemStack itemHand = p.getInventory().getItemInMainHand();
+			ItemStack itemHand = p.getItemInHand();
 			
 			String name = ItemNameUtil.getItemName(itemHand);
 
