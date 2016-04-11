@@ -87,11 +87,11 @@ public class AllBanks extends JavaPlugin {
 	}
 
 	public final static String[] COMPATIBLE_VERSIONS = {
-			"1.9",
+			"1.8",
 			};
 	
-	public static String INCOMPATIBLE_MIN = "1.8";
-	public static String INCOMPATIBLE_MAX = "0";
+	public static String INCOMPATIBLE_MIN = "1.7";
+	public static String INCOMPATIBLE_MAX = "1.9";
 	
 	public enum StorageType{
 		FLAT_FILE,
@@ -684,7 +684,7 @@ public class AllBanks extends JavaPlugin {
 				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == -1 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
 				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == 0 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
 				AllBanks.getInstance().getLogger().severe("Please use the correct version of CraftBukkit/Spigot.");
-				AllBanks.getInstance().getLogger().severe("For this build, CB 1.9 is expected.");
+				AllBanks.getInstance().getLogger().severe("For this build, CB 1.8 is expected.");
 				return VersionCheckResult.NOT_COMPATIBLE;
 			} else {
 				AllBanksLogger.severe("You are not using a compatible version of CraftBukkit.");
