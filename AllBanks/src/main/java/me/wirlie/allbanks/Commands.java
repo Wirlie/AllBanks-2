@@ -866,7 +866,7 @@ public class Commands implements CommandExecutor {
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				if(senderIsPlayer) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 				return true;
-			}//push
+			}//pushs
 			
 			Player p = (Player) sender;
 			ItemStack itemHand = p.getInventory().getItemInMainHand();
