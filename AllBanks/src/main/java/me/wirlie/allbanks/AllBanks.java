@@ -62,6 +62,7 @@ import me.wirlie.allbanks.runnable.BankTimerRunnable;
 import me.wirlie.allbanks.runnable.LotteryRunnable;
 import me.wirlie.allbanks.util.ConfigurationUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -78,18 +79,19 @@ public class AllBanks extends JavaPlugin {
 	private static StorageType storageMethod = StorageType.SQLITE;
 	
 	private static Economy econ = null;
+	
+	private enum VersionCheckResult{
+		COMPATIBLE,
+		NOT_COMPATIBLE,
+		PROCCEED_WITH_PRECAUTION
+	}
 
 	public final static String[] COMPATIBLE_VERSIONS = {
-			"1.8",
-			"1.8.3",
-			"1.8.4",
-			"1.8.5",
-			"1.8.6",
-			"1.8.7",
-			"1.8.8",
 			"1.9",
-			"1.9.2",
 			};
+	
+	public static String INCOMPATIBLE_MIN = "1.8";
+	public static String INCOMPATIBLE_MAX = "0";
 	
 	public enum StorageType{
 		FLAT_FILE,
@@ -106,6 +108,15 @@ public class AllBanks extends JavaPlugin {
 		AllBanksLogger.initializeLogger();
 		
 		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion());
+		
+		//Version del servidor
+		VersionCheckResult result = verifyServerVersion();
+		
+		if(result.equals(VersionCheckResult.NOT_COMPATIBLE)) {
+			//No compatible
+			Bukkit.getPluginManager().disablePlugin(this);
+			return;
+		}
 		
 		//Método de almacenamiento.
 		String storageStr = getConfig().getString("pl.storage-system", "SQLite");
@@ -140,9 +151,6 @@ public class AllBanks extends JavaPlugin {
 			break;
 		
 		}
-		
-		//Version del servidor
-		verifyServerVersion();
 		
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			AllBanksLogger.info("Initializing MySQL database...");
@@ -639,7 +647,7 @@ public class AllBanks extends JavaPlugin {
 		return storageMethod;
 	}
 	
-	private static void verifyServerVersion() {
+	private static VersionCheckResult verifyServerVersion() {
 		
 		AllBanksLogger.info("Verifying compatibles versions...");
 		
@@ -668,9 +676,21 @@ public class AllBanks extends JavaPlugin {
 		if(compatible){
 			AllBanksLogger.info("You are using a compatible version of CraftBukkit.");
 			Console.sendMessage(StringsID.YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+			return VersionCheckResult.COMPATIBLE;
 		}else{
-			AllBanksLogger.info("You are not using a compatible version of CraftBukkit.");
-			Console.sendMessage(StringsID.YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+			//Detectar si se está usando una versión incompatible o una versión no probada
+			if(Util.compareVersionString(INCOMPATIBLE_MIN, rawVersion) == 1 
+				|| Util.compareVersionString(INCOMPATIBLE_MIN, rawVersion) == 0 
+				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == -1 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
+				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == 0 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
+				AllBanks.getInstance().getLogger().severe("Please use the correct version of CraftBukkit/Spigot.");
+				AllBanks.getInstance().getLogger().severe("For this build, CB 1.9 is expected.");
+				return VersionCheckResult.NOT_COMPATIBLE;
+			} else {
+				AllBanksLogger.severe("You are not using a compatible version of CraftBukkit.");
+				Console.sendMessage(StringsID.YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+				return VersionCheckResult.PROCCEED_WITH_PRECAUTION;
+			}
 		}
 		
 	}
