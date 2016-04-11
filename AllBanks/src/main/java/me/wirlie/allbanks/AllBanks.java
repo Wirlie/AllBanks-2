@@ -266,6 +266,9 @@ public class AllBanks extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
+		//Expirar sesiones
+		BankSession.StartExpireSessionRunnable();
+		
 		//Updater
 		boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
 		boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);

@@ -54,9 +54,10 @@ public class BankSession {
 	public static int expireInactiveSessionBeforeSeconds = 120;
 	static boolean started = false;
 	
-	static{
+	public static void StartExpireSessionRunnable(){
 		//Auto ejecutar un runnable que cheque las sesiones expiradas.
 		if(!started) {
+			started = true;
 			new BukkitRunnable(){
 	
 				public void run() {
@@ -68,7 +69,6 @@ public class BankSession {
 				}
 				
 			}.runTaskTimer(AllBanks.getInstance(), 20, 20);
-		started = true;
 		}
 	}
 	
