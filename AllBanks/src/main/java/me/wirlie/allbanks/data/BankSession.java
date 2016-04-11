@@ -52,20 +52,24 @@ public class BankSession {
 	 */
 	
 	public static int expireInactiveSessionBeforeSeconds = 120;
+	static boolean started = false;
 	
 	static{
 		//Auto ejecutar un runnable que cheque las sesiones expiradas.
-		new BukkitRunnable(){
-
-			public void run() {
-				for(BankSession bs : activeSessions.values()){
-					if(bs.sessionExpired()){
-						bs.closeSession();
+		if(!started) {
+			new BukkitRunnable(){
+	
+				public void run() {
+					for(BankSession bs : activeSessions.values()){
+						if(bs.sessionExpired()){
+							bs.closeSession();
+						}
 					}
 				}
-			}
-			
-		}.runTaskTimer(AllBanks.getInstance(), 20, 20);
+				
+			}.runTaskTimer(AllBanks.getInstance(), 20, 20);
+		started = true;
+		}
 	}
 	
 	/**
