@@ -4,7 +4,6 @@ jdk:
   - oraclejdk7
 os:
   - linux
-  - osx
 env:
   - AB_VERSION=1.8
   - AB_VERSION=1.9
@@ -21,5 +20,5 @@ notifications:
     on_failure: always
 cache:
   directories:
-  - maven
+  - $HOME/.m2
 
