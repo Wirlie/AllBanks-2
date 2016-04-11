@@ -3,9 +3,9 @@ jdk:
   - oraclejdk8
   - oraclejdk7
 script: 
-  - cd "AllBanks 1.9"
-  - mvn clean test -U
   - cd "AllBanks 1.8"
+  - mvn clean test -U
+  - cd "AllBanks 1.9"
   - mvn clean test -U
 notifications:
   email:
