@@ -270,19 +270,6 @@ public class ShopUtil {
 		return ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(Shops.ADMIN_TAG);
 	}
 	
-	public boolean isASpecialItem(Material mat){
-		if(mat.equals(Material.POTION)
-				|| mat.equals(Material.ENCHANTED_BOOK)
-				|| mat.equals(Material.MOB_SPAWNER)
-				|| mat.equals(Material.MONSTER_EGG)
-				|| mat.equals(Material.BANNER)){
-			return true;
-		}
-		
-		return false;
-	}
-	
-
 	public static boolean itemNeedResolveCustomDurability(ItemStack item){
 		return itemNeedResolveCustomDurability(item.getType());
 	}
