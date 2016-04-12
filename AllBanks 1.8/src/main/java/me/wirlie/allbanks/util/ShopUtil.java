@@ -50,8 +50,8 @@ public class ShopUtil {
 	 * @return
 	 */
 	public static boolean validatePriceLine(String s) {
-
-		Pattern r = Pattern.compile("^[0-9]{1,2} ((S:[0-9]{1,}(|(\\.[0-9]{1,2})))|(S:[0-9]{1,}(|(\\.[0-9]{1,2}))) (B:[0-9]{1,}(|(\\.[0-9]{1,2})))|(B:[0-9]{1,}(|(\\.[0-9]{1,2}))) (S:[0-9]{1,}(|(\\.[0-9]{1,2})))|(B:[0-9]{1,}(|(\\.[0-9]{1,2}))))$");
+		
+		Pattern r = Pattern.compile("^[0-9]{1,2} ((s:[0-9]{1,}(|(\\.[0-9]{1,2})))|(s:[0-9]{1,}(|(\\.[0-9]{1,2}))) (b:[0-9]{1,}(|(\\.[0-9]{1,2})))|(b:[0-9]{1,}(|(\\.[0-9]{1,2}))) (s:[0-9]{1,}(|(\\.[0-9]{1,2})))|(b:[0-9]{1,}(|(\\.[0-9]{1,2}))))$", Pattern.CASE_INSENSITIVE);
 		
 		return r.matcher(s).matches();
 	}
@@ -243,8 +243,13 @@ public class ShopUtil {
 		return false;
 	}
 	
+
 	public static boolean itemNeedResolveCustomDurability(ItemStack item){
-		switch(item.getType()){
+		return itemNeedResolveCustomDurability(item.getType());
+	}
+	
+	public static boolean itemNeedResolveCustomDurability(Material mat){
+		switch(mat){
 		case BANNER:
 		case POTION:
 		case ENCHANTED_BOOK:
@@ -309,6 +314,45 @@ public class ShopUtil {
 		default:
 			return null;
 		}
+	}
+
+	/**
+	 * @param specialID
+	 * @return
+	 */
+	public static boolean checkForSpecialID(String specialID) {
+		
+		specialID = specialID.replace("#", "");
+		
+		Statement selectStatement = null;
+		ResultSet res = null;
+		
+		try{
+			Integer.parseInt(specialID);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		try {
+			
+			selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+			res = selectStatement.executeQuery("SELECT * FROM items WHERE id = " + specialID);
+			
+			return res.next();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+				try {
+					if(res != null) res.close();
+					if(selectStatement != null) selectStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		
+		return false;
 	}
 
 }

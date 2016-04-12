@@ -18,6 +18,10 @@
  */
 package me.wirlie.allbanks.listeners.shop;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -94,11 +98,43 @@ public class ShopSignChangeListener implements Listener {
 				return;
 			}
 			
-			//Validar el nombre de item
-			String[] split = lines[Shops.LINE_ITEM].split(":");
-			if(ItemNameUtil.getItemByShortName(split[0]) == null) {
-				//No pertenece a un nombre válido, pero puede ser configurado
+			if(lines[Shops.LINE_ITEM].replace(" ", "").equalsIgnoreCase("")){
 				lines[Shops.LINE_ITEM] = "???";
+			}
+			
+			//Validar el nombre de item
+			Pattern defaultItemSyntax = Pattern.compile("^([A-Za-z]{1,})(|:([0-9]{1,}))$");
+			Pattern specialItemSyntax = Pattern.compile("^([A-Za-z]{1,})#([0-9]{1,})$");
+			
+			Matcher match = defaultItemSyntax.matcher(lines[Shops.LINE_ITEM]);
+			
+			if(match.matches()){
+				String shortName = match.group(1);
+				Material material = ItemNameUtil.getItemByShortName(shortName);
+				
+				if(material == null){
+					lines[Shops.LINE_ITEM] = "???";
+				}else{
+					if(ShopUtil.itemNeedResolveCustomDurability(material)){
+						//Okey, si es un objeto especial no se puede especificar una durabilidad.
+						lines[Shops.LINE_ITEM] = "???";
+					}
+				}
+			}else{
+				match = specialItemSyntax.matcher(lines[Shops.LINE_ITEM]);
+				
+				if(match.matches()){
+					String shortName = match.group(1);
+					if(ItemNameUtil.getItemByShortName(shortName) == null){
+						lines[Shops.LINE_ITEM] = "???";
+					}else{
+						//Comprobar si el ID especial se encuentra registrado
+						String specialID = match.group(2);
+						if(ShopUtil.checkForSpecialID(specialID) == false){
+							lines[Shops.LINE_ITEM] = "???";
+						}
+					}
+				}
 			}
 			
 			final String[] finalLines = lines;
