@@ -18,10 +18,12 @@
  */
 package me.wirlie.allbanks.util;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
@@ -78,15 +80,33 @@ public class ShopUtil {
 	
 	public static ItemStack getItemStack(Sign sign) {
 		String itemLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM));
-		String[] split = itemLine.split(":");
 		
-		if(split.length == 2) {
-			int durability = Integer.parseInt(split[1]);
-			ItemStack item = new ItemStack(ItemNameUtil.getItemByShortName(split[0]), getItemAmount(sign));
-			item.setDurability((short) durability);
-			return item;
-		}else {
-			return new ItemStack(ItemNameUtil.getItemByShortName(split[0]), getItemAmount(sign));
+		Pattern defaultItemSyntax = Pattern.compile("^([A-Za-z]{1,})(|:([0-9]{1,}))$");
+		Pattern specialItemSyntax = Pattern.compile("^([A-Za-z]{1,})#([0-9]{1,})$");
+		
+		Matcher match = defaultItemSyntax.matcher(itemLine);
+		
+		if(match.matches()){
+			String[] split = itemLine.split(":");
+			
+			if(split.length == 2) {
+				int durability = Integer.parseInt(match.group(2));
+				ItemStack item = new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
+				item.setDurability((short) durability);
+				return item;
+			}else {
+				return new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
+			}
+		} else {
+			match = specialItemSyntax.matcher(itemLine);
+			
+			if(match.matches()){
+				ItemStack getItem = getItemBySpecialID(match.group(2));
+				getItem.setAmount(getItemAmount(sign));
+				return getItem;
+			}else{
+				return null;
+			}
 		}
 	}
 	
@@ -94,8 +114,10 @@ public class ShopUtil {
 		String priceLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_PRICE));
 		String[] str = priceLine.split(" ");
 		for(String s : str) {
-			if(s.startsWith("B:")) {
-				return new BigDecimal(s.replace("B:", ""));
+			s.toLowerCase();
+			
+			if(s.startsWith("b:") || s.startsWith("B:")) {
+				return new BigDecimal(s.replace("b:", "").replace("B:", ""));
 			}
 		}
 		
@@ -106,8 +128,9 @@ public class ShopUtil {
 		String priceLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_PRICE));
 		String[] str = priceLine.split(" ");
 		for(String s : str) {
-			if(s.startsWith("S:")) {
-				return new BigDecimal(s.replace("S:", ""));
+			
+			if(s.startsWith("s:") || s.startsWith("S:")) {
+				return new BigDecimal(s.replace("s:", "").replace("S:", ""));
 			}
 		}
 		
@@ -156,15 +179,24 @@ public class ShopUtil {
 	 */
 	public static boolean checkItemForPlayerInventory(Player p, ItemStack shopItem, boolean checkAmount) {
 		
+		//Necesario para comparar 2 objetos.
+		ItemStack oneShopItem = shopItem.clone();
+		oneShopItem.setAmount(1);
+		
 		PlayerInventory inv = p.getInventory();
 		int totalItems = 0;
 		
 		for(ItemStack item : inv.getContents()) {
+			
 			if(item == null || item.getType().equals(Material.AIR)) continue;
 			
-			if(!checkAmount && item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) 
+			//Necesario para comparar 2 objetos.
+			ItemStack oneItem = item.clone();
+			oneItem.setAmount(1);
+			
+			if(!checkAmount && oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) 
 				return true;
-			else if (checkAmount && item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) {
+			else if (checkAmount && oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -179,10 +211,17 @@ public class ShopUtil {
 	public static int getTotalItemsInventory(Inventory inv, ItemStack shopItem) {
 		int totalItems = 0;
 		
+		ItemStack oneShopItem = shopItem.clone();
+		oneShopItem.setAmount(1);
+		
 		for(ItemStack item : inv.getContents()) {
+			
 			if(item == null || item.getType().equals(Material.AIR)) continue;
 			
-			if (item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) {
+			ItemStack oneItem = item.clone();
+			oneItem.setAmount(1);
+			
+			if (oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -264,6 +303,8 @@ public class ShopUtil {
 	public static String resolveCustomDurabilityIDFor(ItemStack item){
 		if(item == null) throw new NullPointerException("item is null");
 		
+		item.setAmount(1);
+		
 		switch(item.getType()){
 		case BANNER:
 		case POTION:
@@ -314,6 +355,37 @@ public class ShopUtil {
 		default:
 			return null;
 		}
+	}
+	
+	public static ItemStack getItemBySpecialID(String specialID){
+		specialID = specialID.replace("#", "");
+		
+		Statement selectStatement = null;
+		ResultSet res = null;
+		
+		try{
+			selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+			res = selectStatement.executeQuery("SELECT * FROM items WHERE id = " + specialID);
+			
+			if(res.next()){
+				String fromBase64 = res.getString("itemmeta");
+				
+				return ItemStackBase64.stacksFromBase64(fromBase64)[0];
+			}
+		}catch (SQLException e){
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				res.close();
+				selectStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
 	}
 
 	/**

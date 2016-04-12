@@ -120,7 +120,12 @@ public class ShopSignInteractListener implements Listener {
 					ItemStack shopItem = ShopUtil.getItemStack(sign);
 					
 					if(!ShopUtil.checkItemForPlayerInventory(p, shopItem, false)){
-						Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + ((shopItem.getDurability() > 0) ? ":" + shopItem.getDurability() : "")), true);
+						if(ShopUtil.itemNeedResolveCustomDurability(shopItem)){
+							String customID = ShopUtil.resolveCustomDurabilityIDFor(shopItem);
+							Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + customID), true);
+						}else{
+							Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + ((shopItem.getDurability() > 0) ? ":" + shopItem.getDurability() : "")), true);
+						}
 						return;
 					}
 					
@@ -155,6 +160,7 @@ public class ShopSignInteractListener implements Listener {
 					if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
 						//Quitar objetos
 						InventoryUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
+						p.updateInventory();
 						//Colocar objetos en el cofre
 						if(!isAdminShop) InventoryUtil.putItemsToInventory(sign, shopItem, totalItems);
 						//Pagar al jugador
@@ -181,17 +187,28 @@ public class ShopSignInteractListener implements Listener {
 						
 						if(!item.getType().equals(Material.AIR)) {
 							
-							if(item.getDurability() > 0) {
-								sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item) + ":" + item.getDurability());
-							} else {
-								sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item));
+							if(ShopUtil.itemNeedResolveCustomDurability(item)){
+								String customID = ShopUtil.resolveCustomDurabilityIDFor(item);
+								sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item) + customID);
+								
+								sign.update();
+								
+								Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
+								InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+								e.setCancelled(true);
+							}else{
+								if(item.getDurability() > 0) {
+									sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item) + ":" + item.getDurability());
+								} else {
+									sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item));
+								}
+								
+								sign.update();
+								
+								Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
+								InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+								e.setCancelled(true);
 							}
-							
-							sign.update();
-							
-							Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
-							InteractiveUtil.sendSound(p, SoundType.SUCCESS);
-							e.setCancelled(true);
 						}
 					}
 				} else {
