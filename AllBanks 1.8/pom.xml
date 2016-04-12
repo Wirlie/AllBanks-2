@@ -88,6 +88,27 @@
     	<scope>provided</scope>
     </dependency>
     <dependency>
+    	<groupId>org.bukkit</groupId>
+    	<artifactId>craftbukkitR1</artifactId>
+    	<version>1.8</version>
+    	<scope>system</scope>
+    	<systemPath>${project.basedir}/resources/R1.jar</systemPath>
+    </dependency>
+    <dependency>
+    	<groupId>org.bukkit</groupId>
+    	<artifactId>craftbukkitR2</artifactId>
+    	<version>1.8</version>
+    	<scope>system</scope>
+    	<systemPath>${project.basedir}/resources/R2.jar</systemPath>
+    </dependency>
+    <dependency>
+    	<groupId>org.bukkit</groupId>
+    	<artifactId>craftbukkitR3</artifactId>
+    	<version>1.8</version>
+    	<scope>system</scope>
+    	<systemPath>${project.basedir}/resources/R3.jar</systemPath>
+    </dependency>
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <version>1.8.4</version>
@@ -113,7 +134,6 @@
   <ciManagement>
   	<url>https://travis-ci.org/Wirlie/AllBanks-2</url>
   </ciManagement>
-  
   <build>
   	<resources>
   		<resource>
@@ -126,29 +146,6 @@
   			</includes>
   		</resource>
   	</resources>
-  	<plugins>
-	  	<plugin>
-		  <groupId>com.googlecode.addjars-maven-plugin</groupId>
-		  <artifactId>addjars-maven-plugin</artifactId>
-		  <version>1.0.2</version>
-		  <executions>
-		    <execution>
-		        <goals>
-		            <goal>add-jars</goal>
-		        </goals>
-		        <configuration>
-		            <resources>
-		                <resource>
-		                    <directory>${project.basedir}/resources/R1.jar</directory>
-		                    <directory>${project.basedir}/resources/R2.jar</directory>
-		                    <directory>${project.basedir}/resources/R3.jar</directory>
-		                </resource>
-		            </resources>
-		        </configuration>
-		    </execution>
-		  </executions>
-		</plugin>
-	</plugins>
   	<pluginManagement>
   		<plugins>
   			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->

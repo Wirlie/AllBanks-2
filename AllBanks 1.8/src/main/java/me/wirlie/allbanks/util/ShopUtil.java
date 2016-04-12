@@ -42,10 +42,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.BannerMeta;
-import net.minecraft.server.v1_8_R1.Achievement;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Shops;
+import net.minecraft.server.v1_8_R1.Achievement;
 
 /**
  * @author Wirlie
