@@ -396,7 +396,7 @@ public class ItemNameUtil {
 			.put("PUMPKIN_PIE" , 		"PumpkinPie")
 			.put("FIREWORK" , 			"Firework")
 			.put("FIREWORK_CHARGE" , 	"FireworkStar")
-			.put("ENCHANTED_BOOK" , 	"EnchantedBook")
+			.put("ENCHANTED_BOOK" , 	"EnchantBook")
 			.put("REDSTONE_COMPARATOR" ,"Comparator")
 			.put("NETHER_BRICK_ITEM" , 	"NetherBrick")
 			.put("QUARTZ" , 			"Quartz")
