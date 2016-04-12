@@ -96,12 +96,12 @@ public class AllBanks extends JavaPlugin {
 	 * Versiones compatibles con esta version.
 	 */
 	public final static String[] COMPATIBLE_VERSIONS = {
-			"1.9",
+			"1.8",
 			};
 	
-	public static String INCOMPATIBLE_MIN = "1.8";
-	public static String INCOMPATIBLE_MAX = "0";
-
+	public static String INCOMPATIBLE_MIN = "1.7";
+	public static String INCOMPATIBLE_MAX = "1.9";
+	
 	/**
 	 * Tipo de almacenamiento que usará AllBanks para almacenar los datos.
 	 * @author Wirlie
@@ -165,6 +165,11 @@ public class AllBanks extends JavaPlugin {
 			break;
 		
 		}
+		
+		//Base de datos para items especiales.
+		dbSQLite.setConnection(getDataFolder() + File.separator + "itemSolution.db", "itemSolution");
+		
+		installItemSolutionDataBase();
 		
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			AllBanksLogger.info("Initializing MySQL database...");
@@ -344,17 +349,16 @@ public class AllBanks extends JavaPlugin {
 		
 		AllBanksLogger.info("Closing database connections...");
 		
-		if(getStorageMethod().equals(StorageType.SQLITE)) {
-			for(Connection c : dbSQLite.multipleConnections.values()){
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		//SQLite siempre conservará una conexión: itemSolution
+		for(Connection c : dbSQLite.multipleConnections.values()){
+			try {
+				c.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			
-			dbSQLite.multipleConnections.clear();
 		}
+		
+		dbSQLite.multipleConnections.clear();
 		
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			for(Connection c : dbMySQL.multipleConnections.values()){
@@ -397,6 +401,32 @@ public class AllBanks extends JavaPlugin {
 	 */
 	public static Economy getEconomy(){
 		return econ;
+	}
+	
+	public static void installItemSolutionDataBase() {
+		Statement stm = null;
+		
+		if(DataBaseUtil.databaseIsLocked()){
+			AllBanksLogger.severe("Database is locked! Database installation aborted.");
+			return;
+		}
+		
+		try{
+			AllBanksLogger.info("Try to install ItemSolution database...");
+			stm = getSQLConnection("itemSolution").createStatement();
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			AllBanksLogger.info("Success: 0 problems found.");
+		}catch (SQLException e){
+			AllBanksLogger.info("Ops! An SQLException has ocurred...");
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			if(stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
 	}
 	
 	/**
@@ -689,6 +719,10 @@ public class AllBanks extends JavaPlugin {
 	 * Obtener la conexión a la base de datos.
 	 * @return
 	 */
+	public static Connection getSQLConnection(String connectionName){
+		return dbSQLite.getConnection(connectionName);
+	}
+	
 	public static Connection getDataBaseConnection(){
 		return dbc;
 	}
@@ -742,7 +776,7 @@ public class AllBanks extends JavaPlugin {
 				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == -1 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
 				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == 0 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
 				AllBanks.getInstance().getLogger().severe("Please use the correct version of CraftBukkit/Spigot.");
-				AllBanks.getInstance().getLogger().severe("For this build, CB 1.9 is expected.");
+				AllBanks.getInstance().getLogger().severe("For this build, CB 1.8 is expected.");
 				return VersionCheckResult.NOT_COMPATIBLE;
 			} else {
 				AllBanksLogger.severe("You are not using a compatible version of CraftBukkit.");

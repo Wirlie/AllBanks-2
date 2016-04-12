@@ -18,7 +18,12 @@
  */
 package me.wirlie.allbanks.util;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
@@ -33,7 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Shops;
 
 /**
@@ -42,14 +47,13 @@ import me.wirlie.allbanks.Shops;
  *
  */
 public class ShopUtil {
-
 	/**
 	 * @param string
 	 * @return
 	 */
 	public static boolean validatePriceLine(String s) {
-
-		Pattern r = Pattern.compile("^[0-9]{1,2} ((S:[0-9]{1,}(|(\\.[0-9]{1,2})))|(S:[0-9]{1,}(|(\\.[0-9]{1,2}))) (B:[0-9]{1,}(|(\\.[0-9]{1,2})))|(B:[0-9]{1,}(|(\\.[0-9]{1,2}))) (S:[0-9]{1,}(|(\\.[0-9]{1,2})))|(B:[0-9]{1,}(|(\\.[0-9]{1,2}))))$");
+		
+		Pattern r = Pattern.compile("^[0-9]{1,2} ((s:[0-9]{1,}(|(\\.[0-9]{1,2})))|(s:[0-9]{1,}(|(\\.[0-9]{1,2}))) (b:[0-9]{1,}(|(\\.[0-9]{1,2})))|(b:[0-9]{1,}(|(\\.[0-9]{1,2}))) (s:[0-9]{1,}(|(\\.[0-9]{1,2})))|(b:[0-9]{1,}(|(\\.[0-9]{1,2}))))$", Pattern.CASE_INSENSITIVE);
 		
 		return r.matcher(s).matches();
 	}
@@ -76,15 +80,33 @@ public class ShopUtil {
 	
 	public static ItemStack getItemStack(Sign sign) {
 		String itemLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM));
-		String[] split = itemLine.split(":");
 		
-		if(split.length == 2) {
-			int durability = Integer.parseInt(split[1]);
-			ItemStack item = new ItemStack(ItemNameUtil.getItemByShortName(split[0]), getItemAmount(sign));
-			item.setDurability((short) durability);
-			return item;
-		}else {
-			return new ItemStack(ItemNameUtil.getItemByShortName(split[0]), getItemAmount(sign));
+		Pattern defaultItemSyntax = Pattern.compile("^([A-Za-z]{1,})(|:([0-9]{1,}))$");
+		Pattern specialItemSyntax = Pattern.compile("^([A-Za-z]{1,})#([0-9]{1,})$");
+		
+		Matcher match = defaultItemSyntax.matcher(itemLine);
+		
+		if(match.matches()){
+			String[] split = itemLine.split(":");
+			
+			if(split.length == 2) {
+				int durability = Integer.parseInt(match.group(2));
+				ItemStack item = new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
+				item.setDurability((short) durability);
+				return item;
+			}else {
+				return new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
+			}
+		} else {
+			match = specialItemSyntax.matcher(itemLine);
+			
+			if(match.matches()){
+				ItemStack getItem = getItemBySpecialID(match.group(2));
+				getItem.setAmount(getItemAmount(sign));
+				return getItem;
+			}else{
+				return null;
+			}
 		}
 	}
 	
@@ -92,8 +114,10 @@ public class ShopUtil {
 		String priceLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_PRICE));
 		String[] str = priceLine.split(" ");
 		for(String s : str) {
-			if(s.startsWith("B:")) {
-				return new BigDecimal(s.replace("B:", ""));
+			s.toLowerCase();
+			
+			if(s.startsWith("b:") || s.startsWith("B:")) {
+				return new BigDecimal(s.replace("b:", "").replace("B:", ""));
 			}
 		}
 		
@@ -104,8 +128,9 @@ public class ShopUtil {
 		String priceLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_PRICE));
 		String[] str = priceLine.split(" ");
 		for(String s : str) {
-			if(s.startsWith("S:")) {
-				return new BigDecimal(s.replace("S:", ""));
+			
+			if(s.startsWith("s:") || s.startsWith("S:")) {
+				return new BigDecimal(s.replace("s:", "").replace("S:", ""));
 			}
 		}
 		
@@ -154,15 +179,24 @@ public class ShopUtil {
 	 */
 	public static boolean checkItemForPlayerInventory(Player p, ItemStack shopItem, boolean checkAmount) {
 		
+		//Necesario para comparar 2 objetos.
+		ItemStack oneShopItem = shopItem.clone();
+		oneShopItem.setAmount(1);
+		
 		PlayerInventory inv = p.getInventory();
 		int totalItems = 0;
 		
 		for(ItemStack item : inv.getContents()) {
+			
 			if(item == null || item.getType().equals(Material.AIR)) continue;
 			
-			if(!checkAmount && item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) 
+			//Necesario para comparar 2 objetos.
+			ItemStack oneItem = item.clone();
+			oneItem.setAmount(1);
+			
+			if(!checkAmount && oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) 
 				return true;
-			else if (checkAmount && item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) {
+			else if (checkAmount && oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -177,10 +211,17 @@ public class ShopUtil {
 	public static int getTotalItemsInventory(Inventory inv, ItemStack shopItem) {
 		int totalItems = 0;
 		
+		ItemStack oneShopItem = shopItem.clone();
+		oneShopItem.setAmount(1);
+		
 		for(ItemStack item : inv.getContents()) {
+			
 			if(item == null || item.getType().equals(Material.AIR)) continue;
 			
-			if (item.getType().equals(shopItem.getType()) && item.getDurability() == shopItem.getDurability()) {
+			ItemStack oneItem = item.clone();
+			oneItem.setAmount(1);
+			
+			if (oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -209,113 +250,6 @@ public class ShopUtil {
 	}
 
 	/**
-	 * @param p
-	 * @param itemStack
-	 * @param totalItems
-	 */
-	public static synchronized void removeItemsFromInventory(Inventory inv, ItemStack itemStack, int totalItems) {
-		int remainingItems = totalItems;
-		
-		for(int slot = 0; slot < inv.getSize(); slot++) {
-			ItemStack itemSlot = inv.getItem(slot);
-			if(itemSlot == null || itemSlot.getType().equals(Material.AIR)) continue;
-			
-			if(itemSlot.getType().equals(itemStack.getType()) && itemSlot.getDurability() == itemStack.getDurability() && remainingItems > 0) {
-				remainingItems -= itemSlot.getAmount();
-				
-				if(remainingItems >= 0) {
-					inv.setItem(slot, new ItemStack(Material.AIR));
-					
-					if(remainingItems == 0) break;
-				} else {
-					//remainingItems es menor a 0 esto quiere decir que el item en el slot es mayor a lo que falta
-					int remaining = remainingItems + itemSlot.getAmount();
-					int newItemAmount = itemSlot.getAmount() - remaining;
-					ItemStack newItemSlot = new ItemStack(itemSlot);
-					newItemSlot.setAmount(newItemAmount);
-					inv.setItem(slot, newItemSlot);
-					break;
-				}
-			}
-		}
-	}
-	
-	public static synchronized int getInventoryFreeSpaceForItem(Sign sign, ItemStack shopItem) {
-		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if(!tryChest.getType().equals(Material.CHEST)) return -1;
-		Chest chest = (Chest) tryChest.getState();
-		return getInventoryFreeSpaceForItem(chest.getInventory(), shopItem);
-	}
-	
-
-	public static synchronized int getInventoryFreeSpaceForItem(PlayerInventory inv, ItemStack shopItem) {
-		return getInventoryFreeSpaceForItem((Inventory) inv, shopItem);
-	}
-
-	/**
-	 * @param sign
-	 * @param shopItem
-	 * @return
-	 */
-	public static synchronized int getInventoryFreeSpaceForItem(Inventory inv, ItemStack shopItem) {
-		int freeSpace = 0;
-		
-		for(int slot = 0; slot < inv.getSize(); slot++) {
-			if(inv.getItem(slot) == null || inv.getItem(slot).getType().equals(Material.AIR)) {
-				freeSpace += shopItem.getMaxStackSize();
-			}else if(inv.getItem(slot).getType().equals(shopItem.getType()) && inv.getItem(slot).getDurability() == shopItem.getDurability()) {
-				int getStackFreeSpace = shopItem.getMaxStackSize() - inv.getItem(slot).getAmount();
-				if(getStackFreeSpace > 0) {
-					freeSpace += getStackFreeSpace;
-				}
-			}
-		}
-		
-		return freeSpace;
-	}
-	
-	public static synchronized boolean putItemsToInventory(Sign sign, ItemStack shopItem, int totalItems) {
-		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if(!tryChest.getType().equals(Material.CHEST)) return false;
-		Chest chest = (Chest) tryChest.getState();
-		
-		return putItemsToInventory(chest.getInventory(), shopItem, totalItems);
-	}
-
-	/**
-	 * @param sign
-	 * @param shopItem
-	 * @param totalItems
-	 */
-	public static synchronized boolean putItemsToInventory(Inventory inv, ItemStack shopItem, int totalItems) {
-		int remainingItems = totalItems;
-		for(int slot = 0; slot < inv.getSize(); slot++) {
-			if(remainingItems <= 0) break;
-			if(inv.getItem(slot) == null || inv.getItem(slot).getType().equals(Material.AIR)) {
-				//Podemos depositar un item completo
-				ItemStack putItem = new ItemStack(shopItem);
-				int putAmount = (remainingItems > shopItem.getMaxStackSize()) ? shopItem.getMaxStackSize() : remainingItems;
-				putItem.setAmount(putAmount);
-				inv.setItem(slot, putItem);
-				remainingItems -= putAmount;
-			} else if(inv.getItem(slot).getType().equals(shopItem.getType()) && inv.getItem(slot).getDurability() == shopItem.getDurability()) {
-				//¿Hay espacio disponible?
-				ItemStack slotItem = inv.getItem(slot);
-				int getStackFreeSpace = slotItem.getMaxStackSize() - slotItem.getAmount();
-				
-				if(getStackFreeSpace > 0) {
-					ItemStack putItem = new ItemStack(shopItem);
-					putItem.setAmount(slotItem.getAmount() + ((getStackFreeSpace > remainingItems) ? remainingItems : getStackFreeSpace));
-					inv.setItem(slot, putItem);
-					remainingItems -= getStackFreeSpace;
-				}
-			}
-		}
-		
-		return true;
-	}
-
-	/**
 	 * @param sign
 	 * @return
 	 */
@@ -334,6 +268,163 @@ public class ShopUtil {
 	 */
 	public static boolean isAdminShop(Sign sign) {
 		return ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(Shops.ADMIN_TAG);
+	}
+	
+	public boolean isASpecialItem(Material mat){
+		if(mat.equals(Material.POTION)
+				|| mat.equals(Material.ENCHANTED_BOOK)
+				|| mat.equals(Material.MOB_SPAWNER)
+				|| mat.equals(Material.MONSTER_EGG)
+				|| mat.equals(Material.BANNER)){
+			return true;
+		}
+		
+		return false;
+	}
+	
+
+	public static boolean itemNeedResolveCustomDurability(ItemStack item){
+		return itemNeedResolveCustomDurability(item.getType());
+	}
+	
+	public static boolean itemNeedResolveCustomDurability(Material mat){
+		switch(mat){
+		case BANNER:
+		case POTION:
+		case ENCHANTED_BOOK:
+		case MOB_SPAWNER:
+		case MONSTER_EGG:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
+	public static String resolveCustomDurabilityIDFor(ItemStack item){
+		if(item == null) throw new NullPointerException("item is null");
+		
+		item.setAmount(1);
+		
+		switch(item.getType()){
+		case BANNER:
+		case POTION:
+		case ENCHANTED_BOOK:
+		case MOB_SPAWNER:
+		case MONSTER_EGG:
+			
+			String base64str = ItemStackBase64.toBase64(item);
+			
+			Statement selectStatement = null;
+			ResultSet res = null;
+			Statement insertStatement = null;
+			ResultSet generatedKeys = null;
+			
+			try {
+				
+				selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+				res = selectStatement.executeQuery("SELECT * FROM items WHERE itemmeta = '" + base64str + "'");
+				
+				if(res.next()){
+					return "#" + String.valueOf(res.getInt("id"));
+				} else {
+					//Registrar
+					insertStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+					insertStatement.executeUpdate("INSERT INTO items (itemmeta) VALUES ('" + base64str + "')");
+					
+					generatedKeys = insertStatement.getGeneratedKeys();
+							
+		            if (generatedKeys.next()) {
+		                return "#" + String.valueOf(generatedKeys.getLong(1));
+		            }
+					
+					return null; 
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return null; 
+			} finally {
+					try {
+						if(res != null) res.close();
+						if(selectStatement != null) selectStatement.close();
+						if(generatedKeys != null) generatedKeys.close();
+						if(insertStatement != null) insertStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+			}
+		default:
+			return null;
+		}
+	}
+	
+	public static ItemStack getItemBySpecialID(String specialID){
+		specialID = specialID.replace("#", "");
+		
+		Statement selectStatement = null;
+		ResultSet res = null;
+		
+		try{
+			selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+			res = selectStatement.executeQuery("SELECT * FROM items WHERE id = " + specialID);
+			
+			if(res.next()){
+				String fromBase64 = res.getString("itemmeta");
+				
+				return ItemStackBase64.stacksFromBase64(fromBase64)[0];
+			}
+		}catch (SQLException e){
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				res.close();
+				selectStatement.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		return null;
+	}
+
+	/**
+	 * @param specialID
+	 * @return
+	 */
+	public static boolean checkForSpecialID(String specialID) {
+		
+		specialID = specialID.replace("#", "");
+		
+		Statement selectStatement = null;
+		ResultSet res = null;
+		
+		try{
+			Integer.parseInt(specialID);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		try {
+			
+			selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+			res = selectStatement.executeQuery("SELECT * FROM items WHERE id = " + specialID);
+			
+			return res.next();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+				try {
+					if(res != null) res.close();
+					if(selectStatement != null) selectStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+		
+		return false;
 	}
 
 }
