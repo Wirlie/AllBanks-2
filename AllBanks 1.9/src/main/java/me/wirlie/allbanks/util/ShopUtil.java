@@ -281,6 +281,9 @@ public class ShopUtil {
 		case ENCHANTED_BOOK:
 		case MOB_SPAWNER:
 		case MONSTER_EGG:
+		case TIPPED_ARROW:
+		case SPLASH_POTION:
+		case LINGERING_POTION:
 			return true;
 		default:
 			return false;
@@ -298,6 +301,9 @@ public class ShopUtil {
 		case ENCHANTED_BOOK:
 		case MOB_SPAWNER:
 		case MONSTER_EGG:
+		case TIPPED_ARROW:
+		case SPLASH_POTION:
+		case LINGERING_POTION:
 			
 			String base64str = ItemStackBase64.toBase64(item);
 			
