@@ -44,6 +44,7 @@ import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
 import me.wirlie.allbanks.util.InteractiveUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.util.InventoryUtil;
 import me.wirlie.allbanks.util.ItemNameUtil;
 import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.Util;
@@ -131,7 +132,7 @@ public class ShopSignInteractListener implements Listener {
 					if(totalItems > shopTotalItems) totalItems = shopTotalItems;
 
 					//Cuanto espacio hay en el cofre
-					int freeSpace = ShopUtil.getInventoryFreeSpaceForItem(sign, shopItem);
+					int freeSpace = InventoryUtil.getInventoryFreeSpaceForItem(sign, shopItem);
 					
 					if(isAdminShop) freeSpace = Integer.MAX_VALUE;
 
@@ -153,9 +154,9 @@ public class ShopSignInteractListener implements Listener {
 					}
 					if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
 						//Quitar objetos
-						ShopUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
+						InventoryUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
 						//Colocar objetos en el cofre
-						if(!isAdminShop) ShopUtil.putItemsToInventory(sign, shopItem, totalItems);
+						if(!isAdminShop) InventoryUtil.putItemsToInventory(sign, shopItem, totalItems);
 						//Pagar al jugador
 						AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
 						//Mensaje
@@ -226,7 +227,7 @@ public class ShopSignInteractListener implements Listener {
 					ItemStack shopItem = ShopUtil.getItemStack(sign);
 					BigDecimal pricePerItem = ShopUtil.getSellPrice(sign).divide(new BigDecimal(totalAmount), 10, RoundingMode.HALF_UP);
 					
-					int playerInvFreeSpace = ShopUtil.getInventoryFreeSpaceForItem(p.getInventory(), shopItem);
+					int playerInvFreeSpace = InventoryUtil.getInventoryFreeSpaceForItem(p.getInventory(), shopItem);
 					
 					if(playerInvFreeSpace <= 0) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_PLAYER_NOT_HAVE_SPACE, true);
@@ -259,8 +260,8 @@ public class ShopSignInteractListener implements Listener {
 					//Pagar/Cobrar
 					if(AllBanks.getEconomy().withdrawPlayer(p, totalCost.doubleValue()).transactionSuccess()) {
 						//Bien, procesar
-						if(!isAdminShop) ShopUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
-						ShopUtil.putItemsToInventory(p.getInventory(), shopItem, totalAmount);
+						if(!isAdminShop) InventoryUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
+						InventoryUtil.putItemsToInventory(p.getInventory(), shopItem, totalAmount);
 						
 						if(!isAdminShop) AllBanks.getEconomy().depositPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
 						//Bien, mostrar mensaje.

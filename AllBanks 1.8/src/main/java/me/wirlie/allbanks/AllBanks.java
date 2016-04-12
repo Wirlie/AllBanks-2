@@ -166,6 +166,11 @@ public class AllBanks extends JavaPlugin {
 		
 		}
 		
+		//Base de datos para items especiales.
+		dbSQLite.setConnection(getDataFolder() + File.separator + "itemSolution.db", "itemSolution");
+		
+		installItemSolutionDataBase();
+		
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			AllBanksLogger.info("Initializing MySQL database...");
 			dbc = dbMySQL.setConnection("global");
@@ -344,17 +349,16 @@ public class AllBanks extends JavaPlugin {
 		
 		AllBanksLogger.info("Closing database connections...");
 		
-		if(getStorageMethod().equals(StorageType.SQLITE)) {
-			for(Connection c : dbSQLite.multipleConnections.values()){
-				try {
-					c.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
+		//SQLite siempre conservará una conexión: itemSolution
+		for(Connection c : dbSQLite.multipleConnections.values()){
+			try {
+				c.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
 			}
-			
-			dbSQLite.multipleConnections.clear();
 		}
+		
+		dbSQLite.multipleConnections.clear();
 		
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			for(Connection c : dbMySQL.multipleConnections.values()){
@@ -397,6 +401,36 @@ public class AllBanks extends JavaPlugin {
 	 */
 	public static Economy getEconomy(){
 		return econ;
+	}
+	
+	public static void installItemSolutionDataBase() {
+		Statement stm = null;
+		
+		if(DataBaseUtil.databaseIsLocked()){
+			AllBanksLogger.severe("Database is locked! Database installation aborted.");
+			return;
+		}
+		
+		try{
+			AllBanksLogger.info("Try to install ItemSolution database...");
+			stm = getSQLConnection("itemSolution").createStatement();
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS banner (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS potion (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS enchantedBook (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS mobSpawner (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS monsterEgg (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			AllBanksLogger.info("Success: 0 problems found.");
+		}catch (SQLException e){
+			AllBanksLogger.info("Ops! An SQLException has ocurred...");
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			if(stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
 	}
 	
 	/**
@@ -689,6 +723,10 @@ public class AllBanks extends JavaPlugin {
 	 * Obtener la conexión a la base de datos.
 	 * @return
 	 */
+	public static Connection getSQLConnection(String connectionName){
+		return dbSQLite.getConnection(connectionName);
+	}
+	
 	public static Connection getDataBaseConnection(){
 		return dbc;
 	}

@@ -18,7 +18,15 @@
  */
 package me.wirlie.allbanks.util;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
@@ -33,7 +41,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.inventory.meta.BannerMeta;
+import net.minecraft.server.v1_8_R1.Achievement;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Shops;
 
 /**
@@ -42,7 +53,7 @@ import me.wirlie.allbanks.Shops;
  *
  */
 public class ShopUtil {
-
+	Achievement ach = null;
 	/**
 	 * @param string
 	 * @return
@@ -209,113 +220,6 @@ public class ShopUtil {
 	}
 
 	/**
-	 * @param p
-	 * @param itemStack
-	 * @param totalItems
-	 */
-	public static synchronized void removeItemsFromInventory(Inventory inv, ItemStack itemStack, int totalItems) {
-		int remainingItems = totalItems;
-		
-		for(int slot = 0; slot < inv.getSize(); slot++) {
-			ItemStack itemSlot = inv.getItem(slot);
-			if(itemSlot == null || itemSlot.getType().equals(Material.AIR)) continue;
-			
-			if(itemSlot.getType().equals(itemStack.getType()) && itemSlot.getDurability() == itemStack.getDurability() && remainingItems > 0) {
-				remainingItems -= itemSlot.getAmount();
-				
-				if(remainingItems >= 0) {
-					inv.setItem(slot, new ItemStack(Material.AIR));
-					
-					if(remainingItems == 0) break;
-				} else {
-					//remainingItems es menor a 0 esto quiere decir que el item en el slot es mayor a lo que falta
-					int remaining = remainingItems + itemSlot.getAmount();
-					int newItemAmount = itemSlot.getAmount() - remaining;
-					ItemStack newItemSlot = new ItemStack(itemSlot);
-					newItemSlot.setAmount(newItemAmount);
-					inv.setItem(slot, newItemSlot);
-					break;
-				}
-			}
-		}
-	}
-	
-	public static synchronized int getInventoryFreeSpaceForItem(Sign sign, ItemStack shopItem) {
-		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if(!tryChest.getType().equals(Material.CHEST)) return -1;
-		Chest chest = (Chest) tryChest.getState();
-		return getInventoryFreeSpaceForItem(chest.getInventory(), shopItem);
-	}
-	
-
-	public static synchronized int getInventoryFreeSpaceForItem(PlayerInventory inv, ItemStack shopItem) {
-		return getInventoryFreeSpaceForItem((Inventory) inv, shopItem);
-	}
-
-	/**
-	 * @param sign
-	 * @param shopItem
-	 * @return
-	 */
-	public static synchronized int getInventoryFreeSpaceForItem(Inventory inv, ItemStack shopItem) {
-		int freeSpace = 0;
-		
-		for(int slot = 0; slot < inv.getSize(); slot++) {
-			if(inv.getItem(slot) == null || inv.getItem(slot).getType().equals(Material.AIR)) {
-				freeSpace += shopItem.getMaxStackSize();
-			}else if(inv.getItem(slot).getType().equals(shopItem.getType()) && inv.getItem(slot).getDurability() == shopItem.getDurability()) {
-				int getStackFreeSpace = shopItem.getMaxStackSize() - inv.getItem(slot).getAmount();
-				if(getStackFreeSpace > 0) {
-					freeSpace += getStackFreeSpace;
-				}
-			}
-		}
-		
-		return freeSpace;
-	}
-	
-	public static synchronized boolean putItemsToInventory(Sign sign, ItemStack shopItem, int totalItems) {
-		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
-		if(!tryChest.getType().equals(Material.CHEST)) return false;
-		Chest chest = (Chest) tryChest.getState();
-		
-		return putItemsToInventory(chest.getInventory(), shopItem, totalItems);
-	}
-
-	/**
-	 * @param sign
-	 * @param shopItem
-	 * @param totalItems
-	 */
-	public static synchronized boolean putItemsToInventory(Inventory inv, ItemStack shopItem, int totalItems) {
-		int remainingItems = totalItems;
-		for(int slot = 0; slot < inv.getSize(); slot++) {
-			if(remainingItems <= 0) break;
-			if(inv.getItem(slot) == null || inv.getItem(slot).getType().equals(Material.AIR)) {
-				//Podemos depositar un item completo
-				ItemStack putItem = new ItemStack(shopItem);
-				int putAmount = (remainingItems > shopItem.getMaxStackSize()) ? shopItem.getMaxStackSize() : remainingItems;
-				putItem.setAmount(putAmount);
-				inv.setItem(slot, putItem);
-				remainingItems -= putAmount;
-			} else if(inv.getItem(slot).getType().equals(shopItem.getType()) && inv.getItem(slot).getDurability() == shopItem.getDurability()) {
-				//¿Hay espacio disponible?
-				ItemStack slotItem = inv.getItem(slot);
-				int getStackFreeSpace = slotItem.getMaxStackSize() - slotItem.getAmount();
-				
-				if(getStackFreeSpace > 0) {
-					ItemStack putItem = new ItemStack(shopItem);
-					putItem.setAmount(slotItem.getAmount() + ((getStackFreeSpace > remainingItems) ? remainingItems : getStackFreeSpace));
-					inv.setItem(slot, putItem);
-					remainingItems -= getStackFreeSpace;
-				}
-			}
-		}
-		
-		return true;
-	}
-
-	/**
 	 * @param sign
 	 * @return
 	 */
@@ -334,6 +238,92 @@ public class ShopUtil {
 	 */
 	public static boolean isAdminShop(Sign sign) {
 		return ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(Shops.ADMIN_TAG);
+	}
+	
+	public boolean isASpecialItem(Material mat){
+		if(mat.equals(Material.POTION)
+				|| mat.equals(Material.ENCHANTED_BOOK)
+				|| mat.equals(Material.MOB_SPAWNER)
+				|| mat.equals(Material.MONSTER_EGG)
+				|| mat.equals(Material.BANNER)){
+			return true;
+		}
+		
+		return false;
+	}
+	
+	public static String resolveCustomDurabilityIDFor(ItemStack item){
+		if(item == null) throw new NullPointerException("item is null");
+		
+		ObjectOutputStream out;
+		switch(item.getType()){
+		case BANNER:
+			
+			BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
+			Map<String, Object> map = bannerMeta.serialize();
+			
+			// Serialize to a byte array
+			ByteArrayOutputStream bos = new ByteArrayOutputStream() ;
+			try {
+				out = new ObjectOutputStream(bos) ;
+				out.writeObject(map);
+				out.close();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+
+			
+			try {
+
+				// Get the bytes of the serialized object
+				byte[] buf = bos.toByteArray();
+				
+				PreparedStatement prepareStatement = AllBanks.getSQLConnection("itemSolution").prepareStatement("SELECT * FROM banner WHERE itemmeta = ?");
+				prepareStatement.setBinaryStream(1, new ByteArrayInputStream(buf), buf.length);
+				ResultSet res = prepareStatement.executeQuery();
+				
+				if(res.next()){
+					res.close();
+					prepareStatement.close();
+					return "#" + String.valueOf(res.getInt("id"));
+				} else {
+					//Registrar
+					PreparedStatement insertStatement = AllBanks.getSQLConnection("itemSolution").prepareStatement("INSERT INTO banner (itemmeta) VALUES (?)");
+					prepareStatement.setBinaryStream(1, new ByteArrayInputStream(buf), buf.length);
+					insertStatement.executeUpdate();
+					
+					ResultSet generatedKeys = insertStatement.getGeneratedKeys();
+							
+		            if (generatedKeys.next()) {
+		            	generatedKeys.close();
+		            	insertStatement.close();
+		            	res.close();
+		            	prepareStatement.close();
+		                return "#" + String.valueOf(generatedKeys.getLong(1));
+		            }
+					
+		            res.close();
+		            prepareStatement.close();
+					return "#-2"; 
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			
+			break;
+		case POTION:
+			break;
+		case ENCHANTED_BOOK:
+			break;
+		case MOB_SPAWNER:
+			break;
+		case MONSTER_EGG:
+			break;
+		default:
+			return "-1";
+		}
+		
+		return "-1";
 	}
 
 }

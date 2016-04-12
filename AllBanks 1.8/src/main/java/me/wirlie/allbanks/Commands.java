@@ -56,6 +56,7 @@ import me.wirlie.allbanks.util.ExperienceConversionUtil;
 import me.wirlie.allbanks.util.InteractiveUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.util.ItemNameUtil;
+import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.Util;
 
 /**
@@ -870,6 +871,8 @@ public class Commands implements CommandExecutor {
 			
 			Player p = (Player) sender;
 			ItemStack itemHand = p.getItemInHand();
+			
+			System.out.println(ShopUtil.resolveCustomDurabilityIDFor(itemHand));
 			
 			String name = ItemNameUtil.getItemName(itemHand);
 

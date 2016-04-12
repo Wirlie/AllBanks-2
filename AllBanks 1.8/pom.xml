@@ -26,6 +26,7 @@
         <url>http://nexus.theyeticave.net/content/repositories/pub_releases</url>
     </repository>
   </repositories>
+  
 
   <dependencies>
 	<dependency>
@@ -33,6 +34,16 @@
 	   <artifactId>VaultAPI</artifactId>
 	   <version>1.5</version>
 	   <scope>provided</scope>
+	   <exclusions>
+	     <exclusion>
+	       <groupId>org.bukkit</groupId>
+	       <artifactId>bukkit</artifactId>
+	     </exclusion>
+	     <exclusion>
+	       <groupId>org.spigotmc</groupId>
+	       <artifactId>spigot-api</artifactId>
+	     </exclusion>
+       </exclusions> 
 	</dependency>
     <dependency>
       <groupId>junit</groupId>
@@ -115,6 +126,64 @@
   			</includes>
   		</resource>
   	</resources>
+  	<plugins>
+	  	<plugin>
+		  <groupId>com.googlecode.addjars-maven-plugin</groupId>
+		  <artifactId>addjars-maven-plugin</artifactId>
+		  <version>1.0.2</version>
+		  <executions>
+		    <execution>
+		        <goals>
+		            <goal>add-jars</goal>
+		        </goals>
+		        <configuration>
+		            <resources>
+		                <resource>
+		                    <directory>${project.basedir}/resources/R1.jar</directory>
+		                    <directory>${project.basedir}/resources/R2.jar</directory>
+		                    <directory>${project.basedir}/resources/R3.jar</directory>
+		                </resource>
+		            </resources>
+		        </configuration>
+		    </execution>
+		  </executions>
+		</plugin>
+	</plugins>
+  	<pluginManagement>
+  		<plugins>
+  			<!--This plugin's configuration is used to store Eclipse m2e settings only. It has no influence on the Maven build itself.-->
+  			<plugin>
+  				<groupId>org.eclipse.m2e</groupId>
+  				<artifactId>lifecycle-mapping</artifactId>
+  				<version>1.0.0</version>
+  				<configuration>
+  					<lifecycleMappingMetadata>
+  						<pluginExecutions>
+  							<pluginExecution>
+  								<pluginExecutionFilter>
+  									<groupId>
+  										com.googlecode.addjars-maven-plugin
+  									</groupId>
+  									<artifactId>
+  										addjars-maven-plugin
+  									</artifactId>
+  									<versionRange>
+  										[1.0.2,)
+  									</versionRange>
+  									<goals>
+  										<goal>add-jars</goal>
+  									</goals>
+  								</pluginExecutionFilter>
+  								<action>
+  									<ignore></ignore>
+  								</action>
+  							</pluginExecution>
+  						</pluginExecutions>
+  					</lifecycleMappingMetadata>
+  				</configuration>
+  			</plugin>
+  		</plugins>
+  	</pluginManagement>
   </build>
 
 </project>
