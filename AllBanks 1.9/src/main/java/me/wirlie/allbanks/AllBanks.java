@@ -73,6 +73,8 @@ import net.milkbowl.vault.economy.Economy;
  */
 public class AllBanks extends JavaPlugin {
 	
+	public static String currentABVersion = "1.9";
+	
 	private static AllBanks AllBanksInstance;
 	private static DataBaseSQLite dbSQLite = new DataBaseSQLite();
 	private static DataBaseMySQL dbMySQL = new DataBaseMySQL();
@@ -733,6 +735,10 @@ public class AllBanks extends JavaPlugin {
 	 */
 	public static StorageType getStorageMethod() {
 		return storageMethod;
+	}
+	
+	public static String getBukkitVersion(){
+		return Bukkit.getServer().getBukkitVersion().split("-")[0];
 	}
 	
 	/**

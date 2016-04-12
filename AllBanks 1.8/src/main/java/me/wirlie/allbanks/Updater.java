@@ -96,6 +96,9 @@ public class Updater {
     private String versionLink;
     private String versionType;
     private String versionGameVersion;
+    
+    private String versionNameOld;
+    private String versionLinkOld;
 
     /* Update process variables */
 
@@ -395,7 +398,20 @@ public class Updater {
         BufferedInputStream in = null;
         FileOutputStream fout = null;
         try {
-            URL fileUrl = new URL(this.versionLink);
+        	
+            URL fileUrl = null;
+            
+            boolean old = false;
+            
+            if(this.versionName.contains("MC1.9") && AllBanks.currentABVersion.equalsIgnoreCase("1.9") || this.versionName.contains("MC1.8") && AllBanks.currentABVersion.equalsIgnoreCase("1.8")){
+            	fileUrl= new URL(this.versionLink);
+            }else if(this.versionNameOld.contains("MC1.9") && AllBanks.currentABVersion.equalsIgnoreCase("1.9") || this.versionNameOld.contains("MC1.8") && AllBanks.currentABVersion.equalsIgnoreCase("1.8")){
+            	fileUrl= new URL(this.versionLinkOld);
+            	old = true;
+            }else{
+            	fileUrl= new URL(this.versionLink);
+            }
+            
             final int fileLength = fileUrl.openConnection().getContentLength();
             in = new BufferedInputStream(fileUrl.openStream());
             fout = new FileOutputStream(new File(this.updateFolder, file.getName()));
@@ -403,7 +419,7 @@ public class Updater {
             final byte[] data = new byte[Updater.BYTE_SIZE];
             int count;
             if (this.announce) {
-                this.plugin.getLogger().info("About to download a new update: " + this.versionName);
+                this.plugin.getLogger().info("About to download a new update: " + ((old) ? this.versionNameOld : this.versionName));
             }
             long downloaded = 0;
             while ((count = in.read(data, 0, Updater.BYTE_SIZE)) != -1) {
@@ -593,7 +609,6 @@ public class Updater {
      * 
      */
     public boolean shouldUpdate(String localVersion, String remoteVersion) {
-
     	List<String> localVersionSplit = new ArrayList<String>(Arrays.asList(localVersion.split("\\D")));
     	List<String> remoteVersionSplit = new ArrayList<String>(Arrays.asList(remoteVersion.split("\\D")));
     	
@@ -693,6 +708,12 @@ public class Updater {
             this.versionLink = (String) latestUpdate.get(Updater.LINK_VALUE);
             this.versionType = (String) latestUpdate.get(Updater.TYPE_VALUE);
             this.versionGameVersion = (String) latestUpdate.get(Updater.VERSION_VALUE);
+            
+            JSONObject oldUpdate = (JSONObject) array.get(array.size() - 2);
+            this.versionNameOld = (String) oldUpdate.get(Updater.TITLE_VALUE);
+            this.versionLinkOld = (String) oldUpdate.get(Updater.LINK_VALUE);
+            //this.versionTypeOld = (String) oldUpdate.get(Updater.TYPE_VALUE);
+            //this.versionGameVersionOld = (String) oldUpdate.get(Updater.VERSION_VALUE);
 
             return true;
         } catch (final IOException e) {
@@ -761,6 +782,9 @@ public class Updater {
                 }
                 this.saveFile(name);
             } else {
+            	
+            	//Mini fix
+            	
                 this.result = UpdateResult.UPDATE_AVAILABLE;
             }
         }
