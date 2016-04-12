@@ -872,14 +872,24 @@ public class Commands implements CommandExecutor {
 			Player p = (Player) sender;
 			ItemStack itemHand = p.getItemInHand();
 			
-			System.out.println(ShopUtil.resolveCustomDurabilityIDFor(itemHand));
-			
-			String name = ItemNameUtil.getItemName(itemHand);
+			if(ShopUtil.itemNeedResolveCustomDurability(itemHand)){
+				String resolveID = ShopUtil.resolveCustomDurabilityIDFor(itemHand);
+				
+				if(resolveID == null) throw new NullPointerException("Cannot resolve a custom ID, null returned");
+				
+				String name = ItemNameUtil.getItemName(itemHand);
 
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + ":" + itemHand.getDurability());
-			
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + name + ChatColor.AQUA + resolveID);
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + resolveID);
+			} else {
+				
+				String name = ItemNameUtil.getItemName(itemHand);
+				
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + ":" + itemHand.getDurability());
+			}
 			return true;
 		}
 		

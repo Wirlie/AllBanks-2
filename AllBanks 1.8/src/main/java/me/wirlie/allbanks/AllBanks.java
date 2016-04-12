@@ -414,11 +414,7 @@ public class AllBanks extends JavaPlugin {
 		try{
 			AllBanksLogger.info("Try to install ItemSolution database...");
 			stm = getSQLConnection("itemSolution").createStatement();
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS banner (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS potion (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS enchantedBook (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS mobSpawner (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS monsterEgg (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
 			AllBanksLogger.info("Ops! An SQLException has ocurred...");

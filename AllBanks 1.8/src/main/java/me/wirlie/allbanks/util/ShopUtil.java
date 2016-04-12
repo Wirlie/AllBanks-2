@@ -18,15 +18,10 @@
  */
 package me.wirlie.allbanks.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.math.BigDecimal;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
+import java.sql.Statement;
 import java.util.regex.Pattern;
 
 import org.bukkit.Bukkit;
@@ -41,11 +36,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.inventory.meta.BannerMeta;
-
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Shops;
-import net.minecraft.server.v1_8_R1.Achievement;
 
 /**
  * @author Wirlie
@@ -53,7 +45,6 @@ import net.minecraft.server.v1_8_R1.Achievement;
  *
  */
 public class ShopUtil {
-	Achievement ach = null;
 	/**
 	 * @param string
 	 * @return
@@ -252,78 +243,72 @@ public class ShopUtil {
 		return false;
 	}
 	
+	public static boolean itemNeedResolveCustomDurability(ItemStack item){
+		switch(item.getType()){
+		case BANNER:
+		case POTION:
+		case ENCHANTED_BOOK:
+		case MOB_SPAWNER:
+		case MONSTER_EGG:
+			return true;
+		default:
+			return false;
+		}
+	}
+	
 	public static String resolveCustomDurabilityIDFor(ItemStack item){
 		if(item == null) throw new NullPointerException("item is null");
 		
-		ObjectOutputStream out;
 		switch(item.getType()){
 		case BANNER:
+		case POTION:
+		case ENCHANTED_BOOK:
+		case MOB_SPAWNER:
+		case MONSTER_EGG:
 			
-			BannerMeta bannerMeta = (BannerMeta) item.getItemMeta();
-			Map<String, Object> map = bannerMeta.serialize();
+			String base64str = ItemStackBase64.toBase64(item);
 			
-			// Serialize to a byte array
-			ByteArrayOutputStream bos = new ByteArrayOutputStream() ;
-			try {
-				out = new ObjectOutputStream(bos) ;
-				out.writeObject(map);
-				out.close();
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-
+			Statement selectStatement = null;
+			ResultSet res = null;
+			Statement insertStatement = null;
+			ResultSet generatedKeys = null;
 			
 			try {
-
-				// Get the bytes of the serialized object
-				byte[] buf = bos.toByteArray();
 				
-				PreparedStatement prepareStatement = AllBanks.getSQLConnection("itemSolution").prepareStatement("SELECT * FROM banner WHERE itemmeta = ?");
-				prepareStatement.setBinaryStream(1, new ByteArrayInputStream(buf), buf.length);
-				ResultSet res = prepareStatement.executeQuery();
+				selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+				res = selectStatement.executeQuery("SELECT * FROM items WHERE itemmeta = '" + base64str + "'");
 				
 				if(res.next()){
-					res.close();
-					prepareStatement.close();
 					return "#" + String.valueOf(res.getInt("id"));
 				} else {
 					//Registrar
-					PreparedStatement insertStatement = AllBanks.getSQLConnection("itemSolution").prepareStatement("INSERT INTO banner (itemmeta) VALUES (?)");
-					prepareStatement.setBinaryStream(1, new ByteArrayInputStream(buf), buf.length);
-					insertStatement.executeUpdate();
+					insertStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+					insertStatement.executeUpdate("INSERT INTO items (itemmeta) VALUES ('" + base64str + "')");
 					
-					ResultSet generatedKeys = insertStatement.getGeneratedKeys();
+					generatedKeys = insertStatement.getGeneratedKeys();
 							
 		            if (generatedKeys.next()) {
-		            	generatedKeys.close();
-		            	insertStatement.close();
-		            	res.close();
-		            	prepareStatement.close();
 		                return "#" + String.valueOf(generatedKeys.getLong(1));
 		            }
 					
-		            res.close();
-		            prepareStatement.close();
-					return "#-2"; 
+					return null; 
 				}
 			} catch (SQLException e) {
 				e.printStackTrace();
+				return null; 
+			} finally {
+					try {
+						if(res != null) res.close();
+						if(selectStatement != null) selectStatement.close();
+						if(generatedKeys != null) generatedKeys.close();
+						if(insertStatement != null) insertStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 			}
-			
-			break;
-		case POTION:
-			break;
-		case ENCHANTED_BOOK:
-			break;
-		case MOB_SPAWNER:
-			break;
-		case MONSTER_EGG:
-			break;
 		default:
-			return "-1";
+			return null;
 		}
-		
-		return "-1";
 	}
 
 }
