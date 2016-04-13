@@ -4,7 +4,7 @@
 
   <groupId>me.wirlie</groupId>
   <artifactId>AllBanks1.8</artifactId>
-  <version>1.0.3-RELEASE</version>
+  <version>1.1-RELEASE</version>
   <packaging>jar</packaging>
 
   <name>AllBanks</name>
@@ -12,8 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <minecraft_version>1_9_R1</minecraft_version>
-    <minecraft.version>1.9</minecraft.version>
+    <minecraft_version>1_8_R3</minecraft_version>
+    <minecraft.version>1.8</minecraft.version>
   </properties>
   
   <repositories>
