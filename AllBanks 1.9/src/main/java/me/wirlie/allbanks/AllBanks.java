@@ -301,29 +301,38 @@ public class AllBanks extends JavaPlugin {
 		BankSession.StartExpireSessionRunnable();
 		
 		//Updater
-		boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
-		boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);
+		//Hilo de fondo (background task)
 		
-		UpdateType uptype = UpdateType.DEFAULT;
-		
-		if(checkForUpdates && !forceUpdate) {
-			uptype = UpdateType.NO_DOWNLOAD;
-		}
-		
-		if(!checkForUpdates && forceUpdate) {
-			uptype = UpdateType.NO_VERSION_CHECK;
-		}
-		
-		if(checkForUpdates || forceUpdate) {
-			Updater updater = new Updater(this, 98949, this.getFile(), uptype, true);
-			if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-			    this.getLogger().info("[Updater] New version available! " + updater.getLatestName());
-			}else if(updater.getResult() == UpdateResult.NO_UPDATE) {
-				this.getLogger().info("[Updater] No updates found. Your AllBanks plugin is up to date.");
-			}else {
-				this.getLogger().info("[Updater] A problem was ocurred: " + updater.getResult());
+		Runnable updaterRunnable = new Runnable(){
+			public void run() {
+				boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
+				boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);
+				
+				UpdateType uptype = UpdateType.DEFAULT;
+				
+				if(checkForUpdates && !forceUpdate) {
+					uptype = UpdateType.NO_DOWNLOAD;
+				}
+				
+				if(!checkForUpdates && forceUpdate) {
+					uptype = UpdateType.NO_VERSION_CHECK;
+				}
+				
+				if(checkForUpdates || forceUpdate) {
+					Updater updater = new Updater(AllBanks.getInstance(), 98949, AllBanks.getInstance().getFile(), uptype, true);
+					if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
+					    AllBanks.getInstance().getLogger().info("[Updater] New version available! " + updater.getLatestName());
+					}else if(updater.getResult() == UpdateResult.NO_UPDATE) {
+						AllBanks.getInstance().getLogger().info("[Updater] No updates found. Your AllBanks plugin is up to date.");
+					}else {
+						AllBanks.getInstance().getLogger().info("[Updater] A problem was ocurred: " + updater.getResult());
+					}
+				}
 			}
-		}
+		};
+		
+		//ejecutar
+		new Thread(updaterRunnable).start();
 		
 		//MCStats
 		if(getConfig().getBoolean("pl.enable-metrics", true)) {
