@@ -5,11 +5,8 @@ jdk:
 os:
   - linux
 env:
-  - AB_VERSION=1.8
   - AB_VERSION=1.9
 script: 
-  - if [[ $AB_VERSION == "1.8" ]] ; then cd "AllBanks 1.8"; fi
-  - if [[ $AB_VERSION == "1.8" ]] ; then mvn clean test -U; fi
   - if [[ $AB_VERSION == "1.9" ]] ; then cd "AllBanks 1.9"; fi
   - if [[ $AB_VERSION == "1.9" ]] ; then mvn clean test -U; fi
 notifications:
