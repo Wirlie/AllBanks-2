@@ -90,7 +90,7 @@ public class ShopUtil {
 			String[] split = itemLine.split(":");
 			
 			if(split.length == 2) {
-				int durability = Integer.parseInt(match.group(2));
+				int durability = Integer.parseInt(match.group(2).replace(":", ""));
 				ItemStack item = new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
 				item.setDurability((short) durability);
 				return item;

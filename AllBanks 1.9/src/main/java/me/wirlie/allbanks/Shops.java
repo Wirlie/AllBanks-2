@@ -26,6 +26,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.util.ChatUtil;
+import me.wirlie.allbanks.util.FakeItemManager;
 import me.wirlie.allbanks.util.InteractiveUtil;
 import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
@@ -107,6 +108,9 @@ public class Shops {
 				//Aviso
 				Translation.getAndSendMessage(owner, StringsID.SHOP_WARNING_ITEM_NAME, true);
 			}
+			
+			//Intentar colocar el objeto falso
+			FakeItemManager.spawnFakeItemAt(b.getLocation(), ShopUtil.getItemStack((Sign) b.getState()));
 		} else {
 			Translation.getAndSendMessage(owner, StringsID.SQL_EXCEPTION_PROBLEM, true);
 			InteractiveUtil.sendSound(owner, SoundType.DENY);

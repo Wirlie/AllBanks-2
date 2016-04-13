@@ -640,8 +640,11 @@ public class Updater {
 					AllBanksLogger.debug("[Updater] Local: " + localVersion + " < Remote: " + remoteVersion);
 					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " < remotevp: " + remotevp);
 					return true;
-				}else {
+				}else if(localvp > remotevp) {
 					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " > remotevp: " + remotevp);
+					return false;
+				}else{					
+					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " = remotevp: " + remotevp);
 					continue;
 				}
 			}catch (NumberFormatException e) {

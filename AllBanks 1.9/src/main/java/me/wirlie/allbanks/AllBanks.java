@@ -62,6 +62,7 @@ import me.wirlie.allbanks.runnable.BankTimerRunnable;
 import me.wirlie.allbanks.runnable.LotteryRunnable;
 import me.wirlie.allbanks.util.ConfigurationUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.FakeItemManager;
 import me.wirlie.allbanks.util.Util;
 import net.milkbowl.vault.economy.Economy;
 
@@ -217,6 +218,7 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new ShopChestInteractListener(), this);
 		
 		//Runnables
+		FakeItemManager.initializeItemManeger();
 		
 		//Para BankTime
 		int runSeconds = getConfig().getInt("banks.bank-time.add-minute-every", 60);

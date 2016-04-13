@@ -42,6 +42,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.FakeItemManager;
 import me.wirlie.allbanks.util.InteractiveUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.util.InventoryUtil;
@@ -207,6 +208,9 @@ public class ShopSignInteractListener implements Listener {
 								
 								Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
 								InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+								
+								FakeItemManager.spawnFakeItemAt(sign.getLocation(), ShopUtil.getItemStack(sign));
+								
 								e.setCancelled(true);
 							}
 						}

@@ -32,6 +32,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.FakeItemManager;
 import me.wirlie.allbanks.util.InteractiveUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.util.Util;
@@ -80,6 +81,8 @@ public class ShopSignBreakListener implements Listener {
 						if(Banks.removeAllBanksSign(sign.getLocation())) {
 							Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 							InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+
+							FakeItemManager.despawnFakeItem(sign.getLocation());
 							e.setCancelled(false);
 						}else {
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
@@ -94,6 +97,7 @@ public class ShopSignBreakListener implements Listener {
 					if(Banks.removeAllBanksSign(sign.getLocation())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 						InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+						
 						e.setCancelled(false);
 					}else {
 						Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);

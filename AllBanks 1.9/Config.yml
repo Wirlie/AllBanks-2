@@ -70,6 +70,8 @@ banks:
     max-virtual-chests-per-player: 1
 shop:
   admin-tag: "admin"
+  # If this is configured with true, AllBanks will try to spawn a fake item if an Admin Shop is created.
+  enable-fake-item: true
 topranks:
   # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.
   # Please do not set it with a minimal value (example: 1 second)
