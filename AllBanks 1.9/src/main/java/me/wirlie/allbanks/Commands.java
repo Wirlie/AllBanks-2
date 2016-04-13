@@ -129,7 +129,7 @@ public class Commands implements CommandExecutor {
 				}
 			}
 			
-			int maxPages = 1;
+			int maxPages = 2;
 			if(page > maxPages) page = maxPages;
 			
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + page, "%2%>>>" + maxPages), true);
@@ -142,9 +142,15 @@ public class Commands implements CommandExecutor {
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "buyticket [amount]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_BUYTICKET_DESC.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "[enable|disable]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
+				
+				break;
+				
+			case 2:
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab reload" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_RELOAD_DESC.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab iteminfo" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_ITEMINFO_DESC.toString(false));
-				
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab database " + ChatColor.AQUA + "try-update" + ChatColor.YELLOW + "<SQL>" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_DATABASE_UPDATE.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab database " + ChatColor.AQUA + "try-query" + ChatColor.YELLOW + "<SQL>" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_DATABASE_QUERY.toString(false));
+
 				break;
 			}
 			
@@ -210,7 +216,12 @@ public class Commands implements CommandExecutor {
 					return true;
 				}
 				
-				if(args[1].equalsIgnoreCase("bankmoney")) {
+				if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
+					//Ayuda: /ab toprank ?
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "bankmoney" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "bankxp" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
+					return true;
+				}else if(args[1].equalsIgnoreCase("bankmoney")) {
 					
 					int page = 1;
 					
@@ -447,12 +458,30 @@ public class Commands implements CommandExecutor {
 							}
 						}
 					}.runTaskAsynchronously(AllBanks.getInstance());
+				}else{
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
+					Translation.getAndSendMessage(sender, 
+							StringsID.COMMAND_SUGGEST_HELP, 
+							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab toprank ?"),
+							true);
+					return true;
 				}
+			}else{
+				Translation.getAndSendMessage(sender, 
+						StringsID.COMMAND_SUGGEST_HELP, 
+						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab toprank ?"),
+						true);
+				return true;
 			}
 			
 		}else if(mainAction.equalsIgnoreCase("database")){
 			if(args.length >= 2){
-				if(args[1].equalsIgnoreCase("try-query")){
+				if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
+					//comando de ayuda: /ab database ?
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab database " + ChatColor.AQUA + "try-query" + ChatColor.YELLOW + "<SQL>" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_DATABASE_QUERY.toString(false));
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab database " + ChatColor.AQUA + "try-update" + ChatColor.YELLOW + "<SQL>" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_DATABASE_UPDATE.toString(false));
+					return true;
+				}else if(args[1].equalsIgnoreCase("try-query")){
 					
 					if(sender instanceof Player || sender instanceof BlockCommandSender){
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_CONSOLE, true);
@@ -523,7 +552,12 @@ public class Commands implements CommandExecutor {
 						}
 					}else{
 						//No cumple con: /ab database query <QUERY>
-						return false;
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
+						Translation.getAndSendMessage(sender, 
+								StringsID.COMMAND_SUGGEST_HELP, 
+								Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
+								true);
+						return true;
 					}
 					
 					return true;
@@ -585,17 +619,31 @@ public class Commands implements CommandExecutor {
 						}
 					}else{
 						//No cumple con: /ab database query <QUERY>
-						return false;
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
+						Translation.getAndSendMessage(sender, 
+								StringsID.COMMAND_SUGGEST_HELP, 
+								Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
+								true);
+						return true;
 					}
 					
 					return true;
 				}else{
 					//No cumple con NINGUN argumento valido para /ab database
-					return false;
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
+					Translation.getAndSendMessage(sender, 
+							StringsID.COMMAND_SUGGEST_HELP, 
+							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
+							true);
+					return true;
 				}
 			}else{
 				//No cumple con los requisitos: /ab database <arg>
-				return false;
+				Translation.getAndSendMessage(sender, 
+						StringsID.COMMAND_SUGGEST_HELP, 
+						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
+						true);
+				return true;
 			}
 		}else if(mainAction.equalsIgnoreCase("lottery")){
 			if(DataBaseUtil.databaseIsLocked()){
@@ -604,7 +652,13 @@ public class Commands implements CommandExecutor {
 			}
 			
 			if(args.length >= 2){
-				if(args[1].equalsIgnoreCase("buyticket")){
+				if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "info" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_INFO_DESC.toString(false));
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "buyticket [amount]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_BUYTICKET_DESC.toString(false));
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "[enable|disable]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC.toString(false));
+					sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
+					
+				}else if(args[1].equalsIgnoreCase("buyticket")){
 					if(args.length == 3){
 						
 						if(!(sender instanceof Player)){
@@ -725,7 +779,12 @@ public class Commands implements CommandExecutor {
 						return true;
 					}else{
 						//No válido /ab lottery buyticket [INT]
-						return false;
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
+						Translation.getAndSendMessage(sender, 
+								StringsID.COMMAND_SUGGEST_HELP, 
+								Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab lottery ?"),
+								true);
+						return true;
 					}
 				}else if(args[1].equalsIgnoreCase("info")){
 					
@@ -856,6 +915,13 @@ public class Commands implements CommandExecutor {
 					AllBanksLogger.warning("[Lottery] Lottery disabled by " + sender.getName());
 					return true;
 				}
+			}else{
+				//Sin argumentos
+				Translation.getAndSendMessage(sender, 
+						StringsID.COMMAND_SUGGEST_HELP, 
+						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab lottery ?"),
+						true);
+				return true;
 			}
 		}else if(mainAction.equalsIgnoreCase("iteminfo")){
 			if(!(sender instanceof Player)) {
@@ -867,7 +933,7 @@ public class Commands implements CommandExecutor {
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				if(senderIsPlayer) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 				return true;
-			}//pushs
+			}
 			
 			Player p = (Player) sender;
 			ItemStack itemHand = p.getInventory().getItemInMainHand();

@@ -49,16 +49,19 @@ public class CommandsTabCompleter implements TabCompleter {
 			if(args[0].equalsIgnoreCase("database")){
 				return Arrays.asList(
 						"try-update",
-						"try-query"
+						"try-query",
+						"help"
 						);
 			}else if(args[0].equalsIgnoreCase("toprank")){
 				return Arrays.asList(
 						"bankmoney",
-						"bankxp"
+						"bankxp",
+						"help"
 						);
 			}else if(args[0].equalsIgnoreCase("help")){
 				return Arrays.asList(
-						"1"
+						"1",
+						"2"
 						);
 			}else if(args[0].equalsIgnoreCase("lottery")){
 				return Arrays.asList(
@@ -66,7 +69,8 @@ public class CommandsTabCompleter implements TabCompleter {
 						"info",
 						"force",
 						"enable",
-						"disable"
+						"disable",
+						"help"
 						);
 			}
 		}
