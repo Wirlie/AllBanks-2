@@ -40,7 +40,8 @@ public class CommandsTabCompleter implements TabCompleter {
 					"lottery",
 					"toprank",
 					"help",
-					"reload"
+					"reload",
+					"iteminfo"
 					);
 		}
 		
