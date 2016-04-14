@@ -82,7 +82,7 @@ public class ShopSignBreakListener implements Listener {
 							Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 							InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 
-							FakeItemManager.despawnFakeItem(sign.getLocation());
+							FakeItemManager.DespawnFakeItemForShop(sign.getLocation());
 							e.setCancelled(false);
 						}else {
 							Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);

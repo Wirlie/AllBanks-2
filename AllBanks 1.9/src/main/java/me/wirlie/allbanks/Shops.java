@@ -110,7 +110,7 @@ public class Shops {
 			}
 			
 			//Intentar colocar el objeto falso
-			FakeItemManager.spawnFakeItemAt(b.getLocation(), ShopUtil.getItemStack((Sign) b.getState()));
+			FakeItemManager.SpawnFakeItemForShop(b.getLocation());
 		} else {
 			Translation.getAndSendMessage(owner, StringsID.SQL_EXCEPTION_PROBLEM, true);
 			InteractiveUtil.sendSound(owner, SoundType.DENY);

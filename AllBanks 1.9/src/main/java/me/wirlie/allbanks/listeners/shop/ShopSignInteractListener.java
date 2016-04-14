@@ -209,7 +209,7 @@ public class ShopSignInteractListener implements Listener {
 								Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
 								InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 								
-								FakeItemManager.spawnFakeItemAt(sign.getLocation(), ShopUtil.getItemStack(sign));
+								FakeItemManager.SpawnFakeItemForShop(sign.getLocation());
 								
 								e.setCancelled(true);
 							}

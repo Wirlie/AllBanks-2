@@ -78,6 +78,12 @@ public class ShopUtil {
 		}
 	}
 	
+	public static ItemStack getItemStack(Location signLoc) {
+		Block b = signLoc.getBlock();
+		
+		return getItemStack((Sign) b.getState());
+	}
+	
 	public static ItemStack getItemStack(Sign sign) {
 		String itemLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM));
 		
