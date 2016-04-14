@@ -110,7 +110,8 @@ public class Shops {
 			}
 			
 			//Intentar colocar el objeto falso
-			FakeItemManager.SpawnFakeItemForShop(b.getLocation());
+			if(!lines[3].equalsIgnoreCase("???"))
+				FakeItemManager.SpawnFakeItemForShop(b.getLocation());
 		} else {
 			Translation.getAndSendMessage(owner, StringsID.SQL_EXCEPTION_PROBLEM, true);
 			InteractiveUtil.sendSound(owner, SoundType.DENY);

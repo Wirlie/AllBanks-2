@@ -97,11 +97,20 @@ public class ShopUtil {
 			
 			if(split.length == 2) {
 				int durability = Integer.parseInt(match.group(2).replace(":", ""));
-				ItemStack item = new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
+				Material mat = ItemNameUtil.getItemByShortName(match.group(1));
+				
+				if(mat == null) return null;
+				
+				ItemStack item = new ItemStack(mat, getItemAmount(sign));
 				item.setDurability((short) durability);
 				return item;
 			}else {
-				return new ItemStack(ItemNameUtil.getItemByShortName(match.group(1)), getItemAmount(sign));
+				
+				Material mat = ItemNameUtil.getItemByShortName(match.group(1));
+				
+				if(mat == null) return null;
+				
+				return new ItemStack(mat, getItemAmount(sign));
 			}
 		} else {
 			match = specialItemSyntax.matcher(itemLine);

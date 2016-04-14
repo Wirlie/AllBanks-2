@@ -20,19 +20,22 @@ package me.wirlie.allbanks.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 
 import me.wirlie.allbanks.AllBanks;
 
@@ -42,7 +45,7 @@ import me.wirlie.allbanks.AllBanks;
  */
 public class FakeItemManager extends BukkitRunnable {
 	
-	private static BiMap<Location, Item> itemsLoc = HashBiMap.create();
+	private static HashMap<Location, Item> itemsLoc = new HashMap<Location, Item>();
 	
 	private FakeItemManager(){
 		//Privatizar constructor
@@ -51,6 +54,8 @@ public class FakeItemManager extends BukkitRunnable {
 	
 	private void loadBackup() {
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
+		
+		readkeys:
 		for(String key : yaml.getKeys(false)){
 			//Parámetros
 			String itemLocStr = yaml.getString(key + ".itemLoc", null);
@@ -66,17 +71,23 @@ public class FakeItemManager extends BukkitRunnable {
 					if(e.getUniqueId().equals(itemUUID)){
 						//existe, colocar en el mapa
 						itemsLoc.put(signLoc, (Item) e);
-						continue;
+						//El parámetro "readkeys" interrumpe el estado for() anterior
+						continue readkeys;
 					}
 				}
 			}
 			
 			//No existe, intentar regenerar
-			Location calculateItemLoc = signLoc.clone().subtract(0, 1, 0).add(0.5, 0, 0.5);
-			ItemStack craftItem = ShopUtil.getItemStack(signLoc);
-			craftItem.setAmount(1);
+			Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
+			ItemStack shopItem = ShopUtil.getItemStack(signLoc);
 			
-			Item item = signLoc.getWorld().dropItem(calculateItemLoc, craftItem);
+			if(shopItem == null){
+				continue;
+			}
+			
+			shopItem.setAmount(1);
+			
+			Item item = signLoc.getWorld().dropItem(calculateItemLoc, shopItem);
 			item.setPickupDelay(Integer.MAX_VALUE);
 			item.setVelocity(new Vector(0, 0, 0));
 			item.teleport(calculateItemLoc);
@@ -100,8 +111,9 @@ public class FakeItemManager extends BukkitRunnable {
 	public static void SpawnFakeItemForShop(Location signLoc){
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
 		
-		Location calculateItemLoc = signLoc.clone().subtract(0, 1, 0).add(0.5, 0, 0.5);
+		Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
 		ItemStack craftItem = ShopUtil.getItemStack(signLoc);
+		
 		craftItem.setAmount(1);
 		
 		Item item = signLoc.getWorld().dropItem(calculateItemLoc, craftItem);
@@ -113,6 +125,14 @@ public class FakeItemManager extends BukkitRunnable {
 		yaml.set(transformSignlocToKey(signLoc) + ".itemUUID", item.getUniqueId().toString());
 		yaml.set(transformSignlocToKey(signLoc) + ".itemLoc", StringLocationUtil.convertLocationToString(calculateItemLoc, false));
 	
+		//añadir al mapa
+		itemsLoc.put(signLoc, item);
+		
+		try {
+			yaml.save(getBackupFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void DespawnFakeItemForShop(Location signLoc){
@@ -137,6 +157,8 @@ public class FakeItemManager extends BukkitRunnable {
 		
 		//Quitar letrero del registro
 		yaml.set(transformSignlocToKey(signLoc), null);
+		//Eliminarl del mapa
+		itemsLoc.remove(signLoc);
 		
 		//Guardar
 		try {
@@ -174,7 +196,83 @@ public class FakeItemManager extends BukkitRunnable {
 	}
 
 	public void run() {
+		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
 		
+		Iterator<Entry<Location, Item>> it = itemsLoc.entrySet().iterator();
+		HashMap<Location, Item> replaceLater = new HashMap<Location, Item>();
+		
+		while(it.hasNext()){
+			Entry<Location, Item> entry = it.next();
+			
+			//Parámetros
+			Item item = entry.getValue();
+			Location signLoc = entry.getKey();
+			
+			//Comprobar si el objeto existe
+			if(item.isDead()){
+				//No existe, intentar regenerar
+				Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
+				ItemStack craftItem = ShopUtil.getItemStack(signLoc);
+				craftItem.setAmount(1);
+				
+				item = signLoc.getWorld().dropItem(calculateItemLoc, craftItem);
+				item.setPickupDelay(Integer.MAX_VALUE);
+				item.setVelocity(new Vector(0, 0, 0));
+				item.teleport(calculateItemLoc);
+				
+				//Actualizar datos
+				yaml.set(transformSignlocToKey(signLoc) + ".itemUUID", item.getUniqueId().toString());
+				yaml.set(transformSignlocToKey(signLoc) + ".itemLoc", StringLocationUtil.convertLocationToString(calculateItemLoc, false));
+			
+				//Regenerado, colocar en el mapa
+				replaceLater.put(signLoc, item);
+			}else{
+				//Comprobar si el objeto no se encuentra lejos de su origen
+				Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
+				
+				if(Math.abs(calculateItemLoc.getBlockX() - item.getLocation().getBlockX()) > 1
+						|| Math.abs(calculateItemLoc.getBlockY() - item.getLocation().getBlockY()) > 1
+						|| Math.abs(calculateItemLoc.getBlockZ() - item.getLocation().getBlockZ()) > 1){
+					//Se encuentra lejos
+					
+					//Tratamos de despejar el bloque en donde se colocará el objeto
+					Block b = calculateItemLoc.getBlock();
+					
+					if(!materialIsSlab(b.getType()) && !b.getType().equals(Material.AIR)){
+						b.breakNaturally();
+					}
+					
+					//Ahora, buscaremos el bloque de abajo
+					Block downb = b.getRelative(BlockFace.DOWN);
+					
+					if(downb.getType().equals(Material.AIR)){
+						downb.setType(Material.LOG);
+					}
+					
+					//Transportar
+					item.teleport(calculateItemLoc);
+				}
+			}
+		}
+		
+		itemsLoc.putAll(replaceLater);
+		
+		try {
+			yaml.save(getBackupFile());
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public boolean materialIsSlab(Material material){
+		if(material.equals(Material.STEP)
+				|| material.equals(Material.WOOD_STEP)
+				|| material.equals(Material.PURPUR_SLAB)
+				|| material.equals(Material.STONE_SLAB2)){
+			return true;
+		}
+		
+		return false;
 	}
 	
 	public static String transformSignlocToKey(Location signLoc){
