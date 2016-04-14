@@ -118,6 +118,8 @@ public class FakeItemManager extends BukkitRunnable {
 	public static void DespawnFakeItemForShop(Location signLoc){
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
 		
+		if(!yaml.contains(transformSignlocToKey(signLoc))) return;
+		
 		//Obtener datos
 		String itemUUIDStr = yaml.getString(transformSignlocToKey(signLoc) + ".itemUUID", null);
 		
