@@ -577,8 +577,14 @@ public class AllBanks extends JavaPlugin {
 				}
 			}
 			
+			int firstLine = 0;
 			
 			for(String line : lines) {
+				
+				if(firstLine == 0){
+					firstLine++;
+					continue;
+				}
 				
 				if(line.contains("cfg-version:")) {
 					newLines.add("# do not edit this.");
@@ -631,6 +637,13 @@ public class AllBanks extends JavaPlugin {
 				}else if(line.contains("max-shop-per-user:")) {
 					newLines.add("    # Number of shops per player.");
 					newLines.add("    # -1 = unlimited");
+				}else if(line.contains("enable-fake-item:")) {
+					newLines.add("  # If this is configured with true, AllBanks will try to spawn a fake item if an Admin Shop is created.");
+				}else if(line.contains("enable-fake-item-for-user-shop:")) {
+					newLines.add("  # Enable fake items for shops of users");
+				}else if(line.contains("update-cache-every:")) {
+					newLines.add("  # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.");
+					newLines.add("  # Please do not set it with a minimal value (example: 1 second)");
 				}
 				
 				newLines.add(line);
