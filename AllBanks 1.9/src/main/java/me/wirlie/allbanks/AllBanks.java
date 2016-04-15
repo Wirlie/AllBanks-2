@@ -48,6 +48,7 @@ import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.listeners.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.PlayerMoveListener;
+import me.wirlie.allbanks.listeners.PreventRemoveSignForOtherCausesListener;
 import me.wirlie.allbanks.listeners.SignBreakListener;
 import me.wirlie.allbanks.listeners.SignChangeListener;
 import me.wirlie.allbanks.listeners.SignInteractListener;
@@ -216,6 +217,7 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new ShopSignInteractListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ShopSignBreakListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ShopChestInteractListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PreventRemoveSignForOtherCausesListener(), this);
 		
 		//Runnables
 		FakeItemManager.initializeItemManeger();

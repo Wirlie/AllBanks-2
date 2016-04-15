@@ -32,6 +32,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -43,6 +45,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.ConfigurationUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
 import me.wirlie.allbanks.util.StringLocationUtil;
@@ -716,6 +719,33 @@ public class Banks {
 			e.printStackTrace();
 		}
 		
+	}
+
+	/**
+	 * @param location
+	 */
+	public static boolean blockContainsAllBanksSign(Location location) {
+		for(int i = 0; i < 4; i++){
+			Block bl = location.getBlock();
+			Block testForSign = (i == 0) ? bl.getRelative(BlockFace.NORTH) : ((i == 1) ? bl.getRelative(BlockFace.SOUTH) : ((i == 2) ? bl.getRelative(BlockFace.WEST) : bl.getRelative(BlockFace.EAST)));
+		
+			if(testForSign.getType().equals(Material.WALL_SIGN)){
+				if(signIsAllBanksSign((Sign) testForSign.getState())){
+					return true;
+				}
+			}
+		}
+		
+		return false;
+	}
+	
+	public static boolean signIsAllBanksSign(Sign checkSign){
+		if(ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks Shop")
+				|| ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks")){
+			return true;
+		}
+		
+		return false;
 	}
 	
 }
