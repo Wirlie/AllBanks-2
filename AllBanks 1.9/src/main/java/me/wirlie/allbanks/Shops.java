@@ -55,6 +55,8 @@ public class Shops {
 		}
 		
 		//Validar cofre
+		boolean adminShop = false;
+		
 		if(!lines[LINE_OWNER].equalsIgnoreCase(ADMIN_TAG)) {
 			if(!ShopUtil.validateNearbyChest(b.getLocation())) {
 				Translation.getAndSendMessage(owner, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
@@ -77,6 +79,8 @@ public class Shops {
 					}
 				}
 			}
+		}else{
+			adminShop = true;
 		}
 		
 		if(Banks.registerAllBanksSign(b.getLocation(), owner)) {
@@ -109,9 +113,15 @@ public class Shops {
 				Translation.getAndSendMessage(owner, StringsID.SHOP_WARNING_ITEM_NAME, true);
 			}
 			
+			boolean spawnFakeItemUserShops = AllBanks.getInstance().getConfig().getBoolean("shop.enable-fake-item-for-user-shop", true);
+			
 			//Intentar colocar el objeto falso
-			if(!lines[3].equalsIgnoreCase("???"))
-				FakeItemManager.SpawnFakeItemForShop(b.getLocation());
+			if(!lines[3].equalsIgnoreCase("???")){
+				//Es una tienda admin?
+				if(adminShop || !adminShop && spawnFakeItemUserShops)
+					FakeItemManager.SpawnFakeItemForShop(b.getLocation());
+			}
+			
 		} else {
 			Translation.getAndSendMessage(owner, StringsID.SQL_EXCEPTION_PROBLEM, true);
 			InteractiveUtil.sendSound(owner, SoundType.DENY);

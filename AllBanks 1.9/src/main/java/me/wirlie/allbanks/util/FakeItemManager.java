@@ -30,6 +30,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.block.Sign;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -38,6 +39,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Banks;
 
 /**
  * @author Wirlie
@@ -210,8 +212,29 @@ public class FakeItemManager extends BukkitRunnable {
 			
 			//Comprobar si el objeto existe
 			if(item.isDead()){
-				//No existe, intentar regenerar
+				//¿El letrero de AllBanks existe?
+				if(!signLoc.getBlock().getType().equals(Material.WALL_SIGN) || !Banks.signIsAllBanksSign((Sign) signLoc.getBlock().getState())){
+					yaml.set(transformSignlocToKey(signLoc), null);
+					continue;
+				}
+
 				Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
+				
+				//Tratamos de despejar el bloque en donde se colocará el objeto
+				Block b = calculateItemLoc.getBlock();
+				
+				if(!materialIsSlab(b.getType()) && !b.getType().equals(Material.AIR)){
+					b.breakNaturally();
+				}
+				
+				//Ahora, buscaremos el bloque de abajo
+				Block downb = b.getRelative(BlockFace.DOWN);
+				
+				if(downb.getType().equals(Material.AIR)){
+					downb.setType(Material.LOG);
+				}
+				
+				//No existe, intentar regenerar
 				ItemStack craftItem = ShopUtil.getItemStack(signLoc);
 				craftItem.setAmount(1);
 				
@@ -227,6 +250,12 @@ public class FakeItemManager extends BukkitRunnable {
 				//Regenerado, colocar en el mapa
 				replaceLater.put(signLoc, item);
 			}else{
+				//¿El letrero de AllBanks existe?
+				if(!signLoc.getBlock().getType().equals(Material.WALL_SIGN) || !Banks.signIsAllBanksSign((Sign) signLoc.getBlock().getState())){
+					yaml.set(transformSignlocToKey(signLoc), null);
+					continue;
+				}
+				
 				//Comprobar si el objeto no se encuentra lejos de su origen
 				Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
 				

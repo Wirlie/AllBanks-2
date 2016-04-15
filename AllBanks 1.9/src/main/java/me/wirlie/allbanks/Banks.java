@@ -24,8 +24,10 @@ import java.math.BigDecimal;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
@@ -724,9 +726,9 @@ public class Banks {
 	/**
 	 * @param location
 	 */
-	public static boolean blockContainsAllBanksSign(Location location) {
+	
+	public static boolean blockContainsAllBanksSign(Block bl) {
 		for(int i = 0; i < 4; i++){
-			Block bl = location.getBlock();
 			Block testForSign = (i == 0) ? bl.getRelative(BlockFace.NORTH) : ((i == 1) ? bl.getRelative(BlockFace.SOUTH) : ((i == 2) ? bl.getRelative(BlockFace.WEST) : bl.getRelative(BlockFace.EAST)));
 		
 			if(testForSign.getType().equals(Material.WALL_SIGN)){
@@ -739,6 +741,23 @@ public class Banks {
 		return false;
 	}
 	
+	public static List<Sign> getAllBanksSignBySupportBlock(Block bl){
+		
+		List<Sign> returnList = new ArrayList<Sign>();
+		
+		for(int i = 0; i < 4; i++){
+			Block testForSign = (i == 0) ? bl.getRelative(BlockFace.NORTH) : ((i == 1) ? bl.getRelative(BlockFace.SOUTH) : ((i == 2) ? bl.getRelative(BlockFace.WEST) : bl.getRelative(BlockFace.EAST)));
+		
+			if(testForSign.getType().equals(Material.WALL_SIGN)){
+				if(signIsAllBanksSign((Sign) testForSign.getState())){
+					returnList.add((Sign) testForSign.getState());
+				}
+			}
+		}
+		
+		return returnList;
+	}
+	
 	public static boolean signIsAllBanksSign(Sign checkSign){
 		if(ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks Shop")
 				|| ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks")){
@@ -746,6 +765,18 @@ public class Banks {
 		}
 		
 		return false;
+	}
+	
+	public static BankType getBankTypeBySign(Sign s){
+		String header = ChatUtil.removeChatFormat(s.getLine(0));
+		
+		if(header.equalsIgnoreCase("AllBanks SHOP")){
+			return BankType.SHOP;
+		}else if(header.equalsIgnoreCase("AllBanks")){
+			return BankType.getTypeByString(ChatUtil.removeChatFormat(s.getLine(1)));
+		}else{
+			return BankType.DEFAULT;
+		}
 	}
 	
 }

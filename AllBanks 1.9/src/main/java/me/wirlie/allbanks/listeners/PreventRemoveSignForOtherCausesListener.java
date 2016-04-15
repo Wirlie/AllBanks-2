@@ -26,8 +26,8 @@ import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 
 import me.wirlie.allbanks.Banks;
 
@@ -38,8 +38,7 @@ import me.wirlie.allbanks.Banks;
 public class PreventRemoveSignForOtherCausesListener implements Listener {
 	
 	@EventHandler
-	public void onExplosionHappens(BlockExplodeEvent e){
-	
+	public void onExplosionHappens(EntityExplodeEvent  e){
 		Iterator<Block> iter = e.blockList().iterator();
 		
 		iterateBlocks:
@@ -71,7 +70,7 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 								tryForSign = tryForSign2;
 								break;
 							}else{
-								if(Banks.blockContainsAllBanksSign(b.getLocation())){
+								if(Banks.blockContainsAllBanksSign(b)){
 									iter.remove();
 								}
 								continue iterateBlocks;
@@ -80,11 +79,13 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 					}
 				}
 				
+				if(tryForSign == null) continue;
+				
 				if(Banks.signIsAllBanksSign((Sign) tryForSign.getState())){
 					iter.remove();
 				}
 			}else{
-				if(Banks.blockContainsAllBanksSign(b.getLocation())){
+				if(Banks.blockContainsAllBanksSign(b)){
 					iter.remove();
 				}
 			}
@@ -103,7 +104,7 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 				e.setCancelled(true);
 			}
 		}else{
-			if(Banks.blockContainsAllBanksSign(b.getLocation())){
+			if(Banks.blockContainsAllBanksSign(b)){
 				e.setCancelled(true);
 			}
 		}

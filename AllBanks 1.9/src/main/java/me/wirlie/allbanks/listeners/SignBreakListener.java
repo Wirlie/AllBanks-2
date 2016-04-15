@@ -18,8 +18,12 @@
  */
 package me.wirlie.allbanks.listeners;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,7 +40,9 @@ import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.FakeItemManager;
 import me.wirlie.allbanks.util.InteractiveUtil;
+import me.wirlie.allbanks.util.ShopUtil;
 import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
 
 /**
@@ -52,10 +58,13 @@ public class SignBreakListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerBreakBank(BlockBreakEvent e){
-		if(e.getBlock().getType().equals(Material.WALL_SIGN)){
-			Sign s = (Sign) e.getBlock().getState();
+		
+		Block b = e.getBlock();
+		Player p = e.getPlayer();
+		
+		if(b.getType().equals(Material.WALL_SIGN)){
+			Sign s = (Sign) b.getState();
 			Location signLoc = s.getLocation();
-			Player p = e.getPlayer();
 			
 			if(ChatUtil.removeChatFormat(s.getLine(0)).equalsIgnoreCase("AllBanks")){
 				//Bien, es un letrero de AB
@@ -102,6 +111,62 @@ public class SignBreakListener implements Listener {
 					//banco no registrado...
 					s.getBlock().breakNaturally();
 					e.setCancelled(false);
+				}
+			}
+		}else{
+			//Comprobar si ese bloque removido tiene otros letreros de AllBanks
+			if(Banks.blockContainsAllBanksSign(b)){
+				//Okey, remover
+				List<Sign> retrieveSigns = Banks.getAllBanksSignBySupportBlock(b);
+				
+				List<Sign> doRemoveNormalBank = new ArrayList<Sign>();
+				List<Sign> doRemoveShop = new ArrayList<Sign>();
+				boolean deny = false;
+				
+				for(Sign s : retrieveSigns){
+					BankType btype = Banks.getBankTypeBySign(s);
+					
+					if(btype.equals(BankType.DEFAULT)) continue;
+					
+					if(btype.equals(BankType.SHOP)){
+						//Permisos
+						if(!ShopUtil.playerHasPermissionForRemove(p, s)){
+							deny = true;
+						}else{
+							doRemoveShop.add(s);
+						}
+					}else{
+						//Permisos
+						if(!Banks.playerHasPermissions(p, PlayerAction.DESTROY_SIGN, btype)){
+							deny = true;
+						}else{
+							doRemoveNormalBank.add(s);
+						}
+					}
+				}
+				
+				if(deny){
+					for(Sign s : doRemoveNormalBank){
+						Banks.removeAllBanksSign(s.getLocation());
+						s.getBlock().breakNaturally();
+					}
+					
+					for(Sign s : doRemoveShop){
+						Banks.removeAllBanksSign(s.getLocation());
+						FakeItemManager.DespawnFakeItemForShop(s.getLocation());
+						s.getBlock().breakNaturally();
+					}
+					
+					e.setCancelled(true);
+				}else{
+					for(Sign s : doRemoveNormalBank){
+						Banks.removeAllBanksSign(s.getLocation());
+					}
+					
+					for(Sign s : doRemoveShop){
+						Banks.removeAllBanksSign(s.getLocation());
+						FakeItemManager.DespawnFakeItemForShop(s.getLocation());
+					}
 				}
 			}
 		}

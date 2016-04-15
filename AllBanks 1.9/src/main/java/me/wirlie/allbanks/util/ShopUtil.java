@@ -58,6 +58,19 @@ public class ShopUtil {
 		return r.matcher(s).matches();
 	}
 	
+	public static boolean playerHasPermissionForRemove(Player p, Sign sign){
+		if(Util.hasPermission(p, "allbanks.sign.shop.admin")) return true;
+		
+		//Comprobar dueño
+		String ownerSTR = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
+		
+		if(p.getName().equalsIgnoreCase(ownerSTR)){
+			return true;
+		}
+		
+		return false;
+	}
+	
 	public static boolean validateNearbyChest(Location loc) {
 		Location testLoc = loc.getBlock().getRelative(BlockFace.DOWN).getLocation();
 		return testLoc.getBlock().getType().equals(Material.CHEST);
@@ -80,6 +93,10 @@ public class ShopUtil {
 	
 	public static ItemStack getItemStack(Location signLoc) {
 		Block b = signLoc.getBlock();
+		
+		if(!b.getType().equals(Material.WALL_SIGN)){
+			return null;
+		}
 		
 		return getItemStack((Sign) b.getState());
 	}
