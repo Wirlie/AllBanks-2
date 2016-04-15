@@ -1,5 +1,5 @@
 # do not edit this.
-cfg-version: "v1.0.4"
+cfg-version: "v1.1"
 # These permissions are given to all Players, it is useful if you want to use AllBanks without a Permission-Plugin.
 # Note: For example, if you set "allbanks.sign.loan.use" into a default permission, and you do want to deny this for a specific group/player, 
 # you can use "-" before it ("-allbanks.sign.loan.use") in your Permission-Plugin.
@@ -72,6 +72,8 @@ shop:
   admin-tag: "admin"
   # If this is configured with true, AllBanks will try to spawn a fake item if an Admin Shop is created.
   enable-fake-item: true
+  # Enable fake items for shops of users
+  enable-fake-item-for-user-shop: true
 topranks:
   # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.
   # Please do not set it with a minimal value (example: 1 second)
