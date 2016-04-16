@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import com.bekvon.bukkit.residence.ResidenceCommandListener;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
@@ -40,6 +41,33 @@ public class HookManager {
 	public static void initializeHookManager(){
 		WorldGuardHook.tryHook();
 		TownyHook.tryHook();
+		ResidenceHook.tryHook();
+	}
+	
+	public static class ResidenceHook{
+		private static boolean hooked = false;
+		
+		private static void tryHook(){
+			//WorldGuard
+			Plugin residencePlugin = PLUGIN_MANAGER.getPlugin("Residence");
+		    if (residencePlugin != null && (residencePlugin instanceof ResidenceCommandListener)) {
+		    	if(residencePlugin.getDescription().getVersion().equalsIgnoreCase("4.0.6.3")){
+			    	//Mensaje
+			    	Console.sendMessage(ChatColor.YELLOW + "[Residence] Residence 4.0.6.3 hooked!");
+		    	}else{
+		    		//Mensaje
+			    	Console.sendMessage(ChatColor.YELLOW + "[Residence] Residence hooked! But, you are using an untested version of Residence, please proceed with precaution.");
+		    	}
+		    	
+		    	ResidenceFunctions.pluginInstance = (ResidenceCommandListener) residencePlugin;
+		    	
+		    	hooked = true;
+		    }
+		}
+		
+		public static boolean isHooked(){
+			return hooked;
+		}
 	}
 	
 	public static class TownyHook{
@@ -56,6 +84,8 @@ public class HookManager {
 		    		//Mensaje
 			    	Console.sendMessage(ChatColor.YELLOW + "[Towny] Towny hooked! But, you are using an untested version of Towny, please proceed with precaution.");
 		    	}
+		    	
+		    	TownyFunctions.pluginInstance = (Towny) townyPlugin;
 		    	
 		    	hooked = true;
 		    }

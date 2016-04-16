@@ -117,6 +117,13 @@
   		<scope>system</scope>
   		<systemPath>${project.basedir}/resources/Towny.jar</systemPath>
   	</dependency>
+    <dependency>
+  		<groupId>com.bekvon</groupId>
+  		<artifactId>Residence</artifactId>
+  		<version>4.0.6.3</version>
+  		<scope>system</scope>
+  		<systemPath>${project.basedir}/resources/Residence.jar</systemPath>
+  	</dependency>
   </dependencies>
   
   <issueManagement>
