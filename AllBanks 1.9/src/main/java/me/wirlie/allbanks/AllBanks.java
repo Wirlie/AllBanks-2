@@ -74,71 +74,62 @@ import net.milkbowl.vault.economy.Economy;
  *
  */
 public class AllBanks extends JavaPlugin {
-	
-	public static String currentABVersion = "1.9";
-	
+
 	private static AllBanks AllBanksInstance;
 	private static DataBaseSQLite dbSQLite = new DataBaseSQLite();
 	private static DataBaseMySQL dbMySQL = new DataBaseMySQL();
 	private static Connection dbc;
 	private static StorageType storageMethod = StorageType.SQLITE;
-	
 	private static Economy econ = null;
 	
-	/**
-	 * Resultados usados al momento de comparar versiones.
-	 * @author Wirlie
-	 *
-	 */
+	/** Resultados usados al momento de comparar versiones. */
 	private enum VersionCheckResult{
 		COMPATIBLE,
 		NOT_COMPATIBLE,
 		PROCCEED_WITH_PRECAUTION
 	}
 
-	/**
-	 * Versiones compatibles con esta version.
-	 */
+	/** Versiones compatibles con esta version. */
 	public final static String[] COMPATIBLE_VERSIONS = {
 			"1.8",
 			};
 	
+	/** Version incompatible mínima **/
 	public static String INCOMPATIBLE_MIN = "1.8";
+	/** Version incompatible maxima **/
 	public static String INCOMPATIBLE_MAX = "0";
 	
-	/**
-	 * Tipo de almacenamiento que usará AllBanks para almacenar los datos.
-	 * @author Wirlie
-	 *
-	 */
+	/** Tipo de almacenamiento que usará AllBanks para almacenar los datos. */
 	public enum StorageType{
 		FLAT_FILE,
 		SQLITE,
 		MYSQL;
 	}
 	
+	/** Función para habilitar AllBanks **/
 	@Override
 	public void onEnable(){
 
 		AllBanksInstance = this;
 		
-		//Logger
+		//Inicializar logger.
 		AllBanksLogger.initializeLogger();
-		
 		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion());
 		
-		//Version del servidor
+		//Comprobar la versión del servidor y la versión compatible/incompatible del plugin.
 		VersionCheckResult result = verifyServerVersion();
 		
+		//Si el resultado de la comparación es No Compatible, entonces deshabilitamos AllBanks.
 		if(result.equals(VersionCheckResult.NOT_COMPATIBLE)) {
 			//No compatible
 			Bukkit.getPluginManager().disablePlugin(this);
 			return;
 		}
 		
-		//Método de almacenamiento.
+		//Resolver el método de almacenamiento que AllBanks usará en este servidor
 		String storageStr = getConfig().getString("pl.storage-system", "SQLite");
 		
+		//Resolver
 		if(storageStr.equalsIgnoreCase("sqlite")) {
 			storageMethod = StorageType.SQLITE;
 		}else if(storageStr.equalsIgnoreCase("mysql")) {
@@ -147,13 +138,14 @@ public class AllBanks extends JavaPlugin {
 			storageMethod = StorageType.FLAT_FILE;
 		}
 		
-		//intentar
+		//Comprobar si el método resuelto es soportado por el servidor, especialmente si se ha especificado SQLite o MySQL
 		switch(getStorageMethod()) {
 		case FLAT_FILE:
-			//Sin acciones
+			//No es necesario comprobar si el método es soportado por el servidor.
     		AllBanksLogger.info("Storage Method: FlatFile");
 			break;
 		case MYSQL:
+			//Comprobar si el driver para MySQL existe.
     		AllBanksLogger.info("Storage Method: MySQL");
 			if(!DataBaseMySQL.tryForClass()) {
 	    		AllBanksLogger.warning("Ops! DriverManager not found, setting storage method: FlatFile");
@@ -161,6 +153,7 @@ public class AllBanks extends JavaPlugin {
 			}
 			break;
 		case SQLITE:
+			//Comprobar si el driver para SQLite existe.
     		AllBanksLogger.info("Storage Method: SQLite");
 			if(!DataBaseSQLite.tryForClass()) {
 	    		AllBanksLogger.warning("Ops! DriverManager not found, setting storage method: FlatFile");
@@ -170,11 +163,12 @@ public class AllBanks extends JavaPlugin {
 		
 		}
 		
-		//Base de datos para items especiales.
+		//Establecer conexión para la base de datos que ayudará a resolver los objetos que almacenan datos NBT (Libros encantados)
 		dbSQLite.setConnection(getDataFolder() + File.separator + "itemSolution.db", "itemSolution");
-		
+		//Instalar la base de datos, en caso de que no exista.
 		installItemSolutionDataBase();
 		
+		//Establecer la conexión global de la base de datos según el método específicado (SQLite o MySQL)
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			AllBanksLogger.info("Initializing MySQL database...");
 			dbc = dbMySQL.setConnection("global");
@@ -182,29 +176,30 @@ public class AllBanks extends JavaPlugin {
 			AllBanksLogger.info("Initializing SQLite database...");
 			dbc = dbSQLite.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
 		}
-		
-		//Instalar DB
+		//Instalar bases de datos tanto MySQL como SQLite
 		if(getStorageMethod().equals(StorageType.MYSQL) || getStorageMethod().equals(StorageType.SQLITE)) {
 			installDatabase();
 		}
 		
-		//Economy
+		//Instalar la economía, si no se ha encontrado Vault o algún plugin de economía AllBanks se deshabilitará con un aviso.
 		if(!setupEconomy()){
 		    Bukkit.getPluginManager().disablePlugin(this);
 		    return;
 		}
 
-		//Ejecutar lo demás normalmente.
+		//Comprobar si la configuración se encuentra actualizada.
 		ensureConfigIsUpToDate();
+		
+		//Mensaje de habilitando
 		Console.sendMessage(StringsID.ENABLING);
 		
-		//comando
+		//Registrar comandos y TabCompleter
 		AllBanksLogger.info("Commands: Set executor (/allbanks).");
 		Bukkit.getPluginCommand("allbanks").setExecutor(new Commands());
 		AllBanksLogger.info("Commands: Set tab completer (/allbanks).");
 		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandsTabCompleter());
 		
-		//Registrar listener
+		//Registrar Listeners para los eventos.
 		AllBanksLogger.info("Registering events...");
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
 		Bukkit.getPluginManager().registerEvents(new SignInteractListener(), this);
@@ -219,15 +214,20 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new ShopChestInteractListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PreventRemoveSignForOtherCausesListener(), this);
 		
-		//Runnables
+		/*
+		 * RUNNABLES
+		 */
+		
+		//Inicializar el modulo de objetos falsos de AllBanks, unicamente disponible para las tiendas.
 		FakeItemManager.initializeItemManeger();
 		
-		//Para BankTime
-		int runSeconds = getConfig().getInt("banks.bank-time.add-minute-every", 60);
-		if(runSeconds <= 0){ runSeconds = 60; }
-		new BankTimerRunnable().runTaskTimer(this, 20 * runSeconds, 20 * runSeconds);
+		//Inicializar runnable de BankTimer.
+		int runSeconds = getConfig().getInt("banks.bank-time.add-minute-every", 60); //segundos
+		if(runSeconds <= 0){ runSeconds = 60; } //si se ha especificado un valor inválido
+		new BankTimerRunnable().runTaskTimer(this, 20 * runSeconds, 20 * runSeconds); //ejecutar
 		
-		//Para BankLoan
+		//Iniciar runnable para BankLoan
+		//TODO Mover este código a otro lado.
 		AllBanksLogger.info("Enabling BankLoanRunnable...");
 		AllBanksLogger.info("Reading Config.yml -> banks.bank-loan.collect-interest-every");
 		int collectLoanEvery = ConfigurationUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));
@@ -291,7 +291,7 @@ public class AllBanks extends JavaPlugin {
 			}
 		}
 		
-		//BankLottery
+		//Iniciar runnable de BankLottery
 		LotteryRunnable.initializeLottery();
 		try {
 			LotteryRunnable.startRunnable();
@@ -299,29 +299,34 @@ public class AllBanks extends JavaPlugin {
 			e.printStackTrace();
 		}
 		
-		//Expirar sesiones
+		//Iniciar runnable para expirar sesiones (esto es útil si un usuario decide quedarse ausente y está usando un banco).
 		BankSession.StartExpireSessionRunnable();
 		
-		//Updater
-		//Hilo de fondo (background task)
-		
+		//Actualizador, ejecutar en un hilo de fondo (background thread)
 		Runnable updaterRunnable = new Runnable(){
 			public void run() {
+				//Comprobar si está habilitado el chequeo y descarga automática de AllBanks
 				boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
 				boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);
 				
+				//Establecer el tipo de actualización en DEFAULT, esto para señalar al Actualizador que procederá a verificar y descargar por defecto
 				UpdateType uptype = UpdateType.DEFAULT;
 				
+				//Si está habilitado el chequeo, pero no la descarga indicaremos al actualizador que no queremos descargar el archivo
 				if(checkForUpdates && !forceUpdate) {
 					uptype = UpdateType.NO_DOWNLOAD;
 				}
 				
+				//Si no está habilitado el chequeo, pero si está habilitada la descarga indicaremos al actualizador que sólo queremos descargar el archivo
 				if(!checkForUpdates && forceUpdate) {
 					uptype = UpdateType.NO_VERSION_CHECK;
 				}
 				
 				if(checkForUpdates || forceUpdate) {
+					//Iniciar actualizador
 					Updater updater = new Updater(AllBanks.getInstance(), 98949, AllBanks.getInstance().getFile(), uptype, true);
+					
+					//Resolver resultado del actualizador
 					if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
 					    AllBanks.getInstance().getLogger().info("[Updater] New version available! " + updater.getLatestName());
 					}else if(updater.getResult() == UpdateResult.NO_UPDATE) {
@@ -333,10 +338,10 @@ public class AllBanks extends JavaPlugin {
 			}
 		};
 		
-		//ejecutar
+		//Ejecutar hilo del actualizador en segundo plano
 		new Thread(updaterRunnable).start();
 		
-		//MCStats
+		//Inicializar métricas de MCStats
 		if(getConfig().getBoolean("pl.enable-metrics", true)) {
 			try {
 		        Metrics metrics = new Metrics(this);
@@ -350,18 +355,21 @@ public class AllBanks extends JavaPlugin {
 		
 	}
 	
+	/** Función cuando AllBanks se deshabilita **/
 	@Override
 	public void onDisable(){
+		//Mensaje de deshabilitación
 		Console.sendMessage(StringsID.DISABLING);
 		AllBanksLogger.info("Disabling AllBanks...");
 		
-		//Cerrar todas las sesiones.
+		//Cerrar todas las sesiones actuales de AllBanks.
 		Collection<BankSession> sessions = BankSession.getAllActiveSessions();
 		
 		for(BankSession bs : sessions){
 			bs.closeSession();
 		}
 		
+		//Cerrar conexiones de la base de datos
 		AllBanksLogger.info("Closing database connections...");
 		
 		//SQLite siempre conservará una conexión: itemSolution
@@ -373,8 +381,10 @@ public class AllBanks extends JavaPlugin {
 			}
 		}
 		
+		//Limpiar mapa
 		dbSQLite.multipleConnections.clear();
 		
+		//Cerrar base de datos con el método MySQL
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			for(Connection c : dbMySQL.multipleConnections.values()){
 				try {
@@ -383,13 +393,14 @@ public class AllBanks extends JavaPlugin {
 					e.printStackTrace();
 				}
 			}
-
+			
+			//Limpiar mapa
 			dbMySQL.multipleConnections.clear();
 		}
 	}
 	
 	/**
-	 * Instalar economía.
+	 * Instalar Vault y plugin de economía.
 	 * @return true si la instalación fue exitosa.
 	 */
 	private boolean setupEconomy() {
@@ -411,13 +422,16 @@ public class AllBanks extends JavaPlugin {
     }
 	
 	/**
-	 * Devolver la instancia de la economía.
+	 * Devolver la instancia actual de la Economía
 	 * @return Instancia de Economy.
 	 */
 	public static Economy getEconomy(){
 		return econ;
 	}
 	
+	/**
+	 * Instalar base de datos para la solución de objetos que almacenan datos através de NBT
+	 */
 	public static void installItemSolutionDataBase() {
 		Statement stm = null;
 		
@@ -745,12 +759,17 @@ public class AllBanks extends JavaPlugin {
 	
 	/**
 	 * Obtener la conexión a la base de datos.
-	 * @return
+	 * @param connectionName Nombre de la conexión
+	 * @return Conexión obtenida por el nombre especificado
 	 */
 	public static Connection getSQLConnection(String connectionName){
 		return dbSQLite.getConnection(connectionName);
 	}
 	
+	/**
+	 * Obtener la conexión Global a la base de datos.
+	 * @return Conexión global de AllBanks
+	 */
 	public static Connection getDataBaseConnection(){
 		return dbc;
 	}
@@ -763,6 +782,10 @@ public class AllBanks extends JavaPlugin {
 		return storageMethod;
 	}
 	
+	/**
+	 * Obtener la versión de Bukkit (sólamente la parte de la versión del servidor)
+	 * @return Devuelve la versión de Bukkit en un formato de "1.0.0"
+	 */
 	public static String getBukkitVersion(){
 		return Bukkit.getServer().getBukkitVersion().split("-")[0];
 	}

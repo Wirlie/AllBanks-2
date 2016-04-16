@@ -56,7 +56,7 @@ import me.wirlie.allbanks.util.Util;
 /**
  * Esta clase se encarga de procesar acciones relacionado con los letreros de AllBanks
  * en especial, aquellos que pertenecen a BANK_LOAN, BANK_XP, BANK_TIME, BANK_MONEY
- * ATM, BANK_CHEST
+ * ATM, BANK_CHEST aunque, también algunas funciones son usadas por las tiendas (SHOP).
  * @author Wirlie
  * @since AllBanks v1.0
  *
