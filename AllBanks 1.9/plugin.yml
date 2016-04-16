@@ -1,7 +1,7 @@
 name: AllBanks2
 version: 1.0.5
 main: me.wirlie.allbanks.AllBanks
-softdepend: [WorldGuard]
+softdepend: [WorldGuard, Towny]
 commands:
   allbanks:
     description: AllBanks (Main command).

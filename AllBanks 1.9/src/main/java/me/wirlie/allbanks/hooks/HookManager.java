@@ -23,6 +23,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
 import me.wirlie.allbanks.Console;
@@ -38,6 +39,31 @@ public class HookManager {
 	
 	public static void initializeHookManager(){
 		WorldGuardHook.tryHook();
+		TownyHook.tryHook();
+	}
+	
+	public static class TownyHook{
+		private static boolean hooked = false;
+		
+		private static void tryHook(){
+			//WorldGuard
+			Plugin townyPlugin = PLUGIN_MANAGER.getPlugin("Towny");
+		    if (townyPlugin != null && (townyPlugin instanceof Towny)) {
+		    	if(townyPlugin.getDescription().getVersion().equalsIgnoreCase("0.91.0.2")){
+			    	//Mensaje
+			    	Console.sendMessage(ChatColor.YELLOW + "[Towny] Towny 0.91.0.2 hooked!");
+		    	}else{
+		    		//Mensaje
+			    	Console.sendMessage(ChatColor.YELLOW + "[Towny] Towny hooked! But, you are using an untested version of Towny, please proceed with precaution.");
+		    	}
+		    	
+		    	hooked = true;
+		    }
+		}
+		
+		public static boolean isHooked(){
+			return hooked;
+		}
 	}
 	
 	public static class WorldGuardHook{
@@ -49,10 +75,10 @@ public class HookManager {
 		    if (worldGuardPlugin != null && (worldGuardPlugin instanceof WorldGuardPlugin)) {
 		    	if(worldGuardPlugin.getDescription().getVersion().equalsIgnoreCase("6.1")){
 			    	//Mensaje
-			    	Console.sendMessage("[WorldGuard] WG 6.1 hooked!");
+			    	Console.sendMessage(ChatColor.YELLOW + "[WorldGuard] WG 6.1 hooked!");
 		    	}else{
 		    		//Mensaje
-			    	Console.sendMessage(ChatColor.AQUA + "[WorldGuard] WG hooked! But, you are using an untested version of WorldGuard, please proceed with precaution.");
+			    	Console.sendMessage(ChatColor.YELLOW + "[WorldGuard] WG hooked! But, you are using an untested version of WorldGuard, please proceed with precaution.");
 		    	}
 		    	
 		    	WorldGuardFunctions.pluginInstance = (WorldGuardPlugin) worldGuardPlugin;

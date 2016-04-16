@@ -110,6 +110,13 @@
       <version>1.5</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+  		<groupId>com.palmergames</groupId>
+  		<artifactId>Towny</artifactId>
+  		<version>0.91.0.2</version>
+  		<scope>system</scope>
+  		<systemPath>${project.basedir}/resources/Towny.jar</systemPath>
+  	</dependency>
   </dependencies>
   
   <issueManagement>

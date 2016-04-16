@@ -31,7 +31,9 @@ import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.hooks.HookManager.TownyHook;
 import me.wirlie.allbanks.hooks.HookManager.WorldGuardHook;
+import me.wirlie.allbanks.hooks.TownyFunctions;
 import me.wirlie.allbanks.hooks.WorldGuardFunctions;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
@@ -102,6 +104,13 @@ public class ShopSignBreakListener implements Listener {
 				//WorldGuard, comprobar si el letrero de AllBanks está en un terreno de WG
 				if(WorldGuardHook.isHooked()){
 					if(WorldGuardFunctions.canBreakAllBanksShop(p, b.getLocation())){
+						canBreakSign = true;
+					}
+				}
+				
+				//Towny, comprobar si el jugador es dueño o tiene permisos en el plot
+				if(TownyHook.isHooked()){
+					if(TownyFunctions.canBreakAllBanksShop(p, b.getLocation())){
 						canBreakSign = true;
 					}
 				}
