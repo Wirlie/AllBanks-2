@@ -44,7 +44,9 @@ public class ResidenceFunctions {
 		ResidenceInterface residenceManager = ResidenceApi.getResidenceManager();
 		ClaimedResidence claim = residenceManager.getByLoc(blockLocation);
 		
-		if(claim != null && claim.getOwner().equalsIgnoreCase(player.getName())){
+		if(claim == null) return false;
+		
+		if(claim.getOwner().equalsIgnoreCase(player.getName())){
 			//Es el dueño del claimeo
 			return true;
 		}else{
