@@ -72,7 +72,7 @@ public class ShopSignChangeListener implements Listener {
 				}
 			}
 			
-			//if(!isAdminShop) lines[Shops.LINE_OWNER] = e.getPlayer().getName();
+			if(!isAdminShop) lines[Shops.LINE_OWNER] = e.getPlayer().getName();
 			
 			//Validar la línea de precio:
 			if(!ShopUtil.validatePriceLine(lines[Shops.LINE_PRICE])) {
