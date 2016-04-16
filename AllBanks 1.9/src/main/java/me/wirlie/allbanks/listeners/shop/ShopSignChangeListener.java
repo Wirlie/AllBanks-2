@@ -44,7 +44,7 @@ import me.wirlie.allbanks.util.Util;
  *
  */
 public class ShopSignChangeListener implements Listener {
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onSignChange(final SignChangeEvent e){
 		String[] lines = e.getLines();
 		
@@ -72,7 +72,7 @@ public class ShopSignChangeListener implements Listener {
 				}
 			}
 			
-			if(!isAdminShop) lines[Shops.LINE_OWNER] = e.getPlayer().getName();
+			//if(!isAdminShop) lines[Shops.LINE_OWNER] = e.getPlayer().getName();
 			
 			//Validar la línea de precio:
 			if(!ShopUtil.validatePriceLine(lines[Shops.LINE_PRICE])) {

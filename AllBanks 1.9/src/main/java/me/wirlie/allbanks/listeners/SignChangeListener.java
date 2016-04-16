@@ -26,6 +26,7 @@ import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -50,7 +51,7 @@ public class SignChangeListener implements Listener {
 		AllBanksLogger.info("SignChangeListener");
 	}
 
-	@EventHandler
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onSignChange(final SignChangeEvent e){
 		String[] lines = e.getLines();
 		final Player p = e.getPlayer();

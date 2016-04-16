@@ -23,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
@@ -30,6 +31,8 @@ import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.hooks.HookManager.WorldGuardHook;
+import me.wirlie.allbanks.hooks.WorldGuardFunctions;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
 import me.wirlie.allbanks.util.FakeItemManager;
@@ -44,8 +47,9 @@ import me.wirlie.allbanks.util.Util;
  */
 public class ShopSignBreakListener implements Listener {
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onPlayerBreakSign(BlockBreakEvent e) {
+		
 		Block b = e.getBlock();
 		Player p = e.getPlayer();
 		
@@ -91,14 +95,26 @@ public class ShopSignBreakListener implements Listener {
 						return;
 					}
 				}
+				
+				//Comprobar si puede romper el letrero de AllBanks.
+				boolean canBreakSign = false;
+				
+				//WorldGuard, comprobar si el letrero de AllBanks está en un terreno de WG
+				if(WorldGuardHook.isHooked()){
+					if(WorldGuardFunctions.canBreakAllBanksShop(p, b.getLocation())){
+						canBreakSign = true;
+					}
+				}
+				
+				//Si es el dueño del letrero
+				if(owner.equalsIgnoreCase(p.getName())) canBreakSign = true;
 
 				//Está intentando remover su propio letrero?
-				if(owner.equalsIgnoreCase(p.getName()) || Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+				if(canBreakSign || Util.hasPermission(p, "allbanks.sign.shop.admin")) {
 					if(Banks.removeAllBanksSign(sign.getLocation())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 						InteractiveUtil.sendSound(p, SoundType.SUCCESS);
-						
-						e.setCancelled(false);
+						FakeItemManager.DespawnFakeItemForShop(sign.getLocation());
 					}else {
 						Translation.getAndSendMessage(p, StringsID.SQL_EXCEPTION_PROBLEM, true);
 						e.setCancelled(true);

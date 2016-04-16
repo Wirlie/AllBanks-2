@@ -23,6 +23,7 @@ import java.util.HashMap;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -51,7 +52,7 @@ public class PlayerChatBSListener implements Listener {
 		AllBanksLogger.info("PlayerChatBSListener");
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGH)
 	public void onPlayerChat(AsyncPlayerChatEvent e){
 		Player p = e.getPlayer();
 		

@@ -45,6 +45,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
 import me.wirlie.allbanks.data.BankSession;
+import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.listeners.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.PlayerMoveListener;
@@ -198,6 +199,9 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginCommand("allbanks").setExecutor(new Commands());
 		AllBanksLogger.info("Commands: Set tab completer (/allbanks).");
 		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandsTabCompleter());
+		
+		//Hooks
+		HookManager.initializeHookManager();
 		
 		//Registrar Listeners para los eventos.
 		AllBanksLogger.info("Registering events...");

@@ -46,7 +46,7 @@ public class VirtualChestClose implements Listener{
 		AllBanksLogger.info("VirtualChestClose");
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true)
 	public void onVirtualChestInteractt(InventoryClickEvent e){
 		final Inventory inv = e.getInventory();
 		

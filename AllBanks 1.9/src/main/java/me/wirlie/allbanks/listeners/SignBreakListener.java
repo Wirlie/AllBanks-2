@@ -56,7 +56,7 @@ public class SignBreakListener implements Listener {
 		AllBanksLogger.info("SignBreakListener");
 	}
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onPlayerBreakBank(BlockBreakEvent e){
 		
 		Block b = e.getBlock();

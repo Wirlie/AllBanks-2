@@ -23,6 +23,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -49,7 +50,7 @@ public class SignInteractListener implements Listener {
 		AllBanksLogger.info("SignInteractListener");
 	}
 	
-	@EventHandler
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onPlayerInteractWithAllBanksSign(PlayerInteractEvent e){
 		
 		if(e.getClickedBlock() == null) return;

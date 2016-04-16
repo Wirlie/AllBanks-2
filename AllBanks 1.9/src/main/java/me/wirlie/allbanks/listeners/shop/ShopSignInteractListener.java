@@ -57,7 +57,7 @@ import me.wirlie.allbanks.util.Util;
  */
 public class ShopSignInteractListener implements Listener {
 	
-	@EventHandler(priority = EventPriority.HIGH)
+	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
 	public void onSignInteract(PlayerInteractEvent e) {
 		Block b = e.getClickedBlock();
 		Player p = e.getPlayer();
