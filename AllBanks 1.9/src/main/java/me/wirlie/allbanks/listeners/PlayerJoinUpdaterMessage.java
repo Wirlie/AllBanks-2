@@ -22,6 +22,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
@@ -35,10 +36,14 @@ public class PlayerJoinUpdaterMessage implements Listener {
 
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent e){
-		Player p = e.getPlayer();
+		final Player p = e.getPlayer();
 		
-		if(p.isOp() && AllBanks.updatePending){
-			Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
-		}
+		new BukkitRunnable(){
+			public void run(){
+				if(p.isOp() && AllBanks.updatePending){
+					Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
+				}
+			}
+		}.runTaskLater(AllBanks.getInstance(), 20 * 4);
 	}
 }
