@@ -50,6 +50,7 @@ import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.listeners.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.PlayerChatBSListener;
+import me.wirlie.allbanks.listeners.PlayerJoinUpdaterMessage;
 import me.wirlie.allbanks.listeners.PlayerMoveListener;
 import me.wirlie.allbanks.listeners.PreventRemoveSignForOtherCausesListener;
 import me.wirlie.allbanks.listeners.SignBreakListener;
@@ -206,6 +207,9 @@ public class AllBanks extends JavaPlugin {
 		//Hooks
 		HookManager.initializeHookManager();
 		
+		//Solución
+		Banks.Solution_convertOldVirtualChestMethodToNewMethodBase64();
+		
 		//Registrar Listeners para los eventos.
 		AllBanksLogger.info("Registering events...");
 		Bukkit.getPluginManager().registerEvents(new SignChangeListener(), this);
@@ -220,6 +224,7 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new ShopSignBreakListener(), this);
 		Bukkit.getPluginManager().registerEvents(new ShopChestInteractListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PreventRemoveSignForOtherCausesListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlayerJoinUpdaterMessage(), this);
 		
 		/*
 		 * RUNNABLES

@@ -50,6 +50,7 @@ import me.wirlie.allbanks.data.BankSession;
 import me.wirlie.allbanks.util.ChatUtil;
 import me.wirlie.allbanks.util.ConfigurationUtil;
 import me.wirlie.allbanks.util.DataBaseUtil;
+import me.wirlie.allbanks.util.ItemStackBase64;
 import me.wirlie.allbanks.util.StringLocationUtil;
 import me.wirlie.allbanks.util.Util;
 
@@ -663,7 +664,7 @@ public class Banks {
 		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
 		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
 		
-		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + ".yml");
+		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + "-B64.yml");
 		if(!virtualChestFile.exists())
 			try {
 				virtualChestFile.createNewFile();
@@ -679,7 +680,14 @@ public class Banks {
 		if(cfgSection == null) return new HashMap<Integer, ItemStack>();
 		
 		for(String key : cfgSection.getKeys(false)){
-			ItemStack getItemStack = yaml.getItemStack(String.valueOf(virtualChest) + "." + key, null);
+			ItemStack getItemStack = null;
+			
+			try {
+				getItemStack = ItemStackBase64.stacksFromBase64(yaml.getString(String.valueOf(virtualChest) + "." + key, null))[0];
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
 			if(getItemStack != null){
 				returnList.put(Integer.parseInt(key), getItemStack);
 			}
@@ -699,7 +707,7 @@ public class Banks {
 		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
 		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
 		
-		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + ".yml");
+		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + "-B64.yml");
 		if(!virtualChestFile.exists())
 			try {
 				virtualChestFile.createNewFile();
@@ -712,7 +720,10 @@ public class Banks {
 		Iterator<Entry<Integer, ItemStack>> it = contents.entrySet().iterator();
 		while(it.hasNext()){
 			Entry<Integer, ItemStack> entry = it.next();
-			yaml.set(String.valueOf(chestNumber) + "." + String.valueOf(entry.getKey()), entry.getValue());
+			
+			ItemStack item = entry.getValue();
+			
+			yaml.set(String.valueOf(chestNumber) + "." + String.valueOf(entry.getKey()), ItemStackBase64.toBase64(item));
 		}
 		
 		try {
@@ -776,6 +787,61 @@ public class Banks {
 			return BankType.getTypeByString(ChatUtil.removeChatFormat(s.getLine(1)));
 		}else{
 			return BankType.DEFAULT;
+		}
+	}
+	
+	public static void Solution_convertOldVirtualChestMethodToNewMethodBase64(){
+		File dataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
+		if(!dataFolder.exists()){ dataFolder.mkdirs(); return; }
+		
+		File[] files = dataFolder.listFiles();
+		
+		int totalUpdated = 0;
+		
+		for(File file : files){
+			String fileName = file.getName();
+			System.out.println(fileName);
+			if(fileName.contains("-B64.yml") || fileName.contains("-Backup.yml")) continue;
+			
+			fileName = fileName.replace(".yml", "");
+			
+			File backupFile = new File(dataFolder + File.separator + fileName + "-Backup.yml");
+			
+			YamlConfiguration oldYaml = YamlConfiguration.loadConfiguration(file);
+			
+			File newFile = new File(dataFolder + File.separator + fileName + "-B64.yml");
+			
+			try {
+				newFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+	
+			YamlConfiguration newYaml = YamlConfiguration.loadConfiguration(newFile);
+			
+			for(String mainKey : oldYaml.getKeys(false)){
+				for(String itemKey : oldYaml.getConfigurationSection(mainKey).getKeys(false)){
+					ItemStack item = oldYaml.getItemStack(mainKey + "." + itemKey);
+					
+					if(item != null){
+						String base64 = ItemStackBase64.toBase64(item);
+						newYaml.set(mainKey + "." + itemKey, base64);
+					}
+				}
+			}
+			
+			try {
+				newYaml.save(newFile);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			file.renameTo(backupFile);
+			totalUpdated++;
+		}
+		
+		if(totalUpdated > 0){
+			AllBanks.getInstance().getLogger().info(totalUpdated + " files changed from AllBanks/VirtualChest/");
 		}
 	}
 	
