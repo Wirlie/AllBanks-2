@@ -39,8 +39,10 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
@@ -82,6 +84,7 @@ public class AllBanks extends JavaPlugin {
 	private static Connection dbc;
 	private static StorageType storageMethod = StorageType.SQLITE;
 	private static Economy econ = null;
+	public static boolean updatePending = false;
 	
 	/** Resultados usados al momento de comparar versiones. */
 	private enum VersionCheckResult{
@@ -309,6 +312,13 @@ public class AllBanks extends JavaPlugin {
 		//Actualizador, ejecutar en un hilo de fondo (background thread)
 		Runnable updaterRunnable = new Runnable(){
 			public void run() {
+				if(updatePending){
+					AllBanks.getInstance().getLogger().info("[Updater] AllBanks already updated!");
+					return;
+				}
+				
+				AllBanks.getInstance().getLogger().info("[Updater] Checking for Updates...");
+				
 				//Comprobar si está habilitado el chequeo y descarga automática de AllBanks
 				boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
 				boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);
@@ -335,7 +345,25 @@ public class AllBanks extends JavaPlugin {
 					    AllBanks.getInstance().getLogger().info("[Updater] New version available! " + updater.getLatestName());
 					}else if(updater.getResult() == UpdateResult.NO_UPDATE) {
 						AllBanks.getInstance().getLogger().info("[Updater] No updates found. Your AllBanks plugin is up to date.");
-					}else {
+					}else if(updater.getResult() == UpdateResult.SUCCESS){
+						AllBanks.getInstance().getLogger().info("[Updater] Please reload AllBanks... ");
+						updatePending = true;
+						
+						//Nuevo Runnable para informar a los administradores cada hora.
+						new BukkitRunnable(){
+							public void run(){
+								for(Object obp : Bukkit.getOnlinePlayers().toArray()){
+									Player p = (Player) obp;
+									
+									if(p.isOp() && AllBanks.updatePending){
+										Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
+									}
+								}
+							}
+						}.runTaskTimer(AllBanks.getInstance(), 0, 20 * 60 * 60);
+						
+						return;
+					}else{
 						AllBanks.getInstance().getLogger().info("[Updater] A problem was ocurred: " + updater.getResult());
 					}
 				}
