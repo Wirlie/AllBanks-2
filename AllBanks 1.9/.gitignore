@@ -1,1 +1,7 @@
 /target/
+/.settings/
+/bin/
+/my-repo/
+.classpath
+.project
+AllBanksPermissions.txt
