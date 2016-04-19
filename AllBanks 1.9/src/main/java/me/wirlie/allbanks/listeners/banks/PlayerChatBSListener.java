@@ -31,7 +31,7 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Banks.ABSignType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.tempdata.BankAccount;
@@ -42,6 +42,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
+ * Procesar mensajes que tengan que ver con la sesión de un banco.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -66,13 +67,11 @@ public class PlayerChatBSListener implements Listener {
 
 			BankAccount ba = BankAccount.Cache.get(p.getUniqueId());
 			
-			BankType btype = bs.getBankType();
+			ABSignType btype = bs.getBankType();
 			int step = bs.getStep();
 			
 			switch(btype){
 			case ATM:
-				break;
-			case SHOP:
 				break;
 			case BANK_CHEST:
 				switch(step){
@@ -87,7 +86,7 @@ public class PlayerChatBSListener implements Listener {
 					
 					int currentChestCursor = ba.BankChest.getCurrentChestCursor();
 					
-					Banks.openVirtualChest(p, currentChestCursor);
+					Banks.openVirtualChestForPlayer(p, currentChestCursor);
 					
 					InteractiveUtil.sendSound(p, SoundType.VIRTUAL_CHEST_OPEN);
 					

@@ -42,6 +42,7 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Shops;
 
 /**
+ * Utilidad para las funciones de la tienda.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -450,6 +451,14 @@ public class ShopUtil {
 		}
 		
 		return false;
+	}
+
+	/**
+	 * @param s
+	 * @return
+	 */
+	public static boolean isShopSign(Sign s) {
+		return ChatUtil.removeChatFormat(s.getLine(Shops.LINE_HEADER)).equalsIgnoreCase("AllBanks SHOP");
 	}
 
 }

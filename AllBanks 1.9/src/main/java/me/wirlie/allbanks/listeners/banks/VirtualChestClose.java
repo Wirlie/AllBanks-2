@@ -36,6 +36,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
+ * Detectar si un cofre virtual ha sido cerrado.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -96,7 +97,7 @@ public class VirtualChestClose implements Listener{
 			}
 			
 			AllBanksLogger.info("BANK-CHEST: (Event: InventoryClick) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.");
-			Banks.setVirtualChestContents(p.getName(), chestNumber, armMap);
+			Banks.setVirtualChestInventoryContents(p.getName(), chestNumber, armMap);
 		}
 	}
 	
@@ -126,7 +127,7 @@ public class VirtualChestClose implements Listener{
 			Player p = (Player) e.getPlayer();
 			
 			AllBanksLogger.info("BANK-CHEST: (Event: InventoryClose) VirtualChest #" + chestNumber + " for player " + p.getName() + " (" + p.getDisplayName() + ") updated.");
-			Banks.setVirtualChestContents(e.getPlayer().getName(), chestNumber, armMap);
+			Banks.setVirtualChestInventoryContents(e.getPlayer().getName(), chestNumber, armMap);
 			
 			InteractiveUtil.sendSound(p, SoundType.VIRTUAL_CHEST_CLOSE);
 			

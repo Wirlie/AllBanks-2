@@ -41,6 +41,7 @@ import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.Util;
 
 /**
+ * Cargar deuda de BankLoan cuando un jugador se une a la partida.
  * @author Wirlie
  * @since AllBanks v1.0
  *

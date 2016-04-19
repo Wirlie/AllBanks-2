@@ -29,6 +29,7 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.tempdata.BankSession;
 
 /**
+ * Detectar si un jugador se ha alejado lo suficiente de un letrero.
  * @author Wirlie
  * @since AllBanks v1.0
  *

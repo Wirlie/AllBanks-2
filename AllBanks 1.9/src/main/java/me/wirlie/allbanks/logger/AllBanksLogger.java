@@ -29,6 +29,7 @@ import java.util.Date;
 import me.wirlie.allbanks.AllBanks;
 
 /**
+ * Logger interno, para guardar información importante.
  * @author Wirlie
  * @since AllBanks v1.0
  *

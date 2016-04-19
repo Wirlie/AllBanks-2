@@ -29,8 +29,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Banks;
-import me.wirlie.allbanks.Banks.PlayerAction;
-import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Banks.ABSignAction;
+import me.wirlie.allbanks.Banks.ABSignType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -40,6 +40,7 @@ import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 /**
+ * Detectar si un jugador está interactuando con un letrero de AllBanks.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -70,7 +71,7 @@ public class SignInteractListener implements Listener {
 				
 				//Se puede tratar de un letrero AllBanks.
 				String btypeStr = ChatUtil.removeChatFormat(s.getLine(1));
-				BankType btype = BankType.getTypeByString(btypeStr);
+				ABSignType btype = ABSignType.getSignTypeByShortName(btypeStr);
 				
 				if(btype != null){
 					
@@ -107,7 +108,7 @@ public class SignInteractListener implements Listener {
 					}
 					
 					//Comprobar si tiene permisos para usar el letrero
-					if(!Banks.playerHasPermissions(p, PlayerAction.USE_SIGN, btype)){
+					if(!Banks.playerHasPermissionForPerformAction(p, ABSignAction.USE_SIGN, btype)){
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						AllBanksLogger.warning("Player " + p.getName() + " (" + p.getDisplayName() + ") has tried to use a bank sign. (Deny cause: permissions)(Location: world:" + s.getLocation().getWorld().getName() + ", x:" + s.getLocation().getX() + ", y:" + s.getLocation().getY() + ", z:" + s.getLocation().getZ() + ").");
 						

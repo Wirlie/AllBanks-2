@@ -28,6 +28,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
 /**
+ * Utilidad para funciones de inventario.
  * @author Wirlie
  *
  */

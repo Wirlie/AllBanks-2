@@ -39,6 +39,7 @@ import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
+ * Detectar cuando un jugador intenta hacer una tienda
  * @author Wirlie
  * @since AllBanks v1.0
  *

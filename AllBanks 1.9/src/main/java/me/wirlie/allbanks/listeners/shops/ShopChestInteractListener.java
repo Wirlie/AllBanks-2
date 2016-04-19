@@ -37,6 +37,7 @@ import me.wirlie.allbanks.utils.ShopUtil;
 import me.wirlie.allbanks.utils.Util;
 
 /**
+ * Detectar si un jugador está intentado usar un cofre de una tienda de AllBanks.
  * @author Wirlie
  * @since AllBanks v1.0
  *

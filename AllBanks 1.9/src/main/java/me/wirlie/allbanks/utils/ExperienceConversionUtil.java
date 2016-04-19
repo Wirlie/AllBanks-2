@@ -21,6 +21,7 @@ package me.wirlie.allbanks.utils;
 import org.bukkit.entity.Player;
 
 /**
+ * Funciones de utilidad para la conversión de experiencia 1.9
  * @author Wirlie
  * @since AllBanks v1.0
  *

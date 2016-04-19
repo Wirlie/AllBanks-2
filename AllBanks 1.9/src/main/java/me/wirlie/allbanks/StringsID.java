@@ -21,6 +21,7 @@ package me.wirlie.allbanks;
 import java.util.HashMap;
 
 /**
+ * Clase encargada de interpretar el ID de las traducciones.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -154,21 +155,39 @@ public enum StringsID {
 		this.strID = strID;
 	}
 	
+	/**
+	 * Obtener la ruta de la traducción desde el archivo de lenguaje.
+	 * @return Ruta en donde se encuentra la traducción buscada.
+	 */
 	String getPath(){
-		
 		//por el momento los strings tienen formato numérico.
 		return String.valueOf(strID);
 	}
 	
+	/**
+	 * Método util para transformar cualquier valor de este enumerador a string.
+	 * @return Cadena de texto conteniendo la traducción correspondiente.
+	 */
 	@Override
 	public String toString(){
 		return Translation.get(getPath(), new HashMap<String, String>(), true, false)[0];
 	}
 	
+	/**
+	 * Método util para transformar cualquier valor de este enumerador a string.
+	 * @param prefix ¿Conservar prefix de AllBanks?
+	 * @return Cadena de texto conteniendo la traducción correspondiente.
+	 */
 	public String toString(boolean prefix){
 		return Translation.get(getPath(), new HashMap<String, String>(), prefix, false)[0];
 	}
 	
+	/**
+	 * Método util para transformar cualquier valor de este enumerador a string.
+	 * @param replaceMap Mapa para reemplazar valores.
+	 * @param prefix ¿Conservar prefix de AllBanks?
+	 * @return Cadena de texto conteniendo la traducción correspondiente.
+	 */
 	public String toString(HashMap<String, String> replaceMap, boolean prefix){
 		return Translation.get(getPath(), replaceMap, prefix, false)[0];
 	}

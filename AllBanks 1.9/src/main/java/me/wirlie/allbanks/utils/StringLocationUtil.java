@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 /**
+ * Utilidad para convertir un String en una localización y vice versa
  * @author Wirlie
  * @since AllBanks v1.0
  *

@@ -42,6 +42,7 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 
 /**
+ * Administrador de objetos falsos usados para las tiendas
  * @author Wirlie
  *
  */
@@ -213,7 +214,7 @@ public class FakeItemManager extends BukkitRunnable {
 			//Comprobar si el objeto existe
 			if(item.isDead()){
 				//¿El letrero de AllBanks existe?
-				if(!signLoc.getBlock().getType().equals(Material.WALL_SIGN) || !Banks.signIsAllBanksSign((Sign) signLoc.getBlock().getState())){
+				if(!signLoc.getBlock().getType().equals(Material.WALL_SIGN) || !Banks.signIsABSign((Sign) signLoc.getBlock().getState())){
 					yaml.set(transformSignlocToKey(signLoc), null);
 					continue;
 				}
@@ -251,7 +252,7 @@ public class FakeItemManager extends BukkitRunnable {
 				replaceLater.put(signLoc, item);
 			}else{
 				//¿El letrero de AllBanks existe?
-				if(!signLoc.getBlock().getType().equals(Material.WALL_SIGN) || !Banks.signIsAllBanksSign((Sign) signLoc.getBlock().getState())){
+				if(!signLoc.getBlock().getType().equals(Material.WALL_SIGN) || !Banks.signIsABSign((Sign) signLoc.getBlock().getState())){
 					yaml.set(transformSignlocToKey(signLoc), null);
 					continue;
 				}

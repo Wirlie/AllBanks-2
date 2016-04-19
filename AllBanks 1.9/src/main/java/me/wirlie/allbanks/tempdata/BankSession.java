@@ -32,7 +32,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
-import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Banks.ABSignType;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 
@@ -221,7 +221,7 @@ public class BankSession {
 	Player player;
 	
 	/** variable del tipo {@code Enum} que conserva el tipo del banco de esta sesión. */
-	BankType btype;
+	ABSignType btype;
 	
 	/** Paso (step) actual del banco de esta sesión. */
 	int step;
@@ -239,7 +239,7 @@ public class BankSession {
 	 * @param btype - Tipo de banco al que pertenece el letrero con el que se va a trabajar.
 	 * @param step - Paso actual del letrero (banco).
 	 */
-	public BankSession(Player player, Sign sign, BankType btype, int step){
+	public BankSession(Player player, Sign sign, ABSignType btype, int step){
 		this.btype = btype;
 		this.step = step;
 		this.sign = sign;
@@ -247,9 +247,9 @@ public class BankSession {
 	}
 	
 	/**
-	 * @return Devuelve el tipo de banco de esta sesión ({@link BankType}).
+	 * @return Devuelve el tipo de banco de esta sesión ({@link ABSignType}).
 	 */
-	public BankType getBankType(){
+	public ABSignType getBankType(){
 		return btype;
 	}
 	
@@ -286,7 +286,7 @@ public class BankSession {
 			updateSession(player.getUniqueId(), this);
 		}
 		
-		Banks.switchSignToStep(btype, sign, step, true);
+		Banks.switchABSignToStep(btype, sign, step, true);
 	}
 	
 	/**
@@ -302,7 +302,7 @@ public class BankSession {
 	 * se buscará avanzar al paso 2, y si está en el paso 2 se buscará avanzar al paso 3.
 	 */
 	public void updateStepAndSwitchSign(){
-		updateStepAndSwitchSign(Banks.getNextStep(this), false);
+		updateStepAndSwitchSign(Banks.getNextABSignStep(this), false);
 	}
 	
 	/**
@@ -320,7 +320,7 @@ public class BankSession {
 	}
 	
 	public void reloadSign(){
-		Banks.switchSignToStep(btype, sign, step, false);
+		Banks.switchABSignToStep(btype, sign, step, false);
 	}
 	
 	public void updateLastUse(){

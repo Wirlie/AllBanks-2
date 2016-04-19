@@ -28,6 +28,7 @@
 package me.wirlie.allbanks;
 
 import org.bukkit.Bukkit;
+
 import org.bukkit.Server;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -57,6 +58,12 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.zip.GZIPOutputStream;
+
+/**
+ * No soy el autor de esta clase y su funcionamiento, sin embargo, esta clase se encarga de
+ * enviar métricas a MCStats.
+ *
+ */
 
 public class Metrics {
 

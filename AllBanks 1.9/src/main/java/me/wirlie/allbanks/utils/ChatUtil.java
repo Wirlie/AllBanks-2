@@ -21,6 +21,7 @@ package me.wirlie.allbanks.utils;
 import org.bukkit.ChatColor;
 
 /**
+ * Funciones de utilidad para el chat.
  * @author Wirlie
  * @since AllBanks v1.0
  *

@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import me.wirlie.allbanks.AllBanks;
 
 /**
+ * Utilidades
  * @author Wirlie
  * @since AllBanks v1.0
  *

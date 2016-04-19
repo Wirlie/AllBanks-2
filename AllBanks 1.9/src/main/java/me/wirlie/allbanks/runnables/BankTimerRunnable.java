@@ -23,13 +23,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Banks.ABSignType;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.tempdata.BankAccount;
 import me.wirlie.allbanks.tempdata.BankSession;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 
 /**
+ * Runnable para añadir 1 minuto a BankTime cada X segundos.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -62,7 +63,7 @@ public class BankTimerRunnable extends BukkitRunnable {
 			}else{
 				BankSession tryBs = BankSession.getSession(p);
 				if(tryBs != null){
-					if(tryBs.getBankType().equals(BankType.BANK_TIME)){
+					if(tryBs.getBankType().equals(ABSignType.BANK_TIME)){
 						tryBs.reloadSign();
 					}
 				}

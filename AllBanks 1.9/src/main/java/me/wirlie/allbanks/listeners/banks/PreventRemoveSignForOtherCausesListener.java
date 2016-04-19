@@ -33,6 +33,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import me.wirlie.allbanks.Banks;
 
 /**
+ * Prevenir que un letrero de AllBanks sea destruido por TNT o alguna explosión o causa
+ * extraordinaria.
  * @author Wirlie
  *
  */
@@ -48,7 +50,7 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 			
 			//Prevenir que un letrero, o un bloque que contiene un letrero de AllBanks sea destruido en una explosión
 			if(b.getType() == Material.WALL_SIGN){
-				if(Banks.signIsAllBanksSign((Sign) b.getState())){
+				if(Banks.signIsABSign((Sign) b.getState())){
 					iter.remove();
 				}
 			}else if(b.getType() == Material.CHEST){
@@ -56,7 +58,7 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 				//Intentar localizar el letrero de AllBanks
 				Block tryForSign = null;
 				
-				if(b.getRelative(BlockFace.UP).getType().equals(Material.WALL_SIGN) && Banks.signIsAllBanksSign((Sign) b.getRelative(BlockFace.UP).getState())){
+				if(b.getRelative(BlockFace.UP).getType().equals(Material.WALL_SIGN) && Banks.signIsABSign((Sign) b.getRelative(BlockFace.UP).getState())){
 					tryForSign = b.getRelative(BlockFace.UP);
 				}else{
 					//Buscar cofre relativo en caso de ser un cofre doble
@@ -67,11 +69,11 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 							
 							Block tryForSign2 = testForChest.getRelative(BlockFace.UP);
 							
-							if(tryForSign2.getType().equals(Material.WALL_SIGN) && Banks.signIsAllBanksSign((Sign) tryForSign2.getState())){
+							if(tryForSign2.getType().equals(Material.WALL_SIGN) && Banks.signIsABSign((Sign) tryForSign2.getState())){
 								tryForSign = tryForSign2;
 								break;
 							}else{
-								if(Banks.blockContainsAllBanksSign(b)){
+								if(Banks.blockIsSupportForABSigns(b)){
 									iter.remove();
 								}
 								continue iterateBlocks;
@@ -82,11 +84,11 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 				
 				if(tryForSign == null) continue;
 				
-				if(Banks.signIsAllBanksSign((Sign) tryForSign.getState())){
+				if(Banks.signIsABSign((Sign) tryForSign.getState())){
 					iter.remove();
 				}
 			}else{
-				if(Banks.blockContainsAllBanksSign(b)){
+				if(Banks.blockIsSupportForABSigns(b)){
 					iter.remove();
 				}
 			}
@@ -101,11 +103,11 @@ public class PreventRemoveSignForOtherCausesListener implements Listener {
 			Sign s = (Sign) b.getState();
 			
 			//Probablemente nunca vaya a suceder un evento de estos a causa de una entidad
-			if(Banks.signIsAllBanksSign(s)){
+			if(Banks.signIsABSign(s)){
 				e.setCancelled(true);
 			}
 		}else{
-			if(Banks.blockContainsAllBanksSign(b)){
+			if(Banks.blockIsSupportForABSigns(b)){
 				e.setCancelled(true);
 			}
 		}

@@ -45,6 +45,7 @@ import me.wirlie.allbanks.hooks.TownyFunctions;
 import me.wirlie.allbanks.hooks.WorldGuardFunctions;
 
 /**
+ * Detectar cuando un jugador intenta destruir una tienda.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -86,7 +87,7 @@ public class ShopSignBreakListener implements Listener {
 						e.setCancelled(true);
 						return;
 					}else {
-						if(Banks.removeAllBanksSign(sign.getLocation())) {
+						if(Banks.removeSignFromAllBanks(sign.getLocation())) {
 							Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 							InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 
@@ -129,7 +130,7 @@ public class ShopSignBreakListener implements Listener {
 
 				//Está intentando remover su propio letrero?
 				if(canBreakSign || Util.hasPermission(p, "allbanks.sign.shop.admin")) {
-					if(Banks.removeAllBanksSign(sign.getLocation())) {
+					if(Banks.removeSignFromAllBanks(sign.getLocation())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 						InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 						FakeItemManager.DespawnFakeItemForShop(sign.getLocation());

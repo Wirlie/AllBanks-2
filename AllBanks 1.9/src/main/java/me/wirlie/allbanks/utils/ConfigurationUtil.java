@@ -26,12 +26,13 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 
 /**
+ * Funciones de utilidad para la configuración.
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
 public class ConfigurationUtil{
-	
+
 	public static String convertSecondsIntoTimeAgo(int seconds, boolean fullString) {
 		return convertSecondsIntoTimeAgo(seconds, fullString, 2);
 	}

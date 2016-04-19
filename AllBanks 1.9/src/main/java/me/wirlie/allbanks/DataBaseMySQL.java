@@ -25,6 +25,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 /**
+ * Clase recopilada desde AllBanks (antiguo AllBanks) y adaptada para el funcionamiento con MySQL
  * @author Wirlie
  * @since AllBanks v1.0
  *

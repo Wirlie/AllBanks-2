@@ -57,7 +57,7 @@ import me.wirlie.allbanks.utils.Util;
 /**
  * Esta clase se encarga de procesar acciones relacionado con los letreros de AllBanks
  * en especial, aquellos que pertenecen a BANK_LOAN, BANK_XP, BANK_TIME, BANK_MONEY
- * ATM, BANK_CHEST aunque, también algunas funciones son usadas por las tiendas (SHOP).
+ * ATM, BANK_CHEST.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -68,12 +68,11 @@ public class Banks {
 	 * Tipo de banco
 	 * @author Wirlie
 	 */
-	public static enum BankType{
+	public static enum ABSignType{
 		BANK_LOAN("Loan"),
 		BANK_XP("XP"),
 		BANK_TIME("Time"),
 		BANK_MONEY("Money"),
-		SHOP("Shop"),
 		BANK_LAND("Land"),
 		ATM("ATM"), 
 		BANK_CHEST("Chest"), 
@@ -81,19 +80,19 @@ public class Banks {
 		
 		String display;
 		
-		BankType(String display){
+		ABSignType(String display){
 			this.display = display;
 		}
 		
-		String getDisplay(){
+		String getShortName(){
 			return display;
 		}
 		
 		
-		public static BankType getTypeByString(String string){
+		public static ABSignType getSignTypeByShortName(String string){
 			
-			for(BankType b : BankType.values()){
-				if(b.getDisplay().equalsIgnoreCase(string)){
+			for(ABSignType b : ABSignType.values()){
+				if(b.getShortName().equalsIgnoreCase(string)){
 					return b;
 				}
 			}
@@ -107,7 +106,7 @@ public class Banks {
 	 * @author Wirlie
 	 *
 	 */
-	public static enum PlayerAction{
+	public static enum ABSignAction{
 		NEW_SIGN,
 		DESTROY_SIGN,
 		USE_SIGN;
@@ -116,30 +115,28 @@ public class Banks {
 	/**
 	 * Comprobar si un jugador tiene permisos para efectuar una acción.
 	 * @param p Jugador
-	 * @param action Accion del jugador
-	 * @param btype Tipo de banco
+	 * @param signAction Accion del jugador
+	 * @param signType Tipo de banco
 	 * @return true si el jugador tiene permiso.
 	 */
-	public static boolean playerHasPermissions(Player p, PlayerAction action, BankType btype){
+	public static boolean playerHasPermissionForPerformAction(Player p, ABSignAction signAction, ABSignType signType){
 		
-		if(btype == null){
+		if(signType == null){
 			return true;
 		}
 		
 		if(DataBaseUtil.databaseIsLocked()){
-			if(!btype.equals(BankType.BANK_CHEST)){
+			if(!signType.equals(ABSignType.BANK_CHEST)){
 				//Actualmente BankChest es el único banco que no necesita a la base de datos.
 				DataBaseUtil.sendDatabaseLockedMessage(p);
 			}
 		}
 		
-		switch(action){
+		switch(signAction){
 		case NEW_SIGN:
-			switch(btype){
+			switch(signType){
 			case ATM:
 				return Util.hasPermission(p, "allbanks.sign.atm.new");
-			case SHOP:
-				return Util.hasPermission(p, "allbanks.sign.shop.new");
 			case BANK_LAND:
 				return Util.hasPermission(p, "allbanks.sign.land.new");
 			case BANK_LOAN:
@@ -156,11 +153,9 @@ public class Banks {
 				break;
 			}
 		case DESTROY_SIGN:
-			switch(btype){
+			switch(signType){
 			case ATM:
 				return Util.hasPermission(p, "allbanks.sign.atm.destroy");
-			case SHOP:
-				return Util.hasPermission(p, "allbanks.sign.shop.destroy");
 			case BANK_LAND:
 				return Util.hasPermission(p, "allbanks.sign.land.destroy");
 			case BANK_LOAN:
@@ -178,11 +173,9 @@ public class Banks {
 			}
 			
 		case USE_SIGN:
-			switch(btype){
+			switch(signType){
 			case ATM:
 				return Util.hasPermission(p, "allbanks.sign.atm.use");
-			case SHOP:
-				return Util.hasPermission(p, "allbanks.sign.shop.use");
 			case BANK_LAND:
 				return Util.hasPermission(p, "allbanks.sign.land.use");
 			case BANK_LOAN:
@@ -203,39 +196,34 @@ public class Banks {
 		
 		}
 		
-		AllBanks.getInstance().getLogger().warning("Method playerHasPermission returned with false (default), Action: " + action + ", btype: " + btype);
+		AllBanks.getInstance().getLogger().warning("Method playerHasPermission returned with false (default), Action: " + signAction + ", btype: " + signType);
 		return false;
 	}
 	
 	/**
 	 * Cambiar un letrero a su estado inicial.
-	 * @param sign Letrero
-	 * @param btype Tipo de banco
+	 * @param allbanksSign Letrero
+	 * @param signType Tipo de banco
 	 */
-	public static void switchSignToInitialState(Sign sign, BankType btype){
-		if(!sign.getBlock().getType().equals(Material.SIGN) && !sign.getBlock().getType().equals(Material.WALL_SIGN))
+	public static void switchSignToInitialState(Sign allbanksSign, ABSignType signType){
+		if(!allbanksSign.getBlock().getType().equals(Material.SIGN) && !allbanksSign.getBlock().getType().equals(Material.WALL_SIGN))
 			//Si el letrero ya no existe ignoramos, esto puede suceder ya que la función switchSignTo puede ser llamada 1 segundo después.
 			return;
 		
-		switchSignToStep(btype, sign, -1, true);
+		switchABSignToStep(signType, allbanksSign, -1, true);
 		
 	}
 	
 	/**
 	 * Obtener el siguiente paso de un banco.
-	 * @param bs Sesión de banco
+	 * @param bankSession Sesión de banco
 	 * @return Siguiente paso del banco.
 	 */
-	public static int getNextStep(BankSession bs){
-		int nextStep = bs.getStep() + 1;
+	public static int getNextABSignStep(BankSession bankSession){
+		int nextStep = bankSession.getStep() + 1;
 		
-		switch(bs.getBankType()){
+		switch(bankSession.getBankType()){
 		case ATM:
-			if(nextStep > 2){
-				nextStep = 0;
-			}
-			break;
-		case SHOP:
 			if(nextStep > 2){
 				nextStep = 0;
 			}
@@ -278,88 +266,83 @@ public class Banks {
 
 	/**
 	 * Cambiar un letrero a un paso en específico.
-	 * @param btype Tipo de banco.
-	 * @param sign Letrero de AllBanks.
-	 * @param step Paso al que se desea cambiar.
+	 * @param signType Tipo de banco.
+	 * @param allbanksSign Letrero de AllBanks.
+	 * @param signStep Paso al que se desea cambiar.
 	 */
-	public static void switchSignToStep(BankType btype, Sign sign, int step, boolean playerMessages) {
+	public static void switchABSignToStep(ABSignType signType, Sign allbanksSign, int signStep, boolean sendInfoMessages) {
 		
-		sign.setLine(0, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "AllBanks");
-		sign.setLine(1, ChatColor.DARK_GRAY + btype.getDisplay());
+		allbanksSign.setLine(0, ChatColor.DARK_AQUA + "" + ChatColor.BOLD + "AllBanks");
+		allbanksSign.setLine(1, ChatColor.DARK_GRAY + signType.getShortName());
 		
 		//No en todos los bancos y pasos se requiere esta variable BS.
 		//Esta variable puede ser nula en ocasiones, nunca se debe descartar esto.
-		BankSession bs = BankSession.getActiveSessionBySign(sign);
-		BankAccount ba = null; //Nulo, inicialmente. Puede ser nulo si bs no está especificado.
-		Player p = null; //Nulo, será nulo si bs no está especificado.
+		BankSession bankSession = BankSession.getActiveSessionBySign(allbanksSign);
+		BankAccount bankAccount = null; //Nulo, inicialmente. Puede ser nulo si bs no está especificado.
+		Player player = null; //Nulo, será nulo si bs no está especificado.
 		
-		if(bs != null){
-			ba = BankAccount.Cache.get(bs.getPlayer().getUniqueId()); //Si bs (BankSession) no es nulo, se puede obtener ba (BankAccount).
-			p = bs.getPlayer();
+		if(bankSession != null){
+			bankAccount = BankAccount.Cache.get(bankSession.getPlayer().getUniqueId()); //Si bs (BankSession) no es nulo, se puede obtener ba (BankAccount).
+			player = bankSession.getPlayer();
 		}
 		
-		switch(btype){
+		switch(signType){
 		case ATM:
-			switch(step){
+			switch(signStep){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
-				break;
-			}
-			break;
-		case SHOP:
-			switch(step){
-			default:
-				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
 		case BANK_CHEST:
-			switch(step){
+			switch(signStep){
 			case 0:
 				//Encontrar el siguiente cofre
-				ba.BankChest.switchToNextChest();
+				bankAccount.BankChest.switchToNextChest();
 				
 				//Abrir interfaz de cofre
 				HashMap<String, String> replaceMap = new HashMap<String, String>();
-				replaceMap.put("%1%", String.valueOf(ba.BankChest.getCurrentChestCursor()));
+				replaceMap.put("%1%", String.valueOf(bankAccount.BankChest.getCurrentChestCursor()));
 				
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(replaceMap, false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.BANKCHEST_CHEST_NUMBER.toString(replaceMap, false));
+				allbanksSign.setLine(3, "");
 				
-				if(p != null && playerMessages){
-					Translation.getAndSendMessage(p, StringsID.BANKCHEST_STEP0_INFO, true);
+				if(player != null && sendInfoMessages){
+					Translation.getAndSendMessage(player, StringsID.BANKCHEST_STEP0_INFO, true);
 				}
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
 		case BANK_LAND:
-			switch(step){
+			switch(signStep){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
 		case BANK_LOAN:
-			switch(step){
+			switch(signStep){
 			case 0:
+				//Valor por defecto: 0
 				BigDecimal maxBorrow = BigDecimal.ZERO;
+				//¿Anular configuración?
 				boolean overrideConfiguration = false;
 				
-				for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
-					if(pinfo.getPermission().startsWith("allbanks.banks.bankloan.maxloan.")){
+				//Comprobar si el jugador posee un permiso especial.
+				for(PermissionAttachmentInfo playerPermission : player.getEffectivePermissions()){
+					if(playerPermission.getPermission().startsWith("allbanks.banks.bankloan.maxloan.")){
+						//Posee un permiso especial, intentar parsear el número
 						try{
-							maxBorrow = new BigDecimal(Double.parseDouble(pinfo.getPermission().replace("allbanks.banks.bankloan.maxloan.", ""))).subtract(ba.BankLoan.getLoan());
+							maxBorrow = new BigDecimal(Double.parseDouble(playerPermission.getPermission().replace("allbanks.banks.bankloan.maxloan.", ""))).subtract(bankAccount.BankLoan.getLoan());
 							overrideConfiguration = true;
 						}catch(NumberFormatException e2){
 							overrideConfiguration = false;
@@ -367,122 +350,124 @@ public class Banks {
 					}
 				}
 				
+				//Si la configuración no se anulará definimos el valor que contiene Config.yml
 				if(!overrideConfiguration)
-					maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(ba.BankLoan.getLoan());
+					maxBorrow = new BigDecimal(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.max-loan")).subtract(bankAccount.BankLoan.getLoan());
 				
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.ASK.toString(false));
-				sign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));
+				//Establecer nuevas líneas
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.ASK.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(maxBorrow.doubleValue()));
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
+				if(player != null && sendInfoMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
 					replaceMap.put("%1%", String.valueOf(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.interest", 0)));
 					replaceMap.put("%2%", String.valueOf(ConfigurationUtil.convertTimeValueToSeconds(AllBanks.getInstance().getConfig().getString("banks.bank-loan.collect-interest-every"))));
-					Translation.getAndSendMessage(p, StringsID.BANKLOAN_STEP0_INFO, replaceMap, true);
+					Translation.getAndSendMessage(player, StringsID.BANKLOAN_STEP0_INFO, replaceMap, true);
 				}
 				break;
 			case 1:
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.PAY.toString(false));
-				sign.setLine(3, ChatColor.DARK_BLUE + AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.PAY.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_BLUE + AllBanks.getEconomy().format(bankAccount.BankLoan.getLoan().doubleValue()));
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
+				if(player != null && sendInfoMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankLoan.getLoan().doubleValue()));
-					Translation.getAndSendMessage(p, StringsID.BANKLOAN_STEP1_INFO, replaceMap, true);
+					replaceMap.put("%1%", AllBanks.getEconomy().format(bankAccount.BankLoan.getLoan().doubleValue()));
+					Translation.getAndSendMessage(player, StringsID.BANKLOAN_STEP1_INFO, replaceMap, true);
 				}
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
 		case BANK_MONEY:
-			switch(step){
+			switch(signStep){
 			case 0:
 				//Depositar
-				BigDecimal moneyInBank = ba.BankMoney.getMoney();
+				BigDecimal moneyInBank = bankAccount.BankMoney.getMoney();
 				
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.DEPOSIT_MONEY.toString(false));
-				sign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.DEPOSIT_MONEY.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(moneyInBank.doubleValue()));
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
+				if(player != null && sendInfoMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney.getMoney().doubleValue()));
-					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP0_INFO, replaceMap, true);
+					replaceMap.put("%1%", AllBanks.getEconomy().format(bankAccount.BankMoney.getMoney().doubleValue()));
+					Translation.getAndSendMessage(player, StringsID.BANKMONEY_STEP0_INFO, replaceMap, true);
 				}
 				break;
 			case 1:
 				//Retirar
-				BigDecimal moneyInBank2 = ba.BankMoney.getMoney();
+				BigDecimal moneyInBank2 = bankAccount.BankMoney.getMoney();
 				
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.WITHDRAW_MONEY.toString(false));
-				sign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.WITHDRAW_MONEY.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_GREEN + AllBanks.getEconomy().format(moneyInBank2.doubleValue()));
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
+				if(player != null && sendInfoMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					replaceMap.put("%1%", AllBanks.getEconomy().format(ba.BankMoney.getMoney().doubleValue()));
-					Translation.getAndSendMessage(p, StringsID.BANKMONEY_STEP1_INFO, replaceMap, true);
+					replaceMap.put("%1%", AllBanks.getEconomy().format(bankAccount.BankMoney.getMoney().doubleValue()));
+					Translation.getAndSendMessage(player, StringsID.BANKMONEY_STEP1_INFO, replaceMap, true);
 				}
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
 		case BANK_TIME:
-			switch(step){
+			switch(signStep){
 			case 0:
 				//Retirar tiempo (este banco solo tiene este estatus)
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.CHANGE_TIME.toString(false));
-				sign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(ba.BankTime.getTime()));
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.CHANGE_TIME.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(bankAccount.BankTime.getTime()));
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
+				if(player != null && sendInfoMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
-					Translation.getAndSendMessage(p, StringsID.BANKTIME_STEP0_INFO, replaceMap, true);
+					Translation.getAndSendMessage(player, StringsID.BANKTIME_STEP0_INFO, replaceMap, true);
 				}
 				
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
 		case BANK_XP:
-			switch(step){
+			switch(signStep){
 			case 0:
 				//depositar xp
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.DEPOSIT_XP.toString(false));
-				sign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.DEPOSIT_XP.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(bankAccount.BankXP.getRawXP()) + " (" + bankAccount.BankXP.getLvlForRawXP() + " lvl)");
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
-					Translation.getAndSendMessage(p, StringsID.BANKXP_STEP0_INFO, true);
+				if(player != null && sendInfoMessages){
+					Translation.getAndSendMessage(player, StringsID.BANKXP_STEP0_INFO, true);
 				}
 				break;
 			case 1:
 				//retirar xp
-				sign.setLine(2, ChatColor.DARK_BLUE + StringsID.WITHDRAW_XP.toString(false));
-				sign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(ba.BankXP.getRawXP()) + " (" + ba.BankXP.getLvlForRawXP() + " lvl)");
+				allbanksSign.setLine(2, ChatColor.DARK_BLUE + StringsID.WITHDRAW_XP.toString(false));
+				allbanksSign.setLine(3, ChatColor.DARK_GREEN + String.valueOf(bankAccount.BankXP.getRawXP()) + " (" + bankAccount.BankXP.getLvlForRawXP() + " lvl)");
 				
 				//Mensaje al jugador
-				if(p != null && playerMessages){
-					Translation.getAndSendMessage(p, StringsID.BANKXP_STEP1_INFO, true);
+				if(player != null && sendInfoMessages){
+					Translation.getAndSendMessage(player, StringsID.BANKXP_STEP1_INFO, true);
 				}
 				break;
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				sign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				sign.setLine(3, "");
+				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
+				allbanksSign.setLine(3, "");
 				break;
 			}
 			break;
@@ -491,16 +476,16 @@ public class Banks {
 		
 		}
 		
-		sign.update();
+		allbanksSign.update();
 	}
 	
 	/**
 	 * Registrar un letrero de AllBanks.
-	 * @param signLoc Localización del letrero a registrar.
-	 * @param owner Dueño del letrero.
+	 * @param signLocation Localización del letrero a registrar.
+	 * @param signOwner Dueño del letrero.
 	 * @return true si el registro fue exitoso, false si ocurrió un error importante
 	 */
-	public static boolean registerAllBanksSign(Location signLoc, Player owner){
+	public static boolean registerNewABSign(Location signLocation, Player signOwner){
 		
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 			
@@ -508,7 +493,7 @@ public class Banks {
 				Util.FlatFile_signFolder.mkdirs();
 			}
 			
-			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
+			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLocation.getWorld().getName() + "-" + signLocation.getBlockX() + "-" + signLocation.getBlockY() + "-" + signLocation.getBlockZ() + ".yml");
 			if(!signFile.exists()) {
 				try {
 					signFile.createNewFile();
@@ -518,8 +503,8 @@ public class Banks {
 			}
 			
 			YamlConfiguration yaml = YamlConfiguration.loadConfiguration(signFile);
-			yaml.set("location", StringLocationUtil.convertLocationToString(signLoc, true));
-			yaml.set("owner", owner.getName());
+			yaml.set("location", StringLocationUtil.convertLocationToString(signLocation, true));
+			yaml.set("owner", signOwner.getName());
 			
 			try {
 				yaml.save(signFile);
@@ -535,7 +520,7 @@ public class Banks {
 			
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + StringLocationUtil.convertLocationToString(signLoc, true) + "', '" + owner.getName() + "')");
+				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + StringLocationUtil.convertLocationToString(signLocation, true) + "', '" + signOwner.getName() + "')");
 				return true;
 			}catch(SQLException e){
 				DataBaseUtil.checkDatabaseIsLocked(e);
@@ -555,16 +540,16 @@ public class Banks {
 	
 	/**
 	 * Comprobar si un letrero está registrado en AllBanks.
-	 * @param signLoc Localización del letrero a comprobar.
+	 * @param signLocation Localización del letrero a comprobar.
 	 * @return true si el letrero pertenece a AllBanks y se encuentra registrado.
 	 */
-	public static boolean signIsRegistered(Location signLoc){
+	public static boolean signIsRegistered(Location signLocation){
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 			if(!Util.FlatFile_signFolder.exists()) {
 				Util.FlatFile_signFolder.mkdirs();
 			}
 			
-			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
+			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLocation.getWorld().getName() + "-" + signLocation.getBlockX() + "-" + signLocation.getBlockY() + "-" + signLocation.getBlockZ() + ".yml");
 			return signFile.exists();
 		}else{
 			if(DataBaseUtil.databaseIsLocked()) return false;
@@ -572,7 +557,7 @@ public class Banks {
 			Statement stm = null;
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLoc, true) + "'");
+				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLocation, true) + "'");
 				return res.next();
 			}catch(SQLException e){
 				DataBaseUtil.checkDatabaseIsLocked(e);
@@ -591,16 +576,16 @@ public class Banks {
 	
 	/**
 	 * Remover un letrero de AllBanks previamente registrado.
-	 * @param signLoc Localización del letrero.
+	 * @param signLocation Localización del letrero.
 	 * @return true si la operación fue exitosa y no han ocurrido problemas importantes.
 	 */
-	public static boolean removeAllBanksSign(Location signLoc){
+	public static boolean removeSignFromAllBanks(Location signLocation){
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 			if(!Util.FlatFile_signFolder.exists()) {
 				Util.FlatFile_signFolder.mkdirs();
 			}
 			
-			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLoc.getWorld().getName() + "-" + signLoc.getBlockX() + "-" + signLoc.getBlockY() + "-" + signLoc.getBlockZ() + ".yml");
+			File signFile = new File(Util.FlatFile_signFolder + File.separator + "sign-" + signLocation.getWorld().getName() + "-" + signLocation.getBlockX() + "-" + signLocation.getBlockY() + "-" + signLocation.getBlockZ() + ".yml");
 			if(!signFile.exists()) return false;
 			
 			signFile.delete();
@@ -612,7 +597,7 @@ public class Banks {
 			
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				stm.executeUpdate("DELETE FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLoc, true) + "'");
+				stm.executeUpdate("DELETE FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLocation, true) + "'");
 				return true;
 			}catch(SQLException e){
 				DataBaseUtil.checkDatabaseIsLocked(e);
@@ -631,40 +616,41 @@ public class Banks {
 
 	/**
 	 * Abrir un cofre virtual de AllBanks a un jugador.
-	 * @param p Jugador al que se desea mostrar el cofre virtual.
-	 * @param currentChestCursor Obtener el cofre # 
+	 * @param player Jugador al que se desea mostrar el cofre virtual.
+	 * @param chestNumber Obtener el cofre # 
 	 */
-	public static void openVirtualChest(Player p, int currentChestCursor) {
-		if(p == null) throw new IllegalArgumentException("Player can not be null!!");
-		if(currentChestCursor <= 0) throw new IllegalArgumentException("invalid ChestCursor");
+	public static void openVirtualChestForPlayer(Player player, int chestNumber) {
+		if(player == null) throw new IllegalArgumentException("Player can not be null!!");
+		if(chestNumber <= 0) throw new IllegalArgumentException("invalid ChestCursor");
 		
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
-		replaceMap.put("%1%", String.valueOf(currentChestCursor));
+		replaceMap.put("%1%", String.valueOf(chestNumber));
 		
-		Inventory inv = Bukkit.getServer().createInventory(null, 9 * 6, "ab:virtualchest:" + currentChestCursor);
+		Inventory virtualChestInventory = Bukkit.getServer().createInventory(null, 9 * 6, "ab:virtualchest:" + chestNumber);
 		
-		Iterator<Entry<Integer, ItemStack>> it = getVirtualChestContents(p.getName(), currentChestCursor).entrySet().iterator();
+		Iterator<Entry<Integer, ItemStack>> it = getVirtualChestInventoryContents(player.getName(), chestNumber).entrySet().iterator();
 		while(it.hasNext()){
 			Entry<Integer, ItemStack> entry = it.next();
-			inv.setItem(entry.getKey(), entry.getValue());
+			virtualChestInventory.setItem(entry.getKey(), entry.getValue());
 		}
 		
 		//StringsID.BANKCHEST_VIRTUAL_INVENTORY.toString(replaceMap, false)
-		p.openInventory(inv);
+		player.openInventory(virtualChestInventory);
 	}
 	
 	/**
 	 * Obtiene el contenido de un cofre virtual de AllBanks.
-	 * @param owner Dueño del cofre virtual.
-	 * @param virtualChest Número de cofre.
+	 * @param chestOwner Dueño del cofre virtual.
+	 * @param chestNumber Número de cofre.
 	 * @return se devuelve todo el contenido del cofre en un {@code HashMap<Integer, ItemStack>} que 
 	 * interpretado en términos simples es igual que: {@code HashMap<Slot, Item>}
 	 */
-	public static HashMap<Integer, ItemStack> getVirtualChestContents(String owner, int virtualChest){
-		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
-		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
+	public static HashMap<Integer, ItemStack> getVirtualChestInventoryContents(String chestOwner, int chestNumber){
 		
-		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + "-B64.yml");
+		File virtualChestDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
+		if(!virtualChestDataFolder.exists()) virtualChestDataFolder.mkdirs();
+		
+		File virtualChestFile = new File(virtualChestDataFolder + File.separator + chestOwner + "-B64.yml");
 		if(!virtualChestFile.exists())
 			try {
 				virtualChestFile.createNewFile();
@@ -673,41 +659,41 @@ public class Banks {
 				e.printStackTrace();
 			}
 		
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(virtualChestFile);
-		HashMap<Integer, ItemStack> returnList = new HashMap<Integer, ItemStack>();
+		YamlConfiguration virtualChestYaml = YamlConfiguration.loadConfiguration(virtualChestFile);
+		HashMap<Integer, ItemStack> returnContents = new HashMap<Integer, ItemStack>();
 		
-		ConfigurationSection cfgSection = yaml.getConfigurationSection(String.valueOf(virtualChest));
-		if(cfgSection == null) return new HashMap<Integer, ItemStack>();
+		ConfigurationSection configurationSection = virtualChestYaml.getConfigurationSection(String.valueOf(chestNumber));
+		if(configurationSection == null) return new HashMap<Integer, ItemStack>();
 		
-		for(String key : cfgSection.getKeys(false)){
+		for(String key : configurationSection.getKeys(false)){
 			ItemStack getItemStack = null;
 			
 			try {
-				getItemStack = ItemStackBase64.stacksFromBase64(yaml.getString(String.valueOf(virtualChest) + "." + key, null))[0];
+				getItemStack = ItemStackBase64.stacksFromBase64(virtualChestYaml.getString(String.valueOf(chestNumber) + "." + key, null))[0];
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 			
 			if(getItemStack != null){
-				returnList.put(Integer.parseInt(key), getItemStack);
+				returnContents.put(Integer.parseInt(key), getItemStack);
 			}
 		}
 		
-		return returnList;
+		return returnContents;
 	}
 	
 	/**
 	 * Establece el contenido de un cofre virtual.
-	 * @param owner Dueño
+	 * @param chestOwner Dueño
 	 * @param chestNumber Número de cofre
-	 * @param contents Nuevo contenido, formateado en un {@code HashMap<Integer, ItemStack>}<br> 
+	 * @param newInventoryContent Nuevo contenido, formateado en un {@code HashMap<Integer, ItemStack>}<br> 
 	 * (que es lo mismo que decir: {@code HashMap<Slot, Item>}).
 	 */
-	public static void setVirtualChestContents(String owner, int chestNumber, HashMap<Integer, ItemStack> contents){
-		File virtualDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
-		if(!virtualDataFolder.exists()) virtualDataFolder.mkdirs();
+	public static void setVirtualChestInventoryContents(String chestOwner, int chestNumber, HashMap<Integer, ItemStack> newInventoryContent){
+		File virtualChestDataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
+		if(!virtualChestDataFolder.exists()) virtualChestDataFolder.mkdirs();
 		
-		File virtualChestFile = new File(virtualDataFolder + File.separator + owner + "-B64.yml");
+		File virtualChestFile = new File(virtualChestDataFolder + File.separator + chestOwner + "-B64.yml");
 		if(!virtualChestFile.exists())
 			try {
 				virtualChestFile.createNewFile();
@@ -715,19 +701,19 @@ public class Banks {
 				e.printStackTrace();
 			}
 		
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(virtualChestFile);
+		YamlConfiguration virtualChestYaml = YamlConfiguration.loadConfiguration(virtualChestFile);
 		
-		Iterator<Entry<Integer, ItemStack>> it = contents.entrySet().iterator();
+		Iterator<Entry<Integer, ItemStack>> it = newInventoryContent.entrySet().iterator();
 		while(it.hasNext()){
 			Entry<Integer, ItemStack> entry = it.next();
 			
-			ItemStack item = entry.getValue();
+			ItemStack slotItem = entry.getValue();
 			
-			yaml.set(String.valueOf(chestNumber) + "." + String.valueOf(entry.getKey()), ItemStackBase64.toBase64(item));
+			virtualChestYaml.set(String.valueOf(chestNumber) + "." + String.valueOf(entry.getKey()), ItemStackBase64.toBase64(slotItem));
 		}
 		
 		try {
-			yaml.save(virtualChestFile);
+			virtualChestYaml.save(virtualChestFile);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -735,15 +721,17 @@ public class Banks {
 	}
 
 	/**
-	 * @param location
+	 * Verificar si un bloque contiene uno o más letreros de AllBanks.
+	 * @param block El bloque a verificar.
 	 */
 	
-	public static boolean blockContainsAllBanksSign(Block bl) {
+	public static boolean blockIsSupportForABSigns(Block block) {
+		//TODO Se necesita agregar un método que compruebe la dirección del letrero para verificar si el letrero realmente está siendo sujetado por el bloque.
 		for(int i = 0; i < 4; i++){
-			Block testForSign = (i == 0) ? bl.getRelative(BlockFace.NORTH) : ((i == 1) ? bl.getRelative(BlockFace.SOUTH) : ((i == 2) ? bl.getRelative(BlockFace.WEST) : bl.getRelative(BlockFace.EAST)));
+			Block relativeBlock = (i == 0) ? block.getRelative(BlockFace.NORTH) : ((i == 1) ? block.getRelative(BlockFace.SOUTH) : ((i == 2) ? block.getRelative(BlockFace.WEST) : block.getRelative(BlockFace.EAST)));
 		
-			if(testForSign.getType().equals(Material.WALL_SIGN)){
-				if(signIsAllBanksSign((Sign) testForSign.getState())){
+			if(relativeBlock.getType().equals(Material.WALL_SIGN)){
+				if(signIsABSign((Sign) relativeBlock.getState())){
 					return true;
 				}
 			}
@@ -752,16 +740,22 @@ public class Banks {
 		return false;
 	}
 	
-	public static List<Sign> getAllBanksSignBySupportBlock(Block bl){
-		
+	/**
+	 * Obtiene los letreros de AllBanks que están siendo sostenidos por un bloque en específico.
+	 * @param block Bloque a checar.
+	 * @return Devuelve un listado con todos los letreros que fueron encontrados adjuntados al bloque especificado.
+	 */
+	
+	public static List<Sign> getABSignsBySupportBlock(Block block){
+		//TODO Se necesita agregar un método que compruebe la dirección del letrero para verificar si el letrero realmente está siendo sujetado por el bloque.
 		List<Sign> returnList = new ArrayList<Sign>();
 		
 		for(int i = 0; i < 4; i++){
-			Block testForSign = (i == 0) ? bl.getRelative(BlockFace.NORTH) : ((i == 1) ? bl.getRelative(BlockFace.SOUTH) : ((i == 2) ? bl.getRelative(BlockFace.WEST) : bl.getRelative(BlockFace.EAST)));
+			Block relativeBlock = (i == 0) ? block.getRelative(BlockFace.NORTH) : ((i == 1) ? block.getRelative(BlockFace.SOUTH) : ((i == 2) ? block.getRelative(BlockFace.WEST) : block.getRelative(BlockFace.EAST)));
 		
-			if(testForSign.getType().equals(Material.WALL_SIGN)){
-				if(signIsAllBanksSign((Sign) testForSign.getState())){
-					returnList.add((Sign) testForSign.getState());
+			if(relativeBlock.getType().equals(Material.WALL_SIGN)){
+				if(signIsABSign((Sign) relativeBlock.getState())){
+					returnList.add((Sign) relativeBlock.getState());
 				}
 			}
 		}
@@ -769,28 +763,42 @@ public class Banks {
 		return returnList;
 	}
 	
-	public static boolean signIsAllBanksSign(Sign checkSign){
-		if(ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks Shop")
-				|| ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks")){
+	/**
+	 * Verificar de manera rápida si un letrero pertenece a un letrero de AllBanks
+	 * @param checkSign Letrero a verificar.
+	 * @return true si el letrero pertenece a AllBanks.
+	 */
+	public static boolean signIsABSign(Sign checkSign){
+		if(ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks Shop") && signIsRegistered(checkSign.getLocation())
+				|| ChatUtil.removeChatFormat(checkSign.getLine(0)).equalsIgnoreCase("AllBanks") && signIsRegistered(checkSign.getLocation())){
 			return true;
 		}
 		
 		return false;
 	}
 	
-	public static BankType getBankTypeBySign(Sign s){
-		String header = ChatUtil.removeChatFormat(s.getLine(0));
+	/**
+	 * Obtiene el tipo de letrero de AllBanks.<br> <br>
+	 * <u>Importante:</u> <i>Este método no funciona para verificar letreros que pertenezcan
+	 * a tiendas de AllBanks, en lugar de usar éste método se puede usar: </i> {@linkplain me.wirlie.allbanks.utils.ShopUtil#isShopSign(Sign) ShopUtil.isShopSign()}
+	 * @param allbanksSign
+	 * @return Devuelve el tipo de letrero si es que se ha podido resolver, o {@linkplain ABSignType#DEFAULT DEFAULT} si no se pudo resolver.
+	 */
+	public static ABSignType getABSignTypeBySign(Sign allbanksSign){
+		String line_header = ChatUtil.removeChatFormat(allbanksSign.getLine(0));
 		
-		if(header.equalsIgnoreCase("AllBanks SHOP")){
-			return BankType.SHOP;
-		}else if(header.equalsIgnoreCase("AllBanks")){
-			return BankType.getTypeByString(ChatUtil.removeChatFormat(s.getLine(1)));
+		if(line_header.equalsIgnoreCase("AllBanks")){
+			return ABSignType.getSignTypeByShortName(ChatUtil.removeChatFormat(allbanksSign.getLine(1)));
 		}else{
-			return BankType.DEFAULT;
+			return ABSignType.DEFAULT;
 		}
 	}
 	
-	public static void Solution_convertOldVirtualChestMethodToNewMethodBase64(){
+	/**
+	 * Este es un método que se usa para convertir información referente a los inventarios de VirtualChest
+	 * al método nuevo basado en el encriptado Base64.
+	 */
+	public static void convertOldVirtualChestDataToNewDataMethod(){
 		File dataFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "VirtualChestData");
 		if(!dataFolder.exists()){ dataFolder.mkdirs(); return; }
 		

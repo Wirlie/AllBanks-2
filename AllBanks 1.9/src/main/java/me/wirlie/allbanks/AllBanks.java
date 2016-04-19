@@ -72,7 +72,8 @@ import me.wirlie.allbanks.utils.Util;
 import net.milkbowl.vault.economy.Economy;
 
 /**
- * Clase principal de AllBanks.
+ * Clase principal de AllBanks usada por la librería de Bukkit para la activación y desactivación
+ * del plugin.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -208,7 +209,7 @@ public class AllBanks extends JavaPlugin {
 		HookManager.initializeHookManager();
 		
 		//Solución
-		Banks.Solution_convertOldVirtualChestMethodToNewMethodBase64();
+		Banks.convertOldVirtualChestDataToNewDataMethod();
 		
 		//Registrar Listeners para los eventos.
 		AllBanksLogger.info("Registering events...");

@@ -30,6 +30,8 @@ import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 import me.wirlie.allbanks.Console;
 
 /**
+ * Clase encargada de detectar si hay plugins compatibles con AllBanks, los cuales serán
+ * enganchados y usados para comprobar ciertas funciones.
  * @author Wirlie
  *
  */
@@ -38,12 +40,20 @@ public class HookManager {
 	
 	private HookManager() {}
 	
+	/**
+	 * Inicializar
+	 */
 	public static void initializeHookManager(){
 		WorldGuardHook.tryHook();
 		TownyHook.tryHook();
 		ResidenceHook.tryHook();
 	}
 	
+	/**
+	 * Para Residence
+	 * @author Wirlie
+	 *
+	 */
 	public static class ResidenceHook{
 		private static boolean hooked = false;
 		
@@ -70,6 +80,11 @@ public class HookManager {
 		}
 	}
 	
+	/**
+	 * Para Towny
+	 * @author Wirlie
+	 *
+	 */
 	public static class TownyHook{
 		private static boolean hooked = false;
 		
@@ -96,6 +111,11 @@ public class HookManager {
 		}
 	}
 	
+	/**
+	 * Para WorldGuard
+	 * @author Wirlie
+	 *
+	 */
 	public static class WorldGuardHook{
 		private static boolean hooked = false;
 		

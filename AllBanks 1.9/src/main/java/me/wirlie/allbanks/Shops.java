@@ -32,100 +32,113 @@ import me.wirlie.allbanks.utils.ShopUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
+ * Clase similar a la clase {@linkplain me.wirlie.allbanks.Banks Banks}, sólo que esta clase se
+ * encarga de procesar funciones relacionado con las tiendas de AllBanks.
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
 public class Shops {
 	
+	/** Línea cabecera, util para saber si un letrero es de AllBanks **/
 	final public static int LINE_HEADER = 0;
+	/** Linea de dueño, util para saber quién es el dueño de un letrero **/
 	final public static int LINE_OWNER = 1;
+	/** Línea de preio, util para saber el precio de venta/compra y cantidad de objetos **/
 	final public static int LINE_PRICE = 2;
+	/** Linea de objeto, util para saber qué objeto se está comprando o vendiendo **/
 	final public static int LINE_ITEM = 3;
-	
+	/** Etiqueta Admin, unicamente necesario para saber si una tienda pertenece a un Admin Shop **/
 	final public static String ADMIN_TAG = AllBanks.getInstance().getConfig().getString("shop.admin-tag", "admin");
-	
+	/** Formato de cabecera, util para saber qué cabecera usar al crear/leer una cabecera de AllBanks en un letrero **/
 	final public static String HEADER_FORMAT = ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "AllBanks SHOP";
+	/** Cabecera sin formato **/
 	final public static String HEADER = ChatUtil.removeChatFormat(HEADER_FORMAT);
 	
-	public static void makeNewShop(String[] lines, Block b, Player owner) {
-		if(!b.getType().equals(Material.WALL_SIGN) || lines.length < 4) {
-			b.breakNaturally();
+	/**
+	 * Hace una nueva tienda de AllBanks.
+	 * @param signLines Lineas a establecer en el letrero.
+	 * @param block Bloque afectado y que se quiere registrar (letrero)
+	 * @param shopOwner Dueño de la tienda.
+	 */
+	public static void makeNewShop(String[] signLines, Block block, Player shopOwner) {
+		if(!block.getType().equals(Material.WALL_SIGN) || signLines.length < 4) {
+			block.breakNaturally();
 			return;
 		}
 		
 		//Validar cofre
-		boolean adminShop = false;
+		boolean isAdminShop = false;
 		
-		if(!lines[LINE_OWNER].equalsIgnoreCase(ADMIN_TAG)) {
-			if(!ShopUtil.validateNearbyChest(b.getLocation())) {
-				Translation.getAndSendMessage(owner, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
-				InteractiveUtil.sendSound(owner, SoundType.DENY);
-				b.breakNaturally();
+		if(!signLines[LINE_OWNER].equalsIgnoreCase(ADMIN_TAG)) {
+			if(!ShopUtil.validateNearbyChest(block.getLocation())) {
+				Translation.getAndSendMessage(shopOwner, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
+				InteractiveUtil.sendSound(shopOwner, SoundType.DENY);
+				block.breakNaturally();
 				return;
 			} else {
 				//Evitar que un cofre tenga 2 letreros de 2 personas distintas.
-				Sign relativeSign = ShopUtil.tryToGetRelativeSignByChest((Sign) b.getState());
+				Sign relativeSign = ShopUtil.tryToGetRelativeSignByChest((Sign) block.getState());
 				
 				if(relativeSign != null) {
 					OfflinePlayer p = ShopUtil.getOwner(relativeSign);
 					
 					if(p != null) {
-						if(!p.getName().equalsIgnoreCase(owner.getName())) {
-							b.breakNaturally();
-							Translation.getAndSendMessage(owner, StringsID.SHOP_ANOTHER_SHOP_USES_THIS_CHEST, true);
+						if(!p.getName().equalsIgnoreCase(shopOwner.getName())) {
+							block.breakNaturally();
+							Translation.getAndSendMessage(shopOwner, StringsID.SHOP_ANOTHER_SHOP_USES_THIS_CHEST, true);
 							return;
 						}
 					}
 				}
 			}
 		}else{
-			adminShop = true;
+			isAdminShop = true;
 		}
 		
-		if(Banks.registerAllBanksSign(b.getLocation(), owner)) {
-			Sign sign = (Sign) b.getState();
+		if(Banks.registerNewABSign(block.getLocation(), shopOwner)) {
+			Sign sign = (Sign) block.getState();
 			
-			String[] splitLinePrice = lines[2].split(" ");
-			String BS_line = "";
+			String[] splitLinePrice = signLines[2].split(" ");
+			String buySell_line = "";
 			
 			for(int i = 0; i < splitLinePrice.length; i++) {
 				if(i == 0) continue;
 				
 				if(i != (splitLinePrice.length - 1))
-					BS_line += splitLinePrice[i] + " ";
+					buySell_line += splitLinePrice[i] + " ";
 				else
-					BS_line += splitLinePrice[i];
+					buySell_line += splitLinePrice[i];
 			}
 			
 			sign.setLine(LINE_HEADER, HEADER_FORMAT);
-			sign.setLine(LINE_OWNER, ChatColor.DARK_AQUA + lines[1]);
-			sign.setLine(LINE_PRICE, ChatColor.DARK_RED + splitLinePrice[0] + " " + ChatColor.DARK_GREEN + BS_line);
-			sign.setLine(LINE_ITEM, ChatColor.DARK_AQUA + lines[3]);
+			sign.setLine(LINE_OWNER, ChatColor.DARK_AQUA + signLines[1]);
+			sign.setLine(LINE_PRICE, ChatColor.DARK_RED + splitLinePrice[0] + " " + ChatColor.DARK_GREEN + buySell_line);
+			sign.setLine(LINE_ITEM, ChatColor.DARK_AQUA + signLines[3]);
 			
 			sign.update();
 			
-			Translation.getAndSendMessage(owner, StringsID.SHOP_NEW_SHOP, true);
-			InteractiveUtil.sendSound(owner, SoundType.NEW_BANK);
+			Translation.getAndSendMessage(shopOwner, StringsID.SHOP_NEW_SHOP, true);
+			InteractiveUtil.sendSound(shopOwner, SoundType.NEW_BANK);
 			
-			if(lines[3].equalsIgnoreCase("???")) {
+			if(signLines[3].equalsIgnoreCase("???")) {
 				//Aviso
-				Translation.getAndSendMessage(owner, StringsID.SHOP_WARNING_ITEM_NAME, true);
+				Translation.getAndSendMessage(shopOwner, StringsID.SHOP_WARNING_ITEM_NAME, true);
 			}
 			
 			boolean spawnFakeItemUserShops = AllBanks.getInstance().getConfig().getBoolean("shop.enable-fake-item-for-user-shop", true);
 			
 			//Intentar colocar el objeto falso
-			if(!lines[3].equalsIgnoreCase("???")){
+			if(!signLines[3].equalsIgnoreCase("???")){
 				//Es una tienda admin?
-				if(adminShop || !adminShop && spawnFakeItemUserShops)
-					FakeItemManager.SpawnFakeItemForShop(b.getLocation());
+				if(isAdminShop || !isAdminShop && spawnFakeItemUserShops)
+					FakeItemManager.SpawnFakeItemForShop(block.getLocation());
 			}
 			
 		} else {
-			Translation.getAndSendMessage(owner, StringsID.SQL_EXCEPTION_PROBLEM, true);
-			InteractiveUtil.sendSound(owner, SoundType.DENY);
-			b.breakNaturally();
+			Translation.getAndSendMessage(shopOwner, StringsID.SQL_EXCEPTION_PROBLEM, true);
+			InteractiveUtil.sendSound(shopOwner, SoundType.DENY);
+			block.breakNaturally();
 			return;
 		}
 	}

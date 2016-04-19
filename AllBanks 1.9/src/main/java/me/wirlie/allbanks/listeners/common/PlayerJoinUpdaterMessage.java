@@ -29,6 +29,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 
 /**
+ * Enviar mensaje de actualización a los jugadores operadores.
  * @author Wirlie
  *
  */

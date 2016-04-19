@@ -42,6 +42,7 @@ import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.Util;
 
 /**
+ * Runnable encargado de procesar funciones con los intereses de BankLoan
  * @author Wirlie
  * @since AllBanks v1.0
  *

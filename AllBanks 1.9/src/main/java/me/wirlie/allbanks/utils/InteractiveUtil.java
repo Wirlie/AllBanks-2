@@ -31,6 +31,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 
 /**
+ * Hacer allbanks más interactivo.
  * @author Wirlie
  * @since AllBanks v1.0
  *

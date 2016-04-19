@@ -18,7 +18,6 @@
  */
 package me.wirlie.allbanks;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
@@ -30,7 +29,9 @@ import java.util.HashMap;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
+ * Clase recopilada desde AllBanks (antiguo AllBanks)
  * @author Wirlie
+ * @since AllBanks v1.0
  *
  */
 

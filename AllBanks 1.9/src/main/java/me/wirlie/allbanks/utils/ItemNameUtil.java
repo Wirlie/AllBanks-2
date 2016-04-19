@@ -31,6 +31,7 @@ import com.google.common.collect.ImmutableSet;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
+ * Utilidad para los nombres de objetos.
  * @author Wirlie
  * @since AllBanks v1.0
  *

@@ -29,6 +29,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
+ * Funciones de utilidad con la base de datos.
  * @author Wirlie
  * @since AllBanks v1.0
  *

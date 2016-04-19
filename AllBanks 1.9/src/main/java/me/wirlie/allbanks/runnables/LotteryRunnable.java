@@ -36,6 +36,7 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.utils.ConfigurationUtil;
 
 /**
+ * Runnable para conseguir un ganador en la lotería.
  * @author Wirlie
  * @since AllBanks v1.0
  *

@@ -33,6 +33,7 @@ import org.bukkit.entity.Player;
 import me.wirlie.allbanks.utils.ChatUtil;
 
 /**
+ * Clase encargada de obtener la traducción correspondiente a un string.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -42,6 +43,11 @@ public class Translation{
 	private static File languageDir = new File(AllBanks.getInstance().getDataFolder() + File.separator + "language");
 	private static String prefixStr = ChatUtil.replaceChatFormat(AllBanks.getInstance().getConfig().getString("pl.prefix", ChatColor.DARK_AQUA + "All" + ChatColor.AQUA + "Banks" + ChatColor.GOLD + ChatColor.BOLD + " >> " + ChatColor.RESET));
 
+	/**
+	 * Lenguajes soportados por AllBanks
+	 * @author Wirlie
+	 *
+	 */
 	public enum Languages{
 		ES_MX(new File(languageDir + File.separator + "EsMx.yml"), "EsMx.yml"),
 		EN_US(new File(languageDir + File.separator + "EnUs.yml"), "EnUs.yml");
@@ -54,20 +60,35 @@ public class Translation{
 			this.resourceFile = resourceFile;
 		}
 		
+		/**
+		 * Obtener el archivo del lenguaje
+		 * @return
+		 */
 		File getFile(){
 			ensureLanguageFolderExists();
 			
 			return langFile;
 		}
 		
-		String getResource(){
+		/**
+		 * Obtener el nombre del recurso.
+		 * @return
+		 */
+		String getResourceName(){
 			return resourceFile;
 		}
 		
+		/**
+		 * Obtener la carpeta en donde se almacenan las traducciones.
+		 * @return
+		 */
 		static File getFolder(){
 			return languageDir;
 		}
 		
+		/**
+		 * Asegurarnos de que la carpeta de lenguaje existe.
+		 */
 		static void ensureLanguageFolderExists(){
 			
 			File langDir = new File(AllBanks.getInstance().getDataFolder() + File.separator + "language");
@@ -78,6 +99,14 @@ public class Translation{
 		}
 	}
 	
+	/**
+	 * Util, que ayuda a transformar un String en un HashMap<String, String>
+	 * @param splitRegex Palabra o secuencia de caracteres que servirán de ayuda para hacer un split de argumentos. Ejemplo si se establece
+	 * con >>> y nuestro string tiene %1%>>>Hola se considerará lo siguiente:<br>
+	 * Reemplazar %1% por "Hola".
+	 * @param args Multiples argumentos.
+	 * @return HashMap conteniendo la interpretación de lo anterior.
+	 */
 	public static HashMap<String, String> splitStringIntoReplaceHashMap(String splitRegex, String... args){
 		HashMap<String, String> returnMap = new HashMap<String, String>();
 		
@@ -91,19 +120,31 @@ public class Translation{
 		return returnMap;
 	}
 	
+	/**
+	 * Obtener el Prefix de AllBanks
+	 * @return Prefix de AllBanks
+	 */
 	public static String getPluginPrefix() {
 		return prefixStr;
 	}
 	
+	/**
+	 * Obtener una traducción.
+	 * @param strPath Ruta de la traducción.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Incluir prefijo de AllBanks?
+	 * @param consoleSender ¿Se necesita enviar con formato de Consola? (Sin ChatColor)
+	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
+	 */
 	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean consoleSender){
-		File trFile = ensureLanguageFileExists(getLangByConfig());
+		File trFile = ensureLanguageFileExists(getLanguageSpecifiedInConfiguration());
 		YamlConfiguration trYaml = YamlConfiguration.loadConfiguration(trFile);
 		String translation = trYaml.getString(strPath, null);
 		
-		if(translation == null && !getLangByConfig().equals(Languages.EN_US)){
+		if(translation == null && !getLanguageSpecifiedInConfiguration().equals(Languages.EN_US)){
 			//Intentar obtener desde el archivo EnUS
 			
-			Console.sendMessage(ChatColor.YELLOW + "[Translation] String " + strPath + " not found in " + getLangByConfig().getResource() + ", try to get this string with EnUs.yml");
+			Console.sendMessage(ChatColor.YELLOW + "[Translation] String " + strPath + " not found in " + getLanguageSpecifiedInConfiguration().getResourceName() + ", try to get this string with EnUs.yml");
 			YamlConfiguration enUsYaml = YamlConfiguration.loadConfiguration(ensureLanguageFileExists(Languages.EN_US));
 			translation = enUsYaml.getString(strPath, null);
 		
@@ -139,30 +180,80 @@ public class Translation{
 		return split;
 	}
 	
+	/**
+	 * Obtener una traducción.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 * @param commandSender ¿Enviar en formato de consola? (Sin ChatColor)
+	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
+	 */
 	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
 		return get(strPath.getPath(), replaceMap, prefix, commandSender);
 	}
 	
+	/**
+	 * Obtener una traducción.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
+	 */
 	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
 		return get(strPath.getPath(), replaceMap, prefix, false);
 	}
 	
+	/**
+	 * Obtener una traducción.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 * @param commandSender ¿Se necesita enviar con formato de Consola? (Sin ChatColor)
+	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
+	 */
 	public static String[] get(StringsID strPath, boolean prefix, boolean commandSender){
 		return get(strPath.getPath(), new HashMap<String, String>(), prefix, commandSender);
 	}
 	
+	/**
+	 * Obtener una traducción.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
+	 */
 	public static String[] get(StringsID strPath, boolean prefix){
 		return get(strPath.getPath(), new HashMap<String, String>(), prefix, false);
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al jugador especificado.
+	 * @param p Jugador a enviar el mensaje.
+	 * @param strPath Ruta de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix){
 		p.sendMessage(get(strPath, replaceMap, prefix, false));
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al jugador especificado.
+	 * @param p Jugador a enviar el mensaje.
+	 * @param strPath Ruta de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 * @param commandSender ¿Se necesita enviar con formato de Consola? (Sin ChatColor)
+	 */
 	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
 		p.sendMessage(get(strPath, replaceMap, prefix, commandSender));
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
+	 * @param s Ejecutor del comando.
+	 * @param strPath Ruta de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(CommandSender s, String strPath, HashMap<String, String> replaceMap, boolean prefix){
 		if(s instanceof ConsoleCommandSender){
 			s.sendMessage(get(strPath, replaceMap, prefix, true));
@@ -171,6 +262,13 @@ public class Translation{
 		}
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
+	 * @param s Ejecutor del comando.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(CommandSender s, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
 		if(s instanceof ConsoleCommandSender){
 			s.sendMessage(get(strPath, replaceMap, prefix, true));
@@ -179,23 +277,52 @@ public class Translation{
 		}
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al jugador especificado.
+	 * @param p Jugador a enviar el mensaje.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param replaceMap Mapa de reemplazo.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(Player p, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
 		getAndSendMessage(p, strPath.getPath(), replaceMap, prefix);
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al jugador especificado.
+	 * @param p Jugador a enviar el mensaje.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(Player p, StringsID strPath, boolean prefix){
 		getAndSendMessage(p, strPath.getPath(), new HashMap<String, String>(), prefix);
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
+	 * @param s Ejecutor del comando.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(CommandSender s, StringsID strPath, boolean prefix){
 		getAndSendMessage(s, strPath.getPath(), new HashMap<String, String>(), prefix);
 	}
 	
+	/**
+	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
+	 * @param s Ejecutor del comando.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 */
 	public static void getAndSendMessage(CommandSender s, String strPath, boolean prefix){
 		getAndSendMessage(s, strPath, new HashMap<String, String>(), prefix);
 	}
 	
-	public static Languages getLangByConfig(){
+	/**
+	 * Obtener el lenguaje especificado en el archivo de configuración
+	 * @return Lenguaje.
+	 */
+	public static Languages getLanguageSpecifiedInConfiguration(){
 		
 		String langStr = AllBanks.getInstance().getConfig().getString("pl.language", "Undefined");
 		
@@ -207,18 +334,23 @@ public class Translation{
 		
 	}
 	
+	/**
+	 * Asegurarnos de que el archivo de lenguaje existe.
+	 * @param lang Lenguaje
+	 * @return Archivo del lenguaje.
+	 */
 	private static File ensureLanguageFileExists(Languages lang){
 		
 		if(!lang.getFile().exists()){
 			Console.sendMessage(ChatColor.YELLOW + "[Translation] Language file " + lang.toString() + " not found...");
 			Console.sendMessage(ChatColor.YELLOW + "[Translation] Saving resource...");
 			//Intentar instalar
-			AllBanks.getInstance().saveResource(lang.getResource(), true);
+			AllBanks.getInstance().saveResource(lang.getResourceName(), true);
 			//Mover de ruta
 			Languages.ensureLanguageFolderExists();
 			
-			File moveFrom = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResource());
-			File moveTo = new File(Languages.getFolder() + File.separator + lang.getResource());
+			File moveFrom = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResourceName());
+			File moveTo = new File(Languages.getFolder() + File.separator + lang.getResourceName());
 			
 			Console.sendMessage(ChatColor.WHITE + "[Translation][Debug] Copy " + moveFrom.getName() + " to " + moveTo);
 			
@@ -234,6 +366,10 @@ public class Translation{
 	
 	static boolean firstExecution = false;
 	
+	/**
+	 * Nos aseguramos de que un archivo de lenguaje se encuentra actualizado.
+	 * @param lang Lenguaje a comprobar.
+	 */
 	private static void ensureLanguageFileIsUpToDate(Languages lang){
 		YamlConfiguration readLanguage = YamlConfiguration.loadConfiguration(lang.getFile());
 		
@@ -245,10 +381,10 @@ public class Translation{
 			
 			//No concuerda, intentar actualizar.
 			if(firstExecution)
-				Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResource() + " " + version + " to " + AllBanks.getInstance().getDescription().getVersion());
+				Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResourceName() + " " + version + " to " + AllBanks.getInstance().getDescription().getVersion());
 			
-			AllBanks.getInstance().saveResource(lang.getResource(), true);
-			File nativeLangFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResource());
+			AllBanks.getInstance().saveResource(lang.getResourceName(), true);
+			File nativeLangFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResourceName());
 			
 			if(!nativeLangFile.exists()){
 				//error!! no existe a pesar de haber sido guardado

@@ -35,12 +35,13 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.Banks.PlayerAction;
-import me.wirlie.allbanks.Banks.BankType;
+import me.wirlie.allbanks.Banks.ABSignAction;
+import me.wirlie.allbanks.Banks.ABSignType;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 
 /**
+ * Detecta cuando un letrero de AllBanks está siendo intentado crearse.
  * @author Wirlie
  * @since AllBanks v1.0
  *
@@ -59,7 +60,7 @@ public class SignChangeListener implements Listener {
 		
 		if(lines[0].equalsIgnoreCase("AllBanks") || lines[0].equalsIgnoreCase("[AllBanks]") || lines[0].equalsIgnoreCase("All Banks")){
 			
-			BankType btype = BankType.DEFAULT;
+			ABSignType btype = ABSignType.DEFAULT;
 			
 			if(!e.getBlock().getType().equals(Material.WALL_SIGN)){
 				Translation.getAndSendMessage(p, StringsID.ONLY_WALL_SIGN, true);
@@ -70,24 +71,22 @@ public class SignChangeListener implements Listener {
 			}
 			
 			if(lines[1].equalsIgnoreCase("BankLoan") || lines[1].equalsIgnoreCase("loan")){
-				btype = BankType.BANK_LOAN;
+				btype = ABSignType.BANK_LOAN;
 			}else if(lines[1].equalsIgnoreCase("BankXP") || lines[1].equalsIgnoreCase("XP")){
-				btype = BankType.BANK_XP;
+				btype = ABSignType.BANK_XP;
 			}else if(lines[1].equalsIgnoreCase("BankChest") || lines[1].equalsIgnoreCase("Chest")){
-				btype = BankType.BANK_CHEST;
-			}else if(lines[1].equalsIgnoreCase("Shop")){
-				btype = BankType.SHOP;
+				btype = ABSignType.BANK_CHEST;
 			}else if(lines[1].equalsIgnoreCase("BankTime") || lines[1].equalsIgnoreCase("Time")){
-				btype = BankType.BANK_TIME;
+				btype = ABSignType.BANK_TIME;
 			}else if(lines[1].equalsIgnoreCase("BankMoney") || lines[1].equalsIgnoreCase("Money")){
-				btype = BankType.BANK_MONEY;
+				btype = ABSignType.BANK_MONEY;
 			}else if(lines[1].equalsIgnoreCase("BankLand") || lines[1].equalsIgnoreCase("Land")){
-				btype = BankType.BANK_LAND;
+				btype = ABSignType.BANK_LAND;
 			}else if(lines[1].equalsIgnoreCase("ATM")){
-				btype = BankType.ATM;
+				btype = ABSignType.ATM;
 			}
 			
-			if(btype.equals(BankType.DEFAULT)){
+			if(btype.equals(ABSignType.DEFAULT)){
 				//No se especificó el segundo argumento...
 				Translation.getAndSendMessage(p, StringsID.SIGN_MORE_ARGUMENTS_NEEDED, true);
 				if(p.getGameMode().equals(GameMode.CREATIVE))
@@ -98,7 +97,7 @@ public class SignChangeListener implements Listener {
 			}
 			
 			//Checar permiso
-			if(!Banks.playerHasPermissions(p, PlayerAction.NEW_SIGN, btype)){
+			if(!Banks.playerHasPermissionForPerformAction(p, ABSignAction.NEW_SIGN, btype)){
 				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				e.setCancelled(true);
 				e.getBlock().breakNaturally();
@@ -107,7 +106,7 @@ public class SignChangeListener implements Listener {
 				return;
 			}
 			
-			final BankType btypefinal = btype;
+			final ABSignType btypefinal = btype;
 			
 			//Bien, pasar y formatear letrero
 			new BukkitRunnable(){
@@ -116,13 +115,13 @@ public class SignChangeListener implements Listener {
 					if(e.getBlock().getType().equals(Material.AIR))
 						return;
 					
-					if(btypefinal.equals(BankType.BANK_LAND) || btypefinal.equals(BankType.ATM)) {
+					if(btypefinal.equals(ABSignType.BANK_LAND) || btypefinal.equals(ABSignType.ATM)) {
 						Translation.getAndSendMessage(p, StringsID.NOT_YET_IMPLEMENTED, true);
 						e.getBlock().breakNaturally();
 						return;
 					}
 					
-					if(Banks.registerAllBanksSign(e.getBlock().getLocation(), p)){
+					if(Banks.registerNewABSign(e.getBlock().getLocation(), p)){
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);
 						AllBanksLogger.info("NEW-BANK: Player " + p.getName() + " (" + p.getDisplayName() + ") has created a new bank. (Location: world:" + signLoc.getWorld().getName() + ", x:" + signLoc.getX() + ", y:" + signLoc.getY() + ", z:" + signLoc.getZ() + ").");
 						

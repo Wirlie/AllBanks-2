@@ -60,12 +60,13 @@ import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
+ * Clase encargada de procesar todo lo relacionado con los comandos.
  * @author Wirlie
  * @since AllBanks v1.0
  *
  */
 public class Commands implements CommandExecutor {
-	
+	//TODO Mejorar el sistema de comandos a través de un sistema de registro de comandos y argumentos
 	private static Map<String, BigDecimal> bankMoneyTopRankCache = new HashMap<String, BigDecimal>();
 	private static long bankMoneyTopRankCacheTime = 0;
 	

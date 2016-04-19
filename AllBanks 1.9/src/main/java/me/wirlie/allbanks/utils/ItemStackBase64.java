@@ -29,6 +29,10 @@ import org.bukkit.util.io.BukkitObjectInputStream;
 import org.bukkit.util.io.BukkitObjectOutputStream;
 import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
 
+/**
+ * Sirve para convertir un ItemStack a Base64
+ *
+ */
 public class ItemStackBase64 {
     public static String toBase64(Inventory inventory) {
         return toBase64(inventory.getContents());

@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 /**
+ * Auto completador usando la tecla Shift mientras escribes un argumento.
  * @author Wirlie
  * @since AllBanks v1.0
  *
