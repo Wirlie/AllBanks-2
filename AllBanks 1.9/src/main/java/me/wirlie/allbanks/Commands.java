@@ -47,17 +47,17 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.data.BankAccount;
 import me.wirlie.allbanks.logger.AllBanksLogger;
-import me.wirlie.allbanks.runnable.LotteryRunnable;
-import me.wirlie.allbanks.util.ConfigurationUtil;
-import me.wirlie.allbanks.util.DataBaseUtil;
-import me.wirlie.allbanks.util.ExperienceConversionUtil;
-import me.wirlie.allbanks.util.InteractiveUtil;
-import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
-import me.wirlie.allbanks.util.ItemNameUtil;
-import me.wirlie.allbanks.util.ShopUtil;
-import me.wirlie.allbanks.util.Util;
+import me.wirlie.allbanks.runnables.LotteryRunnable;
+import me.wirlie.allbanks.tempdata.BankAccount;
+import me.wirlie.allbanks.utils.ConfigurationUtil;
+import me.wirlie.allbanks.utils.DataBaseUtil;
+import me.wirlie.allbanks.utils.ExperienceConversionUtil;
+import me.wirlie.allbanks.utils.InteractiveUtil;
+import me.wirlie.allbanks.utils.ItemNameUtil;
+import me.wirlie.allbanks.utils.ShopUtil;
+import me.wirlie.allbanks.utils.Util;
+import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
  * @author Wirlie

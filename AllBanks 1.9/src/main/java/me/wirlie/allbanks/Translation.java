@@ -30,7 +30,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import me.wirlie.allbanks.util.ChatUtil;
+import me.wirlie.allbanks.utils.ChatUtil;
 
 /**
  * @author Wirlie

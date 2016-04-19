@@ -3,7 +3,7 @@
 ##
 ## AllBanks v1.0
 
-language-version: "1.0.6"
+language-version: "1.1"
 
 1: "Enabling plugin.%BREAK%Starting local database..."
 2: "Disabling plugin.%BREAK%Saving local database..."

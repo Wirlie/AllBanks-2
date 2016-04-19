@@ -45,14 +45,14 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.data.BankAccount;
-import me.wirlie.allbanks.data.BankSession;
-import me.wirlie.allbanks.util.ChatUtil;
-import me.wirlie.allbanks.util.ConfigurationUtil;
-import me.wirlie.allbanks.util.DataBaseUtil;
-import me.wirlie.allbanks.util.ItemStackBase64;
-import me.wirlie.allbanks.util.StringLocationUtil;
-import me.wirlie.allbanks.util.Util;
+import me.wirlie.allbanks.tempdata.BankAccount;
+import me.wirlie.allbanks.tempdata.BankSession;
+import me.wirlie.allbanks.utils.ChatUtil;
+import me.wirlie.allbanks.utils.ConfigurationUtil;
+import me.wirlie.allbanks.utils.DataBaseUtil;
+import me.wirlie.allbanks.utils.ItemStackBase64;
+import me.wirlie.allbanks.utils.StringLocationUtil;
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * Esta clase se encarga de procesar acciones relacionado con los letreros de AllBanks

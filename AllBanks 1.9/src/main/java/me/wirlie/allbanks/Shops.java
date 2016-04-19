@@ -25,11 +25,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 
-import me.wirlie.allbanks.util.ChatUtil;
-import me.wirlie.allbanks.util.FakeItemManager;
-import me.wirlie.allbanks.util.InteractiveUtil;
-import me.wirlie.allbanks.util.ShopUtil;
-import me.wirlie.allbanks.util.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.utils.ChatUtil;
+import me.wirlie.allbanks.utils.FakeItemManager;
+import me.wirlie.allbanks.utils.InteractiveUtil;
+import me.wirlie.allbanks.utils.ShopUtil;
+import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
  * @author Wirlie
