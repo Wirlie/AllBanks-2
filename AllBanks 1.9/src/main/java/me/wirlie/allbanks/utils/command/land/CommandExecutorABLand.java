@@ -35,7 +35,7 @@ import me.wirlie.allbanks.utils.command.Command;
 public class CommandExecutorABLand implements CommandExecutor {
 
 	public CommandExecutorABLand(){
-		CommandManagerABLand.registerCommand(new CommandAdminListregions(), "admin", "listregions", "RegEx->(.){1,}:<player>");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "claim");
 	}
 	
 public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
