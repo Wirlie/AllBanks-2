@@ -37,20 +37,32 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandAdminListregions(), "admin", "listregions", "RegEx->(.){1,}:<player>");
 	}
 	
-	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		
 		if(CommandManagerABLand.checkCommandMatch(args)){
 			CommandManagerABLand.executeCommand(sender, args);
 		}else{
-			List<Command> possibleCommands = CommandManagerAB.possibleMatches(args);
+			List<Command> possibleCommands = CommandManagerABLand.possibleMatches(args);
 			
 			if(possibleCommands.size() == 0){
-				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, true);
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abland help"), true);
+				return true;
 			}
+
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
+			
+			int showed = 0;
 			
 			for(Command cmd : possibleCommands){
-				Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
-				sender.sendMessage(ChatColor.GRAY + "/" + cmd.getSyntax());
+				
+				sender.sendMessage(ChatColor.GRAY + "/abland " + cmd.getSyntax());
+				
+				showed++;
+
+				if(showed > 15){
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMAND_HIGH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abland help"), true);
+					break;
+				}
 			}
 		}
 		

@@ -83,14 +83,23 @@ public class CommandExecutorAB implements CommandExecutor {
 			List<Command> possibleCommands = CommandManagerAB.possibleMatches(args);
 			
 			if(possibleCommands.size() == 0){
-				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, true);
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab help"), true);
 				return true;
 			}
 
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
+
+			int showed = 0;
 			
 			for(Command cmd : possibleCommands){
 				sender.sendMessage(ChatColor.GRAY + "/ab " + cmd.getSyntax());
+				
+				showed++;
+
+				if(showed > 15){
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMAND_HIGH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab help"), true);
+					break;
+				}
 			}
 		}
 		
