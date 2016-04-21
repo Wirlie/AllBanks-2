@@ -7,3 +7,7 @@ commands:
     description: AllBanks (Main command).
     usage: Syntax error, please use /ab ?
     aliases: [ab, abanks, allb]
+  allbanksland:
+    description: AllBanks Land, use /abland help
+    usage: Syntax error, please use /abland ?
+    aliases: [abland, abl, allbanksl]

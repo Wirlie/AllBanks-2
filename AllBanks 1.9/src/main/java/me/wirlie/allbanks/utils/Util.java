@@ -21,8 +21,13 @@ package me.wirlie.allbanks.utils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
@@ -37,6 +42,25 @@ import me.wirlie.allbanks.AllBanks;
  *
  */
 public class Util {
+	
+	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
+	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
+	        new Comparator<Map.Entry<K,V>>() {
+
+	            public int compare(Map.Entry<K,V> e1, Map.Entry<K,V> e2) {
+	            	int res = e2.getValue().compareTo(e1.getValue());
+	                if (e1.getKey().equals(e2.getKey())) {
+	                    return res; // Code will now handle equality properly
+	                } else {
+	                    return res != 0 ? res : 1; // While still adding all entries
+	                }
+	            }
+	            
+	        }
+	    );
+	    sortedEntries.addAll(map.entrySet());
+	    return sortedEntries;
+	}
 	
 	public static Entity[] getNearbyEntities(Location l, int radius) {
 		int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;

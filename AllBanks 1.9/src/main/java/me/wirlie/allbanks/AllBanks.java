@@ -201,9 +201,13 @@ public class AllBanks extends JavaPlugin {
 		
 		//Registrar comandos y TabCompleter
 		AllBanksLogger.info("Commands: Set executor (/allbanks).");
-		Bukkit.getPluginCommand("allbanks").setExecutor(new Commands());
+		Bukkit.getPluginCommand("allbanks").setExecutor(new CommandExecutorAB());
 		AllBanksLogger.info("Commands: Set tab completer (/allbanks).");
-		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandsTabCompleter());
+		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandTabCompleter());
+		AllBanksLogger.info("Commands: Set executor (/abland).");
+		Bukkit.getPluginCommand("allbanksland").setExecutor(new CommandExecutorABLand());
+		AllBanksLogger.info("Commands: Set tab completer (/abland).");
+		Bukkit.getPluginCommand("allbanksland").setTabCompleter(new CommandTabCompleterABLand());
 		
 		//Hooks
 		HookManager.initializeHookManager();

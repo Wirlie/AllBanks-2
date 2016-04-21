@@ -31,7 +31,7 @@ import org.bukkit.command.TabCompleter;
  * @since AllBanks v1.0
  *
  */
-public class CommandsTabCompleter implements TabCompleter {
+public class CommandTabCompleter implements TabCompleter {
 
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		
