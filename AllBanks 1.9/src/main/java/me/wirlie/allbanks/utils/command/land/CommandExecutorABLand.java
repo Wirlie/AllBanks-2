@@ -35,6 +35,9 @@ import me.wirlie.allbanks.utils.command.Command;
 public class CommandExecutorABLand implements CommandExecutor {
 
 	public CommandExecutorABLand(){
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "?");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "help");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "claim");
 	}
 	
