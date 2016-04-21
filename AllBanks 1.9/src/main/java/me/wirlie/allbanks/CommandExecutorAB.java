@@ -46,6 +46,7 @@ public class CommandExecutorAB implements CommandExecutor {
 		//ItemInfo
 		CommandManagerAB.registerCommand(new CommandItemInfo(), "iteminfo");
 		//Lotería
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery");
 		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "?");
 		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "help");
 		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "info");
@@ -55,6 +56,8 @@ public class CommandExecutorAB implements CommandExecutor {
 		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
 		//DataBase
 		CommandManagerAB.registerCommand(new CommandDataBase(), "database");
+		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "?");
+		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "help");
 		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "try-query", "RegEx->(.){1,}:<SQL>");
 		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "try-update", "RegEx->(.){1,}:<SQL>");
 		//TopRank
@@ -67,25 +70,27 @@ public class CommandExecutorAB implements CommandExecutor {
 		CommandManagerAB.registerCommand(new CommandReload(), "reload");
 		//Ayuda
 		CommandManagerAB.registerCommand(new CommandHelp(), "help");
-		CommandManagerAB.registerCommand(new CommandHelp(), "?");
 		CommandManagerAB.registerCommand(new CommandHelp(), "help", "RegEx->([0-9]){1,}:<page>");
+		CommandManagerAB.registerCommand(new CommandHelp(), "?");
 		CommandManagerAB.registerCommand(new CommandHelp(), "?", "RegEx->([0-9]){1,}:<page>");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		
-		if(CommandManagerABLand.checkCommandMatch(args)){
-			CommandManagerABLand.executeCommand(sender, args);
+		if(CommandManagerAB.checkCommandMatch(args)){
+			CommandManagerAB.executeCommand(sender, args);
 		}else{
 			List<Command> possibleCommands = CommandManagerAB.possibleMatches(args);
 			
 			if(possibleCommands.size() == 0){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, true);
+				return true;
 			}
+
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
 			
 			for(Command cmd : possibleCommands){
-				Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
-				sender.sendMessage(ChatColor.GRAY + "/" + cmd.getSyntax());
+				sender.sendMessage(ChatColor.GRAY + "/ab " + cmd.getSyntax());
 			}
 		}
 		

@@ -19,7 +19,6 @@
 package me.wirlie.allbanks;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
@@ -36,7 +35,7 @@ public class CommandManagerABLand {
 		//privatizar constructor
 	}
 	
-	private static HashSet<Command> registeredCommands = new HashSet<Command>();
+	private static List<Command> registeredCommands = new ArrayList<Command>();
 	
 	public static void registerCommand(Command command, String... arguments){
 		

@@ -94,7 +94,7 @@ public class Command {
 				}
 			}else{
 				//Argumento normal
-				if(!commandArgument.equalsIgnoreCase(testArgument)){
+				if(!commandArgument.equalsIgnoreCase(testArgument) && !commandArgument.contains(testArgument)){
 					return false;
 				}
 			}

@@ -11,4 +11,3 @@ commands:
     description: AllBanks Land, use /abland help
     usage: Syntax error, please use /abland ?
     aliases: [abland, abl, allbanksl]
-    
