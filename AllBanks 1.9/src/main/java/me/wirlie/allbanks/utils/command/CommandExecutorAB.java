@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks;
+package me.wirlie.allbanks.utils.command;
 
 import java.util.List;
 
@@ -24,13 +24,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
-import me.wirlie.allbanks.utils.command.Command;
-import me.wirlie.allbanks.utils.command.CommandDataBase;
-import me.wirlie.allbanks.utils.command.CommandHelp;
-import me.wirlie.allbanks.utils.command.CommandItemInfo;
-import me.wirlie.allbanks.utils.command.CommandLottery;
-import me.wirlie.allbanks.utils.command.CommandReload;
-import me.wirlie.allbanks.utils.command.CommandTopRank;
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
 
 /**
  * Clase encargada de procesar todo lo relacionado con los comandos.

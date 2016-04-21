@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks;
+package me.wirlie.allbanks.utils.command;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,7 @@ import org.bukkit.command.TabCompleter;
  * @since AllBanks v1.0
  *
  */
-public class CommandTabCompleter implements TabCompleter {
+public class CommandTabCompleterAB implements TabCompleter {
 
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		

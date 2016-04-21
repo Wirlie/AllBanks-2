@@ -69,6 +69,10 @@ import me.wirlie.allbanks.utils.ConfigurationUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FakeItemManager;
 import me.wirlie.allbanks.utils.Util;
+import me.wirlie.allbanks.utils.command.CommandExecutorAB;
+import me.wirlie.allbanks.utils.command.CommandTabCompleterAB;
+import me.wirlie.allbanks.utils.command.land.CommandExecutorABLand;
+import me.wirlie.allbanks.utils.command.land.CommandTabCompleterABLand;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -203,7 +207,7 @@ public class AllBanks extends JavaPlugin {
 		AllBanksLogger.info("Commands: Set executor (/allbanks).");
 		Bukkit.getPluginCommand("allbanks").setExecutor(new CommandExecutorAB());
 		AllBanksLogger.info("Commands: Set tab completer (/allbanks).");
-		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandTabCompleter());
+		Bukkit.getPluginCommand("allbanks").setTabCompleter(new CommandTabCompleterAB());
 		AllBanksLogger.info("Commands: Set executor (/abland).");
 		Bukkit.getPluginCommand("allbanksland").setExecutor(new CommandExecutorABLand());
 		AllBanksLogger.info("Commands: Set tab completer (/abland).");
