@@ -44,32 +44,32 @@ public class CommandExecutorAB implements CommandExecutor {
 	
 	public CommandExecutorAB(){
 		//ItemInfo
-		CommandManagerABLand.registerCommand(new CommandItemInfo(), "iteminfo");
+		CommandManagerAB.registerCommand(new CommandItemInfo(), "iteminfo");
 		//Lotería
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "?");
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "help");
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "info");
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "force");
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "enable");
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "disable");
-		CommandManagerABLand.registerCommand(new CommandLottery(), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "?");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "help");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "info");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "force");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "enable");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "disable");
+		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
 		//DataBase
-		CommandManagerABLand.registerCommand(new CommandDataBase(), "database");
-		CommandManagerABLand.registerCommand(new CommandDataBase(), "database", "try-query", "RegEx->(.){1,}:<SQL>");
-		CommandManagerABLand.registerCommand(new CommandDataBase(), "database", "try-update", "RegEx->(.){1,}:<SQL>");
+		CommandManagerAB.registerCommand(new CommandDataBase(), "database");
+		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "try-query", "RegEx->(.){1,}:<SQL>");
+		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "try-update", "RegEx->(.){1,}:<SQL>");
 		//TopRank
-		CommandManagerABLand.registerCommand(new CommandTopRank(), "toprank");
-		CommandManagerABLand.registerCommand(new CommandTopRank(), "toprank", "?");
-		CommandManagerABLand.registerCommand(new CommandTopRank(), "toprank", "help");
-		CommandManagerABLand.registerCommand(new CommandTopRank(), "toprank", "bankmoney");
-		CommandManagerABLand.registerCommand(new CommandTopRank(), "toprank", "bankxp");
+		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank");
+		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "?");
+		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "help");
+		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "bankmoney");
+		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "bankxp");
 		//Recargar
-		CommandManagerABLand.registerCommand(new CommandReload(), "reload");
+		CommandManagerAB.registerCommand(new CommandReload(), "reload");
 		//Ayuda
-		CommandManagerABLand.registerCommand(new CommandHelp(), "help");
-		CommandManagerABLand.registerCommand(new CommandHelp(), "?");
-		CommandManagerABLand.registerCommand(new CommandHelp(), "help", "RegEx->([0-9]){1,}:<page>");
-		CommandManagerABLand.registerCommand(new CommandHelp(), "?", "RegEx->([0-9]){1,}:<page>");
+		CommandManagerAB.registerCommand(new CommandHelp(), "help");
+		CommandManagerAB.registerCommand(new CommandHelp(), "?");
+		CommandManagerAB.registerCommand(new CommandHelp(), "help", "RegEx->([0-9]){1,}:<page>");
+		CommandManagerAB.registerCommand(new CommandHelp(), "?", "RegEx->([0-9]){1,}:<page>");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
