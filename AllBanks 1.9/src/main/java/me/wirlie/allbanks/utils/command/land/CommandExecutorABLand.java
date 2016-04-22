@@ -35,6 +35,12 @@ import me.wirlie.allbanks.utils.command.Command;
 public class CommandExecutorABLand implements CommandExecutor {
 
 	public CommandExecutorABLand(){
+		//Relacionado a comandos Admin
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin");
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "?");
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "help");
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "generate", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>");
+		//Relacionado al plot y comandos de usuario
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "?");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "help");
@@ -59,12 +65,12 @@ public boolean onCommand(CommandSender sender, org.bukkit.command.Command comman
 			
 			for(Command cmd : possibleCommands){
 				
-				sender.sendMessage(ChatColor.GRAY + "/abland " + cmd.getSyntax());
+				sender.sendMessage(ChatColor.GRAY + "/abl " + cmd.getSyntax());
 				
 				showed++;
 
 				if(showed > 15){
-					Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMAND_HIGH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abland help"), true);
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMAND_HIGH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abl help"), true);
 					break;
 				}
 			}

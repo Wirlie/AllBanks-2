@@ -12,6 +12,9 @@ default-permissions:
   - "allbanks.commands.toprank.bankxp"
   - "allbanks.commands.toprank.bankmoney"
   - "allbanks.sign.shop.new"
+  - "allbanks.commands.lottery.info"
+  - "allbanks.commands.lottery.buyticket"
+  - "allbanks.commands.iteminfo"
 pl:
   # Language (Supported languages: EnUs and EsMx)
   language: "EnUs"
@@ -78,3 +81,71 @@ topranks:
   # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.
   # Please do not set it with a minimal value (example: 1 second)
   update-cache-every: "5 minutes"
+allbanks-land:
+  enable: true
+  worlds:
+    AllBanksLand_FlatWorldDefault:
+      plot-configuration:
+        default-plots-per-player: 1
+        claim-price: 0
+        expire-abandoned-plots: "14 days"
+        auto-regenerate-if-plot-is-disposed: true
+        prevent-tnt-explosion: true
+        prevent-creeper-explosion: true
+        prevent-other-explosion: true
+        prevent-enderman-grief: true
+        prevent-nether-portal: true
+        prevent-water-flow: false
+        prevent-lava-flow: false
+        prevent-wither-spawn: true
+        tpa-kill:
+          prevent-tpa-kill: true
+          give-player-inmunity-for: "3 minutes"
+          player-immunity:
+            lava-inmunity: true
+            fall-inmunity: true
+            explosion-inmunity: true
+            pvp-inmunity: true
+            drown-inmunity: true
+        user-permissions:
+          allow-sell-plot: false
+          allow-buy-plot: true
+          allow-dispose-plot: true
+          allow-claim-plot: true
+          allow-add-friends: true
+          allow-deny-users: true
+          allow-plot-tp: true
+          allow-allbanks-shops: true
+          allow-set-greeting-message: true
+          allow-set-farewell-message: true
+        default-plot-permissions:
+          use:
+            anvil: false
+            enchantment-table: true
+            work-bench: true
+            door: true
+            fence-door: false
+            redstone-button: false
+            redstone-lever: false
+            redstone-pressure-plate: false
+            other: true
+          build: false
+          pvp: false
+          open-chest: false
+          drop-items: true
+          horse-riding: false
+          kill-animals: false
+      world-configuration:
+        plot:
+          plot-size: 50
+          road-size: 7
+        generation:
+          trees: false
+          grass: false
+          ores: false
+        animal-spawn: true
+        mob-spawn: false
+      world-limitations:
+        enable-world-limit: false
+        world-limit: 5000
+        max-build-height: 256
