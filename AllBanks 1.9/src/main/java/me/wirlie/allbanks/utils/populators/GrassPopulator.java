@@ -33,35 +33,35 @@ import org.bukkit.generator.BlockPopulator;
  */
 public class GrassPopulator extends BlockPopulator {
 	
+	int world_height = 0;
+	/**
+	 * @param world_height
+	 */
+	public GrassPopulator(int world_height) {
+		this.world_height = world_height;
+	}
+
 	@SuppressWarnings("deprecation")
 	@Override
 	public void populate(World world, Random rand, Chunk chunk) {
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
-				for (int y = 0; y < world.getMaxHeight(); y++) {
-					//int realX = x + chunk.getX() * 16; //find the world location of chunk location x
-					//int realZ = z + chunk.getZ() * 16;
-					Block block = chunk.getBlock(x, y, z);
-					
-					if(!block.getType().equals(Material.AIR)){
-						continue;
-					}
-					
-					Block blockSupp = block.getRelative(BlockFace.DOWN);
-					
-					if(blockSupp.getType().equals(Material.LONG_GRASS) 
-							|| blockSupp.getType().equals(Material.LEAVES)
-							|| !blockSupp.getType().equals(Material.DIRT) && !blockSupp.getType().equals(Material.GRASS))
-							{ 
-								continue;
-							}
-					
-					if(rand.nextDouble() > 0.8){
-						block.setType(Material.LONG_GRASS);
-						block.setData((byte) 1);
-					}
-					
-					break;
+				//int realX = x + chunk.getX() * 16; //find the world location of chunk location x
+				//int realZ = z + chunk.getZ() * 16;
+				Block block = chunk.getBlock(x, world_height, z);
+				Block blockSupp = block.getRelative(BlockFace.DOWN);
+				
+				if(!block.getType().equals(Material.AIR)
+						|| blockSupp.getType().equals(Material.LONG_GRASS) 
+						|| blockSupp.getType().equals(Material.LEAVES)
+						|| !blockSupp.getType().equals(Material.DIRT) && !blockSupp.getType().equals(Material.GRASS))
+						{ 
+							continue;
+						}
+				
+				if(rand.nextDouble() > 0.8){
+					block.setType(Material.LONG_GRASS);
+					block.setData((byte) 1);
 				}
 			}
 		}

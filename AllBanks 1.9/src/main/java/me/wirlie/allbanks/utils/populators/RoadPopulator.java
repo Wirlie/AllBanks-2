@@ -33,26 +33,36 @@ import org.bukkit.generator.BlockPopulator;
  */
 public class RoadPopulator extends BlockPopulator  {
 	
+	int world_height = 0;
+	
+	/**
+	 * @param world_height
+	 */
+	public RoadPopulator(int world_height) {
+		this.world_height = world_height;
+	}
+
 	@Override
 	public void populate(World world, Random rand, Chunk chunk) {
 		for (int x = 0; x < 16; x++) {
 			for (int z = 0; z < 16; z++) {
-				for (int y = 0; y < world.getMaxHeight(); y++) {
-					int realX = x + chunk.getX() * 16; //find the world location of chunk location x
-					int realZ = z + chunk.getZ() * 16;
-					
-					//tamaño de calle 6
-					int roadSize = 7;
-					
-					//tamaño de plot
-					int plotSize = 20;
-					
-					boolean placeRoad = false;
-					boolean placePlotLimit = false;
+				int realX = x + chunk.getX() * 16; //find the world location of chunk location x
+				int realZ = z + chunk.getZ() * 16;
+				int y = world_height;
+				
+				//tamaño de calle 6
+				int roadSize = 10;
+				
+				//tamaño de plot
+				int plotSize = 40;
+				
+				boolean placeRoad = false;
+				boolean placePlotLimit = false;
 
-					int cursorX = 0;
-					int cursorZ = 0;
-					
+				int cursorX = 0;
+				int cursorZ = 0;
+				
+				if(realX > 0){
 					while(cursorX < realX){
 						
 						cursorX += roadSize;
@@ -88,13 +98,54 @@ public class RoadPopulator extends BlockPopulator  {
 						//Continuar con el calculo del cursor
 						continue;
 					}
-					
-					if(!placeRoad && !placePlotLimit)
+				}else{
+					while(cursorX > realX){
+						
+						//Tamaño del plot
+						cursorX -= plotSize;
+						
+						if(realX >= cursorX){
+							//El cursor apunta a una parcela
+							break;
+						}
+						
+						cursorX --;
+						
+						if(realX == cursorX){
+							placePlotLimit = true;
+							break;
+						}
+						
+						//Calle
+						cursorX -= roadSize;
+						
+						if(realX >= cursorX){
+							placeRoad = true;
+							break;
+						}
+						
+						//Limite del plot, decoración
+						cursorX--;
+						
+						if(realX == cursorX){
+							placePlotLimit = true;
+							break;
+						}
+						
+						//Continuar con el calculo del cursor
+						continue;
+					}
+				}
+				
+				if(!placeRoad)
+					if(realZ > 0){
 						while(cursorZ < realZ){
 							
 							cursorZ += roadSize;
 							
 							if(realZ <= cursorZ){
+								if(placePlotLimit) placePlotLimit = false;
+								
 								placeRoad = true;
 								break;
 							}
@@ -125,34 +176,63 @@ public class RoadPopulator extends BlockPopulator  {
 							//Continuar con el calculo del cursor
 							continue;
 						}
-					
-					if(!placeRoad && !placePlotLimit) continue;
-					
-					if(placeRoad){
-	                    Block block = chunk.getBlock(x, y, z);
-	                    
-	                    if(!block.getType().equals(Material.AIR)){
-	                    	continue;
-	                    }
-	                    
-	                    block = block.getRelative(BlockFace.DOWN);
-	                    
-	                    block.setType(Material.WOOD);
+					}else{
+						while(cursorZ > realZ){
+							
+							//Tamaño del plot
+							cursorZ -= plotSize;
+							
+							if(realZ >= cursorZ){
+								//El cursor apunta a una parcela
+								break;
+							}
+							
+							cursorZ --;
+							
+							if(realZ == cursorZ){
+								placePlotLimit = true;
+								break;
+							}
+							
+							//Calle
+							cursorZ -= roadSize;
+							
+							if(realZ >= cursorZ){
+								if(placePlotLimit) placePlotLimit = false;
+								
+								placeRoad = true;
+								break;
+							}
+							
+							//Limite del plot, decoración
+							cursorZ--;
+							
+							if(realZ == cursorZ){
+								placePlotLimit = true;
+								break;
+							}
+							
+							//Continuar con el calculo del cursor
+							continue;
+						}
 					}
-					
-					if(placePlotLimit){
-						Block block = chunk.getBlock(x, y, z);
-	                    
-	                    if(!block.getType().equals(Material.AIR)){
-	                    	continue;
-	                    }
-	                    
-	                    block = block.getRelative(BlockFace.DOWN);
-	                    
-	                    block.setType(Material.STONE_SLAB2);
-					}
+				
+				if(realX == 0 && !placeRoad || realZ == 0 && !placeRoad) placePlotLimit = true;
+				
+				if(!placeRoad && !placePlotLimit) continue;
+				
+				if(placeRoad){
+                    Block block = chunk.getBlock(x, y, z);
                     
-					break;
+                    block = block.getRelative(BlockFace.DOWN);
+                    
+                    block.setType(Material.WOOD);
+				}
+				
+				if(placePlotLimit){
+					Block block = chunk.getBlock(x, y, z);
+                    
+                    block.setType(Material.STEP);
 				}
 			}
 		}

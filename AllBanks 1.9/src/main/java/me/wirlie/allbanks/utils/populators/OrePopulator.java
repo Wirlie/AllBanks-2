@@ -96,36 +96,35 @@ public class OrePopulator extends BlockPopulator {
     	relativeBlockPos[14][2] = 3;
     }
     
-    static final int[] ORES_INITIAL_CHANCE = {
-    	10000, //0 Coal
-    	5000, //1 Iron
-    	2500, //2 Lapis
-    	1250, //3 Gold
-    	1000, //4 Redstone
-    	500, //5 Diamond
-    	0, //6 Emerald
-    };
-    
     static final int[] ORES_MAX_Y = {
-    	50, //0 Coal	128
-        50, //1 Iron	64
+    	128, //0 Coal	128
+        64, //1 Iron	64
         23, //2 Lapis
-        50, //3 Gold	60
+        40, //3 Gold	60
         15, //4 Redstone
         15, //5 Diamond
         30, //6 Emerald
     };
+    
+    int world_height = 0;
 
-    @Override
+    /**
+	 * @param world_height
+	 */
+	public OrePopulator(int world_height) {
+		this.world_height = world_height;
+	}
+
+	@Override
     public void populate(World world, Random rand, Chunk chunk) {
     	
     	int coal_rand = (rand.nextInt(10 - 6) + 6);
     	int iron_rand = (rand.nextInt(8 - 5) + 5);
-    	int lapis_rand = (rand.nextInt(4 - 3) + 3);
-    	int gold_rand = (rand.nextInt(5 - 2) + 2);
+    	int lapis_rand = (rand.nextInt(4));
+    	int gold_rand = (rand.nextInt(3 - 1) + 1);
     	int redstone_rand = (rand.nextInt(4 - 2) + 2);
-    	int diamond_rand = (rand.nextInt(2 - 1) + 1);
-    	int emerald_rand = (rand.nextInt(1 - 0) + 0);
+    	int diamond_rand = (rand.nextInt(2));
+    	int emerald_rand = (rand.nextInt(2));
     	
     	boolean shouldContinue = true;
     	int i = 0;
@@ -134,31 +133,31 @@ public class OrePopulator extends BlockPopulator {
         	shouldContinue = false;
         	
 			if(i < coal_rand){ 
-				populateRandomOre(chunk, rand, Material.COAL_ORE, ORES_INITIAL_CHANCE[0]);
+				populateRandomOre(chunk, rand, Material.COAL_ORE);
 	        	shouldContinue = true;
 			}
             if(i < iron_rand){
-            	populateRandomOre(chunk, rand, Material.IRON_ORE, ORES_INITIAL_CHANCE[1]);
+            	populateRandomOre(chunk, rand, Material.IRON_ORE);
 	        	shouldContinue = true;
             }
             if(i < lapis_rand){
-            	populateRandomOre(chunk, rand, Material.LAPIS_ORE, ORES_INITIAL_CHANCE[2]);
+            	populateRandomOre(chunk, rand, Material.LAPIS_ORE);
 	        	shouldContinue = true;
             }
             if(i < gold_rand){
-            	populateRandomOre(chunk, rand, Material.GOLD_ORE, ORES_INITIAL_CHANCE[3]);
+            	populateRandomOre(chunk, rand, Material.GOLD_ORE);
 	        	shouldContinue = true;
             }
             if(i < redstone_rand){
-            	populateRandomOre(chunk, rand, Material.REDSTONE_ORE, ORES_INITIAL_CHANCE[4]);
+            	populateRandomOre(chunk, rand, Material.REDSTONE_ORE);
 	        	shouldContinue = true;
             }
 			if(i < diamond_rand){
-				populateRandomOre(chunk, rand, Material.DIAMOND_ORE, ORES_INITIAL_CHANCE[5]);
+				populateRandomOre(chunk, rand, Material.DIAMOND_ORE);
 	        	shouldContinue = true;
 			}
 			if(i < emerald_rand){
-				populateRandomOre(chunk, rand, Material.EMERALD_ORE, ORES_INITIAL_CHANCE[6]);
+				populateRandomOre(chunk, rand, Material.EMERALD_ORE);
 	        	shouldContinue = true;
 			}
 			
@@ -166,17 +165,19 @@ public class OrePopulator extends BlockPopulator {
         }
     }
 
-    public void populateRandomOre(Chunk chunk, Random rand, Material material, int initialChance) {
+    public void populateRandomOre(Chunk chunk, Random rand, Material material) {
     	
     	int maxY = 0, min_amount = 3, max_amount = 3;
     	
     	if(material == Material.COAL_ORE){
     		maxY = ORES_MAX_Y[0];
     		max_amount = 15;
+    		min_amount = 5;
     	}
     	if(material == Material.IRON_ORE){
     		maxY = ORES_MAX_Y[1];
     		max_amount = 12;
+    		min_amount = 5;
     	}
     	if(material == Material.LAPIS_ORE){
     		maxY = ORES_MAX_Y[2];
@@ -196,8 +197,11 @@ public class OrePopulator extends BlockPopulator {
     	}
     	if(material == Material.EMERALD_ORE){
     		maxY = ORES_MAX_Y[6];
-    		max_amount = 3; min_amount = 1;
+    		max_amount = 2; 
+    		min_amount = 1;
     	}
+    	
+    	if(maxY > world_height) maxY = world_height;
     	
         int y = 0, z = 0, x = rand.nextInt(14) + 1;
         
