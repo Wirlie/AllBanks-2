@@ -173,8 +173,18 @@ public class AllBanks extends JavaPlugin {
 		
 		}
 		
+		//Necesario para que AllBanks funcione.
+		if(!DataBaseSQLite.tryForClass()) {
+    		AllBanksLogger.severe("Ops! Class not found: org.sqlite.JDBC", true);
+    		AllBanksLogger.severe("JDBC driver is required, disabling AllBanks...", true);
+    		Bukkit.getServer().getPluginManager().disablePlugin(this);
+    		return;
+		}
+		
 		//Establecer conexión para la base de datos que ayudará a resolver los objetos que almacenan datos NBT (Libros encantados)
 		dbSQLite.setConnection(getDataFolder() + File.separator + "itemSolution.db", "itemSolution");
+		//PlotWorlds (Mundos)
+		dbSQLite.setConnection(getDataFolder() + File.separator + "AllBanksLandWorldData.db", "AllBanksLand");
 		//Instalar la base de datos, en caso de que no exista.
 		installItemSolutionDataBase();
 		
