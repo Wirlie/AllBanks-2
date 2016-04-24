@@ -43,6 +43,25 @@ import me.wirlie.allbanks.AllBanks;
  */
 public class Util {
 	
+	public static boolean deleteDirectory(File directory) {
+	    if(directory.exists() && directory.isDirectory()){
+	        File[] files = directory.listFiles();
+	        if(null != files){
+	            for(int i=0; i<files.length; i++) {
+	                if(files[i].isDirectory()) {
+	                    deleteDirectory(files[i]);
+	                }
+	                else {
+	                	System.gc();
+	                    files[i].delete();
+	                }
+	            }
+	        }
+	    }
+	    
+	    return (directory.delete());
+	}
+	
 	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
 	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
 	        new Comparator<Map.Entry<K,V>>() {
