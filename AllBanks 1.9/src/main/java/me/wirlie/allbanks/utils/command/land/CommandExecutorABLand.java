@@ -39,9 +39,9 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "?");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "help");
-		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "generate", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>");
-		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "unload", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>");
-		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "remove", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>");
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "generate");
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "unload");
+		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "remove");
 		//REMOVE Debug command
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "teleport", "RegEx->(.){1,}:<player>", "RegEx->(.){1,}:<worldName>");
 		//Relacionado al plot y comandos de usuario
