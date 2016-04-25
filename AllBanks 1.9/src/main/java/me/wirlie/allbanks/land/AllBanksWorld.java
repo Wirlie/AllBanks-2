@@ -30,15 +30,15 @@ public class AllBanksWorld {
 		ERROR_DATABASE_EXCEPTION,
 	}
 	
-	private static HashMap<String, AllBanksWorld> storedMaps = new HashMap<String, AllBanksWorld>();
-	
+	private static HashMap<String, AllBanksWorld> registeredMaps = new HashMap<String, AllBanksWorld>();
+
 	public static AllBanksWorld getPlotWorld(String worldID){
-		return storedMaps.get(worldID);
+		return registeredMaps.get(worldID);
 	}
 	
 	public static boolean unloadPlotWorld(String worldID, boolean saveWorld){
 		if(Bukkit.unloadWorld(worldID, saveWorld)){
-			storedMaps.remove(worldID);
+			registeredMaps.remove(worldID);
 			return true;
 		}
 		
@@ -70,7 +70,7 @@ public class AllBanksWorld {
 				}
 		
 		if(Util.deleteDirectory(worldFolder)){
-			storedMaps.remove(worldID);
+			registeredMaps.remove(worldID);
 			return 1;
 		}else{
 			return 0;
@@ -78,7 +78,7 @@ public class AllBanksWorld {
 	}
 	
 	public static boolean checkPlotWorld(String worldID){
-		return storedMaps.containsKey(worldID);
+		return registeredMaps.containsKey(worldID);
 	}
 	
 	public static WorldGenerationResult generatePlotWorld(String worldID){
@@ -151,10 +151,18 @@ public class AllBanksWorld {
 			
 		}.runTaskAsynchronously(AllBanks.getInstance());
 		
-		storedMaps.put(worldID, new AllBanksWorld());
+		registeredMaps.put(worldID, new AllBanksWorld(worldID));
 		
 		return WorldGenerationResult.SUCCESS;
 		
+	}
+	
+	//Funciones no estáticas usadas para obtener información del mundo
+	
+	private String world_id = null;
+
+	public AllBanksWorld(String worldID) {
+		this.world_id = worldID;
 	}
 	
 }

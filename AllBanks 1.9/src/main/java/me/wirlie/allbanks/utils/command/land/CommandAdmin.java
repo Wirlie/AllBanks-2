@@ -30,21 +30,7 @@ public class CommandAdmin extends Command {
 			return true;
 		}
 
-		if(args[1].equalsIgnoreCase("teleport")){
-			if(args.length > 3){
-				String player = args[2];
-				String world = args[3];
-				
-				Bukkit.getPlayer(player).teleport(Bukkit.getWorld(world).getSpawnLocation());
-			}else{
-				//No cumple con los requisitos: /ab database <arg>
-				Translation.getAndSendMessage(sender, 
-						StringsID.COMMAND_SUGGEST_HELP, 
-						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab teleport ?"),
-						true);
-				return true;
-			}
-		}else if(args[1].equalsIgnoreCase("world")){
+		if(args[1].equalsIgnoreCase("world")){
 			if(args.length > 3){
 				if(args[3].equalsIgnoreCase("generate")){
 					String worldName = args[2];
