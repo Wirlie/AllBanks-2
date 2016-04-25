@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.generator;
+package me.wirlie.allbanks.land.generator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
-import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+import me.wirlie.allbanks.land.WorldGenerationCfg;
 
 /**
  * @author Wirlie
@@ -120,7 +120,7 @@ public class WorldChunkGenerator extends ChunkGenerator{
         
        //Hacer que crezcan hierbas
         pops.add(new FlatRoadPopulator(worldCfg));
-        if(worldCfg.coal_ore || worldCfg.diamon_ore || worldCfg.emerald_ore || worldCfg.redstone_ore
+        if(worldCfg.coal_ore || worldCfg.diamond_ore || worldCfg.emerald_ore || worldCfg.redstone_ore
         		|| worldCfg.lapis_ore || worldCfg.gold_ore || worldCfg.iron_ore)
         	pops.add(new FlatOrePopulator(worldCfg));
         if(worldCfg.generate_grass)

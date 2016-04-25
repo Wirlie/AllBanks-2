@@ -7,6 +7,7 @@ import org.bukkit.command.CommandSender;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.land.WorldGenerationCfg;
 import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationResult;
 import me.wirlie.allbanks.utils.command.Command;
 
@@ -58,13 +59,21 @@ public class CommandAdmin extends Command {
 						return true;
 					}
 					
-					//Generar mundo
-					WorldGenerationResult result = AllBanksWorld.generatePlotWorld(worldName, sender);
-					
-					if(result == WorldGenerationResult.SUCCESS){
-						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_GENERATING, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-					}else{	
-						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_GENERATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + result), true);
+					//Checar si la configuración de generación para este mundo existe
+					if(WorldGenerationCfg.generatorConfigurationFileExists(worldName)){
+						//Generar mundo
+						WorldGenerationResult result = AllBanksWorld.generatePlotWorld(worldName, sender);
+						
+						if(result == WorldGenerationResult.SUCCESS){
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_GENERATING, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+						}else{	
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_GENERATE, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + result), true);
+						}
+					}else{
+						//Okey, generar nueva configuración y notificar al usuario.
+						String generatedFilePath = WorldGenerationCfg.makeNewDefaultGeneratorConfigurationFile(worldName);
+						
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_PRE_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + generatedFilePath), true);
 					}
 				}
 			}else{
@@ -112,7 +121,7 @@ public class CommandAdmin extends Command {
 					}else{
 						
 						//Carpeta del mundo
-						int check = AllBanksWorld.removePlotWorldFolder(worldName);
+						int check = AllBanksWorld.removePlotWorldFolderAndDataBase(worldName);
 						
 						if(check == -2){
 							//Este mundo no existe

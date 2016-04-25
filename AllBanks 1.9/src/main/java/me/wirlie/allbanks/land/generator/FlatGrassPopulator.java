@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.generator;
+package me.wirlie.allbanks.land.generator;
 
 import java.util.Random;
 
@@ -27,7 +27,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
-import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+import me.wirlie.allbanks.land.WorldGenerationCfg;
 
 /**
  * @author Wirlie

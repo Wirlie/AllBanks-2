@@ -18,29 +18,17 @@
  */
 package me.wirlie.allbanks.utils;
 
-import org.bukkit.generator.ChunkGenerator;
+import java.io.File;
 
-import me.wirlie.allbanks.generator.WorldChunkGenerator;
-import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+import me.wirlie.allbanks.AllBanks;
 
 /**
  * @author Wirlie
  *
  */
-public class WorldGenerator {
-	 
-	/**
-	*
-	* @param worldGenerationCfg
-	* The name of the world the generator is being applied to
-	* @param GenId
-	* The id (if any) specified by the user. It can be used if the plugin
-	* wants to have multiple generators in one plugin. More on this later.
-	* @return
-	* The ChunkGenerator that this plugin provides
-	*/
-	public static ChunkGenerator getDefaultWorldGenerator(WorldGenerationCfg worldGenerationCfg, String GenId) {
-	     return new WorldChunkGenerator(worldGenerationCfg);
-	}
+public class FileDirectory {
+	
+	/** Datos de los mundos generados por AllBanksLand **/
+	public static final File WORLDS_DATA_FOLDER = new File(AllBanks.getInstance() + File.separator + "Worlds");
 	
 }
