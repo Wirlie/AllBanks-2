@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.utils;
+package me.wirlie.allbanks.generator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,19 +28,23 @@ import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
-import me.wirlie.allbanks.utils.populators.GrassPopulator;
-import me.wirlie.allbanks.utils.populators.OrePopulator;
-import me.wirlie.allbanks.utils.populators.RoadPopulator;
-import me.wirlie.allbanks.utils.populators.TreePopulator;
+import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
 
 /**
  * @author Wirlie
  *
  */
 public class WorldChunkGenerator extends ChunkGenerator{
+
+	WorldGenerationCfg worldCfg = null;
 	
-	int world_height = 55;
-	
+	/**
+	 * @param worldGenerationCfg
+	 */
+	public WorldChunkGenerator(WorldGenerationCfg worldGenerationCfg) {
+		worldCfg = worldGenerationCfg;
+	}
+
 	/**
 	 * 
 	 * @param x
@@ -87,13 +91,13 @@ public class WorldChunkGenerator extends ChunkGenerator{
 		
 		for (int x=0; x<16; x++) { //loop through all of the blocks in the chunk that are lower than maxHeight
 			for (int z=0; z<16; z++) {
-				for (int y = 0; y < world_height; y++) {
+				for (int y = 0; y < worldCfg.world_height; y++) {
 
 					biome.setBiome(x, z, Biome.PLAINS);
 					
-					if(y == (world_height - 1)){
+					if(y == (worldCfg.world_height - 1)){
 						setBlock(x, y, z, chunk, Material.GRASS); //set the current block to stone
-					}else if(y > (world_height - 5) && y < world_height){
+					}else if(y > (worldCfg.world_height - 5) && y < worldCfg.world_height){
 						setBlock(x, y, z, chunk, Material.DIRT); //set the current block to stone
 					}else if(y == 0){
 						setBlock(x, y, z, chunk, Material.BEDROCK); //set the current block to stone
@@ -115,10 +119,14 @@ public class WorldChunkGenerator extends ChunkGenerator{
         ArrayList<BlockPopulator> pops = new ArrayList<BlockPopulator>();
         
        //Hacer que crezcan hierbas
-        pops.add(new RoadPopulator(world_height));
-        pops.add(new OrePopulator(world_height));
-        pops.add(new GrassPopulator(world_height));
-        pops.add(new TreePopulator(world_height));
+        pops.add(new FlatRoadPopulator(worldCfg));
+        if(worldCfg.coal_ore || worldCfg.diamon_ore || worldCfg.emerald_ore || worldCfg.redstone_ore
+        		|| worldCfg.lapis_ore || worldCfg.gold_ore || worldCfg.iron_ore)
+        	pops.add(new FlatOrePopulator(worldCfg));
+        if(worldCfg.generate_grass)
+        	pops.add(new FlatGrassPopulator(worldCfg));
+        if(worldCfg.generate_tree)
+        	pops.add(new FlatTreePopulator(worldCfg));
         
         return pops;
     }

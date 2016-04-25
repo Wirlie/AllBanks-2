@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.utils.populators;
+package me.wirlie.allbanks.generator;
 
 import java.util.Random;
 
@@ -26,11 +26,13 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 
+import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+
 /**
  * @author Wirlie
  *
  */
-public class OrePopulator extends BlockPopulator {
+public class FlatOrePopulator extends BlockPopulator {
 	static int[][] relativeBlockPos = new int[15][3];
 	
     static{
@@ -106,13 +108,13 @@ public class OrePopulator extends BlockPopulator {
         30, //6 Emerald
     };
     
-    int world_height = 0;
+    WorldGenerationCfg worldCfg;
 
     /**
-	 * @param world_height
+	 * @param worldCfg
 	 */
-	public OrePopulator(int world_height) {
-		this.world_height = world_height;
+	public FlatOrePopulator(WorldGenerationCfg worldCfg) {
+		this.worldCfg = worldCfg;
 	}
 
 	@Override
@@ -132,31 +134,31 @@ public class OrePopulator extends BlockPopulator {
         while(shouldContinue) {
         	shouldContinue = false;
         	
-			if(i < coal_rand){ 
+			if(i < coal_rand && !worldCfg.coal_ore){ 
 				populateRandomOre(chunk, rand, Material.COAL_ORE);
 	        	shouldContinue = true;
 			}
-            if(i < iron_rand){
+            if(i < iron_rand && !worldCfg.iron_ore){
             	populateRandomOre(chunk, rand, Material.IRON_ORE);
 	        	shouldContinue = true;
             }
-            if(i < lapis_rand){
+            if(i < lapis_rand && !worldCfg.lapis_ore){
             	populateRandomOre(chunk, rand, Material.LAPIS_ORE);
 	        	shouldContinue = true;
             }
-            if(i < gold_rand){
+            if(i < gold_rand && !worldCfg.gold_ore){
             	populateRandomOre(chunk, rand, Material.GOLD_ORE);
 	        	shouldContinue = true;
             }
-            if(i < redstone_rand){
+            if(i < redstone_rand && !worldCfg.redstone_ore){
             	populateRandomOre(chunk, rand, Material.REDSTONE_ORE);
 	        	shouldContinue = true;
             }
-			if(i < diamond_rand){
+			if(i < diamond_rand && !worldCfg.lapis_ore){
 				populateRandomOre(chunk, rand, Material.DIAMOND_ORE);
 	        	shouldContinue = true;
 			}
-			if(i < emerald_rand){
+			if(i < emerald_rand && !worldCfg.emerald_ore){
 				populateRandomOre(chunk, rand, Material.EMERALD_ORE);
 	        	shouldContinue = true;
 			}
@@ -201,7 +203,7 @@ public class OrePopulator extends BlockPopulator {
     		min_amount = 1;
     	}
     	
-    	if(maxY > world_height) maxY = world_height;
+    	if(maxY > worldCfg.world_height) maxY = worldCfg.world_height;
     	
         int y = 0, z = 0, x = rand.nextInt(14) + 1;
         
@@ -214,7 +216,7 @@ public class OrePopulator extends BlockPopulator {
         int ore_amount = rand.nextInt(max_amount - min_amount) + min_amount;
         
         for(int i = 0; i < ore_amount; i++) {
-                this.setOre(material, chunk, x + OrePopulator.relativeBlockPos[i][0], y + OrePopulator.relativeBlockPos[i][1], z + OrePopulator.relativeBlockPos[i][2]);
+                this.setOre(material, chunk, x + FlatOrePopulator.relativeBlockPos[i][0], y + FlatOrePopulator.relativeBlockPos[i][1], z + FlatOrePopulator.relativeBlockPos[i][2]);
         }
     }
 

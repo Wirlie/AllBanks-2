@@ -83,3 +83,21 @@ topranks:
   update-cache-every: "5 minutes"
 allbanks-land:
   enable: true
+  generate-ores:
+    diamond: true
+    emerald: true
+    redstone: true
+    lapis: true
+    iron: true
+    coal: true
+    gold: true
+  generate-tree-type:
+    enable: true
+    type-1: TREE
+    type-2: BIRCH
+  generate-grass: true
+  default-biome: "PLAINS"
+  world-block-height: 60
+  plot-size: 50
+  road-size: 10
+  road-material: "WOOD"

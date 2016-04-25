@@ -16,31 +16,32 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.utils.populators;
+package me.wirlie.allbanks.generator;
 
 import java.util.Random;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.TreeType;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
+import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+
 /**
  * @author Wirlie
  *
  */
-public class TreePopulator extends BlockPopulator {
+public class FlatTreePopulator extends BlockPopulator {
 	
-	int world_height = 0;
+	WorldGenerationCfg worldCfg;
 	/**
-	 * @param world_height
+	 * @param worldCfg
 	 */
-	public TreePopulator(int world_height) {
-		this.world_height = world_height;
+	public FlatTreePopulator(WorldGenerationCfg worldCfg) {
+		this.worldCfg = worldCfg;
 	}
 
 	@Override
@@ -49,10 +50,7 @@ public class TreePopulator extends BlockPopulator {
 			for (int z = 0; z < 16; z++) {
 				int realX = x + chunk.getX() * 16; //find the world location of chunk location x
 				int realZ = z + chunk.getZ() * 16;
-				int y = world_height;
-				
-				TreeType treeOne = TreeType.TREE;
-                TreeType treeTwo = TreeType.BIRCH;
+				int y = worldCfg.world_height;
 				
                 Block block = chunk.getBlock(x, y, z);
                 
@@ -69,7 +67,7 @@ public class TreePopulator extends BlockPopulator {
                 }
                 
                 if (rand.nextInt(100) < 1) {
-                    world.generateTree(new Location(world, (double)realX, (double)(y), (double)realZ), rand.nextInt(100) < 70 ? treeOne : treeTwo);
+                    world.generateTree(new Location(world, (double)realX, (double)(y), (double)realZ), rand.nextInt(100) < 70 ? worldCfg.tree_type_1 : worldCfg.tree_type_2);
                 }
 			}
 		}

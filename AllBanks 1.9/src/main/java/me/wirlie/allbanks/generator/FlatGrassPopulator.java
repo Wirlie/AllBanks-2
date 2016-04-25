@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.utils.populators;
+package me.wirlie.allbanks.generator;
 
 import java.util.Random;
 
@@ -27,18 +27,20 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.generator.BlockPopulator;
 
+import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+
 /**
  * @author Wirlie
  *
  */
-public class GrassPopulator extends BlockPopulator {
+public class FlatGrassPopulator extends BlockPopulator {
 	
-	int world_height = 0;
+	WorldGenerationCfg worldCfg;
 	/**
-	 * @param world_height
+	 * @param worldCfg
 	 */
-	public GrassPopulator(int world_height) {
-		this.world_height = world_height;
+	public FlatGrassPopulator(WorldGenerationCfg worldCfg) {
+		this.worldCfg = worldCfg;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -48,7 +50,7 @@ public class GrassPopulator extends BlockPopulator {
 			for (int z = 0; z < 16; z++) {
 				//int realX = x + chunk.getX() * 16; //find the world location of chunk location x
 				//int realZ = z + chunk.getZ() * 16;
-				Block block = chunk.getBlock(x, world_height, z);
+				Block block = chunk.getBlock(x, worldCfg.world_height, z);
 				Block blockSupp = block.getRelative(BlockFace.DOWN);
 				
 				if(!block.getType().equals(Material.AIR)

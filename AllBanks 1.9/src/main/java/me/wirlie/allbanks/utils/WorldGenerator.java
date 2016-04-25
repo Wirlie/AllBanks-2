@@ -20,6 +20,9 @@ package me.wirlie.allbanks.utils;
 
 import org.bukkit.generator.ChunkGenerator;
 
+import me.wirlie.allbanks.generator.WorldChunkGenerator;
+import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationCfg;
+
 /**
  * @author Wirlie
  *
@@ -28,7 +31,7 @@ public class WorldGenerator {
 	 
 	/**
 	*
-	* @param worldName
+	* @param worldGenerationCfg
 	* The name of the world the generator is being applied to
 	* @param GenId
 	* The id (if any) specified by the user. It can be used if the plugin
@@ -36,8 +39,8 @@ public class WorldGenerator {
 	* @return
 	* The ChunkGenerator that this plugin provides
 	*/
-	public static ChunkGenerator getDefaultWorldGenerator(String worldName, String GenId) {
-	     return new WorldChunkGenerator();
+	public static ChunkGenerator getDefaultWorldGenerator(WorldGenerationCfg worldGenerationCfg, String GenId) {
+	     return new WorldChunkGenerator(worldGenerationCfg);
 	}
 	
 }
