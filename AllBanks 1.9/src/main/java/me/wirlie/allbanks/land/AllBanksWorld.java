@@ -1,7 +1,6 @@
 package me.wirlie.allbanks.land;
 
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -13,8 +12,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.StringsID;
-import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
@@ -95,15 +92,6 @@ public class AllBanksWorld {
 		}
 		
 		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
-		
-		File worldConfigurationFile = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + worldID + ".yml" );
-		
-		try {
-			worldConfigurationFile.createNewFile();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return WorldGenerationResult.ERROR_IO_EXCEPTION;
-		}
 		
 		//Crear tabla para este mundo
 		Statement stm = null;
