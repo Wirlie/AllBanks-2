@@ -18,6 +18,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
+import me.wirlie.allbanks.utils.WorldLoadAsync;
 
 public class AllBanksWorld {
 	
@@ -30,7 +31,7 @@ public class AllBanksWorld {
 		ERROR_DATABASE_EXCEPTION,
 	}
 	
-	private static HashMap<String, AllBanksWorld> registeredMaps = new HashMap<String, AllBanksWorld>();
+	public static HashMap<String, AllBanksWorld> registeredMaps = new HashMap<String, AllBanksWorld>();
 
 	public static AllBanksWorld getPlotWorld(String worldID){
 		return registeredMaps.get(worldID);
@@ -47,7 +48,7 @@ public class AllBanksWorld {
 	
 	public static int removePlotWorldFolderAndDataBase(String worldID){
 		//Remover carpeta
-		File worldFolder = new File(new File("").getAbsolutePath() + File.separator + worldID);
+		final File worldFolder = new File(new File("").getAbsolutePath() + File.separator + worldID);
 		
 		if(!worldFolder.exists()) return -2;
 		
@@ -56,7 +57,7 @@ public class AllBanksWorld {
 				try {
 					stm = DBC.createStatement();
 					stm.executeUpdate("DROP TABLE IF EXISTS world_" + worldID + "_plots");
-					stm.executeUpdate("REMOVE FROM worlds_cfg WHERE world_id = '" + worldID + "'");
+					stm.executeUpdate("DELETE FROM worlds_cfg WHERE world_id = '" + worldID + "'");
 				} catch (SQLException e) {
 					e.printStackTrace();
 					return -1;
@@ -69,12 +70,15 @@ public class AllBanksWorld {
 						}
 				}
 		
-		if(Util.deleteDirectory(worldFolder)){
-			registeredMaps.remove(worldID);
-			return 1;
-		}else{
-			return 0;
-		}
+		registeredMaps.remove(worldID);
+		
+		new BukkitRunnable(){
+			public void run() {
+				Util.deleteDirectory(worldFolder);
+			}
+		}.runTaskAsynchronously(AllBanks.getInstance());
+		
+		return 1;
 	}
 	
 	public static boolean checkPlotWorld(String worldID){
@@ -128,7 +132,7 @@ public class AllBanksWorld {
 		new BukkitRunnable(){
 
 			public void run() {
-				Bukkit.getServer().createWorld(wc);	
+				WorldLoadAsync.createAsyncWorld(wc, sender);
 				
 				//Tabla en la base de datos
 				Statement stm = null;
@@ -145,8 +149,6 @@ public class AllBanksWorld {
 							DataBaseUtil.checkDatabaseIsLocked(e);
 						}
 				}
-				
-				if(sender != null) Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_GENERATING_FINISH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldID), true);
 			}
 			
 		}.runTaskAsynchronously(AllBanks.getInstance());

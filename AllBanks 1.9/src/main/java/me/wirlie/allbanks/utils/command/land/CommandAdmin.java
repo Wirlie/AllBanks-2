@@ -2,13 +2,16 @@ package me.wirlie.allbanks.utils.command.land;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.WorldGenerationCfg;
+import me.wirlie.allbanks.land.WorldGenerator;
 import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationResult;
+import me.wirlie.allbanks.utils.WorldLoadAsync;
 import me.wirlie.allbanks.utils.command.Command;
 
 public class CommandAdmin extends Command {
@@ -48,6 +51,11 @@ public class CommandAdmin extends Command {
 					//Checar si la configuración de generación para este mundo existe
 					if(WorldGenerationCfg.generatorConfigurationFileExists(worldName)){
 						//Generar mundo
+						if(WorldLoadAsync.isBusy()){
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_ANOTHER_JOB_IN_PROGRESS, true);
+							return true;
+						}
+						
 						WorldGenerationResult result = AllBanksWorld.generatePlotWorld(worldName, sender);
 						
 						if(result == WorldGenerationResult.SUCCESS){
@@ -61,18 +69,12 @@ public class CommandAdmin extends Command {
 						
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_PRE_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + generatedFilePath), true);
 					}
-				}
-			}else{
-				//No cumple con los requisitos: /ab database <arg>
-				Translation.getAndSendMessage(sender, 
-						StringsID.COMMAND_SUGGEST_HELP, 
-						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab world ?"),
-						true);
-				return true;
-			}
-		}else if(args[1].equalsIgnoreCase("world")){
-			if(args.length > 3){
-				if(args[3].equalsIgnoreCase("unload")){
+				}else if(args[3].equalsIgnoreCase("test")){
+					String worldName = args[2];
+					World world = Bukkit.getWorld(worldName);
+					
+					WorldLoadAsync.createAsyncWorld(new WorldCreator(worldName).generateStructures(false).generator(WorldGenerator.getDefaultWorldGenerator(new WorldGenerationCfg(worldName), "AllBanksPlotGenerator")));
+				}else if(args[3].equalsIgnoreCase("unload")){
 					String worldName = args[2];
 					World world = Bukkit.getWorld(worldName);
 					
@@ -87,17 +89,7 @@ public class CommandAdmin extends Command {
 						//Este mundo no existe
 						Translation.getAndSendMessage(sender, StringsID.ERROR_WORLD_NOT_LOADED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 					}
-				}
-			}else{
-				Translation.getAndSendMessage(sender, 
-						StringsID.COMMAND_SUGGEST_HELP, 
-						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab world ?"),
-						true);
-				return true;
-			}
-		}else if(args[1].equalsIgnoreCase("world")){
-			if(args.length > 3){
-				if(args[3].equalsIgnoreCase("remove")){
+				}else if(args[3].equalsIgnoreCase("remove")){
 					String worldName = args[2];
 					World world = Bukkit.getWorld(worldName);
 					
@@ -129,10 +121,17 @@ public class CommandAdmin extends Command {
 					//No cumple con los requisitos: /ab database <arg>
 					Translation.getAndSendMessage(sender, 
 							StringsID.COMMAND_SUGGEST_HELP, 
-							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab world ?"),
+							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab admin world ?"),
 							true);
 					return true;
 				}
+			}else{
+				//No cumple con los requisitos: /ab database <arg>
+				Translation.getAndSendMessage(sender, 
+						StringsID.COMMAND_SUGGEST_HELP, 
+						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab world ?"),
+						true);
+				return true;
 			}
 		}
 		

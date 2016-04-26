@@ -24,7 +24,6 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.Biome;
 import org.bukkit.generator.BlockPopulator;
 import org.bukkit.generator.ChunkGenerator;
 
@@ -93,7 +92,7 @@ public class WorldChunkGenerator extends ChunkGenerator{
 			for (int z=0; z<16; z++) {
 				for (int y = 0; y < worldCfg.world_height; y++) {
 
-					biome.setBiome(x, z, Biome.PLAINS);
+					biome.setBiome(x, z, worldCfg.default_biome);
 					
 					if(y == (worldCfg.world_height - 1)){
 						setBlock(x, y, z, chunk, Material.GRASS); //set the current block to stone

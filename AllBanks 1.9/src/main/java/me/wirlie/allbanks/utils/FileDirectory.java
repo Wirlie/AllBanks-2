@@ -29,6 +29,6 @@ import me.wirlie.allbanks.AllBanks;
 public class FileDirectory {
 	
 	/** Datos de los mundos generados por AllBanksLand **/
-	public static final File WORLDS_DATA_FOLDER = new File(AllBanks.getInstance() + File.separator + "Worlds");
+	public static final File WORLDS_DATA_FOLDER = new File(AllBanks.getInstance().getDataFolder() + File.separator + "Worlds");
 	
 }

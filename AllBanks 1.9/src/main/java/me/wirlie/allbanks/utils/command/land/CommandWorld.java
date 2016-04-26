@@ -55,22 +55,27 @@ public class CommandWorld extends Command {
 				if(args.length >= 2){
 					String worldName = args[1];
 					
-					if(AllBanksWorld.checkPlotWorld(worldName)){
+					if(AllBanksWorld.checkPlotWorld(worldName) || true){
 						World w = Bukkit.getWorld(worldName);
 						
 						if(w != null){
 							Bukkit.getPlayer(sender.getName()).teleport(w.getSpawnLocation());
+							sender.sendMessage("WORLD " + w.getName());
 						}else{
 							//El mundo no pudo ser cargado desde Bukkit
+							sender.sendMessage("BUKKIT-ERROR");
 						}
 					}else{
 						//Mundo no cargado en AllBanks
+						sender.sendMessage("NO-LOADED-ALLBANKS");
 					}
 				}else{
 					//Argumentos inválidos
+					sender.sendMessage("INVALID-ARGS");
 				}
 			}else{
 				//No es un jugador
+				sender.sendMessage("SENDER-NO-IS-PLAYER");
 			}
 			
 		}

@@ -134,31 +134,31 @@ public class FlatOrePopulator extends BlockPopulator {
         while(shouldContinue) {
         	shouldContinue = false;
         	
-			if(i < coal_rand && !worldCfg.coal_ore){ 
+			if(i < coal_rand && worldCfg.coal_ore){ 
 				populateRandomOre(chunk, rand, Material.COAL_ORE);
 	        	shouldContinue = true;
 			}
-            if(i < iron_rand && !worldCfg.iron_ore){
+            if(i < iron_rand && worldCfg.iron_ore){
             	populateRandomOre(chunk, rand, Material.IRON_ORE);
 	        	shouldContinue = true;
             }
-            if(i < lapis_rand && !worldCfg.lapis_ore){
+            if(i < lapis_rand && worldCfg.lapis_ore){
             	populateRandomOre(chunk, rand, Material.LAPIS_ORE);
 	        	shouldContinue = true;
             }
-            if(i < gold_rand && !worldCfg.gold_ore){
+            if(i < gold_rand && worldCfg.gold_ore){
             	populateRandomOre(chunk, rand, Material.GOLD_ORE);
 	        	shouldContinue = true;
             }
-            if(i < redstone_rand && !worldCfg.redstone_ore){
+            if(i < redstone_rand && worldCfg.redstone_ore){
             	populateRandomOre(chunk, rand, Material.REDSTONE_ORE);
 	        	shouldContinue = true;
             }
-			if(i < diamond_rand && !worldCfg.lapis_ore){
+			if(i < diamond_rand && worldCfg.diamond_ore){
 				populateRandomOre(chunk, rand, Material.DIAMOND_ORE);
 	        	shouldContinue = true;
 			}
-			if(i < emerald_rand && !worldCfg.emerald_ore){
+			if(i < emerald_rand && worldCfg.emerald_ore){
 				populateRandomOre(chunk, rand, Material.EMERALD_ORE);
 	        	shouldContinue = true;
 			}
