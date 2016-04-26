@@ -69,11 +69,6 @@ public class CommandAdmin extends Command {
 						
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_PRE_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + generatedFilePath), true);
 					}
-				}else if(args[3].equalsIgnoreCase("test")){
-					String worldName = args[2];
-					World world = Bukkit.getWorld(worldName);
-					
-					WorldLoadAsync.createAsyncWorld(new WorldCreator(worldName).generateStructures(false).generator(WorldGenerator.getDefaultWorldGenerator(new WorldGenerationCfg(worldName), "AllBanksPlotGenerator")));
 				}else if(args[3].equalsIgnoreCase("unload")){
 					String worldName = args[2];
 					World world = Bukkit.getWorld(worldName);
