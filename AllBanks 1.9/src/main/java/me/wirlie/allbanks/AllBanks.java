@@ -47,6 +47,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
 import me.wirlie.allbanks.hooks.HookManager;
+import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.listeners.banks.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.banks.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.banks.PlayerMoveListener;
@@ -200,6 +201,9 @@ public class AllBanks extends JavaPlugin {
 		if(getStorageMethod().equals(StorageType.MYSQL) || getStorageMethod().equals(StorageType.SQLITE)) {
 			installDatabase();
 		}
+		
+		//Cargar mundos
+		AllBanksWorld.loadWorldsStartup();
 		
 		//Instalar la economía, si no se ha encontrado Vault o algún plugin de economía AllBanks se deshabilitará con un aviso.
 		if(!setupEconomy()){

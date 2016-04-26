@@ -2,6 +2,7 @@ package me.wirlie.allbanks.land;
 
 import java.io.File;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
@@ -145,6 +146,41 @@ public class AllBanksWorld {
 		
 		return WorldGenerationResult.SUCCESS;
 		
+	}
+	
+	public static void loadWorldsStartup(){
+		
+		Statement stm;
+		ResultSet res;
+		
+		try{
+			stm = DBC.createStatement();
+			res = stm.executeQuery("SELECT * FROM worlds_cfg");
+			
+			while(res.next()){
+				String worldID = res.getString("world_id");
+				int plotSize = res.getInt("plot_size");
+				int roadSize = res.getInt("road_size");
+				
+				File worldFolder = new File(".", worldID);
+				
+				if(worldFolder.exists() && worldFolder.isDirectory()){
+					if(Bukkit.getWorld(worldID) == null){
+						AllBanks.getInstance().getLogger().info("Loading world " + worldID + "...");
+						WorldGenerationCfg worldCfg = new WorldGenerationCfg(worldID);
+						
+						worldCfg.plot_size = plotSize;
+						worldCfg.road_size = roadSize;
+						
+						Bukkit.createWorld(new WorldCreator(worldID).generateStructures(false).generator(WorldGenerator.getDefaultWorldGenerator(worldCfg, "AllBanksPlotGenerator")));
+					}
+				}else{
+					AllBanks.getInstance().getLogger().warning("Invalid world entry for " + worldID + ", invalid file path.");
+				}
+			}
+		}catch(SQLException e){
+			
+		}
 	}
 	
 	//Funciones no estáticas usadas para obtener información del mundo

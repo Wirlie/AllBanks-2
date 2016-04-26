@@ -142,7 +142,7 @@ public class WorldLoadAsync {
 			    	e.printStackTrace();
 			    }
 			    
-			    System.out.print("[AllBanks] ASYNC: Preparing start region for level " + (getServer().worlds.size() - 1) + " (Seed: " + internal.getSeed() + ")");
+			    System.out.print("[AllBanks] ASYNC: Preparing start region for level " + (getServer().worlds.size()) + " (Seed: " + internal.getSeed() + ")");
 
 			    if(internal.keepSpawnInMemory){
 			    	
