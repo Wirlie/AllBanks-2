@@ -54,12 +54,13 @@ public class FlatRoadPopulator extends BlockPopulator  {
 				int y = worldCfg.world_height;
 				int roadSize = worldCfg.road_size;
 				int plotSize = worldCfg.plot_size;
+				int totalSize = roadSize + plotSize + 2;
 				
 				boolean placeRoad = false;
 				boolean placePlotLimit = false;
 
-				int cursorX = 0;
-				int cursorZ = 0;
+				int cursorX = ((int) Math.floor(realX / totalSize)) * totalSize;
+				int cursorZ = ((int) Math.floor(realZ / totalSize)) * totalSize;
 				
 				if(realX > 0){
 					while(cursorX < realX){
