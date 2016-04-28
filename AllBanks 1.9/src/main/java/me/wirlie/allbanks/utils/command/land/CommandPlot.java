@@ -11,7 +11,7 @@ public class CommandPlot extends Command {
 		
 		boolean displayHelp = false;
 		
-		if(args.length <= 1){
+		if(args.length <= 1){ 
 			//	/abland plot
 			displayHelp = true;
 		}else if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
