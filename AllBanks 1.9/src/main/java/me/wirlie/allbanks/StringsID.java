@@ -20,7 +20,7 @@ package me.wirlie.allbanks;
 
 import java.util.HashMap;
 
-/**
+/** 
  * Clase encargada de interpretar el ID de las traducciones.
  * @author Wirlie
  * @since AllBanks v1.0
