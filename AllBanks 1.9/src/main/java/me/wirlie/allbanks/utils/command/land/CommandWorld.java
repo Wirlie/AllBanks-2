@@ -23,7 +23,10 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.utils.WorldLoadAsync;
 import me.wirlie.allbanks.utils.command.Command;
 
 /**
@@ -56,18 +59,22 @@ public class CommandWorld extends Command {
 					String worldName = args[1].toLowerCase();
 					
 					if(AllBanksWorld.checkPlotWorld(worldName)){
-						World w = Bukkit.getWorld(worldName);
-						
-						if(w != null){
-							Bukkit.getPlayer(sender.getName()).teleport(w.getSpawnLocation());
-							sender.sendMessage("WORLD " + w.getName());
+						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
+							//El mundo se está generando
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 						}else{
-							//El mundo no pudo ser cargado desde Bukkit
-							sender.sendMessage("BUKKIT-ERROR");
+							World w = Bukkit.getWorld(worldName);
+							
+							if(w != null){
+								Bukkit.getPlayer(sender.getName()).teleport(w.getSpawnLocation());
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+							}else{
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_BUKKIT_NULL, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+							}
 						}
 					}else{
 						//Mundo no cargado en AllBanks
-						sender.sendMessage("NO-LOADED-ALLBANKS");
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_NOT_IS_A_WORLD_OF_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 					}
 				}else{
 					//Argumentos inválidos
@@ -75,7 +82,7 @@ public class CommandWorld extends Command {
 				}
 			}else{
 				//No es un jugador
-				sender.sendMessage("SENDER-NO-IS-PLAYER");
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
 			}
 			
 		}

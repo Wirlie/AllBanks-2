@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.WorldCreator;
@@ -45,13 +46,17 @@ public class AllBanksWorld {
 	}
 	
 	public static int removePlotWorldFolderAndDataBase(String worldID){
+		return removePlotWorldFolderAndDataBase(worldID, false);
+	}
+	
+	public static int removePlotWorldFolderAndDataBase(String worldID, boolean forceDropTable){
 		
 		worldID = worldID.toLowerCase();
 		
 		//Remover carpeta
 		final File worldFolder = new File(new File("").getAbsolutePath() + File.separator + worldID);
 		
-		if(!worldFolder.exists()) return -2;
+		if(!worldFolder.exists() && !forceDropTable) return -2;
 		
 		//Eliminar tabla para este mundo
 				Statement stm = null;
@@ -72,6 +77,8 @@ public class AllBanksWorld {
 				}
 		
 		registeredMaps.remove(worldID.toLowerCase());
+		
+		if(forceDropTable) return 1;
 		
 		new BukkitRunnable(){
 			public void run() {
@@ -156,12 +163,14 @@ public class AllBanksWorld {
 	
 	public static void loadWorldsStartup(){
 		
-		Statement stm;
-		ResultSet res;
+		Statement stm = null;
+		ResultSet res = null;
 		
 		try{
 			stm = DBC.createStatement();
 			res = stm.executeQuery("SELECT * FROM worlds_cfg");
+			
+			HashSet<String> removeList = new HashSet<String>();
 			
 			while(res.next()){
 				String worldID = res.getString("world_id").toLowerCase();
@@ -183,12 +192,36 @@ public class AllBanksWorld {
 						registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
 					}
 				}else{
-					AllBanks.getInstance().getLogger().warning("Invalid world entry for " + worldID + ", invalid file path.");
+					AllBanks.getInstance().getLogger().warning("Invalid world entry for " + worldID + ", invalid file path. (Removed)");
+					removeList.add(worldID);
 				}
 			}
-		}catch(SQLException e){
 			
+			res.close();
+			stm.close();
+			
+			for(String wid : removeList){
+				removePlotWorldFolderAndDataBase(wid, true);
+			}
+		}catch(SQLException e){
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+				try {
+					if(res != null){
+						res.close();
+					}
+					
+					if(stm != null){
+						stm.close();
+					}
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 		}
+	}
+	
+	public static AllBanksWorld getInstance(String worldID){
+		return registeredMaps.get(worldID);
 	}
 	
 	//Funciones no estáticas usadas para obtener información del mundo
@@ -196,6 +229,8 @@ public class AllBanksWorld {
 	private String world_id = null;
 
 	public AllBanksWorld(String worldID) {
+		if(checkPlotWorld(worldID)) throw new IllegalArgumentException(worldID + " already initialized, use getInstance(ID) instead of a new instance.");
+		
 		this.world_id = worldID;
 	}
 	

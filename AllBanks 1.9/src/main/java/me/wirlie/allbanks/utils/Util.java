@@ -52,7 +52,6 @@ public class Util {
 	                    deleteDirectory(files[i]);
 	                }
 	                else {
-	                	System.gc();
 	                    files[i].delete();
 	                }
 	            }

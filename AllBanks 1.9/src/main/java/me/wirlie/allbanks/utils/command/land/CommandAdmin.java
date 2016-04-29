@@ -72,6 +72,13 @@ public class CommandAdmin extends Command {
 					World world = Bukkit.getWorld(worldName);
 					
 					if(world != null){
+						
+						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
+							//En generación
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+							return true;
+						}
+						
 						//Descargar mundo
 						if(AllBanksWorld.unloadPlotWorld(worldName, true)){
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_UNLOAD_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
@@ -90,6 +97,12 @@ public class CommandAdmin extends Command {
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_REMOVE_WORLD_ERROR_WORLD_NEED_UNLOAD, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 						return true;
 					}else{
+						
+						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
+							//En generación
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+							return true;
+						}
 						
 						//Carpeta del mundo
 						int check = AllBanksWorld.removePlotWorldFolderAndDataBase(worldName);

@@ -59,6 +59,7 @@ public class WorldLoadAsync {
 	private static Chunk waitForChunk;
 	private static int waitForChunkSeconds = 0;
 	private static boolean generationBusy = false;
+	public static String lastWorldGenerated = "";
 	
 	public static boolean isBusy(){
 		return generationBusy;
@@ -77,6 +78,7 @@ public class WorldLoadAsync {
 		}
 		
 		generationBusy = true;
+		lastWorldGenerated = creatorName;
 		
 		//Nombre del mundo, el objeto creator contiene el nombre del mundo deseado.
 		final String name = creator.name();
@@ -253,6 +255,7 @@ public class WorldLoadAsync {
 
 				getServer().worlds.add(internal);
 				AllBanksWorld.registeredMaps.put(creatorName, new AllBanksWorld(creatorName));
+				
 				new BukkitRunnable(){
 
 					public void run() {
