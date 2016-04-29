@@ -58,7 +58,7 @@ public class CommandWorld extends Command {
 				if(args.length >= 2){
 					String worldName = args[1].toLowerCase();
 					
-					if(AllBanksWorld.checkPlotWorld(worldName)){
+					if(AllBanksWorld.worldIsAllBanksWorld(worldName)){
 						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
 							//El mundo se está generando
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);

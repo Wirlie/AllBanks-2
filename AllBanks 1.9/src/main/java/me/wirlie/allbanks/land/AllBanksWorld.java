@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -89,7 +90,7 @@ public class AllBanksWorld {
 		return 1;
 	}
 	
-	public static boolean checkPlotWorld(String worldID){
+	public static boolean worldIsAllBanksWorld(String worldID){
 		return registeredMaps.containsKey(worldID.toLowerCase());
 	}
 	
@@ -101,7 +102,7 @@ public class AllBanksWorld {
 		
 		final String worldID = worldIDP.toLowerCase();
 		
-		if(checkPlotWorld(worldID)){
+		if(worldIsAllBanksWorld(worldID)){
 			return WorldGenerationResult.ERROR_WORLD_ID_ALREADY_EXISTS;
 		}
 		
@@ -111,7 +112,7 @@ public class AllBanksWorld {
 		Statement stm = null;
 		try {
 			stm = DBC.createStatement();
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS world_" + worldID + "_plots (id INTEGER PRIMARY KEY AUTOINCREMENT, plot_coord TEXT NOT NULL, first_bound_loc TEXT NOT NULL, second_bound_loc TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS world_" + worldID + "_plots (id INTEGER PRIMARY KEY AUTOINCREMENT, plot_coord_X NUMBER, plot_coord_Z NUMBER, plot_owner TEXT NOT NULL, plot_config TEXT NOT NULL)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS worlds_cfg (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_size NUMBER NOT NULL, road_size NUMBER NOT NULL, current_plot_cursor TEXT NULL)");
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -151,11 +152,17 @@ public class AllBanksWorld {
 							DataBaseUtil.checkDatabaseIsLocked(e);
 						}
 				}
+				
+				new BukkitRunnable(){
+					public void run(){
+						registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
+						WorldGenerationCfg.removeTemporalConfiguration(worldID);
+					}
+				}.runTask(AllBanks.getInstance());
+				
 			}
 			
 		}.runTaskAsynchronously(AllBanks.getInstance());
-		
-		registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
 		
 		return WorldGenerationResult.SUCCESS;
 		
@@ -189,7 +196,9 @@ public class AllBanksWorld {
 						
 						Bukkit.createWorld(new WorldCreator(worldID).generateStructures(false).generator(WorldGenerator.getDefaultWorldGenerator(worldCfg, "AllBanksPlotGenerator")));
 					
-						registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
+						if(!registeredMaps.containsKey(worldID.toLowerCase())) registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
+					}else{
+						if(!registeredMaps.containsKey(worldID.toLowerCase())) registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
 					}
 				}else{
 					AllBanks.getInstance().getLogger().warning("Invalid world entry for " + worldID + ", invalid file path. (Removed)");
@@ -227,11 +236,153 @@ public class AllBanksWorld {
 	//Funciones no estáticas usadas para obtener información del mundo
 	
 	private String world_id = null;
+	
+	int plotSize = 0;
+	int roadSize = 0;
 
 	public AllBanksWorld(String worldID) {
-		if(checkPlotWorld(worldID)) throw new IllegalArgumentException(worldID + " already initialized, use getInstance(ID) instead of a new instance.");
+		if(worldIsAllBanksWorld(worldID)) throw new IllegalArgumentException(worldID + " already initialized, use getInstance(ID) instead of a new instance.");
 		
 		this.world_id = worldID;
+		loadWorldConfiguration();
+	}
+	
+	public String getID(){
+		return world_id;
+	}
+	
+	private void loadWorldConfiguration(){
+		Statement stm = null;
+		ResultSet res = null;
+		
+		try{
+			stm = DBC.createStatement();
+			res = stm.executeQuery("SELECT * FROM worlds_cfg WHERE world_id = '" + world_id + "'");
+			
+			if(res.next()){
+				plotSize = res.getInt("plot_size");
+				roadSize = res.getInt("road_size");
+			}else{
+				throw new UnsupportedOperationException(world_id + " not exists on AllBanks! (Table: worlds_cfg)");
+			}
+		}catch(SQLException e){
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			try{
+				if(stm != null) stm.close();
+				if(res != null) res.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean locationIsPlot(int worldX, int worldZ){
+		
+		int totalSize = 1 + plotSize + 1 + roadSize;
+		boolean isPlot = false;
+		boolean stopZCursor = false;
+		
+		if(worldX >= 0){
+			//Positivo
+			int cursorX = (worldX / totalSize) * totalSize;
+			int relativeCursorX = worldX - cursorX;
+			
+			if(relativeCursorX == 0){
+				isPlot = false; //plot limit
+				stopZCursor = true;
+			}else if(relativeCursorX < (plotSize + 1)){
+				isPlot = true; //plot
+			}else if(relativeCursorX == (plotSize + 1)){
+				isPlot = false; //plot limit
+				stopZCursor = true;
+			}else{
+				isPlot = false; //road
+				stopZCursor = true;
+			}
+		}else{
+			//Negativo
+			int cursorX = (worldX / totalSize) * totalSize;
+			int relativeCursorX = ((worldX - cursorX) * -1);
+			
+			if(relativeCursorX == 0){
+				isPlot = false; //plot limit
+				stopZCursor = true;
+			}else if(relativeCursorX <= roadSize){
+				isPlot = false;
+				stopZCursor = true;
+			}else if(relativeCursorX == (roadSize + 1)){
+				isPlot = false;
+				stopZCursor = true;
+			}else{
+				isPlot = true;
+			}
+		}
+		
+		if(!stopZCursor)
+			if(worldZ >= 0){
+				//Positivo
+				int cursorZ = (worldZ / totalSize) * totalSize;
+				int relativeCursorZ = worldZ - cursorZ;
+				
+				if(relativeCursorZ == 0){
+					isPlot = false;
+				}else if(relativeCursorZ < (plotSize + 1)){
+					isPlot = true;
+				}else if(relativeCursorZ == (plotSize + 1)){
+					isPlot = false;
+				}else{
+					isPlot = false;
+				}
+			}else{
+				//Negativo
+				int cursorZ = (worldZ / totalSize) * totalSize;
+				int relativeCursorZ = ((worldZ - cursorZ) * -1);
+				
+				if(relativeCursorZ == 0){
+					isPlot = false;
+				}else if(relativeCursorZ <= roadSize){
+					isPlot = false;
+				}else if(relativeCursorZ == (roadSize + 1)){
+					isPlot = false;
+				}else{
+					isPlot = true;
+				}
+			}
+		
+		return isPlot;
+	}
+
+	/**
+	 * @param x
+	 * @param z
+	 * @return
+	 */
+	public AllBanksPlot getPlot(int worldX, int worldZ) {
+		
+		int totalSize = 1 + plotSize + 1 + roadSize;
+		
+		int startX = 0;
+		
+		if(worldX >= 0){
+			startX = ((worldX / totalSize) * totalSize) + 1;
+		}else{
+			startX = ((worldX / totalSize) * totalSize) - roadSize - 1;
+		}
+		
+		int startZ = 0;
+		
+		if(worldZ >= 0){
+			startZ = ((worldZ / totalSize) * totalSize) + 1;
+		}else{
+			startZ = ((worldZ / totalSize) * totalSize) - roadSize - 1;
+		}
+		
+		return new AllBanksPlot(this, startX, startZ);
+	}
+	
+	public World getBukkitWorld(){
+		return Bukkit.getWorld(world_id);
 	}
 	
 }

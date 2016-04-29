@@ -48,6 +48,7 @@ import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
 import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.land.listeners.BlockBreak;
 import me.wirlie.allbanks.listeners.banks.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.banks.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.banks.PlayerMoveListener;
@@ -248,6 +249,8 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new ShopChestInteractListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PreventRemoveSignForOtherCausesListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerJoinUpdaterMessage(), this);
+		//AllBanksLand
+		Bukkit.getPluginManager().registerEvents(new BlockBreak(), this);
 		
 		/*
 		 * RUNNABLES

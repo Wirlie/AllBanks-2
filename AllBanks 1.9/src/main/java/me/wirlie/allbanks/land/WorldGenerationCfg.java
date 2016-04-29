@@ -83,6 +83,12 @@ public class WorldGenerationCfg {
 	
 	String world_id = "";
 	
+	public static void removeTemporalConfiguration(String worldID){
+		File worldFileCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + "world-" + worldID + "-gen-config.yml");
+		
+		worldFileCfg.delete();
+	}
+	
 	public WorldGenerationCfg(String worldID){
 		this.world_id = worldID;
 		

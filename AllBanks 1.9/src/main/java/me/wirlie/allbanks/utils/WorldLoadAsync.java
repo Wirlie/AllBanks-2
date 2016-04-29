@@ -37,7 +37,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.land.AllBanksWorld;
 import net.minecraft.server.v1_9_R1.BlockPosition;
 import net.minecraft.server.v1_9_R1.Chunk;
 import net.minecraft.server.v1_9_R1.ChunkProviderServer;
@@ -254,7 +253,6 @@ public class WorldLoadAsync {
 			    }
 
 				getServer().worlds.add(internal);
-				AllBanksWorld.registeredMaps.put(creatorName, new AllBanksWorld(creatorName));
 				
 				new BukkitRunnable(){
 
