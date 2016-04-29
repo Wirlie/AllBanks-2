@@ -31,7 +31,6 @@ import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R1.chunkio.ChunkIOExecutor;
 import org.bukkit.craftbukkit.v1_9_R1.util.LongHash;
 import org.bukkit.event.world.ChunkLoadEvent;
-import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -69,8 +68,10 @@ public class WorldLoadAsync {
 		return createAsyncWorld(creator, null);
 	}
 	
-	public static World createAsyncWorld(final WorldCreator creator, final CommandSender sender){
+	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender){
 
+		final String creatorName = creator.name().toLowerCase();
+		
 		while(generationBusy){
 			throw new IllegalStateException("Another job in progress...");
 		}
@@ -190,8 +191,8 @@ public class WorldLoadAsync {
 							    
 							    while(waitForChunk == null){
 							    	
-							    	if(waitForChunkSeconds > 30){
-							    		throw new IllegalStateException("Generation stopped! TimeOut (30 seconds)");
+							    	if(waitForChunkSeconds > 10){
+							    		throw new IllegalStateException("Generation stopped! TimeOut (10 seconds)");
 							    	}
 							    	
 							    	long waitTime = System.currentTimeMillis();
@@ -251,13 +252,10 @@ public class WorldLoadAsync {
 			    }
 
 				getServer().worlds.add(internal);
-				AllBanksWorld.registeredMaps.put(creator.name(), new AllBanksWorld(creator.name()));
+				AllBanksWorld.registeredMaps.put(creatorName, new AllBanksWorld(creatorName));
 				new BukkitRunnable(){
 
 					public void run() {
-						System.out.println("[AllBanks] Loading world into Bukkit... newEvent: WorldLoadEvent");
-						Bukkit.getPluginManager().callEvent(new WorldLoadEvent(internal.getWorld()));
-						
 						World w = Bukkit.getWorld(name);
 						
 						if(w != null){
@@ -270,8 +268,6 @@ public class WorldLoadAsync {
 					}
 					
 				}.runTask(AllBanks.getInstance());
-				
-				generationBusy = false;
 				
 				if(sender != null) Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_GENERATING_FINISH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + name), true);
 			}

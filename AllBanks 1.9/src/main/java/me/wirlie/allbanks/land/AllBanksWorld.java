@@ -32,12 +32,12 @@ public class AllBanksWorld {
 	public static HashMap<String, AllBanksWorld> registeredMaps = new HashMap<String, AllBanksWorld>();
 
 	public static AllBanksWorld getPlotWorld(String worldID){
-		return registeredMaps.get(worldID);
+		return registeredMaps.get(worldID.toLowerCase());
 	}
 	
 	public static boolean unloadPlotWorld(String worldID, boolean saveWorld){
-		if(Bukkit.unloadWorld(worldID, saveWorld)){
-			registeredMaps.remove(worldID);
+		if(Bukkit.unloadWorld(worldID.toLowerCase(), saveWorld)){
+			registeredMaps.remove(worldID.toLowerCase());
 			return true;
 		}
 		
@@ -45,6 +45,9 @@ public class AllBanksWorld {
 	}
 	
 	public static int removePlotWorldFolderAndDataBase(String worldID){
+		
+		worldID = worldID.toLowerCase();
+		
 		//Remover carpeta
 		final File worldFolder = new File(new File("").getAbsolutePath() + File.separator + worldID);
 		
@@ -68,7 +71,7 @@ public class AllBanksWorld {
 						}
 				}
 		
-		registeredMaps.remove(worldID);
+		registeredMaps.remove(worldID.toLowerCase());
 		
 		new BukkitRunnable(){
 			public void run() {
@@ -80,14 +83,17 @@ public class AllBanksWorld {
 	}
 	
 	public static boolean checkPlotWorld(String worldID){
-		return registeredMaps.containsKey(worldID);
+		return registeredMaps.containsKey(worldID.toLowerCase());
 	}
 	
 	public static WorldGenerationResult generatePlotWorld(String worldID){
-		return generatePlotWorld(worldID, null);
+		return generatePlotWorld(worldID.toLowerCase(), null);
 	}
 	
-	public static WorldGenerationResult generatePlotWorld(final String worldID, final CommandSender sender){
+	public static WorldGenerationResult generatePlotWorld(String worldIDP, final CommandSender sender){
+		
+		final String worldID = worldIDP.toLowerCase();
+		
 		if(checkPlotWorld(worldID)){
 			return WorldGenerationResult.ERROR_WORLD_ID_ALREADY_EXISTS;
 		}
@@ -142,7 +148,7 @@ public class AllBanksWorld {
 			
 		}.runTaskAsynchronously(AllBanks.getInstance());
 		
-		registeredMaps.put(worldID, new AllBanksWorld(worldID));
+		registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
 		
 		return WorldGenerationResult.SUCCESS;
 		
@@ -158,7 +164,7 @@ public class AllBanksWorld {
 			res = stm.executeQuery("SELECT * FROM worlds_cfg");
 			
 			while(res.next()){
-				String worldID = res.getString("world_id");
+				String worldID = res.getString("world_id").toLowerCase();
 				int plotSize = res.getInt("plot_size");
 				int roadSize = res.getInt("road_size");
 				
@@ -173,6 +179,8 @@ public class AllBanksWorld {
 						worldCfg.road_size = roadSize;
 						
 						Bukkit.createWorld(new WorldCreator(worldID).generateStructures(false).generator(WorldGenerator.getDefaultWorldGenerator(worldCfg, "AllBanksPlotGenerator")));
+					
+						registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
 					}
 				}else{
 					AllBanks.getInstance().getLogger().warning("Invalid world entry for " + worldID + ", invalid file path.");

@@ -88,14 +88,108 @@ public class WorldChunkGenerator extends ChunkGenerator{
 		
 		byte[][] chunk = new byte[world.getMaxHeight() / 16][];
 		
+		int realXChunk = ChunkX << 4;
+		int realZChunk = ChunkZ << 4;
+		
+		int plotSize = worldCfg.plot_size;
+		int roadSize = worldCfg.road_size;
+		
+		Material roadMaterial = worldCfg.road_material;
+		
+		int totalSize = 1 + plotSize + 1 + roadSize;
+		
 		for (int x=0; x<16; x++) { //loop through all of the blocks in the chunk that are lower than maxHeight
 			for (int z=0; z<16; z++) {
 				for (int y = 0; y < worldCfg.world_height; y++) {
 
 					biome.setBiome(x, z, worldCfg.default_biome);
 					
+					int worldX = realXChunk + x;
+					int worldZ = realZChunk + z;
+					
+					boolean placeRoad = false;
+					boolean placePlotLimit = false;
+					
 					if(y == (worldCfg.world_height - 1)){
-						setBlock(x, y, z, chunk, Material.GRASS); //set the current block to stone
+						
+						//Eje X
+						if(worldX >= 0){
+							//Positivo
+							int cursorX = (worldX / totalSize) * totalSize;
+							int relativeCursorX = worldX - cursorX;
+							
+							if(relativeCursorX == 0){
+								setBlock(x, y + 1, z, chunk, Material.STEP);
+								placePlotLimit = true;
+							}else if(relativeCursorX < (plotSize + 1)){
+								//Plot
+								setBlock(x, y, z, chunk, Material.GRASS);
+							}else if(relativeCursorX == (plotSize + 1)){
+								setBlock(x, y + 1, z, chunk, Material.STEP);
+								placePlotLimit = true;
+							}else{
+								setBlock(x, y, z, chunk, roadMaterial);
+								placeRoad = true;
+							}
+						}else{
+							//Negativo
+							int cursorX = (worldX / totalSize) * totalSize;
+							int relativeCursorX = ((worldX - cursorX) * -1);
+							
+							if(relativeCursorX == 0){
+								setBlock(x, y + 1, z, chunk, Material.STEP);
+								placePlotLimit = true;
+							}else if(relativeCursorX <= roadSize){
+								setBlock(x, y, z, chunk, roadMaterial);
+								placeRoad = true;
+							}else if(relativeCursorX == (roadSize + 1)){
+								setBlock(x, y + 1, z, chunk, Material.STEP);
+								placePlotLimit = true;
+							}else{
+								setBlock(x, y, z, chunk, Material.GRASS);
+							}
+						}
+						
+						//Eje Z
+						if(!placeRoad)
+							if(worldZ >= 0){
+								//Positivo
+								int cursorZ = (worldZ / totalSize) * totalSize;
+								int relativeCursorZ = worldZ - cursorZ;
+								
+								if(relativeCursorZ == 0){
+									setBlock(x, y + 1, z, chunk, Material.STEP);
+									placePlotLimit = true;
+								}else if(relativeCursorZ < (plotSize + 1)){
+									//Plot
+									setBlock(x, y, z, chunk, Material.GRASS);
+								}else if(relativeCursorZ == (plotSize + 1)){
+									setBlock(x, y + 1, z, chunk, Material.STEP);
+									placePlotLimit = true;
+								}else{
+									setBlock(x, y, z, chunk, roadMaterial);
+									if(placePlotLimit) setBlock(x, y + 1, z, chunk, Material.AIR);
+									placeRoad = true;
+								}
+							}else{
+								//Negativo
+								int cursorZ = (worldZ / totalSize) * totalSize;
+								int relativeCursorZ = ((worldZ - cursorZ) * -1);
+								
+								if(relativeCursorZ == 0){
+									setBlock(x, y + 1, z, chunk, Material.STEP);
+									placePlotLimit = true;
+								}else if(relativeCursorZ <= roadSize){
+									setBlock(x, y, z, chunk, roadMaterial);
+									if(placePlotLimit) setBlock(x, y + 1, z, chunk, Material.AIR);
+									placeRoad = true;
+								}else if(relativeCursorZ == (roadSize + 1)){
+									setBlock(x, y + 1, z, chunk, Material.STEP);
+									placePlotLimit = true;
+								}else{
+									setBlock(x, y, z, chunk, Material.GRASS);
+								}
+							}
 					}else if(y > (worldCfg.world_height - 5) && y < worldCfg.world_height){
 						setBlock(x, y, z, chunk, Material.DIRT); //set the current block to stone
 					}else if(y == 0){
@@ -118,7 +212,7 @@ public class WorldChunkGenerator extends ChunkGenerator{
         ArrayList<BlockPopulator> pops = new ArrayList<BlockPopulator>();
         
        //Hacer que crezcan hierbas
-        pops.add(new FlatRoadPopulator(worldCfg));
+        //pops.add(new FlatRoadPopulator(worldCfg));
         if(worldCfg.coal_ore || worldCfg.diamond_ore || worldCfg.emerald_ore || worldCfg.redstone_ore
         		|| worldCfg.lapis_ore || worldCfg.gold_ore || worldCfg.iron_ore)
         	pops.add(new FlatOrePopulator(worldCfg));

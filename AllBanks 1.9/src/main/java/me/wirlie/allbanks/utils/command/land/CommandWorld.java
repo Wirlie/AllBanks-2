@@ -53,7 +53,7 @@ public class CommandWorld extends Command {
 			
 			if(sender instanceof Player){
 				if(args.length >= 2){
-					String worldName = args[1];
+					String worldName = args[1].toLowerCase();
 					
 					if(AllBanksWorld.checkPlotWorld(worldName)){
 						World w = Bukkit.getWorld(worldName);

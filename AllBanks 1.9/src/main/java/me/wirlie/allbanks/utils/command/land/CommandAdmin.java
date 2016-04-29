@@ -34,7 +34,7 @@ public class CommandAdmin extends Command {
 		if(args[1].equalsIgnoreCase("world")){
 			if(args.length > 3){
 				if(args[3].equalsIgnoreCase("generate")){
-					String worldName = args[2];
+					String worldName = args[2].toLowerCase();
 					AllBanksWorld world = AllBanksWorld.getPlotWorld(worldName);
 					
 					if(world != null){
@@ -68,7 +68,7 @@ public class CommandAdmin extends Command {
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_PRE_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + generatedFilePath), true);
 					}
 				}else if(args[3].equalsIgnoreCase("unload")){
-					String worldName = args[2];
+					String worldName = args[2].toLowerCase();
 					World world = Bukkit.getWorld(worldName);
 					
 					if(world != null){
@@ -83,7 +83,7 @@ public class CommandAdmin extends Command {
 						Translation.getAndSendMessage(sender, StringsID.ERROR_WORLD_NOT_LOADED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 					}
 				}else if(args[3].equalsIgnoreCase("remove")){
-					String worldName = args[2];
+					String worldName = args[2].toLowerCase();
 					World world = Bukkit.getWorld(worldName);
 					
 					if(world != null){
