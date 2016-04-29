@@ -808,7 +808,6 @@ public class Banks {
 		
 		for(File file : files){
 			String fileName = file.getName();
-			System.out.println(fileName);
 			if(fileName.contains("-B64.yml") || fileName.contains("-Backup.yml")) continue;
 			
 			fileName = fileName.replace(".yml", "");
