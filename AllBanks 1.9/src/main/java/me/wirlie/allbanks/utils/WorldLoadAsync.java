@@ -64,11 +64,11 @@ public class WorldLoadAsync {
 		return generationBusy;
 	}
 
-	public static World createAsyncWorld(final WorldCreator creator){
-		return createAsyncWorld(creator, null);
+	public static World createAsyncWorld(final WorldCreator creator, int spawn_X, int spawn_Y, int spawn_Z){
+		return createAsyncWorld(creator, null, spawn_X, spawn_Y, spawn_Z);
 	}
 	
-	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender){
+	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender, final int spawn_X, final int spawn_Y, final int spawn_Z){
 
 		final String creatorName = creator.name().toLowerCase();
 		
@@ -261,6 +261,8 @@ public class WorldLoadAsync {
 						
 						if(w != null){
 							System.out.println("[AllBanks] Done, world loaded.");
+							System.out.println("[AllBanks] Set spawn to " + spawn_X + ", " + spawn_Y + ", " + spawn_Z);
+							w.setSpawnLocation(spawn_X, spawn_Y, spawn_Z);
 						}else{
 							System.out.println("[AllBanks] World not loaded??? (null)");
 						}

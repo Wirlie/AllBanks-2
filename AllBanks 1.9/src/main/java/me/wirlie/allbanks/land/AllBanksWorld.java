@@ -32,10 +32,6 @@ public class AllBanksWorld {
 	}
 	
 	public static HashMap<String, AllBanksWorld> registeredMaps = new HashMap<String, AllBanksWorld>();
-
-	public static AllBanksWorld getPlotWorld(String worldID){
-		return registeredMaps.get(worldID.toLowerCase());
-	}
 	
 	public static boolean unloadPlotWorld(String worldID, boolean saveWorld){
 		if(Bukkit.unloadWorld(worldID.toLowerCase(), saveWorld)){
@@ -135,7 +131,7 @@ public class AllBanksWorld {
 		new BukkitRunnable(){
 
 			public void run() {
-				WorldLoadAsync.createAsyncWorld(wc, sender);
+				WorldLoadAsync.createAsyncWorld(wc, sender, 0, worldCfg.world_height, 0);
 				
 				//Tabla en la base de datos
 				Statement stm = null;
@@ -230,7 +226,7 @@ public class AllBanksWorld {
 	}
 	
 	public static AllBanksWorld getInstance(String worldID){
-		return registeredMaps.get(worldID);
+		return registeredMaps.get(worldID.toLowerCase());
 	}
 	
 	//Funciones no estáticas usadas para obtener información del mundo

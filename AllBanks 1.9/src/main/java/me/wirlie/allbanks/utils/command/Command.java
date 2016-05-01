@@ -41,7 +41,7 @@ public class Command {
 	}
 
 	public boolean matchArguments(String[] testArgs) {
-		if(commandArgs.size() != testArgs.length) return false;
+		if(commandArgs.size() > testArgs.length) return false;
 		
 		for(int i = 0; i < commandArgs.size(); i ++){
 

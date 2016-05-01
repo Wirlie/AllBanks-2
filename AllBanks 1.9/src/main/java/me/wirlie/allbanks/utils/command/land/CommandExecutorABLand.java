@@ -35,18 +35,28 @@ import me.wirlie.allbanks.utils.command.Command;
 public class CommandExecutorABLand implements CommandExecutor {
 
 	public CommandExecutorABLand(){
+		//FIXME AÑADIR PERMISOS A LOS COMANDOS
 		//Relacionado a comandos Admin
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "?");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "help");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "generate");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "unload");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "remove");
-		//REMOVE Debug command
+		//Spawns de mundos
 		CommandManagerABLand.registerCommand(new CommandWorld(), "spawn", "RegEx->(.){1,}:<worldName>");
 		//Relacionado al plot y comandos de usuario
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "?");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "help");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "claim");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "unclaim");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "add", "RegEx->(.){1,}:<Player>");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "remove", "RegEx->(.){1,}:<Player>");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "deny", "RegEx->(.){1,}:<Player>");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "undeny", "RegEx->(.){1,}:<Player>");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "set", "RegEx->(.){1,}:<Config>", "RegEx->(.){1,}:<Value>");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "setHomeSpawn");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "setShopSpawn");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "info");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
 	}
 	

@@ -21,11 +21,11 @@ package me.wirlie.allbanks.land;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 
 import org.bukkit.Location;
 
 import me.wirlie.allbanks.AllBanks;
-import me.wirlie.allbanks.utils.DataBaseUtil;
 
 /**
  * @author josue
@@ -33,16 +33,22 @@ import me.wirlie.allbanks.utils.DataBaseUtil;
  */
 public class AllBanksPlot {
 	
-	AllBanksWorld abw;
+	private HashMap<String, AllBanksPlot> plotCache = new HashMap<String, AllBanksPlot>();
 	
-	Location firstBound = null;
-	Location secondBound = null;
+	private AllBanksWorld abw;
+	private PlotConfiguration plot_cfg;
 	
-	int plotX = 0;
-	int plotZ = 0;
+	private Location firstBound = null;
+	private Location secondBound = null;
 	
-	String ownerName = null;
-	String json_config = null;
+	private int plotX = 0;
+	private int plotZ = 0;
+	
+	String plotStringID;
+	
+	private String ownerName = null;
+	
+	private boolean registeredDatabase = false;
 	
 	protected AllBanksPlot(AllBanksWorld abw, int startX, int startZ){
 		this.abw = abw;
@@ -54,11 +60,21 @@ public class AllBanksPlot {
 		int totalSize = abw.plotSize + abw.roadSize + 2;
 		plotX = ((startX >= 0) ? (startX / totalSize) : (startX / totalSize) - 1);
 		plotZ = ((startZ >= 0) ? (startZ / totalSize) : (startZ / totalSize) - 1);
+		plotStringID = plotX + "," + plotZ;
 		
 		loadPlotData();
 	}
 	
 	private void loadPlotData(){
+		if(plotCache.containsKey(plotStringID)){
+			//No se necesita obtener información de la base de datos
+			AllBanksPlot cached = plotCache.get(plotStringID);
+			
+			ownerName = cached.getOwnerName();
+			plot_cfg = cached.plot_cfg;
+			registeredDatabase = true;
+			return;
+		}
 		
 		Statement stm = null;
 		ResultSet res = null;
@@ -69,11 +85,34 @@ public class AllBanksPlot {
 			
 			if(res.next()){
 				ownerName = res.getString("plot_owner");
-				json_config = res.getString("plot_config");
+				plot_cfg = new PlotConfiguration(this, res.getString("plot_config"));
+				registeredDatabase = true;
+			}else{
+				ownerName = null;
+				plot_cfg = new PlotConfiguration(this, "");
+				registeredDatabase = false;
 			}
+			
+			plotCache.put(plotStringID, this);
+			
 		}catch(SQLException e){
-			DataBaseUtil.checkDatabaseIsLocked(e);
+			e.printStackTrace();
+		}finally{
+			try{
+				if(stm != null) stm.close();
+				if(res != null) res.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
 		}
+	}
+	
+	public PlotConfiguration getPlotConfiguration(){
+		return plot_cfg;
+	}
+	
+	public void setPlotConfiguration(String key, String value){
+		plot_cfg.setPlotConfiguration(key, value);
 	}
 	
 	public int getPlotX(){
@@ -96,6 +135,81 @@ public class AllBanksPlot {
 		if(ownerName == null) return false;
 		
 		return true;
+	}
+	
+	public String getOwnerName(){
+		return this.ownerName;
+	}
+	
+	public AllBanksWorld getAllBanksWorld(){
+		return abw;
+	}
+	
+	public void unclaim(){
+		Statement stm = null;
+		
+		try{
+			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+			stm.executeUpdate("DELETE FROM world_" + abw.getID() + "_plots WHERE plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
+			//remover del caché
+			plotCache.remove(plotStringID);
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally{
+			try{
+				if(stm != null) stm.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
+
+	/**
+	 * @param name
+	 */
+	public void claim(String name) {
+		
+		Statement stm = null;
+		
+		try{
+			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+			
+			if(!registeredDatabase){
+				stm.executeUpdate("INSERT INTO world_" + abw.getID() + "_plots (plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + plotX + "', '" + plotZ + "', '" + name + "', '" + PlotConfiguration.defaultJSONConfiguration() + "')");
+			}else{
+				stm.executeUpdate("UPDATE world_" + abw.getID() + "_plots SET plot_owner = '" + name + "' WHERE plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
+			}
+			
+			//Añadir dueño
+			AllBanksPlot plot = plotCache.get(plotStringID);
+			plot.ownerName = name;
+			
+			//Actualizar información
+			plotCache.put(plotStringID, plot);
+			
+		}catch(SQLException e){
+			e.printStackTrace();
+		}finally{
+			try{
+				if(stm != null) stm.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public boolean canBuild(String playerName){
+		if(hasOwner() && getOwnerName().equalsIgnoreCase(playerName)){
+			return true;
+		}
+		
+		PlotConfiguration cfg = getPlotConfiguration();
+		if(cfg.getFriends().contains(playerName)){
+			return true;
+		}
+		
+		return false;
+		
 	}
 	
 }

@@ -34,8 +34,6 @@ import me.wirlie.allbanks.Translation;
  *
  */
 public class CommandExecutorAB implements CommandExecutor {
-	//TODO Mejorar el sistema de comandos a través de un sistema de registro de comandos y argumentos
-
 	
 	public CommandExecutorAB(){
 		//ItemInfo

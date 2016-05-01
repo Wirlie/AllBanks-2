@@ -48,7 +48,8 @@ import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
 import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.land.AllBanksWorld;
-import me.wirlie.allbanks.land.listeners.BlockBreak;
+import me.wirlie.allbanks.land.listeners.PlotBlockBreak;
+import me.wirlie.allbanks.land.listeners.PlotBlockPlace;
 import me.wirlie.allbanks.listeners.banks.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.banks.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.banks.PlayerMoveListener;
@@ -250,7 +251,8 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PreventRemoveSignForOtherCausesListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerJoinUpdaterMessage(), this);
 		//AllBanksLand
-		Bukkit.getPluginManager().registerEvents(new BlockBreak(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotBlockBreak(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotBlockPlace(), this);
 		
 		/*
 		 * RUNNABLES
@@ -265,7 +267,7 @@ public class AllBanks extends JavaPlugin {
 		new BankTimerRunnable().runTaskTimer(this, 20 * runSeconds, 20 * runSeconds); //ejecutar
 		
 		//Iniciar runnable para BankLoan
-		//TODO Mover este código a otro lado.
+		//REMOVE Mover este código a otro lado.
 		AllBanksLogger.info("Enabling BankLoanRunnable...");
 		AllBanksLogger.info("Reading Config.yml -> banks.bank-loan.collect-interest-every");
 		int collectLoanEvery = ConfigurationUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));

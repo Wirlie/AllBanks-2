@@ -18,14 +18,16 @@
  */
 package me.wirlie.allbanks.land.listeners;
 
-import org.bukkit.World;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 
@@ -33,40 +35,31 @@ import me.wirlie.allbanks.land.AllBanksWorld;
  * @author Wirlie
  *
  */
-public class BlockBreak implements Listener {
-	
+public class PlotBlockPlace implements Listener {
+
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void playerBlockBreak(BlockBreakEvent e){
-		
-		Player p = e.getPlayer();
+	public void onBlockPlace(BlockPlaceEvent e){
 		Block b = e.getBlock();
-		World w = b.getWorld();
+		Location bl = b.getLocation();
+		Player p = e.getPlayer();
 		
-		if(AllBanksWorld.worldIsAllBanksWorld(w.getName().toLowerCase())){
+		if(AllBanksWorld.worldIsAllBanksWorld(bl.getWorld().getName())){
+			AllBanksWorld abw = AllBanksWorld.getInstance(bl.getWorld().getName());
 			
-			int x = b.getLocation().getBlockX();
-			int z = b.getLocation().getBlockZ();
-			//Comprobar
-			AllBanksWorld abw = AllBanksWorld.getInstance(w.getName().toLowerCase());
-			//Es un camino o el limite del plot
-			if(!abw.locationIsPlot(x, z)){
+			if(!abw.locationIsPlot(bl.getBlockX(), bl.getBlockZ())){
 				e.setCancelled(true);
-			}else{
-				//Obtener el plot
-				AllBanksPlot plot = abw.getPlot(x, z);
-				
-				p.sendMessage("PLOT X: " + plot.getPlotX());
-				p.sendMessage("PLOT Z: " + plot.getPlotZ());
-				
-				if(!plot.hasOwner()){
-					//No es de nadie
-					e.setCancelled(true);
-					return;
-				}
+				return;
 			}
 			
+			AllBanksPlot plot = abw.getPlot(bl.getBlockX(), bl.getBlockZ());
+			
+			if(!plot.canBuild(p.getName())){
+				e.setCancelled(true);
+				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				return;
+			}
+			
+			
 		}
-		
 	}
-	
 }

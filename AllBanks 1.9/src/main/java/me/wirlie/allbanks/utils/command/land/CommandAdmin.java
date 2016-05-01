@@ -35,7 +35,7 @@ public class CommandAdmin extends Command {
 			if(args.length > 3){
 				if(args[3].equalsIgnoreCase("generate")){
 					String worldName = args[2].toLowerCase();
-					AllBanksWorld world = AllBanksWorld.getPlotWorld(worldName);
+					AllBanksWorld world = AllBanksWorld.getInstance(worldName);
 					
 					if(world != null){
 						//Este mundo ya existe.
