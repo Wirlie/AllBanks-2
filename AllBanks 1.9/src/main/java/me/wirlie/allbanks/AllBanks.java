@@ -50,6 +50,8 @@ import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.listeners.PlotBlockBreak;
 import me.wirlie.allbanks.land.listeners.PlotBlockPlace;
+import me.wirlie.allbanks.land.listeners.PlotPlayerMove;
+import me.wirlie.allbanks.land.listeners.PlotWorldEvents;
 import me.wirlie.allbanks.listeners.banks.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.banks.PlayerChatBSListener;
 import me.wirlie.allbanks.listeners.banks.PlayerMoveListener;
@@ -104,7 +106,7 @@ public class AllBanks extends JavaPlugin {
 
 	/** Versiones compatibles con esta version. */
 	public final static String[] COMPATIBLE_VERSIONS = {
-			"1.8",
+			"1.9",
 			};
 	
 	/** Version incompatible mínima **/
@@ -253,6 +255,8 @@ public class AllBanks extends JavaPlugin {
 		//AllBanksLand
 		Bukkit.getPluginManager().registerEvents(new PlotBlockBreak(), this);
 		Bukkit.getPluginManager().registerEvents(new PlotBlockPlace(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerMove(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotWorldEvents(), this);
 		
 		/*
 		 * RUNNABLES

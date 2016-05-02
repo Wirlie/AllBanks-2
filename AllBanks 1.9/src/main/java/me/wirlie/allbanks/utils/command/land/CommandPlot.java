@@ -277,6 +277,14 @@ public class CommandPlot extends Command {
 					plot.setPlotConfiguration("msg-farewell", message);
 					
 					p.sendMessage("MSG-FAREWELL -> " + plot.getPlotConfiguration().farewellMessage());
+				}else if(args[2].equalsIgnoreCase("allow-entry")){
+					if(args[3].equalsIgnoreCase("true")){
+						plot.setPlotConfiguration("allow-entry", "true");
+					}else{
+						plot.setPlotConfiguration("allow-entry", "false");
+					}
+					
+					p.sendMessage("WATER-FLOW -> " + plot.getPlotConfiguration().waterFlow());
 				}else{
 					p.sendMessage("INVALID ARGUMENT"); //TODO HACER ESTE ERROR MAS ESPECIFICO
 				}
@@ -443,6 +451,10 @@ public class CommandPlot extends Command {
 			}else{
 				//Argumentos inválidos
 			}
+		}else if(args[1].equalsIgnoreCase("setHomeSpawn")){
+			
+		}else if(args[1].equalsIgnoreCase("setShopSpawn")){
+			
 		}
 		
 		return true;

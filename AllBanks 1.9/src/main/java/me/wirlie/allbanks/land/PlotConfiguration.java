@@ -73,6 +73,7 @@ public class PlotConfiguration {
 		plot_cfg.put("shop-spawn-visibility", "PUBLIC");
 		plot_cfg.put("plot-friends", "");
 		plot_cfg.put("plot-player-deny", "");
+		plot_cfg.put("allow-entry", "true");
 		
 		return new Gson().toJson(plot_cfg);
 	}
@@ -137,7 +138,7 @@ public class PlotConfiguration {
 		
 		playerName = playerName.toLowerCase();
 		
-		List<String> currentDeny = getFriends();
+		List<String> currentDeny = getDenyPlayers();
 		if(!currentDeny.contains(playerName)){
 			currentDeny.add(playerName);
 			
@@ -155,7 +156,7 @@ public class PlotConfiguration {
 		
 		playerName = playerName.toLowerCase();
 		
-		List<String> currentDeny = getFriends();
+		List<String> currentDeny = getDenyPlayers();
 		if(currentDeny.contains(playerName)){
 			currentDeny.remove(playerName);
 			
@@ -430,6 +431,18 @@ public class PlotConfiguration {
 			return returnList;
 		}else{
 			return new ArrayList<String>();
+		}
+	}
+	
+	public boolean allowEntry(){
+		if(plot_cfg.containsKey("allow-entry")){
+			if(plot_cfg.get("allow-entry").equalsIgnoreCase("true")){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
 		}
 	}
 }

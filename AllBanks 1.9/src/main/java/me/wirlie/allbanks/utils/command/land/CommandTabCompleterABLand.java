@@ -95,7 +95,8 @@ public class CommandTabCompleterABLand implements TabCompleter{
 							"use-button",
 							"drop-item",
 							"msg-greeting",
-							"msg-farewell"
+							"msg-farewell",
+							"allow-entry"
 							);
 				}else if(args[1].equalsIgnoreCase("teleport")){
 					return Arrays.asList(
@@ -123,7 +124,8 @@ public class CommandTabCompleterABLand implements TabCompleter{
 							args[2].equalsIgnoreCase("use-enchantment-table") ||
 							args[2].equalsIgnoreCase("use-lever") ||
 							args[2].equalsIgnoreCase("use-bottom") ||
-							args[2].equalsIgnoreCase("drop-item"))
+							args[2].equalsIgnoreCase("drop-item") ||
+							args[2].equalsIgnoreCase("allow-entry"))
 					{
 						return Arrays.asList("true", "false");
 					}else if(args[2].equalsIgnoreCase("msg-greeting") || args[2].equalsIgnoreCase("msg-farewell")){
