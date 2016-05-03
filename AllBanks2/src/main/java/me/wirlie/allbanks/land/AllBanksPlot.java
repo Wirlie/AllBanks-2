@@ -198,7 +198,7 @@ public class AllBanksPlot {
 		}
 	}
 	
-	public boolean canBuild(String playerName){
+	public boolean havePermissions(String playerName){
 		if(hasOwner() && getOwnerName().equalsIgnoreCase(playerName)){
 			return true;
 		}

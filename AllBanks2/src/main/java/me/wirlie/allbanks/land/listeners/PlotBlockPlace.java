@@ -53,7 +53,7 @@ public class PlotBlockPlace implements Listener {
 			
 			AllBanksPlot plot = abw.getPlot(bl.getBlockX(), bl.getBlockZ());
 			
-			if(!plot.hasOwner() || !plot.canBuild(p.getName())){
+			if(!plot.hasOwner() || !plot.havePermissions(p.getName())){
 				e.setCancelled(true);
 				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
 				return;
