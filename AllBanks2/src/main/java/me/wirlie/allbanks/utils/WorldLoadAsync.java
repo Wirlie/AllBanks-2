@@ -20,6 +20,7 @@ package me.wirlie.allbanks.utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Server;
@@ -31,6 +32,7 @@ import org.bukkit.craftbukkit.v1_9_R1.CraftServer;
 import org.bukkit.craftbukkit.v1_9_R1.chunkio.ChunkIOExecutor;
 import org.bukkit.craftbukkit.v1_9_R1.util.LongHash;
 import org.bukkit.event.world.ChunkLoadEvent;
+import org.bukkit.event.world.WorldInitEvent;
 import org.bukkit.generator.ChunkGenerator;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -38,13 +40,18 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import net.minecraft.server.v1_9_R1.BlockPosition;
+import net.minecraft.server.v1_9_R1.Blocks;
 import net.minecraft.server.v1_9_R1.Chunk;
 import net.minecraft.server.v1_9_R1.ChunkProviderServer;
 import net.minecraft.server.v1_9_R1.ChunkRegionLoader;
+import net.minecraft.server.v1_9_R1.EntityTracker;
+import net.minecraft.server.v1_9_R1.EnumDifficulty;
 import net.minecraft.server.v1_9_R1.IDataManager;
 import net.minecraft.server.v1_9_R1.MinecraftServer;
+import net.minecraft.server.v1_9_R1.PlayerChunk;
 import net.minecraft.server.v1_9_R1.ServerNBTManager;
 import net.minecraft.server.v1_9_R1.WorldData;
+import net.minecraft.server.v1_9_R1.WorldManager;
 import net.minecraft.server.v1_9_R1.WorldServer;
 import net.minecraft.server.v1_9_R1.WorldSettings;
 
@@ -59,6 +66,7 @@ public class WorldLoadAsync {
 	private static int waitForChunkSeconds = 0;
 	private static boolean generationBusy = false;
 	public static String lastWorldGenerated = "";
+	private static boolean waitPostProcess = false;
 	
 	public static boolean isBusy(){
 		return generationBusy;
@@ -69,23 +77,24 @@ public class WorldLoadAsync {
 	}
 	
 	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender, final int spawn_X, final int spawn_Y, final int spawn_Z){
-
-		final String creatorName = creator.name().toLowerCase();
 		
+		//Nombre del mundo en minúsculas.
+		final String name = creator.name().toLowerCase();
+		
+		//Comprobar si ya hay otro trabajo en proceso.
 		while(generationBusy){
 			throw new IllegalStateException("Another job in progress...");
 		}
 		
+		//Establecer el estado en Ocupado
 		generationBusy = true;
-		lastWorldGenerated = creatorName;
+		lastWorldGenerated = name;
 		
-		//Nombre del mundo, el objeto creator contiene el nombre del mundo deseado.
-		final String name = creator.name();
-		//Obtener el generador del objeto creator.
+		//Generador
 		generator = creator.generator();
-		//Obtener la carpeta del mundo
+		//Carpeta del mundo
 		File folder = new File(getWorldContainer(), name);
-		//Obtener el mundo de bukkit deseado (para saber si está cargado)
+		//Mundo desde la API de Bukkit
 		World world = getCraftServer().getWorld(name);
 		//Si está cargado, no procesamos la generaicón
 		if (world != null) {
@@ -116,38 +125,78 @@ public class WorldLoadAsync {
 			worlddata = new WorldData(worldSettings, name);
 		}
 		
-		//Dimensión del mundo
+		//Establecer la dimensión del mundo
 		int dimension = getServer().worlds.size() + 1;
-		final WorldServer internal = (WorldServer) new WorldServer(getServer(), (IDataManager) sdm, worlddata, dimension, getServer().methodProfiler, creator.environment(), generator).b();
-		
-		final ChunkProviderServer cps = internal.getChunkProviderServer();
-		
+		//Obtener el mundo de minecraft
+		final WorldServer minecraftWorld = (WorldServer) new WorldServer(getServer(), (IDataManager) sdm, worlddata, dimension, getServer().methodProfiler, creator.environment(), generator).b();
+		//Proveedor de chunks del mundo de minecraft
+		final ChunkProviderServer chunkProvider = minecraftWorld.getChunkProviderServer();
+		//Obtener la carpeta del mundo y checar si es válido
 		if ((folder.exists()) && (!folder.isDirectory())) {
 			throw new IllegalArgumentException("File exists with the name '" + name + "' and isn't a folder");
 		}
-		
+		//Comprobar que el generador no es nulo
 		if (generator == null) {
 			throw new IllegalArgumentException("creator not have a valid generator");
 		}
 		
+		//Comenzar con el proceso de generación
 		new BukkitRunnable(){
-
+			
+			@SuppressWarnings("unchecked")
+			//Thread asincrono, no consumirá recursos del servidor principal.
 			public void run() {
-				ChunkRegionLoader loader = null;
+				//Obtener el loader
+				ChunkRegionLoader chunkLoader = null;
 			    try{
-			    Field f = ChunkProviderServer.class.getDeclaredField("chunkLoader");
-			    f.setAccessible(true);
-			    if ((f.get(cps) instanceof ChunkRegionLoader)) {
-			      loader = (ChunkRegionLoader)f.get(cps);
-			    }
+				    Field f = ChunkProviderServer.class.getDeclaredField("chunkLoader");
+				    f.setAccessible(true);
+				    
+				    if ((f.get(chunkProvider) instanceof ChunkRegionLoader)) {
+				      chunkLoader = (ChunkRegionLoader)f.get(chunkProvider);
+				    }
 			    }catch(Exception e){
 			    	e.printStackTrace();
 			    }
 			    
-			    System.out.print("[AllBanks] ASYNC: Preparing start region for level " + (getServer().worlds.size()) + " (Seed: " + internal.getSeed() + ")");
-
-			    if(internal.keepSpawnInMemory){
+			    //Preparar la variable worlds
+			    try {
+					Field w = CraftServer.class
+							.getDeclaredField("worlds");
+					w.setAccessible(true);
+					if (!((Map<String, World>) w.get(getCraftServer())).containsKey(name.toLowerCase())) {
+						return;
+					}
+				} catch (Exception e) {
+					e.printStackTrace();
+					return;
+				}
+			    
+			    //Establecer cosas escenciales del mundo como el scoreboard, entidades, etc.
+			    minecraftWorld.scoreboard = getCraftServer().getScoreboardManager().getMainScoreboard().getHandle();
+			    minecraftWorld.tracker = new EntityTracker(minecraftWorld);
+				minecraftWorld.addIWorldAccess(new WorldManager(getServer(), minecraftWorld));
+				minecraftWorld.worldData.setDifficulty(EnumDifficulty.EASY);
+				minecraftWorld.setSpawnFlags(true, true);
+				//Añadir a los mundos de minecraft del servidor
+				getServer().worlds.add(minecraftWorld);
+				
+				//Añadir los populators del generador.
+				minecraftWorld.getWorld().getPopulators().addAll(generator.getDefaultPopulators(minecraftWorld.getWorld()));
+				
+				//Evento de carga
+				new BukkitRunnable() {
+					public void run() {
+						Bukkit.getPluginManager().callEvent(new WorldInitEvent(minecraftWorld.getWorld()));
+					}
+				}.runTask(AllBanks.getInstance());
+			    
+			    System.out.print("[AllBanks] ASYNC: Preparing start region for level " + (getServer().worlds.size()) + " (Seed: " + minecraftWorld.getSeed() + ")");
+			    
+			    //Si es necesario almacenar el spawn en la memoria:
+			    if(minecraftWorld.keepSpawnInMemory){
 			    	
+			    	//No tengo idea de para que se usan estos calculos, pero, generan el % de carga de un mundo
 			    	short short1 = 196;
 			    	long i = System.currentTimeMillis();
 			    	boolean progressShow = false;
@@ -157,16 +206,11 @@ public class WorldLoadAsync {
 							
 							long l = System.currentTimeMillis();
 
-							if (l < i) {
-								i = l;
-							}
+							if (l < i) { i = l; }
 
 							if (l > i + 1000L) {
-								int i1 = (short1 * 2 + 1)
-										* (short1 * 2 + 1);
-								int j1 = (j + short1)
-										* (short1 * 2 + 1)
-										+ k + 1;
+								int i1 = (short1 * 2 + 1) * (short1 * 2 + 1);
+								int j1 = (j + short1) * (short1 * 2 + 1) + k + 1;
 								progressShow = true;
 								System.out.println("[AllBanks] Preparing spawn area for " + name + ", " + j1 * 100 / i1 + "%");
 								if(sender != null) Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_GENERATING_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + j1 * 100 / i1 ), true);
@@ -174,28 +218,30 @@ public class WorldLoadAsync {
 								i = l;
 							}
 							
-							BlockPosition chunkcoordinates = internal.getSpawn();
+							BlockPosition chunkcoordinates = minecraftWorld.getSpawn();
 							
-							final ChunkRegionLoader loader_final = loader;
+							final ChunkRegionLoader loader_final = chunkLoader;
 							final int j2 = chunkcoordinates.getX() + j >> 4;
 							final int k2 = chunkcoordinates.getZ() + k >> 4;
 							
-
 					    	long waitTimeInitial = System.currentTimeMillis();
 					    	
-							if(loader.chunkExists(cps.world, j2, k2)){
+					    	//Comenzar con la carga de chunks
+							if(chunkLoader.chunkExists(chunkProvider.world, j2, k2)){
+								//Existe, entonces solicitamos que se cargue el chunk de manera sincronizada
 								new BukkitRunnable(){
 							    	public void run(){
-							    		waitForChunk = ChunkIOExecutor.syncChunkLoad(cps.world, loader_final, internal.getChunkProviderServer(), j2, k2);
+							    		waitForChunk = ChunkIOExecutor.syncChunkLoad(chunkProvider.world, loader_final, minecraftWorld.getChunkProviderServer(), j2, k2);
 							    	}
 							    }.runTask(AllBanks.getInstance());
 							    
+							    //Esperar hasta que la petición anterior se complete (cuando no es nulo)
 							    while(waitForChunk == null){
-							    	
-							    	if(waitForChunkSeconds > 10){
-							    		throw new IllegalStateException("Generation stopped! TimeOut (10 seconds)");
+							    	//Si la petición ha tomado ya más de 30 segundos, entonces algo no anda bien.
+							    	if(waitForChunkSeconds > 30){
+							    		throw new IllegalStateException("Generation stopped! TimeOut (30 seconds)");
 							    	}
-							    	
+							    	//Usado para detectar cuantos segundos han pasado desde que se inició el while
 							    	long waitTime = System.currentTimeMillis();
 							    	
 							    	if (waitTime > waitTimeInitial + 1000L) {
@@ -211,35 +257,77 @@ public class WorldLoadAsync {
 							    }
 							    
 							    waitForChunkSeconds = 0;
-
-							    final Chunk chunk_final = waitForChunk;
-							    internal.getChunkProviderServer().chunks.put(LongHash.toLong(j2, k2), chunk_final);
 							    
+							    //Bien, el chunk ya fue cargado/generado entonces lo colocamos en el mapa de chunks
+							    Chunk chunk_final = waitForChunk;
+							    minecraftWorld.getChunkProviderServer().chunks.put(LongHash.toLong(j2, k2), chunk_final);
 							}else{
-								cps.unloadQueue.remove(j2, k2);
-							    Chunk chunk = (Chunk)cps.chunks.get(LongHash.toLong(j2, k2));
-							    boolean newChunk = false;
-							    
-							    if (chunk == null) {
-							    	chunk = cps.loadChunk(j2, k2);
-							    	if (chunk == null) {
-							    		chunk = cps.getOrCreateChunkFast(j2, k2);
-							    	}
-							    	
-							    	newChunk = true;
-							    }
-							    
-							    final boolean newChunk_final = newChunk;
-							    final Chunk chunk_final = chunk;
-							    
-							    new BukkitRunnable(){public void run(){
-							    	Server server = internal.getChunkProviderServer().world.getServer();
+								//Si no existe el chunk, entonces tratamos de generarlo
+					    		final Chunk chunk = chunkProvider.chunkGenerator.getOrCreateChunk(j2, k2);;
+					    		//Petición sincrona
+					    		new BukkitRunnable(){
+					    			public void run(){
+					    				//Establecer para esperar a que este run() se termine de procesar
+					    				waitPostProcess = true;
+					    				
+					    				//Obtener el playerChunk y establecer (no se para que se use)
+							    		PlayerChunk playerChunk = minecraftWorld.getPlayerChunkMap().b(j2, k2);
+							    		if(playerChunk != null){
+							    			playerChunk.chunk = chunk;
+							    		}
+							    		
+							    		//PostProcess (craftWorld)
+							    		//Colocar el chunk generado en el listado de chunks
+							    		chunkProvider.chunks.put(LongHash.toLong(j2, k2), chunk);
+							    		//Añadir entidades
+							    		chunk.addEntities();
+							    		//cargar chunks locales
+							    		for (int x = -2; x < 3; x++) {
+							                for (int z = -2; z < 3; z++) {
+							                    if (x == 0 && z == 0) {
+							                        continue;
+							                    }
+							                    //No sé para que se use esto, probablemente nunca se ejecute (probablemente neighbor == null siempre)
+							                    Chunk neighbor = chunkProvider.getChunkIfLoaded(chunk.locX + x, chunk.locZ + z);
+							                    if (neighbor != null) {
+							                        neighbor.setNeighborLoaded(-x, -z);
+							                        chunk.setNeighborLoaded(x, z);
+							                    }
+							                }
+							            }
+							    		
+							    		//Cargar chunk local
+							    		chunk.loadNearby(chunkProvider, chunkProvider.chunkGenerator);
+							    		
+							    		//refresh chunk (CraftWorld)
+							    		int px = j2 << 4;
+							            int pz = k2 << 4;
+							    		int height = minecraftWorld.getHeight() / 16;
+							    		
+							            for (int idx = 0; idx < 64; idx++) {
+							                minecraftWorld.notify(new BlockPosition(px + (idx / height), ((idx % height) * 16), pz), Blocks.AIR.getBlockData(), Blocks.STONE.getBlockData(), 3);
+							            }
+							            
+							            minecraftWorld.notify(new BlockPosition(px + 15, (height * 16) - 1, pz + 15), Blocks.AIR.getBlockData(), Blocks.STONE.getBlockData(), 3);
+							            
+							            //Terminar el proceso
+							            waitPostProcess = false;
+					    			}
+					    		}.runTask(AllBanks.getInstance());
+					    		
+					    		while(waitPostProcess){
+					    			//Esperar a que el task anterior termine.
+					    		}
+					    		
+					    		//Llamar al evento ChunkLoadEvent
+							    new BukkitRunnable(){
+							    	public void run(){
+							    		Server server = minecraftWorld.getChunkProviderServer().world.getServer();
 									    if (server != null) {
-									      server.getPluginManager().callEvent(new ChunkLoadEvent(chunk_final.bukkitChunk, newChunk_final));
+									      server.getPluginManager().callEvent(new ChunkLoadEvent(chunk.bukkitChunk, true));
 									    }
-							    }}.runTask(AllBanks.getInstance());
-							    
-							    internal.getChunkProviderServer().chunks.put(LongHash.toLong(j2, k2), chunk_final);
+							    	}
+							    }.runTask(AllBanks.getInstance());
 							}
 						}
 			    	}
@@ -251,22 +339,20 @@ public class WorldLoadAsync {
 			    }else{
 			    	System.out.println("[AllBanks] keepSpawnInMemory is false??? Skip chunk generation.");
 			    }
-
-				getServer().worlds.add(internal);
 				
 				new BukkitRunnable(){
 
 					public void run() {
 						World w = Bukkit.getWorld(name);
-						
+						//establecer spawn, para corregir errores.
 						if(w != null){
-							System.out.println("[AllBanks] Done, world loaded.");
 							System.out.println("[AllBanks] Set spawn to " + spawn_X + ", " + spawn_Y + ", " + spawn_Z);
 							w.setSpawnLocation(spawn_X, spawn_Y, spawn_Z);
+							System.out.println("[AllBanks] Done.");
 						}else{
 							System.out.println("[AllBanks] World not loaded??? (null)");
 						}
-						
+						//Quitar el estado ocupado
 						generationBusy = false;
 					}
 					
@@ -277,7 +363,7 @@ public class WorldLoadAsync {
 			
 		}.runTaskAsynchronously(AllBanks.getInstance());
 		
-		return internal.getWorld();
+		return minecraftWorld.getWorld();
 	}
 	
 	private static File getWorldContainer() {

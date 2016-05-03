@@ -23,10 +23,11 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockBurnEvent;
 import org.bukkit.event.block.BlockIgniteEvent;
 import org.bukkit.event.block.BlockIgniteEvent.IgniteCause;
-import org.bukkit.event.entity.EntitySpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent;
 
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
@@ -38,6 +39,11 @@ import me.wirlie.allbanks.land.WorldConfiguration;
  */
 public class PlotWorldEvents implements Listener {
 
+	@EventHandler(ignoreCancelled = false)
+	public void breaks(BlockBreakEvent e){
+		System.out.println("BREAK 2");
+	}
+	
 	@EventHandler
 	public void onBlockBurn(BlockBurnEvent e){
 		Location loc = e.getBlock().getLocation();
@@ -110,8 +116,7 @@ public class PlotWorldEvents implements Listener {
 	}
 	
 	@EventHandler
-	public void onEntitySpawn(EntitySpawnEvent e){
-		System.out.println("CALL");
+	public void onEntitySpawn(CreatureSpawnEvent e){
 		Location loc = e.getLocation();
 		
 		boolean hostil = false;
@@ -134,10 +139,6 @@ public class PlotWorldEvents implements Listener {
 			hostil = true;
 		}
 		
-		System.out.println("animal " + animal);
-		System.out.println("neutral " + neutral);
-		System.out.println("hostil " + hostil);
-		
 		if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 			WorldConfiguration wcfg = new WorldConfiguration(abw.getID());
@@ -145,7 +146,6 @@ public class PlotWorldEvents implements Listener {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				if(!wcfg.animalSpawn() && animal || !wcfg.mobSpawn() && hostil || neutral){
 					e.setCancelled(true);
-					System.out.println("CANCELL 1");
 					return;
 				}
 			}
@@ -155,13 +155,11 @@ public class PlotWorldEvents implements Listener {
 			if(!plot.hasOwner()){
 				if(!wcfg.animalSpawn() && animal || !wcfg.mobSpawn() && hostil || neutral){
 					e.setCancelled(true);
-					System.out.println("CANCELL 2");
 					return;
 				}
 			}else{
 				if(hostil || !wcfg.animalSpawn() && animal){
 					e.setCancelled(true);
-					System.out.println("CANCELL 3");
 					return;
 				}
 			}
