@@ -18,6 +18,8 @@
  */
 package me.wirlie.allbanks.land;
 
+import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Type;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,11 +28,16 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.utils.ChatUtil;
+import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.StringLocationUtil;
 
 /**
@@ -47,33 +54,67 @@ public class PlotConfiguration {
 		plot_cfg = new Gson().fromJson(JSONConfiguration, type);
 		if(plot_cfg == null) plot_cfg = new HashMap<String, String>();
 		this.plot = plot;
+		
+		loadWorldPlotConfiguration();
 	}
 	
-	public static String defaultJSONConfiguration(){
+	public void loadWorldPlotConfiguration(){
+		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
+		
+		File worldCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + plot.getAllBanksWorld().getID() + "-cfg.yml");
+		
+		if(!worldCfg.exists()){
+			try {
+				worldCfg.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		
+	}
+	
+	public static String defaultConfiguration(String worldID){
+		
+		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
+		
+		File worldCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + worldID + "-cfg.yml");
+		
+		if(!worldCfg.exists()){
+			try {
+				worldCfg.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(worldCfg);
+		
 		HashMap<String, String> plot_cfg = new HashMap<String, String>();
-		plot_cfg.put("fire-spread", "false");
-		plot_cfg.put("explosions", "false");
-		plot_cfg.put("mobs", "false");
-		plot_cfg.put("pvp", "false");
-		plot_cfg.put("lava-flow", "false");
-		plot_cfg.put("water-flow", "true");
-		plot_cfg.put("use-door", "true");
-		plot_cfg.put("use-anvil", "false");
-		plot_cfg.put("use-workbench", "true");
-		plot_cfg.put("use-fence-door", "false");
-		plot_cfg.put("use-enchantment-table", "true");
-		plot_cfg.put("use-lever", "false");
-		plot_cfg.put("use-button", "false");
-		plot_cfg.put("drop-item", "true");
-		plot_cfg.put("msg-greeting", "");
-		plot_cfg.put("msg-farewell", "");
+		plot_cfg.put("fire-spread", yaml.getString("plot-default-cfg.fire-spread", "false"));
+		plot_cfg.put("explosions", yaml.getString("plot-default-cfg.explosions", "false"));
+		plot_cfg.put("mobs", yaml.getString("plot-default-cfg.mobs", "false"));
+		plot_cfg.put("pvp", yaml.getString("plot-default-cfg.pvp", "false"));
+		plot_cfg.put("lava-flow", yaml.getString("plot-default-cfg.lava-flow", "false"));
+		plot_cfg.put("water-flow", yaml.getString("plot-default-cfg.water-flow", "true"));
+		plot_cfg.put("use-door", yaml.getString("plot-default-cfg.use-door", "true"));
+		plot_cfg.put("use-anvil", yaml.getString("plot-default-cfg.use-anvil", "true"));
+		plot_cfg.put("use-workbench", yaml.getString("plot-default-cfg.use-workbench", "true"));
+		plot_cfg.put("use-fence-door", yaml.getString("plot-default-cfg.use-fence-door", "true"));
+		plot_cfg.put("use-enchantment-table", yaml.getString("plot-default-cfg.use-enchantment-table", "true"));
+		plot_cfg.put("use-lever", yaml.getString("plot-default-cfg.use-lever", "false"));
+		plot_cfg.put("use-button", yaml.getString("plot-default-cfg.use-button", "false"));
+		plot_cfg.put("use-pressure-plate", yaml.getString("plot-default-cfg.use-button", "false"));
+		plot_cfg.put("drop-item", yaml.getString("plot-default-cfg.drop-item", "true"));
+		plot_cfg.put("msg-greeting", yaml.getString("plot-default-cfg.msg-greeting", Translation.get(StringsID.PLOT_GREETING_FORMAT, false)[0]));
+		plot_cfg.put("msg-farewell", yaml.getString("plot-default-cfg.msg-farewell", Translation.get(StringsID.PLOT_FAREWELL_FORMAT, false)[0]));
 		plot_cfg.put("plot-spawn-loc", "");
 		plot_cfg.put("shop-spawn-loc", "");
 		plot_cfg.put("shop-spawn-alias", "");
-		plot_cfg.put("shop-spawn-visibility", "PUBLIC");
+		plot_cfg.put("shop-spawn-visibility", yaml.getString("plot-default-cfg.shop-spawn-visibility", "PUBLIC"));
 		plot_cfg.put("plot-friends", "");
 		plot_cfg.put("plot-player-deny", "");
-		plot_cfg.put("allow-entry", "true");
+		plot_cfg.put("allow-entry", yaml.getString("plot-default-cfg.allow-entry", "true"));
 		
 		return new Gson().toJson(plot_cfg);
 	}
@@ -273,6 +314,18 @@ public class PlotConfiguration {
 		}
 	}
 	
+	public boolean usePressurePlate(){
+		if(plot_cfg.containsKey("use-pressure-plate")){
+			if(plot_cfg.get("use-pressure-plate").equalsIgnoreCase("true")){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return true;
+		}
+	}
+	
 	public boolean useAnvil(){
 		if(plot_cfg.containsKey("use-anvil")){
 			if(plot_cfg.get("use-anvil").equalsIgnoreCase("true")){
@@ -359,7 +412,7 @@ public class PlotConfiguration {
 	
 	public String greetingMessage(){
 		if(plot_cfg.containsKey("msg-greeting")){
-			return plot_cfg.get("msg-greeting");
+			return ChatUtil.replaceChatFormat(plot_cfg.get("msg-greeting").replace("§", "&"));
 		}else{
 			return null;
 		}
@@ -367,7 +420,7 @@ public class PlotConfiguration {
 	
 	public String farewellMessage(){
 		if(plot_cfg.containsKey("msg-farewell")){
-			return plot_cfg.get("msg-farewell");
+			return ChatUtil.replaceChatFormat(plot_cfg.get("msg-farewell").replace("§", "&"));
 		}else{
 			return null;
 		}
@@ -443,6 +496,48 @@ public class PlotConfiguration {
 			}
 		}else{
 			return false;
+		}
+	}
+
+	/**
+	 * @param worldCfg
+	 */
+	public static void defaultConfigurationForWorldCfg(File worldCfg) {
+		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
+		
+		if(!worldCfg.exists()){
+			try {
+				worldCfg.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(worldCfg);
+		yaml.set("plot-default-cfg.fire-spread", "false");
+		yaml.set("plot-default-cfg.explosions", "false");
+		yaml.set("plot-default-cfg.mobs", "true");
+		yaml.set("plot-default-cfg.pvp", "false");
+		yaml.set("plot-default-cfg.lava-flow", "false");
+		yaml.set("plot-default-cfg.water-flow", "true");
+		yaml.set("plot-default-cfg.use-door", "true");
+		yaml.set("plot-default-cfg.use-anvil", "false");
+		yaml.set("plot-default-cfg.use-workbench", "true");
+		yaml.set("plot-default-cfg.use-fence-door", "false");
+		yaml.set("plot-default-cfg.use-enchantment-table", "true");
+		yaml.set("plot-default-cfg.use-lever", "false");
+		yaml.set("plot-default-cfg.use-button", "false");
+		yaml.set("plot-default-cfg.use-pressure-plate", "false");
+		yaml.set("plot-default-cfg.drop-item", "true");
+		yaml.set("plot-default-cfg.msg-greeting", "" + Translation.get(StringsID.PLOT_GREETING_FORMAT, false)[0]);
+		yaml.set("plot-default-cfg.msg-farewell", "" + Translation.get(StringsID.PLOT_FAREWELL_FORMAT, false)[0]);
+		yaml.set("plot-default-cfg.shop-spawn-visibility", "PUBLIC");
+		yaml.set("plot-default-cfg.allow-entry", "true");
+		
+		try {
+			yaml.save(worldCfg);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

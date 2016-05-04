@@ -53,6 +53,7 @@ public class ChatUtil {
 		txt = txt.replace("&f", ChatColor.WHITE+"");
 		txt = txt.replace("&l", ChatColor.BOLD+"");
 		txt = txt.replace("&r", ChatColor.RESET+"");
+		txt = txt.replace("&k", ChatColor.MAGIC+"");
 		return txt;
 	}
 	
@@ -80,6 +81,7 @@ public class ChatUtil {
 		txt = txt.replace(ChatColor.WHITE+"","");
 		txt = txt.replace(ChatColor.BOLD+"","");
 		txt = txt.replace(ChatColor.RESET+"","");
+		txt = txt.replace(ChatColor.MAGIC+"","");
 		return txt;
 	}
 	
@@ -107,6 +109,7 @@ public class ChatUtil {
 		txt = txt.replace("&f", "");
 		txt = txt.replace("&l", "");
 		txt = txt.replace("&r", "");
+		txt = txt.replace("&k", "");
 		return txt;
 	}
 }

@@ -8,8 +8,10 @@ import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.land.AllBanksPlayer;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.command.Command;
 
 public class CommandPlot extends Command {
@@ -38,6 +40,12 @@ public class CommandPlot extends Command {
 			}
 			
 			Player p = (Player) sender;
+			
+			if(!Util.hasPermission(p, "allbanks.land.commands.plot.claim")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return true;
+			}
+			
 			Location loc = p.getLocation();
 			
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -62,6 +70,13 @@ public class CommandPlot extends Command {
 				return true;
 			}
 			
+			//Comprobar límite
+			AllBanksPlayer abp = new AllBanksPlayer(abw.getID(), p.getName());
+			if((abp.currentPlots() + 1) > abw.getWorldConfiguration().plotsPerUser()){
+				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + abp.currentPlots(), "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
+				return true;
+			}
+			
 			//Listo, claimear
 			plot.claim(p.getName());
 			
@@ -79,6 +94,12 @@ public class CommandPlot extends Command {
 			}
 			
 			Player p = (Player) sender;
+			
+			if(!Util.hasPermission(p, "allbanks.land.commands.plot.unclaim")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return true;
+			}
+			
 			Location loc = p.getLocation();
 			
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -114,6 +135,12 @@ public class CommandPlot extends Command {
 			}
 			
 			Player p = (Player) sender;
+			
+			if(!Util.hasPermission(p, "allbanks.land.commands.plot.set.flags")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return true;
+			}
+			
 			Location loc = p.getLocation();
 			
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -145,8 +172,15 @@ public class CommandPlot extends Command {
 					}else{
 						plot.setPlotConfiguration("fire-spread", "false");
 					}
-					//TODO MÁS ESPECIFICO AL MOMENTO DE ESTABLECER UNA CONFIGURACION
-					p.sendMessage("FIRE-SPREAD -> " + plot.getPlotConfiguration().fireSpread());
+					
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Fire-Spread", 
+									"%2%>>>" + plot.getPlotConfiguration().fireSpread()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("explosions")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("explosions", "true");
@@ -154,7 +188,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("explosions", "false");
 					}
 					
-					p.sendMessage("EXPLOSIONS -> " + plot.getPlotConfiguration().explosions());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Explosions", 
+									"%2%>>>" + plot.getPlotConfiguration().explosions()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("mobs")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("mobs", "true");
@@ -162,7 +203,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("mobs", "false");
 					}
 					
-					p.sendMessage("MOBS -> " + plot.getPlotConfiguration().mobs());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Mobs", 
+									"%2%>>>" + plot.getPlotConfiguration().mobs()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("pvp")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("pvp", "true");
@@ -170,7 +218,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("pvp", "false");
 					}
 					
-					p.sendMessage("PVP -> " + plot.getPlotConfiguration().pvp());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>PvP", 
+									"%2%>>>" + plot.getPlotConfiguration().pvp()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("lava-flow")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("lava-flow", "true");
@@ -178,7 +233,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("lava-flow", "false");
 					}
 					
-					p.sendMessage("LAVA-FLOW -> " + plot.getPlotConfiguration().lavaFlow());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Lava-Flow", 
+									"%2%>>>" + plot.getPlotConfiguration().lavaFlow()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("water-flow")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("water-flow", "true");
@@ -186,7 +248,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("water-flow", "false");
 					}
 					
-					p.sendMessage("WATER-FLOW -> " + plot.getPlotConfiguration().waterFlow());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Water-Flow", 
+									"%2%>>>" + plot.getPlotConfiguration().waterFlow()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-door")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-door", "true");
@@ -194,7 +263,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-door", "false");
 					}
 					
-					p.sendMessage("USE-DOOR -> " + plot.getPlotConfiguration().useDoor());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-Door", 
+									"%2%>>>" + plot.getPlotConfiguration().useDoor()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-anvil")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-anvil", "true");
@@ -202,7 +278,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-anvil", "false");
 					}
 					
-					p.sendMessage("USE-ANVIL -> " + plot.getPlotConfiguration().useAnvil());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-Anvil", 
+									"%2%>>>" + plot.getPlotConfiguration().useAnvil()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-workbench")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-workbench", "true");
@@ -210,7 +293,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-workbench", "false");
 					}
 					
-					p.sendMessage("USE-WORKBENCH -> " + plot.getPlotConfiguration().useWorkbench());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-Workbench", 
+									"%2%>>>" + plot.getPlotConfiguration().useWorkbench()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-fence-door")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-fence-door", "true");
@@ -218,7 +308,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-fence-door", "false");
 					}
 					
-					p.sendMessage("USE-FENCE-DOOR -> " + plot.getPlotConfiguration().useFenceDoor());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-FenceDoor", 
+									"%2%>>>" + plot.getPlotConfiguration().useFenceDoor()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-enchantment-table")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-enchantment-table", "true");
@@ -226,7 +323,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-enchantment-table", "false");
 					}
 					
-					p.sendMessage("USE-ENCHANTMENT-TABLE -> " + plot.getPlotConfiguration().useEnchantmentTable());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-EnchantmentTable", 
+									"%2%>>>" + plot.getPlotConfiguration().useEnchantmentTable()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-lever")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-lever", "true");
@@ -234,7 +338,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-lever", "false");
 					}
 					
-					p.sendMessage("USE-LEVER -> " + plot.getPlotConfiguration().useLever());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-Lever", 
+									"%2%>>>" + plot.getPlotConfiguration().useLever()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("use-button")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("use-button", "true");
@@ -242,7 +353,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("use-button", "false");
 					}
 					
-					p.sendMessage("USE-BUTTON -> " + plot.getPlotConfiguration().useButton());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Use-Button", 
+									"%2%>>>" + plot.getPlotConfiguration().useButton()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("drop-item")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("drop-item", "true");
@@ -250,7 +368,14 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("drop-item", "false");
 					}
 					
-					p.sendMessage("DROP-ITEM -> " + plot.getPlotConfiguration().dropItem());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Drop-Item", 
+									"%2%>>>" + plot.getPlotConfiguration().dropItem()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("msg-greeting")){
 					
 					String message = "";
@@ -258,12 +383,19 @@ public class CommandPlot extends Command {
 					for(int i = 0; i < args.length; i ++){
 						if(i == 0 || i == 1 || i == 2) continue;
 						
-						message = args[i] + " ";
+						message += args[i] + " ";
 					}
 					
 					plot.setPlotConfiguration("msg-greeting", message);
 					
-					p.sendMessage("MSG-GREETING -> " + plot.getPlotConfiguration().greetingMessage());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>MsgGreeting", 
+									"%2%>>>%BREAK%" + plot.getPlotConfiguration().greetingMessage()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("msg-farewell")){
 					
 					String message = "";
@@ -271,12 +403,19 @@ public class CommandPlot extends Command {
 					for(int i = 0; i < args.length; i ++){
 						if(i == 0 || i == 1 || i == 2) continue;
 						
-						message = args[i] + " ";
+						message += args[i] + " ";
 					}
 					
 					plot.setPlotConfiguration("msg-farewell", message);
 					
-					p.sendMessage("MSG-FAREWELL -> " + plot.getPlotConfiguration().farewellMessage());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>MsgFarewell", 
+									"%2%>>>%BREAK%" + plot.getPlotConfiguration().farewellMessage()
+									), 
+							true);
 				}else if(args[2].equalsIgnoreCase("allow-entry")){
 					if(args[3].equalsIgnoreCase("true")){
 						plot.setPlotConfiguration("allow-entry", "true");
@@ -284,9 +423,22 @@ public class CommandPlot extends Command {
 						plot.setPlotConfiguration("allow-entry", "false");
 					}
 					
-					p.sendMessage("WATER-FLOW -> " + plot.getPlotConfiguration().waterFlow());
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Allow-Entry", 
+									"%2%>>>" + plot.getPlotConfiguration().allowEntry()
+									), 
+							true);
 				}else{
-					p.sendMessage("INVALID ARGUMENT"); //TODO HACER ESTE ERROR MAS ESPECIFICO
+					Translation.getAndSendMessage(
+							p,
+							StringsID.PLOT_SET_FLAG_ERROR_NOT_EXISTS, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>" + args[2]
+									), 
+							true);
 				}
 			}else{
 				//argumentos inválidos
@@ -301,6 +453,12 @@ public class CommandPlot extends Command {
 				}
 				
 				Player p = (Player) sender;
+				
+				if(!Util.hasPermission(p, "allbanks.land.commands.plot.add")){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					return true;
+				}
+				
 				Location loc = p.getLocation();
 				
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -341,6 +499,12 @@ public class CommandPlot extends Command {
 				}
 				
 				Player p = (Player) sender;
+				
+				if(!Util.hasPermission(p, "allbanks.land.commands.plot.add")){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					return true;
+				}
+				
 				Location loc = p.getLocation();
 				
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -381,6 +545,12 @@ public class CommandPlot extends Command {
 				}
 				
 				Player p = (Player) sender;
+				
+				if(!Util.hasPermission(p, "allbanks.land.commands.plot.deny")){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					return true;
+				}
+				
 				Location loc = p.getLocation();
 				
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -421,6 +591,12 @@ public class CommandPlot extends Command {
 				}
 				
 				Player p = (Player) sender;
+				
+				if(!Util.hasPermission(p, "allbanks.land.commands.plot.deny")){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					return true;
+				}
+				
 				Location loc = p.getLocation();
 				
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){

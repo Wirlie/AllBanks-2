@@ -381,4 +381,8 @@ public class AllBanksWorld {
 		return Bukkit.getWorld(world_id);
 	}
 	
+	public WorldConfiguration getWorldConfiguration(){
+		return new WorldConfiguration(getID());
+	}
+	
 }

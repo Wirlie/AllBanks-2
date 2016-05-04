@@ -29,6 +29,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.utils.ChatUtil;
 
 /**
  * @author josue
@@ -39,6 +40,7 @@ public class PlotPlayerMove implements Listener {
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e){
 		Location to = e.getTo();
+		Location from = e.getFrom();
 		Player p = e.getPlayer();
 		
 		if(AllBanksWorld.worldIsAllBanksWorld(to.getWorld().getName())){
@@ -49,10 +51,24 @@ public class PlotPlayerMove implements Listener {
 				
 				if(plot.hasOwner()){
 					if(plot.getPlotConfiguration().getDenyPlayers().contains(p.getName().toLowerCase())
-							|| !plot.getPlotConfiguration().allowEntry() && !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase()) && !plot.getOwnerName().equals(p.getName().toLowerCase())){
+							|| !plot.getPlotConfiguration().allowEntry() && !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase()) && !plot.getOwnerName().equalsIgnoreCase(p.getName().toLowerCase())){
 						//denegar
 						e.setCancelled(true);
 						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_ALLOW_TO_ENTRY, true);
+					}else{
+						//Mensaje de entrando
+						if(plot.getPlotConfiguration().greetingMessage() != null && !plot.getPlotConfiguration().greetingMessage().equalsIgnoreCase("") && !abw.locationIsPlot(from.getBlockX(), from.getBlockZ()) && abw.locationIsPlot(to.getBlockX(), to.getBlockZ())){
+							p.sendMessage(ChatUtil.replaceChatFormat(plot.getPlotConfiguration().greetingMessage().replace("§", "&").replace("%1%", plot.getOwnerName())));
+						}
+					}
+				}
+			}else if(abw.locationIsPlot(from.getBlockX(), from.getBlockZ())){
+				AllBanksPlot plot = abw.getPlot(from.getBlockX(), from.getBlockZ());
+				
+				if(plot.hasOwner()){
+					//Mensaje de salida
+					if(plot.getPlotConfiguration().greetingMessage() != null && !plot.getPlotConfiguration().greetingMessage().equalsIgnoreCase("") && abw.locationIsPlot(from.getBlockX(), from.getBlockZ()) && !abw.locationIsPlot(to.getBlockX(), to.getBlockZ())){
+						p.sendMessage(ChatUtil.replaceChatFormat(plot.getPlotConfiguration().farewellMessage().replace("§", "&").replace("%1%", plot.getOwnerName())));
 					}
 				}
 			}
@@ -72,7 +88,7 @@ public class PlotPlayerMove implements Listener {
 				
 				if(plot.hasOwner()){
 					if(plot.getPlotConfiguration().getDenyPlayers().contains(p.getName().toLowerCase())
-							|| !plot.getPlotConfiguration().allowEntry() && !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase()) && !plot.getOwnerName().equals(p.getName().toLowerCase())){
+							|| !plot.getPlotConfiguration().allowEntry() && !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase()) && !plot.getOwnerName().equalsIgnoreCase(p.getName().toLowerCase())){
 						//denegar
 						e.setCancelled(true);
 						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_ALLOW_TO_ENTRY, true);

@@ -59,7 +59,7 @@ public class PlotBlockBreak implements Listener {
 			//Obtener el plot
 			AllBanksPlot plot = abw.getPlot(x, z);
 			
-			if(!plot.hasOwner() || !plot.havePermissions(p.getName())){
+			if(!plot.hasOwner() || !plot.havePermissions(p)){
 				//No es de nadie o no es el dueño.
 				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
 				e.setCancelled(true);

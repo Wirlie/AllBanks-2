@@ -33,13 +33,14 @@ public class WorldConfiguration {
 	
 	String id;
 	
-	boolean mob_spawn = true;
-	boolean animal_spawn = true;
-	boolean creeper_explosion = false;
-	boolean wither_explosion = false;
-	boolean allow_wither = false;
-	boolean allow_nether_portal = true;
-	boolean allow_tnt = true;
+	String mob_spawn = "true";
+	String animal_spawn = "true";
+	String creeper_explosion = "false";
+	String wither_explosion = "false";
+	String allow_wither = "false";
+	String allow_nether_portal = "true";
+	String allow_tnt_explosion = "true";
+	String plot_per_user = "1";
 	
 	public WorldConfiguration(String worldID){
 		id = worldID;
@@ -68,13 +69,16 @@ public class WorldConfiguration {
 			worldCfgYaml.set("world.wither-explosion", "false");
 			worldCfgYaml.set("world.allow-wither", "false");
 			worldCfgYaml.set("world.allow-nether-portal", "true");
-			worldCfgYaml.set("world.allow-tnt", "true");
+			worldCfgYaml.set("world.allow-tnt-explosion", "true");
+			worldCfgYaml.set("general.plots-per-user", "1");
 			
 			try {
 				worldCfgYaml.save(worldCfg);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			PlotConfiguration.defaultConfigurationForWorldCfg(worldCfg);
 		}
 	}
 		
@@ -93,13 +97,14 @@ public class WorldConfiguration {
 		
 		YamlConfiguration worldCfgYaml = YamlConfiguration.loadConfiguration(worldCfg);
 		
-		mob_spawn = worldCfgYaml.getBoolean("world.mob-spawn", mob_spawn);
-		animal_spawn = worldCfgYaml.getBoolean("world.animal-spawn", animal_spawn);
-		creeper_explosion = worldCfgYaml.getBoolean("world.creeper-explosion", creeper_explosion);
-		wither_explosion = worldCfgYaml.getBoolean("world.wither-explosion", wither_explosion);
-		allow_wither = worldCfgYaml.getBoolean("world.allow-wither", allow_wither);
-		allow_nether_portal = worldCfgYaml.getBoolean("world.allow-nether-portal", allow_nether_portal);
-		allow_tnt = worldCfgYaml.getBoolean("world.allow-tnt", allow_tnt);
+		mob_spawn = worldCfgYaml.getString("world.mob-spawn", mob_spawn);
+		animal_spawn = worldCfgYaml.getString("world.animal-spawn", animal_spawn);
+		creeper_explosion = worldCfgYaml.getString("world.creeper-explosion", creeper_explosion);
+		wither_explosion = worldCfgYaml.getString("world.wither-explosion", wither_explosion);
+		allow_wither = worldCfgYaml.getString("world.allow-wither", allow_wither);
+		allow_nether_portal = worldCfgYaml.getString("world.allow-nether-portal", allow_nether_portal);
+		allow_tnt_explosion = worldCfgYaml.getString("world.allow-tnt-explosion", allow_tnt_explosion);
+		plot_per_user = worldCfgYaml.getString("general.plots-per-user", plot_per_user);
 	}
 	
 	public void updateConfiguration(String key, Object value){
@@ -127,66 +132,79 @@ public class WorldConfiguration {
 	}
 	
 	public boolean mobSpawn(){
-		return mob_spawn;
+		return (mob_spawn.equalsIgnoreCase("true")) ? true : false;
 	}
 	
 	public void mobSpawn(boolean newVal){
 		updateConfiguration("world.mob-spawn", newVal);
-		mob_spawn = newVal;
+		mob_spawn = (newVal) ? "true" : "false";
 	}
 	
 	public boolean animalSpawn(){
-		return animal_spawn;
+		return (animal_spawn.equalsIgnoreCase("true")) ? true : false;
 	}
 	
 	public void animalSpawn(boolean newVal){
 		updateConfiguration("world.animal-spawn", newVal);
-		animal_spawn = newVal;
+		animal_spawn = (newVal) ? "true" : "false";
 	}
 	
 	public boolean creeperExplosion(){
-		return creeper_explosion;
+		return (creeper_explosion.equalsIgnoreCase("true")) ? true : false;
 	}
 	
 	public void creeperExplosion(boolean newVal){
 		updateConfiguration("world.creeper-explosion", newVal);
-		creeper_explosion = newVal;
+		creeper_explosion = (newVal) ? "true" : "false";
 	}
 	
 	public boolean witherExplosion(){
-		return wither_explosion;
+		return (wither_explosion.equalsIgnoreCase("true")) ? true : false;
 	}
 	
 	public void witherExplosion(boolean newVal){
 		updateConfiguration("world.wither-explosion", newVal);
-		wither_explosion = newVal;
+		wither_explosion = (newVal) ? "true" : "false";
 	}
 	
 	public boolean allowWither(){
-		return allow_wither;
+		return (allow_wither.equalsIgnoreCase("true")) ? true : false;
 	}
 	
 	public void allowWither(boolean newVal){
 		updateConfiguration("world.allow-wither", newVal);
-		allow_wither = newVal;
+		allow_wither = (newVal) ? "true" : "false";
 	}
 	
 	public boolean allowNetherPortal(){
-		return allow_nether_portal;
+		return (allow_nether_portal.equalsIgnoreCase("true")) ? true : false;
 	}
 	
 	public void allowNetherPortal(boolean newVal){
 		updateConfiguration("world.allow-nether-portal", newVal);
-		allow_nether_portal = newVal;
+		allow_nether_portal = (newVal) ? "true" : "false";
 	}
 	
-	public boolean allowTNT(){
-		return allow_tnt;
+	public boolean allowTNTExplosion(){
+		return (allow_tnt_explosion.equalsIgnoreCase("true")) ? true : false;
 	}
 	
-	public void allowTNT(boolean newVal){
+	public void allowTNTExplosion(boolean newVal){
 		updateConfiguration("world.allow-tnt", newVal);
-		allow_tnt = newVal;
+		allow_tnt_explosion = (newVal) ? "true" : "false";
+	}
+	
+	public int plotsPerUser(){
+		try{
+			return Integer.parseInt(plot_per_user);
+		}catch(NumberFormatException e){
+			return 1;
+		}
+	}
+	
+	public void plotsPerUser(int newVal){
+		updateConfiguration("general.plots-per-user", newVal);
+		plot_per_user = String.valueOf(newVal);
 	}
 	
 }

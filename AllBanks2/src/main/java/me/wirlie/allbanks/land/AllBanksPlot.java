@@ -24,8 +24,10 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * @author josue
@@ -153,6 +155,10 @@ public class AllBanksPlot {
 			stm.executeUpdate("DELETE FROM world_" + abw.getID() + "_plots WHERE plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
 			//remover del caché
 			plotCache.remove(plotStringID);
+			
+			//Usuario
+			AllBanksPlayer abp = new AllBanksPlayer(abw.getID(), ownerName);
+			abp.currentPlots(abp.currentPlots() - 1);
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
@@ -169,13 +175,15 @@ public class AllBanksPlot {
 	 */
 	public void claim(String name) {
 		
+		name = name.toLowerCase();
+		
 		Statement stm = null;
 		
 		try{
 			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
 			
 			if(!registeredDatabase){
-				stm.executeUpdate("INSERT INTO world_" + abw.getID() + "_plots (plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + plotX + "', '" + plotZ + "', '" + name + "', '" + PlotConfiguration.defaultJSONConfiguration() + "')");
+				stm.executeUpdate("INSERT INTO world_" + abw.getID() + "_plots (plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + plotX + "', '" + plotZ + "', '" + name + "', '" + PlotConfiguration.defaultConfiguration(abw.getID()) + "')");
 			}else{
 				stm.executeUpdate("UPDATE world_" + abw.getID() + "_plots SET plot_owner = '" + name + "' WHERE plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
 			}
@@ -186,6 +194,10 @@ public class AllBanksPlot {
 			
 			//Actualizar información
 			plotCache.put(plotStringID, plot);
+			
+			//Usuario
+			AllBanksPlayer abp = new AllBanksPlayer(abw.getID(), name);
+			abp.currentPlots(abp.currentPlots() + 1);
 			
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -198,7 +210,18 @@ public class AllBanksPlot {
 		}
 	}
 	
-	public boolean havePermissions(String playerName){
+	public boolean havePermissions(Player player){
+		
+		if(player.isOp()){
+			return true;
+		}
+		
+		if(Util.hasPermission(player, "allbanks.land.admin")){
+			return true;
+		}
+		
+		String playerName = player.getName().toLowerCase();
+		
 		if(hasOwner() && getOwnerName().equalsIgnoreCase(playerName)){
 			return true;
 		}
