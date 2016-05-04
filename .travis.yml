@@ -7,7 +7,7 @@ os:
 env:
   - AB_VERSION=1.9
 script: 
-  - if [[ $AB_VERSION == "1.9" ]] ; then cd "AllBanks 1.9"; fi
+  - if [[ $AB_VERSION == "1.9" ]] ; then cd "AllBanks2"; fi
   - if [[ $AB_VERSION == "1.9" ]] ; then mvn clean test -U; fi
 notifications:
   email:
