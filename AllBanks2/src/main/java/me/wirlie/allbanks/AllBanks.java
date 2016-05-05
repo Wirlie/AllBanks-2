@@ -73,7 +73,6 @@ import me.wirlie.allbanks.land.listeners.PlotPlayerDropItemListener;
 import me.wirlie.allbanks.land.listeners.PlotPlayerMoveListener;
 import me.wirlie.allbanks.land.listeners.PlotPlayerVehicleListener;
 import me.wirlie.allbanks.land.listeners.PlotPlayerInteractListener;
-import me.wirlie.allbanks.land.listeners.PlotWorldEvents;
 import me.wirlie.allbanks.listeners.common.PlayerJoinUpdaterMessage;
 import me.wirlie.allbanks.listeners.shops.ShopChestInteractListener;
 import me.wirlie.allbanks.listeners.shops.ShopSignBreakListener;
