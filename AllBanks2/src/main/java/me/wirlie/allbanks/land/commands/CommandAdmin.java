@@ -38,11 +38,11 @@ public class CommandAdmin extends Command {
 			int maxPage = 1;
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + page, "%2%>>>" + maxPage), true);
 			
-			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world>" + ChatColor.GRAY + "generate" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_GENERATE, false));
-			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world>" + ChatColor.GRAY + "unload" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_UNLOAD, false));
-			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world>" + ChatColor.GRAY + "remove" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_REMOVE, false));
-			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world>" + ChatColor.GRAY + "info" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_INFO, false));
-			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world>" + ChatColor.GRAY + "set" + ChatColor.GOLD + "<flag> <value>");
+			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "generate " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_GENERATE, false)[0]);
+			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "unload " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_UNLOAD, false)[0]);
+			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "remove " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_REMOVE, false)[0]);
+			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "info " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_INFO, false)[0]);
+			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "set " + ChatColor.GOLD + "<flag> <value>");
 			
 			return true;
 		}

@@ -63,8 +63,8 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"undeny",
 						"set",
 						"teleport", //TODO AGREGAR ESTE COMANDO
-						"setHomeSpawn", //TODO AGREGAR ESTE COMANDO
-						"setShopSpawn", //TODO AGREGAR ESTE COMANDO
+						"setHomeSpawn",
+						"setShopSpawn",
 						"info"
 						);
 			}else if(args[0].equalsIgnoreCase("spawn")){

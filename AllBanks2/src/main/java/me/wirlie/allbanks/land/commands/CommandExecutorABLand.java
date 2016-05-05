@@ -35,7 +35,6 @@ import me.wirlie.allbanks.command.Command;
 public class CommandExecutorABLand implements CommandExecutor {
 
 	public CommandExecutorABLand(){
-		//FIXME AÑADIR PERMISOS A LOS COMANDOS
 		//Relacionado a comandos Admin
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "?");
 		CommandManagerABLand.registerCommand(new CommandAdmin(), "admin", "help");

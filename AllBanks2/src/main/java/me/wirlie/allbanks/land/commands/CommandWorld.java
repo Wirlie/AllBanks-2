@@ -54,7 +54,7 @@ public class CommandWorld extends Command {
 			int maxPage = 1;
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + page, "%2%>>>" + maxPage), true);
 			
-			sender.sendMessage(ChatColor.GRAY + "/abl spawn " + ChatColor.GOLD + "<world>" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_SPAWN_DESC, false));
+			sender.sendMessage(ChatColor.GRAY + "/abl spawn " + ChatColor.GOLD + "<world> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_SPAWN_DESC, false)[0]);
 			
 			return true;
 		}
