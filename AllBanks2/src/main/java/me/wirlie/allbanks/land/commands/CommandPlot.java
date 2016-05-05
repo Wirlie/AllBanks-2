@@ -1,4 +1,4 @@
-package me.wirlie.allbanks.utils.command.land;
+package me.wirlie.allbanks.land.commands;
 
 import java.util.HashMap;
 
@@ -10,12 +10,12 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.land.AllBanksPlayer;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.PlotConfiguration;
 import me.wirlie.allbanks.utils.Util;
-import me.wirlie.allbanks.utils.command.Command;
 
 public class CommandPlot extends Command {
 

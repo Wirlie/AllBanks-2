@@ -1,4 +1,4 @@
-package me.wirlie.allbanks.utils.command.land;
+package me.wirlie.allbanks.land.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -6,11 +6,11 @@ import org.bukkit.command.CommandSender;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.WorldGenerationCfg;
 import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationResult;
 import me.wirlie.allbanks.utils.WorldLoadAsync;
-import me.wirlie.allbanks.utils.command.Command;
 
 public class CommandAdmin extends Command {
 

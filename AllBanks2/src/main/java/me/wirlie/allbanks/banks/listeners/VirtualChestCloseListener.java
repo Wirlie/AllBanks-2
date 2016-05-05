@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.listeners.banks;
+package me.wirlie.allbanks.banks.listeners;
 
 import java.util.HashMap;
 
@@ -41,9 +41,9 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  * @since AllBanks v1.0
  *
  */
-public class VirtualChestClose implements Listener{
+public class VirtualChestCloseListener implements Listener{
 	
-	public VirtualChestClose(){
+	public VirtualChestCloseListener(){
 		AllBanksLogger.info("VirtualChestClose");
 	}
 	

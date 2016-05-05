@@ -16,14 +16,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.utils.command.land;
+package me.wirlie.allbanks.land.commands;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
-import me.wirlie.allbanks.utils.command.Command;
+import me.wirlie.allbanks.command.Command;
 
 /**
  * @author Wirlie

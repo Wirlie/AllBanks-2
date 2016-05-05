@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.utils.command.land;
+package me.wirlie.allbanks.land.commands;
 
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -25,9 +25,9 @@ import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.utils.WorldLoadAsync;
-import me.wirlie.allbanks.utils.command.Command;
 
 /**
  * @author Wirlie
