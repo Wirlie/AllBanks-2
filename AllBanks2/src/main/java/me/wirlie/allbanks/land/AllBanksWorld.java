@@ -103,25 +103,7 @@ public class AllBanksWorld {
 		}
 		
 		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
-		
-		//Crear tabla para este mundo
-		Statement stm = null;
-		try {
-			stm = DBC.createStatement();
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS world_plots (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_coord_X NUMBER, plot_coord_Z NUMBER, plot_owner TEXT NOT NULL, plot_config TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS worlds_cfg (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_size NUMBER NOT NULL, road_size NUMBER NOT NULL, current_plot_cursor TEXT NULL)");
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return WorldGenerationResult.ERROR_DATABASE_EXCEPTION;
-		} finally {
-			if(stm != null)
-				try {
-					stm.close();
-				} catch (SQLException e) {
-					DataBaseUtil.checkDatabaseIsLocked(e);
-				}
-		}
-		
+
 		//Bien, comenzar a generar mundo
 		final WorldGenerationCfg worldCfg = new WorldGenerationCfg(worldID);
 		final WorldCreator wc = new WorldCreator(worldID)

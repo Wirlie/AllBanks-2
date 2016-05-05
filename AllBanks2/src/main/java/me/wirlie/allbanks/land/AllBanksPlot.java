@@ -55,7 +55,7 @@ public class AllBanksPlot {
 	protected AllBanksPlot(AllBanksWorld abw, int startX, int startZ){
 		this.abw = abw;
 		
-		firstBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX : startX, 0, (startZ >= 0) ? startZ : startZ);
+		firstBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX : startX, abw.getBukkitWorld().getSpawnLocation().getY(), (startZ >= 0) ? startZ : startZ);
 		secondBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX + abw.plotSize - 1 : startX - abw.plotSize + 1, abw.getBukkitWorld().getMaxHeight(), (startZ >= 0) ? startZ + abw.plotSize - 1 : startZ - abw.plotSize + 1);
 		
 		//Id del plot
@@ -63,6 +63,20 @@ public class AllBanksPlot {
 		plotX = ((startX >= 0) ? (startX / totalSize) : (startX / totalSize) - 1);
 		plotZ = ((startZ >= 0) ? (startZ / totalSize) : (startZ / totalSize) - 1);
 		plotStringID = plotX + "," + plotZ;
+		
+		loadPlotData();
+	}
+	
+	public AllBanksPlot(int plotX, int plotZ, AllBanksWorld abw){
+		this.abw = abw;
+		this.plotX = plotX;
+		this.plotZ = plotZ;
+		
+		plotStringID = plotX + "," + plotZ;
+		
+		int totalSize = abw.plotSize + abw.roadSize + 2;
+		firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, plotZ * totalSize);
+		secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, (plotZ * totalSize) + abw.plotSize);
 		
 		loadPlotData();
 	}

@@ -21,7 +21,9 @@ package me.wirlie.allbanks.land;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.utils.DataBaseUtil;
@@ -44,8 +46,41 @@ public class AllBanksPlayer {
 			playerCache.put(playerName, this);
 		}else{
 			//Leer desde el caché
-			AllBanksPlayer cached = playerCache.get(playerName);
+			//AllBanksPlayer cached = playerCache.get(playerName);
 		}
+	}
+	
+	public List<String> getOwnedPlots(){
+		Statement stm = null;
+		ResultSet res = null;
+		
+		try{
+			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' ORDER BY id");
+		
+			List<String> returnList = new ArrayList<String>();
+			
+			while(res.next()){
+				int X = res.getInt("plot_coord_X");
+				int Z = res.getInt("plot_coord_Z");
+				String worldID = res.getString("world_id");
+				
+				returnList.add(worldID + "," + X + "," + Z);
+			}
+			
+			return returnList;
+		}catch(SQLException e){
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			try{
+				if(stm != null) stm.close();
+				if(res != null) res.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+		}
+		
+		return new ArrayList<String>();
 	}
 	
 	public int currentPlots(String worldID){

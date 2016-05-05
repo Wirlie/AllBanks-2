@@ -19,6 +19,7 @@
 package me.wirlie.allbanks.land.commands;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.WorldLoadAsync;
 
 /**
@@ -48,11 +50,21 @@ public class CommandWorld extends Command {
 		}
 		
 		if(displayHelp){
+			int page = 1;
+			int maxPage = 1;
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + page, "%2%>>>" + maxPage), true);
+			
+			sender.sendMessage(ChatColor.GRAY + "/abl spawn " + ChatColor.GOLD + "<world>" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_SPAWN_DESC, false));
 			
 			return true;
 		}
 		
 		if(args[0].equalsIgnoreCase("spawn")){
+			
+			if(!Util.hasPermission(sender, "allbanks.land.commands.spawn")){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return true;
+			}
 			
 			if(sender instanceof Player){
 				if(args.length >= 2){

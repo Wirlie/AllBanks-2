@@ -52,6 +52,9 @@ public class PlotEntityListener implements Listener{
 				Entity ent = e.getEntity();
 				Location loc = ent.getLocation();
 				
+				//Esto se procesa en otro listener
+				if(ent.getType().equals(EntityType.PLAYER)) return;
+				
 				if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 					

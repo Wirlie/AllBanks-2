@@ -174,7 +174,7 @@ public class PlotPlayerInteractListener implements Listener {
 							e.setCancelled(true);
 							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
 						}else{
-							if(!plot.getPlotConfiguration().useWorkbench() && !plot.havePermissions(p)){
+							if(!plot.getPlotConfiguration().useAnvil() && !plot.havePermissions(p)){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
 							}

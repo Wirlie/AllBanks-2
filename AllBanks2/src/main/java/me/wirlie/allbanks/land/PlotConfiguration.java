@@ -127,7 +127,7 @@ public class PlotConfiguration {
 				
 				try{
 					stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
-					stm.executeUpdate("UPDATE world_plots SET plot_config = '" + toJSON() + "' WHERE world_id = '" + plot.getAllBanksWorld().getID() + "' plot_coord_X = '" + plot.getPlotX() + "' AND plot_coord_Z = '" + plot.getPlotZ() + "'");
+					stm.executeUpdate("UPDATE world_plots SET plot_config = '" + toJSON() + "' WHERE world_id = '" + plot.getAllBanksWorld().getID() + "' AND plot_coord_X = '" + plot.getPlotX() + "' AND plot_coord_Z = '" + plot.getPlotZ() + "'");
 				}catch(SQLException e){
 					e.printStackTrace();
 				}finally{

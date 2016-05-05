@@ -20,6 +20,7 @@ package me.wirlie.allbanks.land;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -41,6 +42,7 @@ public class WorldConfiguration {
 	String allow_nether_portal = "true";
 	String allow_tnt_explosion = "true";
 	String plot_per_user = "1";
+	String cost_claim = "0";
 	
 	public WorldConfiguration(String worldID){
 		id = worldID;
@@ -71,6 +73,7 @@ public class WorldConfiguration {
 			worldCfgYaml.set("world.allow-nether-portal", "true");
 			worldCfgYaml.set("world.allow-tnt-explosion", "true");
 			worldCfgYaml.set("general.plots-per-user", "1");
+			worldCfgYaml.set("general.cost-claim", "0.00");
 			
 			try {
 				worldCfgYaml.save(worldCfg);
@@ -101,6 +104,7 @@ public class WorldConfiguration {
 		allow_nether_portal = worldCfgYaml.getString("world.allow-nether-portal", allow_nether_portal);
 		allow_tnt_explosion = worldCfgYaml.getString("world.allow-tnt-explosion", allow_tnt_explosion);
 		plot_per_user = worldCfgYaml.getString("general.plots-per-user", plot_per_user);
+		cost_claim = worldCfgYaml.getString("general.cost-claim", cost_claim);
 	}
 	
 	public void updateConfiguration(String key, Object value){
@@ -197,6 +201,19 @@ public class WorldConfiguration {
 	public void plotsPerUser(int newVal){
 		updateConfiguration("general.plots-per-user", newVal);
 		plot_per_user = String.valueOf(newVal);
+	}
+	
+	public BigDecimal claimCost(){
+		try{
+			return new BigDecimal(cost_claim);
+		}catch(NumberFormatException e){
+			return BigDecimal.ZERO;
+		}
+	}
+	
+	public void claimCost(BigDecimal newVal){
+		updateConfiguration("general.cost-claim", newVal.toPlainString());
+		cost_claim = String.valueOf(newVal);
 	}
 	
 }

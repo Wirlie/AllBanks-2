@@ -1,6 +1,7 @@
 package me.wirlie.allbanks.land.commands;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -8,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command;
@@ -32,7 +34,27 @@ public class CommandPlot extends Command {
 		}
 		
 		if(displayHelp){
+			int page = 1;
+			int maxPage = 1;
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + page, "%2%>>>" + maxPage), true);
 			
+			switch(page){
+			case 1:
+				sender.sendMessage(ChatColor.GRAY + "/abl plot claim " + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_CLAIM_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot dispose " + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_DISPOSE_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot set " + ChatColor.GOLD + "<flag> <value>");
+				sender.sendMessage(ChatColor.GRAY + "/abl plot info " + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_INFO_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot add " + ChatColor.GOLD + "<player>" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_ADD_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot remove " + ChatColor.GOLD + "<player>" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_REMOVE_DESC, false));
+			break;
+			case 2:
+				sender.sendMessage(ChatColor.GRAY + "/abl plot deny " + ChatColor.GOLD + "<player>" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_DENY_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot undeny " + ChatColor.GOLD + "<player>" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_UNDENY_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot setHomeSpawn " + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_SETHOMESPAWN_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot setShopSpawn " + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_SETSHOPPAWN_DESC, false));
+				sender.sendMessage(ChatColor.GRAY + "/abl plot home " + ChatColor.DARK_AQUA + "[#]" + ChatColor.WHITE + "-" + Translation.get(StringsID.COMMAND_LAND_PLOT_HOME_DESC, false));
+				break;
+			}	
 			return true;
 		}
 		
@@ -96,8 +118,16 @@ public class CommandPlot extends Command {
 				return true;
 			}
 			
+			//Dinero??
+			if(!AllBanks.getEconomy().has(p, abw.getWorldConfiguration().claimCost().doubleValue())){
+				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_INSUFICIENT_MONEY, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getEconomy().format(abw.getWorldConfiguration().claimCost().doubleValue())), true);
+				return true;
+			}
+			
 			//Listo, claimear
 			plot.claim(p.getName());
+			
+			AllBanks.getEconomy().withdrawPlayer(p, abw.getWorldConfiguration().claimCost().doubleValue());
 			
 			HashMap<String, String> replaceMap = new HashMap<String, String>();
 			replaceMap.put("%1%", String.valueOf(plot.getPlotX()));
@@ -106,7 +136,7 @@ public class CommandPlot extends Command {
 			
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_CLAIM_SUCCESS, replaceMap, true);
 			
-		}else if(args[1].equalsIgnoreCase("unclaim")){
+		}else if(args[1].equalsIgnoreCase("dispose")){
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
 				return true;
@@ -114,7 +144,7 @@ public class CommandPlot extends Command {
 			
 			Player p = (Player) sender;
 			
-			if(!Util.hasPermission(p, "allbanks.land.commands.plot.unclaim")){
+			if(!Util.hasPermission(p, "allbanks.land.commands.plot.dispose")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				return true;
 			}
@@ -686,6 +716,8 @@ public class CommandPlot extends Command {
 				return true;
 			}
 			
+			Player p = (Player) sender;
+			
 			int home = 1;
 			
 			if(args.length >= 3){
@@ -695,6 +727,38 @@ public class CommandPlot extends Command {
 			if(home <= 0) home = 1;
 			
 			AllBanksPlayer player = new AllBanksPlayer(sender.getName());
+			
+			List<String> plots = player.getOwnedPlots();
+			
+			if(home > plots.size()){
+				home = plots.size();
+			}
+			
+			if(plots.isEmpty()){
+				Translation.getAndSendMessage(p, StringsID.PLOT_HOME_ERROR_NOT_PLOTS, true);
+				return true;
+			}
+			
+			String getPlotString = plots.get(home - 1);
+			String[] split = getPlotString.split(",");
+			
+			String worldID = split[0];
+			int plotX = Integer.parseInt(split[1]);
+			int plotZ = Integer.parseInt(split[2]);
+			
+			if(!AllBanksWorld.worldIsAllBanksWorld(worldID)){
+				//¿¿Error??
+				sender.sendMessage("Error, invalid World. (Reason: Unknow).");
+				return true;
+			}
+			
+			AllBanksWorld abw = AllBanksWorld.getInstance(worldID);
+			AllBanksPlot plot = new AllBanksPlot(plotX, plotZ, abw);
+			
+			if(plot.getPlotConfiguration().plotSpawnLoc() != null)
+				p.teleport(plot.getPlotConfiguration().plotSpawnLoc());
+			else
+				p.teleport(plot.getFirstBound());
 			
 		}else if(args[1].equalsIgnoreCase("setShopSpawn")){
 			if(!(sender instanceof Player)){

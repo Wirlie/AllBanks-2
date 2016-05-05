@@ -73,7 +73,7 @@ public class CommandTabCompleterABLand implements TabCompleter{
 		}
 		
 		if(args.length == 3){
-			if(args[0].equalsIgnoreCase("world")){
+			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world")){
 				return new ArrayList<String>(AllBanksWorld.registeredMaps.keySet());
 			}else if(args[0].equalsIgnoreCase("plot")){
 				if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("deny") || args[1].equalsIgnoreCase("undeny")){
@@ -131,6 +131,43 @@ public class CommandTabCompleterABLand implements TabCompleter{
 					}else if(args[2].equalsIgnoreCase("msg-greeting") || args[2].equalsIgnoreCase("msg-farewell")){
 						return Arrays.asList("<Message>");
 					}
+				}
+			}
+			
+			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world")){
+				return Arrays.asList("generate", "unload", "remove", "info", "set");
+			}
+		}
+		
+		if(args.length == 5){
+			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world") && args[3].equalsIgnoreCase("set")){
+				return Arrays.asList("allow-nether-portal",
+						"allow-tnt-explosion",
+						"allow-wither",
+						"animal-spawn",
+						"claim-cost",
+						"creeper-explosion",
+						"mob-spawn",
+						"wither-explosion",
+						"plots-per-user");
+			}
+		}
+		
+		if(args.length == 6){
+			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world") && args[3].equalsIgnoreCase("set")){
+				if(args[4].equalsIgnoreCase("allow-nether-portal") ||
+						args[4].equalsIgnoreCase("allow-tnt-explosion") ||
+						args[4].equalsIgnoreCase("allow-wither") ||
+						args[4].equalsIgnoreCase("animal-spawn") ||
+						args[4].equalsIgnoreCase("creeper-explosion") ||
+						args[4].equalsIgnoreCase("mob-spawn") ||
+						args[4].equalsIgnoreCase("wither-explosion"))
+				{
+					return Arrays.asList("true", "false");
+				}else if(args[4].equalsIgnoreCase("claim-cost")){
+					return Arrays.asList("0.00");
+				}else if(args[4].equalsIgnoreCase("plots-per-user")){
+					return Arrays.asList("1");
 				}
 			}
 		}

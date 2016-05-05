@@ -43,6 +43,8 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.hooks.ResidenceFunctions;
 import me.wirlie.allbanks.hooks.TownyFunctions;
 import me.wirlie.allbanks.hooks.WorldGuardFunctions;
+import me.wirlie.allbanks.land.AllBanksPlot;
+import me.wirlie.allbanks.land.AllBanksWorld;
 
 /**
  * Detectar cuando un jugador intenta destruir una tienda.
@@ -122,6 +124,18 @@ public class ShopSignBreakListener implements Listener {
 				if(ResidenceHook.isHooked()){
 					if(ResidenceFunctions.canBreakAllBanksShop(p, b.getLocation())){
 						canBreakSign = true;
+					}
+				}
+				
+				if(AllBanksWorld.worldIsAllBanksWorld(b.getLocation().getWorld().getName())){
+					AllBanksWorld abw = AllBanksWorld.getInstance(b.getLocation().getWorld().getName());
+					
+					if(abw.locationIsPlot(b.getLocation().getBlockX(), b.getLocation().getBlockZ())){
+						AllBanksPlot plot = abw.getPlot(b.getLocation().getBlockX(), b.getLocation().getBlockZ());
+						
+						if(plot.getOwnerName().equalsIgnoreCase(p.getName())){
+							canBreakSign = true;
+						}
 					}
 				}
 				

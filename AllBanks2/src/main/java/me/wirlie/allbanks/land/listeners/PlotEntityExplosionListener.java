@@ -57,6 +57,7 @@ public class PlotEntityExplosionListener implements Listener {
 					}else if(!wcfg.creeperExplosion()){
 						e.setCancelled(true);
 					}else{
+						
 						//limitar bloques
 						List<Block> remove = new ArrayList<Block>();
 						for(Block b : e.blockList()){
@@ -69,7 +70,7 @@ public class PlotEntityExplosionListener implements Listener {
 							
 							AllBanksPlot bplot = abw.getPlot(bloc.getBlockX(), bloc.getBlockZ());
 							
-							if(!bplot.hasOwner()){
+							if(!bplot.hasOwner() || !bplot.getPlotConfiguration().explosions()){
 								remove.add(b);
 								continue;
 							}

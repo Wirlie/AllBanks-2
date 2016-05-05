@@ -202,6 +202,7 @@ public class AllBanks extends JavaPlugin {
 		dbSQLite.setConnection(getDataFolder() + File.separator + "AllBanksLandWorldData.db", "AllBanksLand");
 		//Instalar la base de datos, en caso de que no exista.
 		installItemSolutionDataBase();
+		installAllBanksLandDataBase();
 		
 		//Establecer la conexión global de la base de datos según el método específicado (SQLite o MySQL)
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
@@ -533,6 +534,29 @@ public class AllBanks extends JavaPlugin {
 			AllBanksLogger.info("Try to install ItemSolution database...");
 			stm = getSQLConnection("itemSolution").createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
+			AllBanksLogger.info("Success: 0 problems found.");
+		}catch (SQLException e){
+			AllBanksLogger.info("Ops! An SQLException has ocurred...");
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			if(stm != null)
+				try {
+					stm.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+		}
+	}
+	
+	public static void installAllBanksLandDataBase(){
+		
+		Statement stm = null;
+		
+		try{
+			AllBanksLogger.info("Try to install ItemSolution database...");
+			stm = getSQLConnection("AllBanksLand").createStatement();
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS world_plots (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_coord_X NUMBER, plot_coord_Z NUMBER, plot_owner TEXT NOT NULL, plot_config TEXT NOT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS worlds_cfg (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_size NUMBER NOT NULL, road_size NUMBER NOT NULL, current_plot_cursor TEXT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
 			AllBanksLogger.info("Ops! An SQLException has ocurred...");

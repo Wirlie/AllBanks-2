@@ -19,6 +19,7 @@
 package me.wirlie.allbanks.land.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -36,11 +37,25 @@ import me.wirlie.allbanks.land.AllBanksWorld;
 public class PlotPvPListener implements Listener {
 	@EventHandler
 	public void onPlayerHitPlayer(EntityDamageByEntityEvent e){
-
-		if((e.getDamager() instanceof Player) && (e.getEntity() instanceof Player)){
+		if((e.getDamager() instanceof Player) && (e.getEntity() instanceof Player) || (e.getDamager() instanceof Arrow) && (e.getEntity() instanceof Player)){
+			
+			
+			
 			//Jugador a jugador.
 			
-			Player attacker = (Player) e.getDamager();
+			Player attacker = null;
+			
+			if(e.getDamager() instanceof Arrow){
+				Arrow arrow = (Arrow) e.getDamager();
+				if(!(arrow.getShooter() instanceof Player)){
+					return;
+				}
+				
+				attacker = (Player) arrow.getShooter();
+			}else{
+				attacker = (Player) e.getDamager();
+			}
+			
 			Player victim = (Player) e.getEntity();
 			
 			Location locAttacker = attacker.getLocation();
