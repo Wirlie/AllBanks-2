@@ -88,33 +88,33 @@ public class PlotConfiguration {
 			}
 		}
 		
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(worldCfg);
+		YamlConfiguration worldCfgYaml = YamlConfiguration.loadConfiguration(worldCfg);
 		
 		HashMap<String, String> plot_cfg = new HashMap<String, String>();
-		plot_cfg.put("fire-spread", yaml.getString("plot-default-cfg.fire-spread", "false"));
-		plot_cfg.put("explosions", yaml.getString("plot-default-cfg.explosions", "false"));
-		plot_cfg.put("mobs", yaml.getString("plot-default-cfg.mobs", "false"));
-		plot_cfg.put("pvp", yaml.getString("plot-default-cfg.pvp", "false"));
-		plot_cfg.put("lava-flow", yaml.getString("plot-default-cfg.lava-flow", "false"));
-		plot_cfg.put("water-flow", yaml.getString("plot-default-cfg.water-flow", "true"));
-		plot_cfg.put("use-door", yaml.getString("plot-default-cfg.use-door", "true"));
-		plot_cfg.put("use-anvil", yaml.getString("plot-default-cfg.use-anvil", "true"));
-		plot_cfg.put("use-workbench", yaml.getString("plot-default-cfg.use-workbench", "true"));
-		plot_cfg.put("use-fence-gate", yaml.getString("plot-default-cfg.use-fence-gate", "true"));
-		plot_cfg.put("use-enchantment-table", yaml.getString("plot-default-cfg.use-enchantment-table", "true"));
-		plot_cfg.put("use-lever", yaml.getString("plot-default-cfg.use-lever", "false"));
-		plot_cfg.put("use-button", yaml.getString("plot-default-cfg.use-button", "false"));
-		plot_cfg.put("use-pressure-plate", yaml.getString("plot-default-cfg.use-button", "false"));
-		plot_cfg.put("drop-item", yaml.getString("plot-default-cfg.drop-item", "true"));
-		plot_cfg.put("msg-greeting", yaml.getString("plot-default-cfg.msg-greeting", Translation.get(StringsID.PLOT_GREETING_FORMAT, false)[0]));
-		plot_cfg.put("msg-farewell", yaml.getString("plot-default-cfg.msg-farewell", Translation.get(StringsID.PLOT_FAREWELL_FORMAT, false)[0]));
+		plot_cfg.put("fire-spread", worldCfgYaml.getString("plot-default-cfg.fire-spread", "false"));
+		plot_cfg.put("explosions", worldCfgYaml.getString("plot-default-cfg.explosions", "false"));
+		plot_cfg.put("mobs", worldCfgYaml.getString("plot-default-cfg.mobs", "false"));
+		plot_cfg.put("pvp", worldCfgYaml.getString("plot-default-cfg.pvp", "false"));
+		plot_cfg.put("lava-flow", worldCfgYaml.getString("plot-default-cfg.lava-flow", "false"));
+		plot_cfg.put("water-flow", worldCfgYaml.getString("plot-default-cfg.water-flow", "true"));
+		plot_cfg.put("use-door", worldCfgYaml.getString("plot-default-cfg.use-door", "true"));
+		plot_cfg.put("use-anvil", worldCfgYaml.getString("plot-default-cfg.use-anvil", "true"));
+		plot_cfg.put("use-workbench", worldCfgYaml.getString("plot-default-cfg.use-workbench", "true"));
+		plot_cfg.put("use-fence-gate", worldCfgYaml.getString("plot-default-cfg.use-fence-gate", "true"));
+		plot_cfg.put("use-enchantment-table", worldCfgYaml.getString("plot-default-cfg.use-enchantment-table", "true"));
+		plot_cfg.put("use-lever", worldCfgYaml.getString("plot-default-cfg.use-lever", "false"));
+		plot_cfg.put("use-button", worldCfgYaml.getString("plot-default-cfg.use-button", "false"));
+		plot_cfg.put("use-pressure-plate", worldCfgYaml.getString("plot-default-cfg.use-button", "false"));
+		plot_cfg.put("drop-item", worldCfgYaml.getString("plot-default-cfg.drop-item", "true"));
+		plot_cfg.put("msg-greeting", worldCfgYaml.getString("plot-default-cfg.msg-greeting", Translation.get(StringsID.PLOT_GREETING_FORMAT, false)[0]));
+		plot_cfg.put("msg-farewell", worldCfgYaml.getString("plot-default-cfg.msg-farewell", Translation.get(StringsID.PLOT_FAREWELL_FORMAT, false)[0]));
 		plot_cfg.put("plot-spawn-loc", "");
 		plot_cfg.put("shop-spawn-loc", "");
 		plot_cfg.put("shop-spawn-alias", "");
-		plot_cfg.put("shop-spawn-visibility", yaml.getString("plot-default-cfg.shop-spawn-visibility", "PUBLIC"));
+		plot_cfg.put("shop-spawn-visibility", worldCfgYaml.getString("plot-default-cfg.shop-spawn-visibility", "PUBLIC"));
 		plot_cfg.put("plot-friends", "");
 		plot_cfg.put("plot-player-deny", "");
-		plot_cfg.put("allow-entry", yaml.getString("plot-default-cfg.allow-entry", "true"));
+		plot_cfg.put("allow-entry", worldCfgYaml.getString("plot-default-cfg.allow-entry", "true"));
 		
 		return new Gson().toJson(plot_cfg);
 	}
