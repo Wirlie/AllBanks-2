@@ -18,13 +18,13 @@
  */
 package me.wirlie.allbanks.land.listeners;
 
-import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockBreakEvent;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -35,30 +35,38 @@ import me.wirlie.allbanks.land.AllBanksWorld;
  * @author Wirlie
  *
  */
-public class PlotBlockPlace implements Listener {
-
+public class PlotPlayerBlockBreakListener implements Listener {
+	
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void onBlockPlace(BlockPlaceEvent e){
-		Block b = e.getBlock();
-		Location bl = b.getLocation();
-		Player p = e.getPlayer();
+	public void playerBlockBreak(BlockBreakEvent e){
 		
-		if(AllBanksWorld.worldIsAllBanksWorld(bl.getWorld().getName())){
-			AllBanksWorld abw = AllBanksWorld.getInstance(bl.getWorld().getName());
+		Player p = e.getPlayer();
+		Block b = e.getBlock();
+		World w = b.getWorld();
+		
+		if(AllBanksWorld.worldIsAllBanksWorld(w.getName().toLowerCase())){
 			
-			if(!abw.locationIsPlot(bl.getBlockX(), bl.getBlockZ())){
+			int x = b.getLocation().getBlockX();
+			int z = b.getLocation().getBlockZ();
+			//Comprobar
+			AllBanksWorld abw = AllBanksWorld.getInstance(w.getName().toLowerCase());
+			//Es un camino o el limite del plot
+			if(!abw.locationIsPlot(x, z)){
 				e.setCancelled(true);
 				return;
 			}
 			
-			AllBanksPlot plot = abw.getPlot(bl.getBlockX(), bl.getBlockZ());
+			//Obtener el plot
+			AllBanksPlot plot = abw.getPlot(x, z);
 			
 			if(!plot.hasOwner() || !plot.havePermissions(p)){
-				e.setCancelled(true);
+				//No es de nadie o no es el dueño.
 				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				e.setCancelled(true);
 				return;
 			}
-			
 		}
+		
 	}
+	
 }

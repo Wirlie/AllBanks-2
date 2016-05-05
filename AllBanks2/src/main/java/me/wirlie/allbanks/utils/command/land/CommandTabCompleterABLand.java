@@ -65,7 +65,7 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"teleport", //TODO AGREGAR ESTE COMANDO
 						"setHomeSpawn", //TODO AGREGAR ESTE COMANDO
 						"setShopSpawn", //TODO AGREGAR ESTE COMANDO
-						"info" //TODO AGREGAR ESTE COMANDO
+						"info"
 						);
 			}else if(args[0].equalsIgnoreCase("spawn")){
 				return new ArrayList<String>(AllBanksWorld.registeredMaps.keySet());

@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.utils.DataBaseUtil;
 
 /**
  * @author josue
@@ -31,81 +32,49 @@ import me.wirlie.allbanks.AllBanks;
  */
 public class AllBanksPlayer {
 	
-	private static HashMap<String, HashMap<String, AllBanksPlayer>> playerCache = new HashMap<String, HashMap<String, AllBanksPlayer>>();
+	private static HashMap<String, AllBanksPlayer> playerCache = new HashMap<String, AllBanksPlayer>();
 	
-	int currentPlots = 0;
 	String playerName;
-	String worldID;
 	
-	public AllBanksPlayer(String worldID, String playerName){
+	public AllBanksPlayer(String playerName){
 		
 		this.playerName = playerName = playerName.toLowerCase();
-		this.worldID = worldID = worldID.toLowerCase();
 		
-		if(!playerCache.containsKey(worldID) || !playerCache.get(worldID).containsKey(playerName)){
-			Statement stm = null;
-			ResultSet res = null;
-			
-			try{
-				stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
-				res = stm.executeQuery("SELECT * FROM world_" + worldID + "_plots WHERE plot_owner = '" + playerName + "'");
-				while(res.next()){
-					currentPlots++;
-				}
-				if(playerCache.containsKey(worldID)){
-					HashMap<String, AllBanksPlayer> getMap = playerCache.get(worldID);
-					getMap.put(playerName, this);
-					playerCache.put(worldID, getMap);
-					
-				}else{
-					HashMap<String, AllBanksPlayer> newMap = new HashMap<String, AllBanksPlayer>();
-					newMap.put(playerName, this);
-					playerCache.put(worldID, newMap);
-				}
-				
-			}catch(SQLException e){
-				e.printStackTrace();
-			}finally{
-				try{
-					if(stm != null) stm.close();
-					if(res != null) res.close();
-				}catch(SQLException e){
-					e.printStackTrace();
-				}
-			}
+		if(!playerCache.containsKey(playerName)){
+			playerCache.put(playerName, this);
 		}else{
 			//Leer desde el caché
-			HashMap<String, AllBanksPlayer> getMap = playerCache.get(worldID);
-			
-			AllBanksPlayer cached = getMap.get(playerName);
-			
-			currentPlots = cached.currentPlots;
+			AllBanksPlayer cached = playerCache.get(playerName);
 		}
 	}
 	
-	public int currentPlots(){
-		return currentPlots;
-	}
-	
-	public void currentPlots(int newVal){
+	public int currentPlots(String worldID){
+		Statement stm = null;
+		ResultSet res = null;
 		
-		currentPlots = newVal;
+		try{
+			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' AND world_id = '" + worldID + "'");
 		
-		if(!playerCache.containsKey(worldID) || !playerCache.get(worldID).containsKey(playerName)){
-			if(playerCache.containsKey(worldID)){
-				HashMap<String, AllBanksPlayer> getMap = playerCache.get(worldID);
-				getMap.put(playerName, this);
-				playerCache.put(worldID, getMap);
-			}else{
-				HashMap<String, AllBanksPlayer> newMap = new HashMap<String, AllBanksPlayer>();
-				newMap.put(playerName, this);
-				playerCache.put(worldID, newMap);
+			int total = 0;
+			
+			while(res.next()){
+				total ++;
 			}
-		}else{
-			HashMap<String, AllBanksPlayer> getMap = playerCache.get(worldID);
-			getMap.put(playerName, this);
-			playerCache.put(worldID, getMap);
+			
+			return total;
+		}catch(SQLException e){
+			DataBaseUtil.checkDatabaseIsLocked(e);
+		}finally{
+			try{
+				if(stm != null) stm.close();
+				if(res != null) res.close();
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
 		}
+		
+		return 10000;
 	}
 	
 }

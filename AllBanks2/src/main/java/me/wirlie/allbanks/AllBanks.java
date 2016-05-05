@@ -48,9 +48,19 @@ import me.wirlie.allbanks.Updater.UpdateResult;
 import me.wirlie.allbanks.Updater.UpdateType;
 import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.land.AllBanksWorld;
-import me.wirlie.allbanks.land.listeners.PlotBlockBreak;
-import me.wirlie.allbanks.land.listeners.PlotBlockPlace;
-import me.wirlie.allbanks.land.listeners.PlotPlayerMove;
+import me.wirlie.allbanks.land.listeners.PlotBucketListener;
+import me.wirlie.allbanks.land.listeners.PlotEntityCroopsPhysicalListener;
+import me.wirlie.allbanks.land.listeners.PlotEntityExplosionListener;
+import me.wirlie.allbanks.land.listeners.PlotEntityListener;
+import me.wirlie.allbanks.land.listeners.PlotFireSpreadListener;
+import me.wirlie.allbanks.land.listeners.PlotLavaWaterFlowListener;
+import me.wirlie.allbanks.land.listeners.PlotLeashUnleashListener;
+import me.wirlie.allbanks.land.listeners.PlotPlayerBlockBreakListener;
+import me.wirlie.allbanks.land.listeners.PlotPlayerBlockPlaceListener;
+import me.wirlie.allbanks.land.listeners.PlotPlayerDropItemListener;
+import me.wirlie.allbanks.land.listeners.PlotPlayerMoveListener;
+import me.wirlie.allbanks.land.listeners.PlotPlayerVehicleListener;
+import me.wirlie.allbanks.land.listeners.PlotPlayerInteractListener;
 import me.wirlie.allbanks.land.listeners.PlotWorldEvents;
 import me.wirlie.allbanks.listeners.banks.ChargeLoanOnPlayerJoin;
 import me.wirlie.allbanks.listeners.banks.PlayerChatBSListener;
@@ -254,10 +264,19 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PreventRemoveSignForOtherCausesListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlayerJoinUpdaterMessage(), this);
 		//AllBanksLand
-		Bukkit.getPluginManager().registerEvents(new PlotBlockBreak(), this);
-		Bukkit.getPluginManager().registerEvents(new PlotBlockPlace(), this);
-		Bukkit.getPluginManager().registerEvents(new PlotPlayerMove(), this);
-		Bukkit.getPluginManager().registerEvents(new PlotWorldEvents(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerBlockBreakListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerBlockPlaceListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerMoveListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerInteractListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerDropItemListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotEntityCroopsPhysicalListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotLeashUnleashListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotPlayerVehicleListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotLavaWaterFlowListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotBucketListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotFireSpreadListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotEntityListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotEntityExplosionListener(), this);
 		
 		/*
 		 * RUNNABLES

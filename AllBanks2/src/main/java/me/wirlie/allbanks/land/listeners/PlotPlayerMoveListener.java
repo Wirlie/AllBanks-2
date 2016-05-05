@@ -35,7 +35,7 @@ import me.wirlie.allbanks.utils.ChatUtil;
  * @author josue
  *
  */
-public class PlotPlayerMove implements Listener {
+public class PlotPlayerMoveListener implements Listener {
 
 	@EventHandler
 	public void onPlayerMove(PlayerMoveEvent e){

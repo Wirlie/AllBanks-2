@@ -18,55 +18,48 @@
  */
 package me.wirlie.allbanks.land.listeners;
 
-import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockFromToEvent;
 
-import me.wirlie.allbanks.StringsID;
-import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 
 /**
- * @author Wirlie
+ * @author josue
  *
  */
-public class PlotBlockBreak implements Listener {
-	
-	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-	public void playerBlockBreak(BlockBreakEvent e){
+public class PlotLavaWaterFlowListener implements Listener{
+	@EventHandler
+	public void waterLavaFlow(BlockFromToEvent e){
+		Location loc = e.getToBlock().getLocation();
 		
-		Player p = e.getPlayer();
-		Block b = e.getBlock();
-		World w = b.getWorld();
-		
-		if(AllBanksWorld.worldIsAllBanksWorld(w.getName().toLowerCase())){
+		if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
+			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 			
-			int x = b.getLocation().getBlockX();
-			int z = b.getLocation().getBlockZ();
-			//Comprobar
-			AllBanksWorld abw = AllBanksWorld.getInstance(w.getName().toLowerCase());
-			//Es un camino o el limite del plot
-			if(!abw.locationIsPlot(x, z)){
+			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				e.setCancelled(true);
 				return;
 			}
 			
-			//Obtener el plot
-			AllBanksPlot plot = abw.getPlot(x, z);
+			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 			
-			if(!plot.hasOwner() || !plot.havePermissions(p)){
-				//No es de nadie o no es el dueño.
-				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+			if(!plot.hasOwner()){
 				e.setCancelled(true);
 				return;
 			}
+			
+			//Comprobar configuración
+			if(!plot.getPlotConfiguration().lavaFlow() && e.getBlock().getType().equals(Material.STATIONARY_LAVA)){
+				e.setCancelled(true);
+			}
+			
+			if(!plot.getPlotConfiguration().waterFlow() && e.getBlock().getType().equals(Material.STATIONARY_WATER)){
+				e.setCancelled(true);
+			}
+			
 		}
-		
 	}
-	
 }

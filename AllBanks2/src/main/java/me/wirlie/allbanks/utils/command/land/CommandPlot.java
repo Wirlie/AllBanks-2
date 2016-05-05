@@ -2,15 +2,18 @@ package me.wirlie.allbanks.utils.command.land;
 
 import java.util.HashMap;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlayer;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.land.PlotConfiguration;
 import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.command.Command;
 
@@ -71,9 +74,25 @@ public class CommandPlot extends Command {
 			}
 			
 			//Comprobar límite
-			AllBanksPlayer abp = new AllBanksPlayer(abw.getID(), p.getName());
-			if((abp.currentPlots() + 1) > abw.getWorldConfiguration().plotsPerUser()){
-				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + abp.currentPlots(), "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
+			AllBanksPlayer abp = new AllBanksPlayer(p.getName());
+			
+			//Permiso especial
+			int plotLimit = abw.getWorldConfiguration().plotsPerUser();
+			
+			for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+				if(pinfo.getPermission().startsWith("allbanks.land." + abw.getID() + ".plot-limit.")){
+					try{
+						plotLimit = Integer.parseInt(pinfo.getPermission().replace("allbanks.land." + abw.getID() + ".plot-limit.", ""));
+					}catch(NumberFormatException e2){
+						plotLimit = abw.getWorldConfiguration().plotsPerUser();
+					}
+				}
+			}
+			
+			int currentPlots = abp.currentPlots(abw.getID());
+			
+			if((currentPlots + 1) > plotLimit){
+				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
 				return true;
 			}
 			
@@ -301,11 +320,11 @@ public class CommandPlot extends Command {
 									"%2%>>>" + plot.getPlotConfiguration().useWorkbench()
 									), 
 							true);
-				}else if(args[2].equalsIgnoreCase("use-fence-door")){
+				}else if(args[2].equalsIgnoreCase("use-fence-gate")){
 					if(args[3].equalsIgnoreCase("true")){
-						plot.setPlotConfiguration("use-fence-door", "true");
+						plot.setPlotConfiguration("use-fence-gate", "true");
 					}else{
-						plot.setPlotConfiguration("use-fence-door", "false");
+						plot.setPlotConfiguration("use-fence-gate", "false");
 					}
 					
 					Translation.getAndSendMessage(
@@ -313,7 +332,7 @@ public class CommandPlot extends Command {
 							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
 							Translation.splitStringIntoReplaceHashMap(">>>", 
 									"%1%>>>Use-FenceDoor", 
-									"%2%>>>" + plot.getPlotConfiguration().useFenceDoor()
+									"%2%>>>" + plot.getPlotConfiguration().useFenceGate()
 									), 
 							true);
 				}else if(args[2].equalsIgnoreCase("use-enchantment-table")){
@@ -628,9 +647,249 @@ public class CommandPlot extends Command {
 				//Argumentos inválidos
 			}
 		}else if(args[1].equalsIgnoreCase("setHomeSpawn")){
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return true;
+			}
+			
+			Player p = (Player) sender;
+			Location loc = p.getLocation();
+			
+			if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
+				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
+				
+				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					return true;
+				}
+				
+				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+				
+				if(!plot.hasOwner()){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return true;
+				}
+				
+				if(!plot.havePermissions(p) || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return true;
+				}
+				
+				//Solo el dueño puede establecer esto
+				plot.getPlotConfiguration().setPlotSpawnLocation(loc);
+				Translation.getAndSendMessage(sender, StringsID.PLOT_SET_HOME_BLOCK_SUCCESS, true);
+			}
+		}else if(args[1].equalsIgnoreCase("home")){
+			
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return true;
+			}
+			
+			int home = 1;
+			
+			if(args.length >= 3){
+				home = Integer.parseInt(args[2]);
+			}
+			
+			if(home <= 0) home = 1;
+			
+			AllBanksPlayer player = new AllBanksPlayer(sender.getName());
 			
 		}else if(args[1].equalsIgnoreCase("setShopSpawn")){
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return true;
+			}
 			
+			Player p = (Player) sender;
+			Location loc = p.getLocation();
+			
+			if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
+				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
+				
+				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					return true;
+				}
+				
+				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+				
+				if(!plot.hasOwner()){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return true;
+				}
+				
+				if(!plot.havePermissions(p) || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return true;
+				}
+				
+				//Solo el dueño puede establecer esto
+				plot.getPlotConfiguration().setShopSpawnLocation(loc);
+				Translation.getAndSendMessage(sender, StringsID.PLOT_SET_HOME_BLOCK_SUCCESS, true);
+			}
+		}else if(args[1].equalsIgnoreCase("info")){
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return true;
+			}
+			
+			Player p = (Player) sender;
+			Location loc = p.getLocation();
+			
+			if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
+				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
+				
+				if(abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+					AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+					
+					if(plot.hasOwner()){
+						
+						HashMap<String, String> replaceMap = new HashMap<String, String>();
+						
+						replaceMap.put("%1%", plot.getPlotX() + "," + plot.getPlotZ() + " (" + abw.getID() + ")");
+						replaceMap.put("%2%", plot.getOwnerName());
+						replaceMap.put("%3%", "Coming soon... (Not Implemented)");
+						
+						String friends = "";
+						
+						for(String s : plot.getPlotConfiguration().getFriends()){
+							friends += s + ", ";
+						}
+						
+						if(friends.equalsIgnoreCase("") || friends.equalsIgnoreCase(", ")) friends = Translation.get(StringsID.NONE, false)[0];
+						replaceMap.put("%4%", friends);
+						
+						String flagsLine1 = "";
+						
+						PlotConfiguration plotc = plot.getPlotConfiguration();
+						
+						if(plotc.allowEntry()){
+							flagsLine1 += ChatColor.GREEN + "allow-entry, ";
+						}else{
+							flagsLine1 += ChatColor.RED + "allow-entry, ";
+						}
+						
+						if(plotc.dropItem()){
+							flagsLine1 += ChatColor.GREEN + "drop-item, ";
+						}else{
+							flagsLine1 += ChatColor.RED + "drop-item, ";
+						}
+						
+						if(plotc.explosions()){
+							flagsLine1 += ChatColor.GREEN + "explosions, ";
+						}else{
+							flagsLine1 += ChatColor.RED + "explosions, ";
+						}
+						
+						if(plotc.fireSpread()){
+							flagsLine1 += ChatColor.GREEN + "fire-spread,";
+						}else{
+							flagsLine1 += ChatColor.RED + "fire-spread,";
+						}
+						
+						String flagsLine2 = "";
+						
+						if(plotc.lavaFlow()){
+							flagsLine2 += ChatColor.GREEN + "lava-flow, ";
+						}else{
+							flagsLine2 += ChatColor.RED + "lava-flow, ";
+						}
+						
+						if(plotc.mobs()){
+							flagsLine2 += ChatColor.GREEN + "mobs, ";
+						}else{
+							flagsLine2 += ChatColor.RED + "mobs, ";
+						}
+						
+						if(plotc.pvp()){
+							flagsLine2 += ChatColor.GREEN + "pvp, ";
+						}else{
+							flagsLine2 += ChatColor.RED + "pvp, ";
+						}
+						
+						if(plotc.useAnvil()){
+							flagsLine2 += ChatColor.GREEN + "use-anvil, ";
+						}else{
+							flagsLine2 += ChatColor.RED + "use-anvil, ";
+						}
+						
+						if(plotc.useButton()){
+							flagsLine2 += ChatColor.GREEN + "use-button, ";
+						}else{
+							flagsLine2 += ChatColor.RED + "use-button, ";
+						}
+						
+						if(plotc.useDoor()){
+							flagsLine2 += ChatColor.GREEN + "use-door,";
+						}else{
+							flagsLine2 += ChatColor.RED + "use-door,";
+						}
+						
+						String flagsLine3 = "";
+						
+						if(plotc.useEnchantmentTable()){
+							flagsLine3 += ChatColor.GREEN + "use-enchantment-table, ";
+						}else{
+							flagsLine3 += ChatColor.RED + "use-enchantment-table, ";
+						}
+						
+						if(plotc.useFenceGate()){
+							flagsLine3 += ChatColor.GREEN + "use-fence-gate, ";
+						}else{
+							flagsLine3 += ChatColor.RED + "use-fence-gate, ";
+						}
+						
+						if(plotc.useLever()){
+							flagsLine3 += ChatColor.GREEN + "use-lever,";
+						}else{
+							flagsLine3 += ChatColor.RED + "use-lever,";
+						}
+						
+						String flagsLine4 = "";
+						
+						if(plotc.usePressurePlate()){
+							flagsLine4 += ChatColor.GREEN + "use-pressure-plate, ";
+						}else{
+							flagsLine4 += ChatColor.RED + "use-pressure-plate, ";
+						}
+						
+						if(plotc.useWorkbench()){
+							flagsLine4 += ChatColor.GREEN + "use-workbench, ";
+						}else{
+							flagsLine4 += ChatColor.RED + "use-workbench, ";
+						}
+						
+						if(plotc.waterFlow()){
+							flagsLine4 += ChatColor.GREEN + "water-flow,";
+						}else{
+							flagsLine4 += ChatColor.RED + "water-flow,";
+						}
+						
+						replaceMap.put("%5%", flagsLine1 + "%BREAK%" + flagsLine2 + "%BREAK%" + flagsLine3 + "%BREAK%" + flagsLine4);
+						
+						String deny = "";
+						
+						for(String s : plot.getPlotConfiguration().getDenyPlayers()){
+							deny += s + ", ";
+						}
+						
+						if(deny.equalsIgnoreCase("") || deny.equalsIgnoreCase(", ")) deny = Translation.get(StringsID.NONE, false)[0];
+						replaceMap.put("%6%", deny);
+						
+						Translation.getAndSendMessage(sender, StringsID.PLOT_INFO, replaceMap, false);
+					}else{
+						Translation.getAndSendMessage(sender, StringsID.PLOT_INFO_NO_OWNER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + plot.getPlotX() + "," + plot.getPlotZ()), true);
+					}
+				}else{					
+					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					return true;
+				}
+			}else{
+				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
+				return true;
+			}
 		}
 		
 		return true;

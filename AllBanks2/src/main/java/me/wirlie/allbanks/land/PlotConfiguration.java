@@ -100,7 +100,7 @@ public class PlotConfiguration {
 		plot_cfg.put("use-door", yaml.getString("plot-default-cfg.use-door", "true"));
 		plot_cfg.put("use-anvil", yaml.getString("plot-default-cfg.use-anvil", "true"));
 		plot_cfg.put("use-workbench", yaml.getString("plot-default-cfg.use-workbench", "true"));
-		plot_cfg.put("use-fence-door", yaml.getString("plot-default-cfg.use-fence-door", "true"));
+		plot_cfg.put("use-fence-gate", yaml.getString("plot-default-cfg.use-fence-gate", "true"));
 		plot_cfg.put("use-enchantment-table", yaml.getString("plot-default-cfg.use-enchantment-table", "true"));
 		plot_cfg.put("use-lever", yaml.getString("plot-default-cfg.use-lever", "false"));
 		plot_cfg.put("use-button", yaml.getString("plot-default-cfg.use-button", "false"));
@@ -127,7 +127,7 @@ public class PlotConfiguration {
 				
 				try{
 					stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
-					stm.executeUpdate("UPDATE world_" + plot.getAllBanksWorld().getID() + "_plots SET plot_config = '" + toJSON() + "' WHERE plot_coord_X = '" + plot.getPlotX() + "' AND plot_coord_Z = '" + plot.getPlotZ() + "'");
+					stm.executeUpdate("UPDATE world_plots SET plot_config = '" + toJSON() + "' WHERE world_id = '" + plot.getAllBanksWorld().getID() + "' plot_coord_X = '" + plot.getPlotX() + "' AND plot_coord_Z = '" + plot.getPlotZ() + "'");
 				}catch(SQLException e){
 					e.printStackTrace();
 				}finally{
@@ -217,6 +217,7 @@ public class PlotConfiguration {
 			List<String> returnList = new ArrayList<String>();
 			
 			for(String s : listStr.split(",|>,")){
+				if(s.equalsIgnoreCase("|") || s.equalsIgnoreCase("")) continue;
 				returnList.add(s);
 			}
 			
@@ -350,9 +351,9 @@ public class PlotConfiguration {
 		}
 	}
 	
-	public boolean useFenceDoor(){
-		if(plot_cfg.containsKey("use-fence-door")){
-			if(plot_cfg.get("use-fence-door").equalsIgnoreCase("true")){
+	public boolean useFenceGate(){
+		if(plot_cfg.containsKey("use-fence-gate")){
+			if(plot_cfg.get("use-fence-gate").equalsIgnoreCase("true")){
 				return true;
 			}else{
 				return false;
@@ -429,7 +430,10 @@ public class PlotConfiguration {
 	public Location plotSpawnLoc(){
 		if(plot_cfg.containsKey("plot-spawn-loc")){
 			String strLoc = plot_cfg.get("plot-spawn-loc");
-			if(strLoc == null || strLoc.equalsIgnoreCase("")) return null;
+			if(strLoc == null || strLoc.equalsIgnoreCase("")){
+				//Primer punto
+				return plot.getFirstBound();
+			}
 			
 			return StringLocationUtil.convertStringToLocation(strLoc);
 		}else{
@@ -437,15 +441,26 @@ public class PlotConfiguration {
 		}
 	}
 	
+	public void setPlotSpawnLocation(Location loc) {
+		setPlotConfiguration("plot-spawn-loc", StringLocationUtil.convertLocationToString(loc, false));
+	}
+	
 	public Location shopSpawnLoc(){
 		if(plot_cfg.containsKey("shop-spawn-loc")){
 			String strLoc = plot_cfg.get("shop-spawn-loc");
-			if(strLoc == null || strLoc.equalsIgnoreCase("")) return null;
+			if(strLoc == null || strLoc.equalsIgnoreCase("")){
+				//Primer punto
+				return plot.getFirstBound();
+			}
 			
 			return StringLocationUtil.convertStringToLocation(strLoc);
 		}else{
 			return null;
 		}
+	}
+	
+	public void setShopSpawnLocation(Location loc) {
+		setPlotConfiguration("shop-spawn-loc", StringLocationUtil.convertLocationToString(loc, false));
 	}
 	
 	public String shopSpawnAlias(){
@@ -478,6 +493,7 @@ public class PlotConfiguration {
 			List<String> returnList = new ArrayList<String>();
 			
 			for(String s : listStr.split(",|>,")){
+				if(s.equalsIgnoreCase("|") || s.equalsIgnoreCase("")) continue;
 				returnList.add(s);
 			}
 			
@@ -523,7 +539,7 @@ public class PlotConfiguration {
 		yaml.set("plot-default-cfg.use-door", "true");
 		yaml.set("plot-default-cfg.use-anvil", "false");
 		yaml.set("plot-default-cfg.use-workbench", "true");
-		yaml.set("plot-default-cfg.use-fence-door", "false");
+		yaml.set("plot-default-cfg.use-fence-gate", "false");
 		yaml.set("plot-default-cfg.use-enchantment-table", "true");
 		yaml.set("plot-default-cfg.use-lever", "false");
 		yaml.set("plot-default-cfg.use-button", "false");

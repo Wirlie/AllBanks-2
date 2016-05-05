@@ -83,7 +83,7 @@ public class AllBanksPlot {
 		
 		try{
 			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
-			res = stm.executeQuery("SELECT * FROM world_" + abw.getID() + "_plots WHERE plot_coord_X = " + plotX + " AND plot_coord_Z = " + plotZ);
+			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_coord_X = " + plotX + " AND plot_coord_Z = " + plotZ + " AND world_id = '" + abw.getID() + "'");
 			
 			if(res.next()){
 				ownerName = res.getString("plot_owner");
@@ -152,13 +152,7 @@ public class AllBanksPlot {
 		
 		try{
 			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
-			stm.executeUpdate("DELETE FROM world_" + abw.getID() + "_plots WHERE plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
-			//remover del caché
-			plotCache.remove(plotStringID);
-			
-			//Usuario
-			AllBanksPlayer abp = new AllBanksPlayer(abw.getID(), ownerName);
-			abp.currentPlots(abp.currentPlots() - 1);
+			stm.executeUpdate("DELETE FROM world_plots WHERE world_id = '" + abw.getID() + "' AND plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
@@ -183,22 +177,14 @@ public class AllBanksPlot {
 			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
 			
 			if(!registeredDatabase){
-				stm.executeUpdate("INSERT INTO world_" + abw.getID() + "_plots (plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + plotX + "', '" + plotZ + "', '" + name + "', '" + PlotConfiguration.defaultConfiguration(abw.getID()) + "')");
+				stm.executeUpdate("INSERT INTO world_plots (world_id, plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + abw.getID() + "', '" + plotX + "', '" + plotZ + "', '" + name + "', '" + PlotConfiguration.defaultConfiguration(abw.getID()) + "')");
 			}else{
-				stm.executeUpdate("UPDATE world_" + abw.getID() + "_plots SET plot_owner = '" + name + "' WHERE plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
+				stm.executeUpdate("UPDATE world_plots SET plot_owner = '" + name + "' WHERE world_id = '" + abw.getID() + "' AND plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
 			}
 			
 			//Añadir dueño
 			AllBanksPlot plot = plotCache.get(plotStringID);
 			plot.ownerName = name;
-			
-			//Actualizar información
-			plotCache.put(plotStringID, plot);
-			
-			//Usuario
-			AllBanksPlayer abp = new AllBanksPlayer(abw.getID(), name);
-			abp.currentPlots(abp.currentPlots() + 1);
-			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{

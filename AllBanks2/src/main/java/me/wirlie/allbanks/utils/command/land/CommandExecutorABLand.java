@@ -57,6 +57,8 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "setHomeSpawn");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "setShopSpawn");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "info");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "home");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "home", "RegEx->([0-9]){1,}:<#>");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
 	}
 	
