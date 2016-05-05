@@ -94,13 +94,6 @@ public class WorldGenerationCfg {
 		
 		File worldFileCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + "world-" + worldID + "-gen-config.yml");
 		
-		if(!worldFileCfg.exists())
-			try {
-				worldFileCfg.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		
 		YamlConfiguration cfg = YamlConfiguration.loadConfiguration(worldFileCfg);
 		
 		world_height = cfg.getInt("world-block-height", world_height);

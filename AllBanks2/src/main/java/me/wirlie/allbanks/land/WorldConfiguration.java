@@ -88,11 +88,7 @@ public class WorldConfiguration {
 		File worldCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + id + "-cfg.yml");
 		
 		if(!worldCfg.exists()){
-			try {
-				worldCfg.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			generateDefaultConfiguration();
 		}
 		
 		YamlConfiguration worldCfgYaml = YamlConfiguration.loadConfiguration(worldCfg);
@@ -113,11 +109,7 @@ public class WorldConfiguration {
 		File worldCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + id + "-cfg.yml");
 		
 		if(!worldCfg.exists()){
-			try {
-				worldCfg.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			generateDefaultConfiguration();
 		}
 		
 		YamlConfiguration worldCfgYaml = YamlConfiguration.loadConfiguration(worldCfg);

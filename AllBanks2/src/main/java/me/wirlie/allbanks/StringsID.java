@@ -188,6 +188,7 @@ public enum StringsID {
 	PLOT_INFO(158),
 	NONE(159),
 	PLOT_SET_HOME_BLOCK_SUCCESS(160),
+	PLOT_PVP_DISABLED(161),
 	
 	;
 	
