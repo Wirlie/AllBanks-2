@@ -150,10 +150,13 @@ public class BankSession {
 	 * @param p - Jugador al que pertenece la sesión.
 	 */
 	public static void closeSession(Player p){
-		closeSession(p.getUniqueId());
-		
-		//Sonido
-		p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 9, 1);
+		if(p != null){
+			closeSession(p.getUniqueId());
+			
+			//Sonido
+			if(p.isOnline())
+				p.playSound(p.getLocation(), Sound.BLOCK_NOTE_PLING, 9, 1);
+		}
 	}
 	
 	/**
@@ -162,8 +165,9 @@ public class BankSession {
 	 */
 	public static void closeSession(UUID uuid){
 		//notificar
-		Translation.getAndSendMessage(Bukkit.getPlayer(uuid), StringsID.SESSION_CLOSED, true);
-
+		if(Bukkit.getPlayer(uuid).isOnline())
+			Translation.getAndSendMessage(Bukkit.getPlayer(uuid), StringsID.SESSION_CLOSED, true);
+		
 		//actualizar letrero
 		BankSession bs = activeSessions.get(uuid);
 		if(bs.getSign().getBlock().getType().equals(Material.WALL_SIGN)) bs.updateToInitialState();
