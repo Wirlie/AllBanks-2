@@ -961,6 +961,7 @@ public class AllBanks extends JavaPlugin {
 			}
 			
 			int firstLine = 0;
+			String relativeCfgSection = "";
 			
 			for(String line : lines) {
 				
@@ -1027,6 +1028,31 @@ public class AllBanks extends JavaPlugin {
 				}else if(line.contains("update-cache-every:")) {
 					newLines.add("  # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.");
 					newLines.add("  # Please do not set it with a minimal value (example: 1 second)");
+				}
+				
+				if(line.contains("modules:")){
+					relativeCfgSection = "modules";
+				}else if(relativeCfgSection.equalsIgnoreCase("modules") && line.contains("banks:")){
+					relativeCfgSection = "modules.banks";
+				}else if(relativeCfgSection.equalsIgnoreCase("modules.banks") && line.contains("bank-loan:")){
+					newLines.add("    # Enable/Disable BankLoan");
+				}else if(relativeCfgSection.equalsIgnoreCase("modules.banks") && line.contains("bank-xp:")){
+					newLines.add("    # Enable/Disable BankXP");
+				}else if(relativeCfgSection.equalsIgnoreCase("modules.banks") && line.contains("bank-money:")){
+					newLines.add("    # Enable/Disable BankMoney");
+				}else if(relativeCfgSection.equalsIgnoreCase("modules.banks") && line.contains("bank-time:")){
+					newLines.add("    # Enable/Disable BankTime");
+				}else if(relativeCfgSection.equalsIgnoreCase("modules.banks") && line.contains("bank-chest:")){
+					newLines.add("    # Enable/Disable BankChest");
+				}else if(relativeCfgSection.contains("modules") && line.contains("shop:")){
+					relativeCfgSection = "modules";
+					newLines.add("  # Enable/Disable AllBanksShop (Shops)");
+				}else if(relativeCfgSection.contains("modules") && line.contains("top-ranks:")){
+					relativeCfgSection = "modules";
+					newLines.add("  # Enable/Disable TopRanks");
+				}else if(relativeCfgSection.contains("modules") && line.contains("allbanksland:")){
+					relativeCfgSection = "modules";
+					newLines.add("  # Enable/Disable AllBanksLand");
 				}
 				
 				newLines.add(line);
