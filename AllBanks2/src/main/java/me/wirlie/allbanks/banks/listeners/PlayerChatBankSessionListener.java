@@ -424,7 +424,13 @@ public class PlayerChatBankSessionListener implements Listener {
 					}
 					
 					if(!overrideConfiguration)
-						payPerMinute = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-time.pay-per-minute", 0.00));
+						payPerMinute = new BigDecimal(AllBanks.getInstance().getConfig().getDouble("banks.bank-time.pay-per-minute", 0));
+					
+					if(payPerMinute.compareTo(BigDecimal.ZERO) != 1){
+						p.sendMessage("Error: 'payPerMinute' equal to 0 or is less than 0.");
+						p.sendMessage("Probably the value of 'banks.bank-time.pay-per-minute' not exists, please check the configuration file.");
+						return;
+					}
 					
 					BigDecimal pay = payPerMinute.multiply(new BigDecimal(changeAmount));
 					

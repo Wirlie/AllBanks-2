@@ -139,7 +139,13 @@ public class AllBanks extends JavaPlugin {
 		
 		//Inicializar logger.
 		AllBanksLogger.initializeLogger();
-		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion());
+		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion() + " - CB: " + Bukkit.getBukkitVersion());
+
+		//Comprobar si la configuración se encuentra actualizada.
+		ensureConfigIsUpToDate();
+		
+		getConfig();
+		checkConfigurationStartup();
 		
 		//Comprobar la versión del servidor y la versión compatible/incompatible del plugin.
 		VersionCheckResult result = verifyServerVersion();
@@ -225,9 +231,6 @@ public class AllBanks extends JavaPlugin {
 		    Bukkit.getPluginManager().disablePlugin(this);
 		    return;
 		}
-
-		//Comprobar si la configuración se encuentra actualizada.
-		ensureConfigIsUpToDate();
 		
 		//Mensaje de habilitando
 		Console.sendMessage(StringsID.ENABLING);
@@ -443,6 +446,262 @@ public class AllBanks extends JavaPlugin {
 		    }
 		}
 		
+	}
+	
+	@Override
+	public YamlConfiguration getConfig(){
+		
+		File configFile = new File(getDataFolder() + File.separator + "Config.yml");
+		
+		if(!configFile.exists()){
+			saveResource("Config.yml", true);
+		}
+		
+		if(!configFile.exists()){
+			AllBanksLogger.severe("AllBanks cannot find the configuration file!!", true);
+			AllBanksLogger.severe("AbsolutePath: " + configFile.getAbsolutePath(), true);
+			AllBanksLogger.severe("Check if your server have write permissions for the plugin folder.");
+			return null;
+		}
+		
+		return YamlConfiguration.loadConfiguration(configFile);
+	}
+	
+	public void checkConfigurationStartup(){
+		
+		AllBanksLogger.debug("[CONFIG] Validating Config.yml ...");
+		AllBanksLogger.debug("[CONFIG] Config.yml AbsolutePath: " + new File(getDataFolder() + File.separator + "Config.yml").getAbsolutePath());
+		AllBanksLogger.debug("[CONFIG] Config.yml LocalPath: " + new File(getDataFolder() + File.separator + "Config.yml"));
+		AllBanksLogger.debug("[CONFIG] Config.yml exists: " + new File(getDataFolder() + File.separator + "Config.yml").exists());
+		AllBanksLogger.debug("[CONFIG] Config.yml isFile: " + new File(getDataFolder() + File.separator + "Config.yml").isFile());
+		int warns = 0, ok = 0;
+		
+		YamlConfiguration config = getConfig();
+		if(config.getStringList("default-permissions") == null){
+			AllBanksLogger.warning("[CONFIG] default-permissions -> return null, configuration not exists or not is a valid List of type String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] default-permissions -> ok");
+			ok++;
+		}
+		
+		if(config.getString("pl.language") == null){
+			AllBanksLogger.warning("[CONFIG] pl.language -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.language -> ok: " + config.getString("pl.language"));
+			ok++;
+		}
+		
+		if(config.getString("pl.prefix") == null){
+			AllBanksLogger.warning("[CONFIG] pl.prefix -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.prefix -> ok: " + config.getString("pl.prefix"));
+			ok++;
+		}
+		
+		if(config.getString("pl.enable-metrics") == null){
+			AllBanksLogger.warning("[CONFIG] pl.enable-metrics -> return null, configuration not exists or not is a valid Boolean.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.enable-metrics -> ok: " + config.getString("pl.enable-metrics"));
+			ok++;
+		}
+		
+		if(config.getString("pl.updater.check-for-updates") == null){
+			AllBanksLogger.warning("[CONFIG] pl.updater.check-for-updates -> return null, configuration not exists or not is a valid Boolean.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.updater.check-for-updates -> ok: " + config.getString("pl.updater.check-for-updates"));
+			ok++;
+		}
+		
+		if(config.getString("pl.updater.auto-update") == null){
+			AllBanksLogger.warning("[CONFIG] pl.updater.auto-update -> return null, configuration not exists or not is a valid Boolean.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.updater.auto-update -> ok: " + config.getString("pl.updater.auto-update"));
+			ok++;
+		}
+		
+		if(config.getString("pl.storage-system") == null){
+			AllBanksLogger.warning("[CONFIG] pl.storage-system -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.storage-system -> ok: " + config.getString("pl.storage-system"));
+			ok++;
+		}
+		
+		if(config.getString("pl.mysql-host") == null){
+			AllBanksLogger.warning("[CONFIG] pl.mysql-host -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.mysql-host -> ok: " + config.getString("pl.mysql-host"));
+			ok++;
+		}
+		
+		if(config.getString("pl.mysql-user") == null){
+			AllBanksLogger.warning("[CONFIG] pl.mysql-user -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.mysql-user -> ok: " + config.getString("pl.mysql-user"));
+			ok++;
+		}
+		
+		if(config.getString("pl.mysql-pass") == null){
+			AllBanksLogger.warning("[CONFIG] pl.mysql-pass -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.mysql-pass -> ok: " + config.getString("pl.mysql-pass"));
+			ok++;
+		}
+		
+		if(config.getInt("pl.mysql-port", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] pl.mysql-port -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] pl.mysql-port -> ok: " + config.getString("pl.mysql-port"));
+			ok++;
+		}
+		
+		if(config.getString("lottery.enable") == null){
+			AllBanksLogger.warning("[CONFIG] lottery.enable -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] lottery.enable -> ok: " + config.getString("lottery.enable"));
+			ok++;
+		}
+		
+		if(config.getInt("lottery.ticket-cost", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] lottery.ticket-cost -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] lottery.ticket-cost -> ok: " + config.getString("lottery.ticket-cost"));
+			ok++;
+		}
+		
+		if(config.getString("lottery.get-winer-every") == null){
+			AllBanksLogger.warning("[CONFIG] lottery.get-winer-every -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] lottery.get-winer-every -> ok: " + config.getString("lottery.get-winer-every"));
+			ok++;
+		}
+		
+		if(config.getInt("lottery.max-tickets-per-player", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] lottery.max-tickets-per-player -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] lottery.max-tickets-per-player -> ok: " + config.getString("lottery.max-tickets-per-player"));
+			ok++;
+		}
+		
+		if(config.getString("lottery.broadcast-message") == null){
+			AllBanksLogger.warning("[CONFIG] lottery.broadcast-message -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] lottery.broadcast-message -> ok: " + config.getString("lottery.broadcast-message"));
+			ok++;
+		}
+		
+		if(config.getInt("banks.bank-loan.interest", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] banks.bank-loan.interest -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-loan.interest -> ok: " + config.getString("banks.bank-loan.interest"));
+			ok++;
+		}
+		
+		if(config.getInt("banks.bank-loan.max-loan", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] banks.bank-loan.max-loan -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-loan.max-loan -> ok: " + config.getString("banks.bank-loan.max-loan"));
+			ok++;
+		}
+		
+		if(config.getString("banks.bank-loan.collect-interest-every") == null){
+			AllBanksLogger.warning("[CONFIG] banks.bank-loan.collect-interest-every -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-loan.collect-interest-every -> ok: " + config.getString("banks.bank-loan.collect-interest-every"));
+			ok++;
+		}
+		
+		if(config.getInt("banks.bank-loan.stop-collect-if-player-balance-is-minor-than", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] banks.bank-loan.stop-collect-if-player-balance-is-minor-than -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-loan.stop-collect-if-player-balance-is-minor-than -> ok: " + config.getString("banks.bank-loan.stop-collect-if-player-balance-is-minor-than"));
+			ok++;
+		}
+		
+		if(config.getInt("banks.bank-money.max-money-player-can-save", -2) == -2){
+			AllBanksLogger.warning("[CONFIG] banks.bank-money.max-money-player-can-save -> return -2, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-money.max-money-player-can-save -> ok: " + config.getString("banks.bank-money.max-money-player-can-save"));
+			ok++;
+		}
+		
+		if(config.getDouble("banks.bank-time.pay-per-minute", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] banks.bank-time.pay-per-minute -> return -1, configuration not exists or not is a valid Double.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-time.pay-per-minute -> ok: " + config.getString("banks.bank-time.pay-per-minute"));
+			ok++;
+		}
+		
+		if(config.getInt("banks.bank-time.add-minute-every", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] banks.bank-time.add-minute-every -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-time.add-minute-every -> ok: " + config.getString("banks.bank-time.add-minute-every"));
+			ok++;
+		}
+		
+		if(config.getInt("banks.bank-chest.max-virtual-chests-per-player", -1) == -1){
+			AllBanksLogger.warning("[CONFIG] banks.bank-chest.max-virtual-chests-per-player -> return -1, configuration not exists or not is a valid Integer.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-chest.max-virtual-chests-per-player -> ok: " + config.getString("banks.bank-chest.max-virtual-chests-per-player"));
+			ok++;
+		}
+		
+		if(config.getString("shop.admin-tag") == null){
+			AllBanksLogger.warning("[CONFIG] shop.admin-tag -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] shop.admin-tag -> ok: " + config.getString("shop.admin-tag"));
+			ok++;
+		}
+		
+		if(config.getString("shop.enable-fake-item") == null){
+			AllBanksLogger.warning("[CONFIG] shop.enable-fake-item -> return null, configuration not exists or not is a valid Boolean.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] shop.enable-fake-item -> ok: " + config.getString("shop.enable-fake-item"));
+			ok++;
+		}
+		
+		if(config.getString("shop.enable-fake-item-for-user-shop") == null){
+			AllBanksLogger.warning("[CONFIG] shop.enable-fake-item-for-user-shop -> return null, configuration not exists or not is a valid Boolean.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] shop.enable-fake-item-for-user-shop -> ok: " + config.getString("shop.enable-fake-item-for-user-shop"));
+			ok++;
+		}
+		
+		if(config.getString("topranks.update-cache-every") == null){
+			AllBanksLogger.warning("[CONFIG] topranks.update-cache-every -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] topranks.update-cache-every -> ok: " + config.getString("topranks.update-cache-every"));
+			ok++;
+		}
+		
+		AllBanksLogger.debug("[CONFIG] Done: " + warns + " warnings, " + ok + " ok, total: " + (ok + warns) + ".");
 	}
 	
 	/** Función cuando AllBanks se deshabilita **/
