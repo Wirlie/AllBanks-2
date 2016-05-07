@@ -3,7 +3,7 @@
 ##
 ## AllBanks v1.0
 
-language-version: "1.1.2"
+language-version: "1.1.3"
 
 1: "Enabling plugin.%BREAK%Starting local database..."
 2: "Disabling plugin.%BREAK%Saving local database..."
@@ -185,4 +185,5 @@ language-version: "1.1.2"
 178: "Set the spawn point of your shop"
 179: "Go to home"
 180: "Lottery is disabled."
+181: "&f%1% &cis disabled."
 
