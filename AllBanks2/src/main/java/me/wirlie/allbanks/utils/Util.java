@@ -130,26 +130,11 @@ public class Util {
     		}
     	}
     	
-    	String debug = "";
-		
-		for(String s : version2Split){
-			debug += s + ".";
-		}
-		
-		String debug2 = "";
-		
-		for(String s : version1Split){
-			debug2 += s + ".";
-		}
-
-		System.out.println("DEBUG version1" + debug);
-		System.out.println("DEBUG version2" + debug2);
-    	
     	for(int i = 0; i < maxParameters; i++) {
     		//Comprobar si es posible comparar ambos parámetros en ambos splits
 			try {
-				int version1ValueParameter = Integer.parseInt(version2Split.get(i));
-				int version2ValueParameter = Integer.parseInt(version1Split.get(i));
+				int version1ValueParameter = Integer.parseInt(version1Split.get(i));
+				int version2ValueParameter = Integer.parseInt(version2Split.get(i));
 				
 				if(version1ValueParameter > version2ValueParameter) {
 					return 1;

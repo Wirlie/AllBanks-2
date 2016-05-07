@@ -593,8 +593,9 @@ public class Updater {
      * @since AllBanks 1.0.2
      * 
      */
-    public boolean shouldUpdate(String localVersion, String remoteVersion) {
-    	if(Util.compareVersionsString(remoteVersion, localVersion) == 1){
+    public boolean shouldUpdate(String pluginVersion, String serverVersion) {
+
+    	if(Util.compareVersionsString(serverVersion, pluginVersion) == 1){
     		return true;
     	}
     	
