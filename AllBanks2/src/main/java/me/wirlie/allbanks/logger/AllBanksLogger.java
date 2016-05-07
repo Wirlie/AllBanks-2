@@ -20,11 +20,16 @@ package me.wirlie.allbanks.logger;
 
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import me.wirlie.allbanks.AllBanks;
 
@@ -148,20 +153,63 @@ public class AllBanksLogger {
 	    	dirLog.mkdirs();
 	    }
 	    
-	    //Eliminar archivos viejos
-	    if(dirLog.listFiles().length > 20){
-	    	
-	    	int i = 1;
-	    	
-	    	for(File f : dirLog.listFiles()){
-	    		
-	    		if(i > 20){
-	    			f.delete();
-	    		}
-	    		
-	    		i++;
+	    Thread compressLogBackground = new Thread(){
+	    	@Override
+	    	public void run(){
+	    		//Eliminar archivos viejos, comprimir cada 40 archivos viejos
+	    	    File[] files = dirLog.listFiles().clone();
+	    	    List<File> addToZip = new ArrayList<File>();
+	    	    
+	    	    if(files.length > 40){
+	    	    	
+	    	    	int i = 1;
+	    	    	
+	    	    	for(File f : files){
+	    	    		//Conservar ultimos 5 registros
+	    	    		if(i < (files.length - 5)){
+	    	    			addToZip.add(f);
+	    	    		}
+	    	    		
+	    	    		i++;
+	    	    	}
+	    	    	
+	    	    	byte[] buffer = new byte[1024];
+	    	    	
+	    	    	try{
+	    	    		
+	    	    		File oldDir = new File(dirLog + File.separator + "oldLogs");
+	    	    		if(!oldDir.exists()) oldDir.mkdirs();
+	    	    		
+	    	    		FileOutputStream fos = new FileOutputStream(new File(oldDir + File.separator + "AllBanks2-logs-" + new Date().getTime() + ".zip"));
+	    	    		ZipOutputStream zos = new ZipOutputStream(fos);
+	    	    		
+	    	    		for(File f : addToZip){
+	    		    		ZipEntry ze = new ZipEntry(f.getName());
+	    		    		zos.putNextEntry(ze);
+	    		    		FileInputStream in = new FileInputStream(f);
+	    		    		
+	    		    		int len;
+	    		    		while ((len = in.read(buffer)) > 0) {
+	    		    			zos.write(buffer, 0, len);
+	    		    		}
+
+	    		    		in.close();
+	    		    		zos.closeEntry();
+	    		    		
+	    		    		f.delete();
+	    	    		}
+	    	    		
+	    	    		//remember close it
+	    	    		zos.close();
+
+	    	    	}catch(IOException ex){
+	    	    	   ex.printStackTrace();
+	    	    	}
+	    	    }
 	    	}
-	    }
+	    };
+	    
+	    compressLogBackground.start();
 	    
 		fileLog = new File(AllBanks.getInstance().getDataFolder() + File.separator + "logs" + File.separator + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"+ calendar.get(Calendar.YEAR) + "-" + calendar.getTimeInMillis() + ".log");
  
