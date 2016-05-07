@@ -34,7 +34,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.WorldConfiguration;
-import me.wirlie.allbanks.utils.EntityUtil;
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * @author Wirlie
@@ -70,7 +70,7 @@ public class PlotEntityListener implements Listener{
 						return;
 					}
 					
-					if(!plot.havePermissions(p) && !EntityUtil.isHostil(ent)){
+					if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
 						//No tiene derecho de hacer eso para atacar entidades no hostiles
 						e.setCancelled(true);
 						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
@@ -100,7 +100,7 @@ public class PlotEntityListener implements Listener{
 							return;
 						}
 						
-						if(!plot.havePermissions(p) && !EntityUtil.isHostil(ent)){
+						if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
 							//No tiene derecho de hacer eso para atacar entidades no hostiles
 							e.setCancelled(true);
 							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
@@ -117,8 +117,8 @@ public class PlotEntityListener implements Listener{
 		Entity ent = e.getEntity();
 		Location loc = ent.getLocation();
 		
-		boolean animal = EntityUtil.isAnimal(ent);
-		boolean hostil = EntityUtil.isHostil(ent);
+		boolean animal = Util.entityIsAnimal(ent);
+		boolean hostil = Util.entityIsHostil(ent);
 		
 		if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());

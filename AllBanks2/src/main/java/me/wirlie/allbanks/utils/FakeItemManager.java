@@ -65,7 +65,7 @@ public class FakeItemManager extends BukkitRunnable {
 			String itemUUIDStr = yaml.getString(key + ".itemUUID", null);
 			//Transformar parámetros en valores
 			Location signLoc = transformKeyToSignloc(key);
-			Location itemLoc = StringLocationUtil.convertStringToLocation(itemLocStr);
+			Location itemLoc = Util.convertStringToLocation(itemLocStr);
 			UUID itemUUID = UUID.fromString(itemUUIDStr);
 			
 			//Comprobar si existe
@@ -97,7 +97,7 @@ public class FakeItemManager extends BukkitRunnable {
 			
 			//Actualizar datos
 			yaml.set(key + ".itemUUID", item.getUniqueId().toString());
-			yaml.set(key + ".itemLoc", StringLocationUtil.convertLocationToString(calculateItemLoc, false));
+			yaml.set(key + ".itemLoc", Util.convertLocationToString(calculateItemLoc, false));
 		
 			//Regenerado, colocar en el mapa
 			itemsLoc.put(signLoc, item);
@@ -126,7 +126,7 @@ public class FakeItemManager extends BukkitRunnable {
 		
 		//Registrar datos
 		yaml.set(transformSignlocToKey(signLoc) + ".itemUUID", item.getUniqueId().toString());
-		yaml.set(transformSignlocToKey(signLoc) + ".itemLoc", StringLocationUtil.convertLocationToString(calculateItemLoc, false));
+		yaml.set(transformSignlocToKey(signLoc) + ".itemLoc", Util.convertLocationToString(calculateItemLoc, false));
 	
 		//añadir al mapa
 		itemsLoc.put(signLoc, item);
@@ -246,7 +246,7 @@ public class FakeItemManager extends BukkitRunnable {
 				
 				//Actualizar datos
 				yaml.set(transformSignlocToKey(signLoc) + ".itemUUID", item.getUniqueId().toString());
-				yaml.set(transformSignlocToKey(signLoc) + ".itemLoc", StringLocationUtil.convertLocationToString(calculateItemLoc, false));
+				yaml.set(transformSignlocToKey(signLoc) + ".itemLoc", Util.convertLocationToString(calculateItemLoc, false));
 			
 				//Regenerado, colocar en el mapa
 				replaceLater.put(signLoc, item);

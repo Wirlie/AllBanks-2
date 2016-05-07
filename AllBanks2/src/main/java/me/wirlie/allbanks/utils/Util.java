@@ -32,6 +32,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
@@ -216,12 +217,85 @@ public class Util {
 			return true;
 		}
 	}
-	
-	//Reflection Util, Internal method, used as shorthand to grab our method in a nice friendly manner
 
-	
+	public static String convertLocationToString(Location loc, boolean blockLocation){
+		String returnStr;
+		if(blockLocation)
+			returnStr = loc.getWorld().getName() + ":" + loc.getBlockX() + ":" + loc.getBlockY() + ":" + loc.getBlockZ();
+		else
+			returnStr = loc.getWorld().getName() + ":" + loc.getX() + ":" + loc.getY() + ":" + loc.getZ();
+		
+		return returnStr;
+	}
 
-	
+	public static Location convertStringToLocation(String loc){
+		
+		String[] args = loc.split(":");
+		return new Location(Bukkit.getWorld(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
+	}
 
-	
+	public static boolean stringIsValidLocation(String loc){
+		
+		String[] args = loc.split(":");
+		if(args.length != 4) return false;
+		
+		if(Bukkit.getWorld(args[0]) == null) return false;
+		
+		try{
+			Double.parseDouble(args[1]);
+			Double.parseDouble(args[2]);
+			Double.parseDouble(args[3]);
+		}catch(NumberFormatException e){
+			return false;
+		}
+		
+		return true;
+	}
+
+	public static boolean entityIsHostil(Entity e){
+		if(!Util.entityIsAnimal(e) && !Util.entityIsNeutral(e)){
+			return true;
+		}
+		
+		return false;
+	}
+
+	public static boolean entityIsNeutral(Entity e){
+		if(e.getType().equals(EntityType.SNOWMAN) ||
+				e.getType().equals(EntityType.IRON_GOLEM) ||
+				e.getType().equals(EntityType.VILLAGER) ||
+				e.getType().equals(EntityType.MINECART) ||
+				e.getType().equals(EntityType.MINECART_CHEST) ||
+				e.getType().equals(EntityType.MINECART_COMMAND) ||
+				e.getType().equals(EntityType.MINECART_FURNACE) ||
+				e.getType().equals(EntityType.MINECART_HOPPER) ||
+				e.getType().equals(EntityType.MINECART_MOB_SPAWNER) ||
+				e.getType().equals(EntityType.MINECART_TNT) ||
+				e.getType().equals(EntityType.ARMOR_STAND) ||
+				e.getType().equals(EntityType.BOAT) ||
+				e.getType().equals(EntityType.DROPPED_ITEM) ||
+				e.getType().equals(EntityType.ENDER_CRYSTAL) ||
+				e.getType().equals(EntityType.ENDER_SIGNAL))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+
+	public static boolean entityIsAnimal(Entity e){
+		if(e.getType().equals(EntityType.COW) ||
+				e.getType().equals(EntityType.CHICKEN) ||
+				e.getType().equals(EntityType.PIG) ||
+				e.getType().equals(EntityType.SHEEP) ||
+				e.getType().equals(EntityType.OCELOT) ||
+				e.getType().equals(EntityType.WOLF) ||
+				e.getType().equals(EntityType.HORSE))
+		{
+			return true;
+		}
+		
+		return false;
+	}
+
 }

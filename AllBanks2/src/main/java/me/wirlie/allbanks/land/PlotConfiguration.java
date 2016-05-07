@@ -38,7 +38,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.ChatUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
-import me.wirlie.allbanks.utils.StringLocationUtil;
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * @author josue
@@ -435,14 +435,14 @@ public class PlotConfiguration {
 				return plot.getFirstBound();
 			}
 			
-			return StringLocationUtil.convertStringToLocation(strLoc);
+			return Util.convertStringToLocation(strLoc);
 		}else{
 			return null;
 		}
 	}
 	
 	public void setPlotSpawnLocation(Location loc) {
-		setPlotConfiguration("plot-spawn-loc", StringLocationUtil.convertLocationToString(loc, false));
+		setPlotConfiguration("plot-spawn-loc", Util.convertLocationToString(loc, false));
 	}
 	
 	public Location shopSpawnLoc(){
@@ -453,14 +453,14 @@ public class PlotConfiguration {
 				return plot.getFirstBound();
 			}
 			
-			return StringLocationUtil.convertStringToLocation(strLoc);
+			return Util.convertStringToLocation(strLoc);
 		}else{
 			return null;
 		}
 	}
 	
 	public void setShopSpawnLocation(Location loc) {
-		setPlotConfiguration("shop-spawn-loc", StringLocationUtil.convertLocationToString(loc, false));
+		setPlotConfiguration("shop-spawn-loc", Util.convertLocationToString(loc, false));
 	}
 	
 	public String shopSpawnAlias(){

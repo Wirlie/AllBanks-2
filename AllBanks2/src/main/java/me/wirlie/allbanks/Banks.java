@@ -51,7 +51,6 @@ import me.wirlie.allbanks.utils.ChatUtil;
 import me.wirlie.allbanks.utils.ConfigurationUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.ItemStackBase64;
-import me.wirlie.allbanks.utils.StringLocationUtil;
 import me.wirlie.allbanks.utils.Util;
 
 /**
@@ -503,7 +502,7 @@ public class Banks {
 			}
 			
 			YamlConfiguration yaml = YamlConfiguration.loadConfiguration(signFile);
-			yaml.set("location", StringLocationUtil.convertLocationToString(signLocation, true));
+			yaml.set("location", Util.convertLocationToString(signLocation, true));
 			yaml.set("owner", signOwner.getName());
 			
 			try {
@@ -520,7 +519,7 @@ public class Banks {
 			
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + StringLocationUtil.convertLocationToString(signLocation, true) + "', '" + signOwner.getName() + "')");
+				stm.executeUpdate("INSERT INTO signs (location, owner) VALUES ('" + Util.convertLocationToString(signLocation, true) + "', '" + signOwner.getName() + "')");
 				return true;
 			}catch(SQLException e){
 				DataBaseUtil.checkDatabaseIsLocked(e);
@@ -557,7 +556,7 @@ public class Banks {
 			Statement stm = null;
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLocation, true) + "'");
+				ResultSet res = stm.executeQuery("SELECT * FROM signs WHERE location = '" + Util.convertLocationToString(signLocation, true) + "'");
 				return res.next();
 			}catch(SQLException e){
 				DataBaseUtil.checkDatabaseIsLocked(e);
@@ -597,7 +596,7 @@ public class Banks {
 			
 			try{
 				stm = AllBanks.getDataBaseConnection().createStatement();
-				stm.executeUpdate("DELETE FROM signs WHERE location = '" + StringLocationUtil.convertLocationToString(signLocation, true) + "'");
+				stm.executeUpdate("DELETE FROM signs WHERE location = '" + Util.convertLocationToString(signLocation, true) + "'");
 				return true;
 			}catch(SQLException e){
 				DataBaseUtil.checkDatabaseIsLocked(e);

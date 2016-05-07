@@ -33,7 +33,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
-import me.wirlie.allbanks.utils.EntityUtil;
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * @author josue
@@ -126,7 +126,7 @@ public class PlotPlayerVehicleListener implements Listener {
 					return;
 				}
 				
-				if(!plot.havePermissions(p) && !EntityUtil.isHostil(ent)){
+				if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
 					//No tiene derecho de hacer eso para atacar entidades no hostiles
 					e.setCancelled(true);
 					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
@@ -156,7 +156,7 @@ public class PlotPlayerVehicleListener implements Listener {
 						return;
 					}
 					
-					if(!plot.havePermissions(p) && !EntityUtil.isHostil(ent)){
+					if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
 						//No tiene derecho de hacer eso para atacar entidades no hostiles
 						e.setCancelled(true);
 						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
