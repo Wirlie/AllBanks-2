@@ -1104,12 +1104,13 @@ public class AllBanks extends JavaPlugin {
 		//Permisos default
 		List<String> defaultPerms = userCfg.getStringList("default-permissions");
 		
-		//REMOVE Importante, esto se tiene que remover en la próxima actualización.
-		defaultPerms.add("allbanks.land.commands.plot.claim");
-		defaultPerms.add("allbanks.land.commands.plot.unclaim");
-		defaultPerms.add("allbanks.land.commands.plot.set.flags");
-		defaultPerms.add("allbanks.land.commands.plot.add");
-		defaultPerms.add("allbanks.land.commands.plot.deny");
+		if(Util.compareVersionString(userCfg.getString("cfg-version", "0"), "1.1") == -1){
+			if(!defaultPerms.contains("allbanks.land.commands.plot.claim")) defaultPerms.add("allbanks.land.commands.plot.claim");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.unclaim")) defaultPerms.add("allbanks.land.commands.plot.unclaim");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.set.flags")) defaultPerms.add("allbanks.land.commands.plot.set.flags");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.add")) defaultPerms.add("allbanks.land.commands.plot.add");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.deny")) defaultPerms.add("allbanks.land.commands.plot.deny");
+		}
 		
 		userCfg.set("default-permissions", defaultPerms);
 		
