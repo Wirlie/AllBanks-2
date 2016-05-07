@@ -102,47 +102,61 @@ public class Util {
 	
 	/**
 	 * Compara dos versiones del tipo {@code 1.0.0}.
-	 * @param arg0 Version
-	 * @param arg1 Version que se desea comparar con {@code arg0}
-	 * @return 1 si {@code arg0} > {@code arg1} <br> 0 si {@code arg0} = {@code arg1} <br> -1 si {@code arg0} < {@code arg1} <br> -2 si la operación falla
+	 * @param version1 Version
+	 * @param version2 Version que se desea comparar con {@code arg0}
+	 * @return 1 si {@code version1} > {@code version2} <br> 0 si {@code arg0} = {@code arg1} <br> -1 si {@code version1} < {@code version2} <br> -2 si la operación falla
 	 */
 	
-	public static int compareVersionString(String arg0, String arg1) {
-		if(arg0.equalsIgnoreCase(arg1)) return 0;
+	public static int compareVersionsString(String version1, String version2) {
+		if(version1.equalsIgnoreCase(version2)) return 0;
 		
-    	List<String> remoteVersionSplit = new ArrayList<String>(Arrays.asList(arg0.split("\\D")));
-		List<String> localVersionSplit = new ArrayList<String>(Arrays.asList(arg1.split("\\D")));
+    	List<String> version1Split = new ArrayList<String>(Arrays.asList(version1.split("\\D")));
+		List<String> version2Split = new ArrayList<String>(Arrays.asList(version2.split("\\D")));
     	
-    	int maxParameters = (localVersionSplit.size() > remoteVersionSplit.size()) ? localVersionSplit.size() : remoteVersionSplit.size();
+    	int maxParameters = (version2Split.size() > version1Split.size()) ? version2Split.size() : version1Split.size();
     	
-    	if(localVersionSplit.size() != maxParameters) {
-    		//Igualar local al remoto
-    		int excedent = maxParameters - localVersionSplit.size();
+    	if(version2Split.size() != maxParameters) {
+    		//Igualar version 2 a version 1
+    		int excedent = maxParameters - version2Split.size();
     		for(int i = 0; i < excedent; i++) {
-    			localVersionSplit.add("0");
+    			version2Split.add("0");
     		}
+    		
     	}else {
-    		//Igualare remoto al local
-    		int excedent = maxParameters - remoteVersionSplit.size();
+    		//Igualar version 1 a version 2
+    		int excedent = maxParameters - version1Split.size();
     		for(int i = 0; i < excedent; i++) {
-    			remoteVersionSplit.add("0");
+    			version1Split.add("0");
     		}
     	}
+    	
+    	String debug = "";
+		
+		for(String s : version2Split){
+			debug += s + ".";
+		}
+		
+		String debug2 = "";
+		
+		for(String s : version1Split){
+			debug2 += s + ".";
+		}
+
+		System.out.println("DEBUG version1" + debug);
+		System.out.println("DEBUG version2" + debug2);
     	
     	for(int i = 0; i < maxParameters; i++) {
     		//Comprobar si es posible comparar ambos parámetros en ambos splits
 			try {
-				int localvp = Integer.parseInt(localVersionSplit.get(i));
-				int remotevp = Integer.parseInt(remoteVersionSplit.get(i));
-
-				if(localvp < remotevp) {
-					//Este argumento es mayor. EJ: Local 1.0.0   Remote 2.0.0   if(1 < 2)
+				int version1ValueParameter = Integer.parseInt(version2Split.get(i));
+				int version2ValueParameter = Integer.parseInt(version1Split.get(i));
+				
+				if(version1ValueParameter > version2ValueParameter) {
 					return 1;
 				}else {
 					continue;
 				}
 			}catch (NumberFormatException e) {
-				//Si falla, checamos de la manera nativa
 				return -2;
 			}
     	}

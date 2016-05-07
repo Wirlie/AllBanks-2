@@ -4,10 +4,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Enumeration;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -19,7 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * Check for updates on BukkitDev for a given plugin, and download the updates if needed.
@@ -597,58 +594,11 @@ public class Updater {
      * 
      */
     public boolean shouldUpdate(String localVersion, String remoteVersion) {
-    	List<String> localVersionSplit = new ArrayList<String>(Arrays.asList(localVersion.split("\\D")));
-    	List<String> remoteVersionSplit = new ArrayList<String>(Arrays.asList(remoteVersion.split("\\D")));
-    	
-    	int maxParameters = (localVersionSplit.size() > remoteVersionSplit.size()) ? localVersionSplit.size() : remoteVersionSplit.size();
-    	
-    	if(localVersionSplit.size() != maxParameters) {
-    		//Igualar local al remoto
-    		int excedent = maxParameters - localVersionSplit.size();
-    		for(int i = 0; i < excedent; i++) {
-    			localVersionSplit.add("0");
-    		}
-    	}else {
-    		//Igualare remoto al local
-    		int excedent = maxParameters - remoteVersionSplit.size();
-    		for(int i = 0; i < excedent; i++) {
-    			remoteVersionSplit.add("0");
-    		}
+    	if(Util.compareVersionsString(remoteVersion, localVersion) == 1){
+    		return true;
     	}
     	
-    	for(int i = 0; i < maxParameters; i++) {
-    		//Comprobar si es posible comparar ambos parámetros en ambos splits
-			try {
-				int localvp = Integer.parseInt(localVersionSplit.get(i));
-				int remotevp = Integer.parseInt(remoteVersionSplit.get(i));
-
-				if(localvp < remotevp) {
-					//Este argumento es mayor. EJ: Local 1.0.0   Remote 2.0.0   if(1 < 2)
-					AllBanksLogger.debug("[Updater] New update found, debug:");
-					AllBanksLogger.debug("[Updater] Local: " + localVersion + " < Remote: " + remoteVersion);
-					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " < remotevp: " + remotevp);
-					return true;
-				}else if(localvp > remotevp) {
-					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " > remotevp: " + remotevp);
-					return false;
-				}else{					
-					//AllBanksLogger.debug("[Updater] (i=" + i + "), localvp: " + localvp + " = remotevp: " + remotevp);
-					continue;
-				}
-			}catch (NumberFormatException e) {
-				AllBanksLogger.warning("[Updater] Invalid version string: ");
-				AllBanksLogger.warning("[Updater] Local -> " + localVersion);
-				AllBanksLogger.warning("[Updater] Remote -> " + remoteVersion);
-				
-				//Si falla, checamos de la manera nativa
-				return !localVersion.equalsIgnoreCase(remoteVersion);
-			}
-    	}
-    	
-    	AllBanksLogger.debug("[Updater] No updates found, debug:");
-		AllBanksLogger.debug("[Updater] Local: " + localVersion + " >= Remote: " + remoteVersion);
-		
-        return false;
+    	return false;
     }
 
     /**

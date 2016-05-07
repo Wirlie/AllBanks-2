@@ -117,6 +117,7 @@ public class AllBanks extends JavaPlugin {
 	/** Versiones compatibles con esta version. */
 	public final static String[] COMPATIBLE_VERSIONS = {
 			"1.9",
+			"1.9.2"
 			};
 	
 	/** Version incompatible mínima **/
@@ -378,8 +379,6 @@ public class AllBanks extends JavaPlugin {
 					return;
 				}
 				
-				AllBanks.getInstance().getLogger().info("[Updater] Checking for Updates...");
-				
 				//Comprobar si está habilitado el chequeo y descarga automática de AllBanks
 				boolean checkForUpdates = getConfig().getBoolean("pl.updater.check-for-updates", true);
 				boolean forceUpdate = getConfig().getBoolean("pl.updater.auto-update", true);
@@ -392,12 +391,10 @@ public class AllBanks extends JavaPlugin {
 					uptype = UpdateType.NO_DOWNLOAD;
 				}
 				
-				//Si no está habilitado el chequeo, pero si está habilitada la descarga indicaremos al actualizador que sólo queremos descargar el archivo
-				if(!checkForUpdates && forceUpdate) {
-					uptype = UpdateType.NO_VERSION_CHECK;
-				}
-				
-				if(checkForUpdates || forceUpdate) {
+				if(checkForUpdates) {
+					
+					AllBanks.getInstance().getLogger().info("[Updater] Checking for Updates ...");
+
 					//Iniciar actualizador
 					Updater updater = new Updater(AllBanks.getInstance(), 98949, AllBanks.getInstance().getFile(), uptype, true);
 					
@@ -1097,20 +1094,20 @@ public class AllBanks extends JavaPlugin {
 			}
 		}
 		
-		//Actualizar la versión
-		AllBanksLogger.info("Updating cfg-version...");
-		userCfg.set("cfg-version", getInstance().getDescription().getVersion());
-		
 		//Permisos default
 		List<String> defaultPerms = userCfg.getStringList("default-permissions");
 		
-		if(Util.compareVersionString(userCfg.getString("cfg-version", "0"), "1.1") == -1){
+		if(Util.compareVersionsString("1.1", userCfg.getString("cfg-version", "0")) == 1){
 			if(!defaultPerms.contains("allbanks.land.commands.plot.claim")) defaultPerms.add("allbanks.land.commands.plot.claim");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.unclaim")) defaultPerms.add("allbanks.land.commands.plot.unclaim");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.set.flags")) defaultPerms.add("allbanks.land.commands.plot.set.flags");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.add")) defaultPerms.add("allbanks.land.commands.plot.add");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.deny")) defaultPerms.add("allbanks.land.commands.plot.deny");
 		}
+		
+		//Actualizar la versión
+		AllBanksLogger.info("Updating cfg-version...");
+		userCfg.set("cfg-version", getInstance().getDescription().getVersion());
 		
 		userCfg.set("default-permissions", defaultPerms);
 		
@@ -1211,10 +1208,10 @@ public class AllBanks extends JavaPlugin {
 			return VersionCheckResult.COMPATIBLE;
 		}else{
 			//Detectar si se está usando una versión incompatible o una versión no probada
-			if(Util.compareVersionString(INCOMPATIBLE_MIN, rawVersion) == 1 
-				|| Util.compareVersionString(INCOMPATIBLE_MIN, rawVersion) == 0 
-				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == -1 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
-				|| Util.compareVersionString(INCOMPATIBLE_MAX, rawVersion) == 0 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
+			if(Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == 1 
+				|| Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == 0 
+				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == -1 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
+				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == 0 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
 				AllBanks.getInstance().getLogger().severe("Please use the correct version of CraftBukkit/Spigot.");
 				AllBanks.getInstance().getLogger().severe("For this build, CB 1.9 is expected.");
 				return VersionCheckResult.NOT_COMPATIBLE;
