@@ -35,28 +35,28 @@ public class ChatUtil {
      * @return Devuelve la cadena de texto con los formatos de {@code ChatColor} aplicados.
      */
 	public static String replaceChatFormat(String txt){
-		txt = txt.replace("&0", ChatColor.BLACK+"");
-		txt = txt.replace("&1", ChatColor.DARK_BLUE+"");
-		txt = txt.replace("&2", ChatColor.DARK_GREEN+"");
-		txt = txt.replace("&3", ChatColor.DARK_AQUA+"");
-		txt = txt.replace("&4", ChatColor.DARK_RED+"");
-		txt = txt.replace("&5", ChatColor.DARK_PURPLE+"");
-		txt = txt.replace("&6", ChatColor.GOLD+"");
-		txt = txt.replace("&7", ChatColor.GRAY+"");
-		txt = txt.replace("&8", ChatColor.DARK_GRAY+"");
-		txt = txt.replace("&9", ChatColor.BLUE+"");
-		txt = txt.replace("&a", ChatColor.GREEN+"");
-		txt = txt.replace("&b", ChatColor.AQUA+"");
-		txt = txt.replace("&c", ChatColor.RED+"");
-		txt = txt.replace("&d", ChatColor.LIGHT_PURPLE+"");
-		txt = txt.replace("&e", ChatColor.YELLOW+"");
-		txt = txt.replace("&f", ChatColor.WHITE+"");
-		txt = txt.replace("&l", ChatColor.BOLD+"");
-		txt = txt.replace("&r", ChatColor.RESET+"");
-		txt = txt.replace("&k", ChatColor.MAGIC+"");
-		txt = txt.replace("&m", ChatColor.STRIKETHROUGH+"");
-		txt = txt.replace("&o", ChatColor.ITALIC+"");
-		txt = txt.replace("&n", ChatColor.UNDERLINE+"");
+		txt = txt.replace("&0", String.valueOf(ChatColor.BLACK));
+		txt = txt.replace("&1", String.valueOf(ChatColor.DARK_BLUE));
+		txt = txt.replace("&2", String.valueOf(ChatColor.DARK_GREEN));
+		txt = txt.replace("&3", String.valueOf(ChatColor.DARK_AQUA));
+		txt = txt.replace("&4", String.valueOf(ChatColor.DARK_RED));
+		txt = txt.replace("&5", String.valueOf(ChatColor.DARK_PURPLE));
+		txt = txt.replace("&6", String.valueOf(ChatColor.GOLD));
+		txt = txt.replace("&7", String.valueOf(ChatColor.GRAY));
+		txt = txt.replace("&8", String.valueOf(ChatColor.DARK_GRAY));
+		txt = txt.replace("&9", String.valueOf(ChatColor.BLUE));
+		txt = txt.replace("&a", String.valueOf(ChatColor.GREEN));
+		txt = txt.replace("&b", String.valueOf(ChatColor.AQUA));
+		txt = txt.replace("&c", String.valueOf(ChatColor.RED));
+		txt = txt.replace("&d", String.valueOf(ChatColor.LIGHT_PURPLE));
+		txt = txt.replace("&e", String.valueOf(ChatColor.YELLOW));
+		txt = txt.replace("&f", String.valueOf(ChatColor.WHITE));
+		txt = txt.replace("&l", String.valueOf(ChatColor.BOLD));
+		txt = txt.replace("&r", String.valueOf(ChatColor.RESET));
+		txt = txt.replace("&k", String.valueOf(ChatColor.MAGIC));
+		txt = txt.replace("&m", String.valueOf(ChatColor.STRIKETHROUGH));
+		txt = txt.replace("&o", String.valueOf(ChatColor.ITALIC));
+		txt = txt.replace("&n", String.valueOf(ChatColor.UNDERLINE));
 		return txt;
 	}
 	
@@ -66,28 +66,28 @@ public class ChatUtil {
      * @return Devuelve la cadena de texto limpia.
 	 */
 	public static String removeChatFormat(String txt){
-		txt = txt.replace(ChatColor.BLACK+"","");
-		txt = txt.replace(ChatColor.DARK_BLUE+"","");
-		txt = txt.replace(ChatColor.DARK_GREEN+"","");
-		txt = txt.replace(ChatColor.DARK_AQUA+"","");
-		txt = txt.replace(ChatColor.DARK_RED+"","");
-		txt = txt.replace(ChatColor.DARK_PURPLE+"","");
-		txt = txt.replace(ChatColor.GOLD+"","");
-		txt = txt.replace(ChatColor.GRAY+"","");
-		txt = txt.replace(ChatColor.DARK_GRAY+"","");
-		txt = txt.replace(ChatColor.BLUE+"","");
-		txt = txt.replace(ChatColor.GREEN+"","");
-		txt = txt.replace(ChatColor.AQUA+"","");
-		txt = txt.replace(ChatColor.RED+"","");
-		txt = txt.replace(ChatColor.LIGHT_PURPLE+"","");
-		txt = txt.replace(ChatColor.YELLOW+"","");
-		txt = txt.replace(ChatColor.WHITE+"","");
-		txt = txt.replace(ChatColor.BOLD+"","");
-		txt = txt.replace(ChatColor.RESET+"","");
-		txt = txt.replace(ChatColor.MAGIC+"","");
-		txt = txt.replace(ChatColor.STRIKETHROUGH+"", "");
-		txt = txt.replace(ChatColor.ITALIC+"", "");
-		txt = txt.replace(ChatColor.UNDERLINE+"", "");
+		txt = txt.replace(String.valueOf(ChatColor.BLACK),"");
+		txt = txt.replace(String.valueOf(ChatColor.DARK_BLUE), "");
+		txt = txt.replace(String.valueOf(ChatColor.DARK_GREEN), "");
+		txt = txt.replace(String.valueOf(ChatColor.DARK_AQUA), "");
+		txt = txt.replace(String.valueOf(ChatColor.DARK_RED), "");
+		txt = txt.replace(String.valueOf(ChatColor.DARK_PURPLE), "");
+		txt = txt.replace(String.valueOf(ChatColor.GOLD), "");
+		txt = txt.replace(String.valueOf(ChatColor.GRAY), "");
+		txt = txt.replace(String.valueOf(ChatColor.DARK_GRAY), "");
+		txt = txt.replace(String.valueOf(ChatColor.BLUE), "");
+		txt = txt.replace(String.valueOf(ChatColor.GREEN), "");
+		txt = txt.replace(String.valueOf(ChatColor.AQUA), "");
+		txt = txt.replace(String.valueOf(ChatColor.RED), "");
+		txt = txt.replace(String.valueOf(ChatColor.LIGHT_PURPLE), "");
+		txt = txt.replace(String.valueOf(ChatColor.YELLOW), "");
+		txt = txt.replace(String.valueOf(ChatColor.WHITE), "");
+		txt = txt.replace(String.valueOf(ChatColor.BOLD), "");
+		txt = txt.replace(String.valueOf(ChatColor.RESET), "");
+		txt = txt.replace(String.valueOf(ChatColor.MAGIC), "");
+		txt = txt.replace(String.valueOf(ChatColor.STRIKETHROUGH), "");
+		txt = txt.replace(String.valueOf(ChatColor.ITALIC), "");
+		txt = txt.replace(String.valueOf(ChatColor.UNDERLINE), "");
 		return txt;
 	}
 	
