@@ -50,7 +50,7 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "?");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "help");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "claim");
-		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "unclaim");
+		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "dispose");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "add", "RegEx->(.){1,}:<Player>");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "remove", "RegEx->(.){1,}:<Player>");
 		CommandManagerABLand.registerCommand(new CommandPlot(), "plot", "deny", "RegEx->(.){1,}:<Player>");

@@ -56,7 +56,7 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"?",
 						"help",
 						"claim",
-						"unclaim",
+						"dispose",
 						"add",
 						"remove",
 						"deny",

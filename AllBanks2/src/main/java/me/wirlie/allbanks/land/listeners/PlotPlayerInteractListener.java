@@ -68,6 +68,24 @@ public class PlotPlayerInteractListener implements Listener {
 						}
 				}
 				
+				if(b.getType().equals(Material.CHEST) || b.getType().equals(Material.HOPPER) || b.getType().equals(Material.ENDER_CHEST)){
+					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+						e.setCancelled(true);
+					}else{
+						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+						
+						if(!plot.hasOwner()){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}else{
+							if(!plot.havePermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							}
+						}
+					}
+				}
+				
 				if(b.getType().equals(Material.LEVER)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 						e.setCancelled(true);
