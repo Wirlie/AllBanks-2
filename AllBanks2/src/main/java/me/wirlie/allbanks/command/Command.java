@@ -34,6 +34,15 @@ public class Command {
 
 	private List<String> commandArgs = new ArrayList<String>();
 	
+	public enum CommandExecuteResult{
+		SUCCESS,
+		NO_PERMISSIONS,
+		INSUFICIENT_ARGUMENTS,
+		DEFAULT,
+		OTHER,
+		INVALID_ARGUMENTS
+	}
+	
 	public void setArguments(String... args) {
 		for(String s : args){
 			commandArgs.add(s);
@@ -70,9 +79,9 @@ public class Command {
 		return true;
 	}
 
-	public boolean execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		//Esto tiene que ser reemplazado con un override
-		return false;
+		return CommandExecuteResult.DEFAULT;
 	}
 
 	public boolean possibleMatch(String[] testArgs) {

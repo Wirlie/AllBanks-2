@@ -39,7 +39,7 @@ import me.wirlie.allbanks.utils.WorldLoadAsync;
 public class CommandWorld extends Command {
 
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
+	public CommandExecuteResult execute(CommandSender sender, String[] args){
 		
 		boolean displayHelp = false;
 		
@@ -57,19 +57,19 @@ public class CommandWorld extends Command {
 			
 			sender.sendMessage(ChatColor.GRAY + "/abl spawn " + ChatColor.GOLD + "<world> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_SPAWN_DESC, false)[0]);
 			
-			return true;
+			return CommandExecuteResult.SUCCESS;
 		}
 		
 		if(args[0].equalsIgnoreCase("spawn")){
 			
 			if(!Util.hasPermission(sender, "allbanks.land.commands.spawn")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-				return true;
+				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
 			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			if(sender instanceof Player){
@@ -105,6 +105,6 @@ public class CommandWorld extends Command {
 			
 		}
 		
-		return true;
+		return CommandExecuteResult.SUCCESS;
 	}
 }

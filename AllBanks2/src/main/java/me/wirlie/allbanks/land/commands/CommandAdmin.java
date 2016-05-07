@@ -22,7 +22,7 @@ import me.wirlie.allbanks.utils.WorldLoadAsync;
 public class CommandAdmin extends Command {
 
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
+	public CommandExecuteResult execute(CommandSender sender, String[] args){
 		
 		boolean displayHelp = false;
 		
@@ -44,7 +44,7 @@ public class CommandAdmin extends Command {
 			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "info " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_ADMIN_WORLD_INFO, false)[0]);
 			sender.sendMessage(ChatColor.GRAY + "/abl world " + ChatColor.GOLD + "<world> " + ChatColor.GRAY + "set " + ChatColor.GOLD + "<flag> <value>");
 			
-			return true;
+			return CommandExecuteResult.SUCCESS;
 		}
 
 		if(args[1].equalsIgnoreCase("world")){
@@ -53,12 +53,12 @@ public class CommandAdmin extends Command {
 					
 					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.generate")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-						return true;
+						return CommandExecuteResult.NO_PERMISSIONS;
 					}
 					
 					if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 						Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					String worldName = args[2].toLowerCase();
@@ -70,7 +70,7 @@ public class CommandAdmin extends Command {
 								StringsID.COMMAND_LAND_ADMIN_GENERATE_WORLD_ERROR_WORLD_ALREADY_EXISTS, 
 								Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName),
 								true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					//Checar si la configuración de generación para este mundo existe
@@ -78,7 +78,7 @@ public class CommandAdmin extends Command {
 						//Generar mundo
 						if(WorldLoadAsync.isBusy()){
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_ANOTHER_JOB_IN_PROGRESS, true);
-							return true;
+							return CommandExecuteResult.OTHER;
 						}
 						
 						WorldGenerationResult result = AllBanksWorld.generatePlotWorld(worldName, sender);
@@ -98,12 +98,12 @@ public class CommandAdmin extends Command {
 					
 					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.unload")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-						return true;
+						return CommandExecuteResult.NO_PERMISSIONS;
 					}
 					
 					if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 						Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					String worldName = args[2].toLowerCase();
@@ -114,7 +114,7 @@ public class CommandAdmin extends Command {
 						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
 							//En generación
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-							return true;
+							return CommandExecuteResult.OTHER;
 						}
 						
 						//Descargar mundo
@@ -131,12 +131,12 @@ public class CommandAdmin extends Command {
 					
 					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.remove")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-						return true;
+						return CommandExecuteResult.NO_PERMISSIONS;
 					}
 					
 					if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 						Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					String worldName = args[2].toLowerCase();
@@ -144,13 +144,13 @@ public class CommandAdmin extends Command {
 					
 					if(world != null){
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_REMOVE_WORLD_ERROR_WORLD_NEED_UNLOAD, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}else{
 						
 						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
 							//En generación
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-							return true;
+							return CommandExecuteResult.OTHER;
 						}
 						
 						//Carpeta del mundo
@@ -176,19 +176,19 @@ public class CommandAdmin extends Command {
 					
 					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.info")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-						return true;
+						return CommandExecuteResult.NO_PERMISSIONS;
 					}
 					
 					if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 						Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					String worldName = args[2].toLowerCase();
 					
 					if(!AllBanksWorld.worldIsAllBanksWorld(worldName)){
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_NOT_IS_A_WORLD_OF_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					AllBanksWorld abw = AllBanksWorld.getInstance(worldName);
@@ -253,12 +253,12 @@ public class CommandAdmin extends Command {
 					
 					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.set")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-						return true;
+						return CommandExecuteResult.NO_PERMISSIONS;
 					}
 					
 					if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 						Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					if(args.length >= 6){
@@ -266,7 +266,7 @@ public class CommandAdmin extends Command {
 						
 						if(!AllBanksWorld.worldIsAllBanksWorld(worldName)){
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_NOT_IS_A_WORLD_OF_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-							return true;
+							return CommandExecuteResult.OTHER;
 						}
 						
 						AllBanksWorld abw = AllBanksWorld.getInstance(worldName);
@@ -412,7 +412,7 @@ public class CommandAdmin extends Command {
 									true);
 						}else{
 							Translation.getAndSendMessage(sender, StringsID.PLOT_SET_FLAG_ERROR_NOT_EXISTS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + flag), true);
-							return true;
+							return CommandExecuteResult.OTHER;
 						}
 					}
 				}else{
@@ -421,7 +421,7 @@ public class CommandAdmin extends Command {
 							StringsID.COMMAND_SUGGEST_HELP, 
 							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab admin world ?"),
 							true);
-					return true;
+					return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 				}
 			}else{
 				//No cumple con los requisitos: /ab database <arg>
@@ -429,10 +429,10 @@ public class CommandAdmin extends Command {
 						StringsID.COMMAND_SUGGEST_HELP, 
 						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab world ?"),
 						true);
-				return true;
+				return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 			}
 		}
 		
-		return true;
+		return CommandExecuteResult.SUCCESS;
 	}
 }

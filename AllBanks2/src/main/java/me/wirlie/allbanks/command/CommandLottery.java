@@ -48,10 +48,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 public class CommandLottery extends Command {
 	
 	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		if(DataBaseUtil.databaseIsLocked()){
 			DataBaseUtil.sendDatabaseLockedMessage(sender);
-			return true;
+			return CommandExecuteResult.OTHER;
 		}
 		
 		if(args.length >= 2){
@@ -65,20 +65,20 @@ public class CommandLottery extends Command {
 				
 				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
 					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(args.length == 3){
 					
 					if(!(sender instanceof Player)){
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					if(!Util.hasPermission(sender, "allbanks.commands.lottery.buyticket")){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-						return true;
+						return CommandExecuteResult.NO_PERMISSIONS;
 					}
 					
 					int amount = 0;
@@ -88,14 +88,14 @@ public class CommandLottery extends Command {
 						
 						if(amount <= 0){
 							Translation.getAndSendMessage(sender, StringsID.ONLY_VALID_NUMBER_MORE_THAN_0, true);
-							return true;
+							return CommandExecuteResult.OTHER;
 						}
 					}catch(NumberFormatException e){
 						//No es un número válido
 						HashMap<String, String> replaceMap = new HashMap<String, String>();
 						replaceMap.put("%1%", args[2]);
 						Translation.getAndSendMessage(sender, StringsID.NO_VALID_NUMBER, replaceMap, true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					//Bien intentar comprar un ticket
@@ -133,7 +133,7 @@ public class CommandLottery extends Command {
 						replaceMap.put("%1%", String.valueOf(amount));
 						replaceMap.put("%2%", String.valueOf(canBuy));
 						Translation.getAndSendMessage(sender, StringsID.LOTTERY_CAN_NOT_BUY_MORE_TICKETS, replaceMap, true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					//¿Tiene dinero?
@@ -142,7 +142,7 @@ public class CommandLottery extends Command {
 					
 					if(!AllBanks.getEconomy().has((Player) sender, total_cost.doubleValue())){
 						Translation.getAndSendMessage(sender, StringsID.YOU_DO_NOT_HAVE_MONEY, true);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					//Comprar
@@ -185,7 +185,7 @@ public class CommandLottery extends Command {
 						e.printStackTrace();
 					}
 					
-					return true;
+					return CommandExecuteResult.SUCCESS;
 				}else{
 					//No válido /ab lottery buyticket [INT]
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
@@ -193,26 +193,26 @@ public class CommandLottery extends Command {
 							StringsID.COMMAND_SUGGEST_HELP, 
 							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab lottery ?"),
 							true);
-					return true;
+					return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 				}
 			}else if(args[1].equalsIgnoreCase("info")){
 				
 				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
 					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.info")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				//Mostrar el estado actual de la lotería (cuantos participantes hay, cuando se buscará el próximo ganador).
 				if(!LotteryRunnable.lotteryFile.exists()){
 					//No hay un último tiempo de ejecución...
 					Translation.getAndSendMessage(sender, StringsID.LOTTERY_CHECK_ERROR_NO_LOTTERY_FILE, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				//Bien tratar de leer
@@ -249,19 +249,19 @@ public class CommandLottery extends Command {
 					replaceMap.put("%4%", ChatColor.RED + "----");
 				Translation.getAndSendMessage(sender, StringsID.LOTTER_CHECK_INFO, replaceMap, true);
 				
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}else if(args[1].equalsIgnoreCase("force")){
 				
 				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
 					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				//Forzar para buscar un ganador
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.force")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				Bukkit.getServer().broadcastMessage(Translation.get(StringsID.LOTTERY_BROADCAST_FORCE_BY_ADMIN, true)[0]);
@@ -281,12 +281,12 @@ public class CommandLottery extends Command {
 				}
 				
 				AllBanksLogger.warning("[Lottery] Lottery forced by " + sender.getName());
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}else if(args[1].equalsIgnoreCase("enable")){
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.enable")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				AllBanksLogger.warning("[Lottery] Enabling lottery... " + sender.getName());
@@ -307,18 +307,18 @@ public class CommandLottery extends Command {
 				Translation.getAndSendMessage(sender, StringsID.LOTTERY_COMMAND_ENABLE, true);
 				
 				AllBanksLogger.warning("[Lottery] Lottery enabled by " + sender.getName());
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}else if(args[1].equalsIgnoreCase("disable")){
 				
 				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
 					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.disable")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 
 				AllBanksLogger.warning("[Lottery] Disabling lottery... " + sender.getName());
@@ -339,7 +339,7 @@ public class CommandLottery extends Command {
 				Translation.getAndSendMessage(sender, StringsID.LOTTERY_COMMAND_DISABLE, true);
 				
 				AllBanksLogger.warning("[Lottery] Lottery disabled by " + sender.getName());
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}
 		}else{
 			//Sin argumentos
@@ -347,9 +347,9 @@ public class CommandLottery extends Command {
 					StringsID.COMMAND_SUGGEST_HELP, 
 					Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab lottery ?"),
 					true);
-			return true;
+			return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 		}
 		
-		return true;
+		return CommandExecuteResult.INVALID_ARGUMENTS;
 	}
 }

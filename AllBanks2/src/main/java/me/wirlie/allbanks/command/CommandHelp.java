@@ -35,12 +35,12 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 public class CommandHelp extends Command {
 	
 	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		//Comando de ayuda
 		if(!Util.hasPermission(sender, "allbanks.commands.help")){
 			Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 			if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-			return true;
+			return CommandExecuteResult.NO_PERMISSIONS;
 		}
 		
 		int page = 1;
@@ -83,7 +83,7 @@ public class CommandHelp extends Command {
 			break;
 		}
 		
-		return true;
+		return CommandExecuteResult.SUCCESS;
 	}
 
 }

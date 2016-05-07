@@ -44,29 +44,29 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 public class CommandDataBase extends Command {
 	
 	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		if(args.length >= 2){
 			if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
 				//comando de ayuda: /ab database ?
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab database " + ChatColor.AQUA + "try-query" + ChatColor.YELLOW + "<SQL>" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_DATABASE_QUERY.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab database " + ChatColor.AQUA + "try-update" + ChatColor.YELLOW + "<SQL>" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_DATABASE_UPDATE.toString(false));
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}else if(args[1].equalsIgnoreCase("try-query")){
 				
 				if(sender instanceof Player || sender instanceof BlockCommandSender){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_CONSOLE, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_AVAILABLE_ON_DATABASE, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(args.length >= 2){
@@ -79,7 +79,7 @@ public class CommandDataBase extends Command {
 					//Intentar ejecutar
 					if(DataBaseUtil.databaseIsLocked()){
 						DataBaseUtil.sendDatabaseLockedMessage(sender);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					Statement stm = null;
@@ -127,26 +127,24 @@ public class CommandDataBase extends Command {
 							StringsID.COMMAND_SUGGEST_HELP, 
 							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
 							true);
-					return true;
+					return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 				}
-				
-				return true;
 			}else if(args[1].equalsIgnoreCase("try-update")){
 
 				if(sender instanceof Player || sender instanceof BlockCommandSender){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_CONSOLE, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}	
 				
 				if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_AVAILABLE_ON_DATABASE, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(args.length >= 2){
@@ -159,7 +157,7 @@ public class CommandDataBase extends Command {
 					//Intentar ejecutar
 					if(DataBaseUtil.databaseIsLocked()){
 						DataBaseUtil.sendDatabaseLockedMessage(sender);
-						return true;
+						return CommandExecuteResult.OTHER;
 					}
 					
 					Statement stm = null;
@@ -194,10 +192,10 @@ public class CommandDataBase extends Command {
 							StringsID.COMMAND_SUGGEST_HELP, 
 							Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
 							true);
-					return true;
+					return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 				}
 				
-				return true;
+				return CommandExecuteResult.INVALID_ARGUMENTS;
 			}else{
 				//No cumple con NINGUN argumento valido para /ab database
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_SYNTAX_ERROR, true);
@@ -205,7 +203,7 @@ public class CommandDataBase extends Command {
 						StringsID.COMMAND_SUGGEST_HELP, 
 						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
 						true);
-				return true;
+				return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 			}
 		}else{
 			//No cumple con los requisitos: /ab database <arg>
@@ -213,7 +211,9 @@ public class CommandDataBase extends Command {
 					StringsID.COMMAND_SUGGEST_HELP, 
 					Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab database ?"),
 					true);
-			return true;
+			return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 		}
+		
+		return CommandExecuteResult.SUCCESS;
 	}
 }

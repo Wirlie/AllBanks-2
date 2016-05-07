@@ -22,7 +22,7 @@ import me.wirlie.allbanks.utils.Util;
 public class CommandPlot extends Command {
 
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
+	public CommandExecuteResult execute(CommandSender sender, String[] args){
 		
 		boolean displayHelp = false;
 		
@@ -64,25 +64,25 @@ public class CommandPlot extends Command {
 				sender.sendMessage(ChatColor.GRAY + "/abl plot home " + ChatColor.DARK_AQUA + "[#] " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_HOME_DESC, false)[0]);
 				break;
 			}	
-			return true;
+			return CommandExecuteResult.SUCCESS;
 		}
 		
 		if(args[1].equalsIgnoreCase("claim")){
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
 			
 			if(!Util.hasPermission(p, "allbanks.land.commands.plot.claim")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}
 			
 			Location loc = p.getLocation();
@@ -90,7 +90,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				//No es un mundo de allbanks
 				Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -98,7 +98,7 @@ public class CommandPlot extends Command {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				//No es un plot
 				Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -106,7 +106,7 @@ public class CommandPlot extends Command {
 			if(plot.hasOwner()){
 				//Ya tiene dueño
 				Translation.getAndSendMessage(sender, StringsID.PLOT_PLOT_ALREADY_HAS_OWNER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			//Comprobar límite
@@ -129,13 +129,13 @@ public class CommandPlot extends Command {
 			
 			if((currentPlots + 1) > plotLimit){
 				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			//Dinero??
 			if(!AllBanks.getEconomy().has(p, abw.getWorldConfiguration().claimCost().doubleValue())){
 				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_INSUFICIENT_MONEY, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getEconomy().format(abw.getWorldConfiguration().claimCost().doubleValue())), true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			//Listo, claimear
@@ -150,17 +150,18 @@ public class CommandPlot extends Command {
 			
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_CLAIM_SUCCESS, replaceMap, true);
 			
+			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("dispose")){
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
 			
 			if(!Util.hasPermission(p, "allbanks.land.commands.plot.dispose")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-				return true;
+				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
 			Location loc = p.getLocation();
@@ -168,7 +169,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				//No es un mundo de allbanks
 				Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -176,7 +177,7 @@ public class CommandPlot extends Command {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				//No es un plot
 				Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -184,24 +185,26 @@ public class CommandPlot extends Command {
 			if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 				//No tiene dueño o no es el dueño
 				Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			//Bien, remover
 			plot.unclaim();
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_UNCLAIM_SUCCESS, true);
+		
+			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("set")){
 			
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
 			
 			if(!Util.hasPermission(p, "allbanks.land.commands.plot.set.flags")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-				return true;
+				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
 			Location loc = p.getLocation();
@@ -209,7 +212,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				//No es un mundo de allbanks
 				Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -217,7 +220,7 @@ public class CommandPlot extends Command {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				//No es un plot
 				Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -225,7 +228,7 @@ public class CommandPlot extends Command {
 			if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 				//No tiene dueño o no es el dueño
 				Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			if(args.length >= 4){
@@ -503,8 +506,11 @@ public class CommandPlot extends Command {
 									), 
 							true);
 				}
+				
+				return CommandExecuteResult.SUCCESS;
 			}else{
 				//argumentos inválidos
+				return CommandExecuteResult.INVALID_ARGUMENTS;
 			}
 		}else if(args[1].equalsIgnoreCase("add")){
 			if(args.length >= 3){
@@ -512,14 +518,14 @@ public class CommandPlot extends Command {
 				
 				if(!(sender instanceof Player)){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				Player p = (Player) sender;
 				
 				if(!Util.hasPermission(p, "allbanks.land.commands.plot.add")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				Location loc = p.getLocation();
@@ -527,7 +533,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -535,7 +541,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -543,12 +549,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().addFriend(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_ADD_FRIEND, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
+			
+				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
 			}
@@ -558,14 +566,14 @@ public class CommandPlot extends Command {
 				
 				if(!(sender instanceof Player)){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				Player p = (Player) sender;
 				
 				if(!Util.hasPermission(p, "allbanks.land.commands.plot.add")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				Location loc = p.getLocation();
@@ -573,7 +581,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -581,7 +589,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -589,12 +597,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().removeFriend(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_REMOVE_FRIEND, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
+			
+				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
 			}
@@ -604,14 +614,14 @@ public class CommandPlot extends Command {
 				
 				if(!(sender instanceof Player)){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				Player p = (Player) sender;
 				
 				if(!Util.hasPermission(p, "allbanks.land.commands.plot.deny")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				Location loc = p.getLocation();
@@ -619,7 +629,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -627,7 +637,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -635,12 +645,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().setDeny(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_DENY_PLAYER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
+			
+				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
 			}
@@ -650,14 +662,14 @@ public class CommandPlot extends Command {
 				
 				if(!(sender instanceof Player)){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				Player p = (Player) sender;
 				
 				if(!Util.hasPermission(p, "allbanks.land.commands.plot.deny")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				Location loc = p.getLocation();
@@ -665,7 +677,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -673,7 +685,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
@@ -681,19 +693,21 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().setUndeny(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_UNDENY_PLAYER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
+				
+				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
 			}
 		}else if(args[1].equalsIgnoreCase("setHomeSpawn")){
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
@@ -704,35 +718,37 @@ public class CommandPlot extends Command {
 				
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 				
 				if(!plot.hasOwner()){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!plot.havePermissions(p) || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				//Solo el dueño puede establecer esto
 				plot.getPlotConfiguration().setPlotSpawnLocation(loc);
 				Translation.getAndSendMessage(sender, StringsID.PLOT_SET_HOME_BLOCK_SUCCESS, true);
+				
+				return CommandExecuteResult.SUCCESS;
 			}
 		}else if(args[1].equalsIgnoreCase("home")){
 			
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
@@ -755,7 +771,7 @@ public class CommandPlot extends Command {
 			
 			if(plots.isEmpty()){
 				Translation.getAndSendMessage(p, StringsID.PLOT_HOME_ERROR_NOT_PLOTS, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			String getPlotString = plots.get(home - 1);
@@ -768,7 +784,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(worldID)){
 				//¿¿Error??
 				sender.sendMessage("Error, invalid World. (Reason: Unknow).");
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			AllBanksWorld abw = AllBanksWorld.getInstance(worldID);
@@ -779,10 +795,11 @@ public class CommandPlot extends Command {
 			else
 				p.teleport(plot.getFirstBound());
 			
+			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("setShopSpawn")){
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
@@ -793,29 +810,31 @@ public class CommandPlot extends Command {
 				
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 				
 				if(!plot.hasOwner()){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!plot.havePermissions(p) || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				//Solo el dueño puede establecer esto
 				plot.getPlotConfiguration().setShopSpawnLocation(loc);
 				Translation.getAndSendMessage(sender, StringsID.PLOT_SET_HOME_BLOCK_SUCCESS, true);
+			
+				return CommandExecuteResult.SUCCESS;
 			}
 		}else if(args[1].equalsIgnoreCase("info")){
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			Player p = (Player) sender;
@@ -967,14 +986,14 @@ public class CommandPlot extends Command {
 					}
 				}else{					
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 			}else{
 				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 		}
 		
-		return true;
+		return CommandExecuteResult.INVALID_ARGUMENTS;
 	}
 }

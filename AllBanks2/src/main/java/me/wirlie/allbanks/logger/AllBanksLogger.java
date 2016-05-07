@@ -126,7 +126,7 @@ public class AllBanksLogger {
 	    if(calendar.get(Calendar.SECOND) < 10) seconds = "0" + seconds;
 	    
 		String prefix = "[" + level.toString() + " " + hours + ":" + minutes + ":" + seconds + "]";
-		String subfix = "(FileSource: " + threadInfo.getClassName().substring(threadInfo.getClassName().lastIndexOf(".") + 1) + "." + threadInfo.getMethodName() + "():" + threadInfo.getLineNumber() + ")";
+		String subfix = " | (Source: " + threadInfo.getClassName().substring(threadInfo.getClassName().lastIndexOf(".") + 1) + "." + threadInfo.getMethodName() + "():" + threadInfo.getLineNumber() + ")";
 		String writeMessage = prefix + " " + message + " " + subfix;
 		
 		try{

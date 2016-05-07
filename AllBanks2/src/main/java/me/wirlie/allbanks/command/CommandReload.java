@@ -35,16 +35,16 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 public class CommandReload extends Command {
 	
 	@Override
-	public boolean execute(CommandSender sender, String[] args){
+	public CommandExecuteResult execute(CommandSender sender, String[] args){
 		if(!Util.hasPermission(sender, "allbanks.commands.reload")){
 			Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 			if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-			return true;
+			return CommandExecuteResult.NO_PERMISSIONS;
 		}
 		
 		AllBanks.getInstance().reloadConfig();
 		Translation.getAndSendMessage(sender, StringsID.COMMAND_RELOAD_SUCCESS, true);
 		
-		return true;
+		return CommandExecuteResult.SUCCESS;
 	}
 }

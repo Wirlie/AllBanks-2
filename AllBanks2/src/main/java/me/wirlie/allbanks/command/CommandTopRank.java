@@ -61,24 +61,24 @@ public class CommandTopRank extends Command {
 	private static long bankXPTopRankCacheTime = 0;
 	
 	@Override
-	public boolean execute(final CommandSender sender, String[] args){
+	public CommandExecuteResult execute(final CommandSender sender, String[] args){
 		if(args.length >= 2){
 			
 			if(sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-				return true;
+				return CommandExecuteResult.OTHER;
 			}
 			
 			if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
 				//Ayuda: /ab toprank ?
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "bankmoney" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "bankxp" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
-				return true;
+				return CommandExecuteResult.OTHER;
 			}else if(args[1].equalsIgnoreCase("bankmoney")) {
 				
 				if(!AllBanks.getInstance().getConfig().getBoolean("modules.top-ranks.enable")){
 					Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>TopRanks"), true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				int page = 1;
@@ -100,7 +100,7 @@ public class CommandTopRank extends Command {
 				if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankmoney")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				//Generar toprank del bankmoney
@@ -199,12 +199,12 @@ public class CommandTopRank extends Command {
 					
 				}.runTaskAsynchronously(AllBanks.getInstance());
 				
-				return true;
+				return CommandExecuteResult.SUCCESS;
 			}else if(args[1].equalsIgnoreCase("bankxp")) {
 				
 				if(!AllBanks.getInstance().getConfig().getBoolean("modules.top-ranks.enable")){
 					Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>TopRanks"), true);
-					return true;
+					return CommandExecuteResult.OTHER;
 				}
 				
 				int page = 1;
@@ -226,7 +226,7 @@ public class CommandTopRank extends Command {
 				if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankxp")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-					return true;
+					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				new BukkitRunnable() {
@@ -327,17 +327,17 @@ public class CommandTopRank extends Command {
 						StringsID.COMMAND_SUGGEST_HELP, 
 						Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab toprank ?"),
 						true);
-				return true;
+				return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 			}
 		}else{
 			Translation.getAndSendMessage(sender, 
 					StringsID.COMMAND_SUGGEST_HELP, 
 					Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab toprank ?"),
 					true);
-			return true;
+			return CommandExecuteResult.INSUFICIENT_ARGUMENTS;
 		}
 		
-		return true;
+		return CommandExecuteResult.INVALID_ARGUMENTS;
 	}
 	
 }

@@ -38,16 +38,16 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 public class CommandItemInfo extends Command {
 	
 	@Override
-	public boolean execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		if(!(sender instanceof Player)) {
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
-			return true;
+			return CommandExecuteResult.OTHER;
 		}
 		
 		if(!Util.hasPermission(sender, "allbanks.commands.iteminfo")){
 			Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 			if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
-			return true;
+			return CommandExecuteResult.NO_PERMISSIONS;
 		}
 		
 		Player p = (Player) sender;
@@ -71,6 +71,6 @@ public class CommandItemInfo extends Command {
 			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
 			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + ":" + itemHand.getDurability());
 		}
-		return true;
+		return CommandExecuteResult.SUCCESS;
 	}
 }

@@ -23,6 +23,8 @@ import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
+import me.wirlie.allbanks.command.Command.CommandExecuteResult;
+
 /**
  * @author Wirlie
  *
@@ -60,14 +62,14 @@ public class CommandManagerAB {
 	/**
 	 * @param args
 	 */
-	public static boolean executeCommand(CommandSender sender, String[] args) {
+	public static CommandExecuteResult executeCommand(CommandSender sender, String[] args) {
 		for(Command command : registeredCommands){
 			if(command.matchArguments(args)){
 				return command.execute(sender, args);
 			}
 		}
 		
-		return false;
+		return CommandExecuteResult.DEFAULT;
 	}
 	
 	public static List<Command> possibleMatches(String[] args){

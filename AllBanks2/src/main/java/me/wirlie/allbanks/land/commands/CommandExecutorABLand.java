@@ -27,6 +27,8 @@ import org.bukkit.command.CommandSender;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command;
+import me.wirlie.allbanks.command.Command.CommandExecuteResult;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * @author Wirlie
@@ -67,7 +69,33 @@ public class CommandExecutorABLand implements CommandExecutor {
 public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		
 		if(CommandManagerABLand.checkCommandMatch(args)){
-			CommandManagerABLand.executeCommand(sender, args);
+			CommandExecuteResult result = CommandManagerABLand.executeCommand(sender, args);
+			String argsString = "";
+			for(String s : args){
+				argsString += s + " ";
+			}
+			
+			switch(result){
+			case DEFAULT:
+				AllBanksLogger.info(sender.getName() + " has tried to execute: (/" + label + " " + argsString + "), but, a DEFAULT result returned (probably this command does not exists) [Result:DEFAULT]");
+				break;
+			case INSUFICIENT_ARGUMENTS:
+				AllBanksLogger.info(sender.getName() + " has tried to execute: (/" + label + " " + argsString + "), but AllBanks2 cannot process the command with the specified arguments (more arguments are required) [Result:INSUFICIENT_ARGUMENTS] .");
+				break;
+			case INVALID_ARGUMENTS:
+				AllBanksLogger.info(sender.getName() + " has tried to execute: (/" + label + " " + argsString + "), but a AllBanks2 cannot process the command for an unknow reason (probably, specified arguments are not valid) [Result: INVALID_ARGUMENTS]");
+				break;
+			case NO_PERMISSIONS:
+				AllBanksLogger.warning(sender.getName() + " has tried to execute: (/" + label + " " + argsString + "), but he cannot execute this command because he does not have permissions for this. [Result: NO_PERMISSIONS]");
+				break;
+			case OTHER:
+				AllBanksLogger.info(sender.getName() + " has executed a command: (/" + label + " " + argsString + "), but AllBanks2 cannot know if the result is SUCCESS. [Result: OTHER]");
+				break;
+			case SUCCESS:
+				AllBanksLogger.info(sender.getName() + " has executed a command: (/" + label + " " + argsString + "), the result is SUCCESS. [Result: SUCCESS]");
+				break;
+			}
+			
 		}else{
 			List<Command> possibleCommands = CommandManagerABLand.possibleMatches(args);
 			
