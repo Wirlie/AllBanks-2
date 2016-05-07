@@ -68,7 +68,15 @@ public class PlotPlayerInteractListener implements Listener {
 						}
 				}
 				
-				if(b.getType().equals(Material.CHEST) || b.getType().equals(Material.HOPPER) || b.getType().equals(Material.ENDER_CHEST)){
+				if(b.getType().equals(Material.CHEST) || 
+						b.getType().equals(Material.HOPPER) || 
+						b.getType().equals(Material.ENDER_CHEST) || 
+						b.getType().equals(Material.DISPENSER) || 
+						b.getType().equals(Material.BEACON) || 
+						b.getType().equals(Material.ARMOR_STAND) || 
+						b.getType().equals(Material.FURNACE) || 
+						b.getType().equals(Material.JUKEBOX) || 
+						b.getType().equals(Material.DROPPER)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 						e.setCancelled(true);
 					}else{

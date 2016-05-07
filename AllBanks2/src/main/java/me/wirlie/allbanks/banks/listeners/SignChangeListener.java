@@ -71,14 +71,49 @@ public class SignChangeListener implements Listener {
 			}
 			
 			if(lines[1].equalsIgnoreCase("BankLoan") || lines[1].equalsIgnoreCase("loan")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-loan.enable")){
+					Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankLoan"), true);
+					e.setCancelled(true);
+					return;
+				}
+				
 				btype = ABSignType.BANK_LOAN;
 			}else if(lines[1].equalsIgnoreCase("BankXP") || lines[1].equalsIgnoreCase("XP")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-xp.enable")){
+					Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankXP"), true);
+					e.setCancelled(true);
+					return;
+				}
+				
 				btype = ABSignType.BANK_XP;
 			}else if(lines[1].equalsIgnoreCase("BankChest") || lines[1].equalsIgnoreCase("Chest")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-chest.enable")){
+					Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankChest"), true);
+					e.setCancelled(true);
+					return;
+				}
+				
 				btype = ABSignType.BANK_CHEST;
 			}else if(lines[1].equalsIgnoreCase("BankTime") || lines[1].equalsIgnoreCase("Time")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-time.enable")){
+					Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankTime"), true);
+					e.setCancelled(true);
+					return;
+				}
+				
 				btype = ABSignType.BANK_TIME;
 			}else if(lines[1].equalsIgnoreCase("BankMoney") || lines[1].equalsIgnoreCase("Money")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-money.enable")){
+					Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankMoney"), true);
+					e.setCancelled(true);
+					return;
+				}
+				
 				btype = ABSignType.BANK_MONEY;
 			}else if(lines[1].equalsIgnoreCase("BankLand") || lines[1].equalsIgnoreCase("Land")){
 				btype = ABSignType.BANK_LAND;

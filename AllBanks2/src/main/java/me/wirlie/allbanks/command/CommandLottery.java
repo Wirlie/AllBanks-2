@@ -62,6 +62,12 @@ public class CommandLottery extends Command {
 				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
 				
 			}else if(args[1].equalsIgnoreCase("buyticket")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
+					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
+					return true;
+				}
+				
 				if(args.length == 3){
 					
 					if(!(sender instanceof Player)){
@@ -191,6 +197,11 @@ public class CommandLottery extends Command {
 				}
 			}else if(args[1].equalsIgnoreCase("info")){
 				
+				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
+					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
+					return true;
+				}
+				
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.info")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
@@ -240,6 +251,12 @@ public class CommandLottery extends Command {
 				
 				return true;
 			}else if(args[1].equalsIgnoreCase("force")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
+					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
+					return true;
+				}
+				
 				//Forzar para buscar un ganador
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.force")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
@@ -292,6 +309,12 @@ public class CommandLottery extends Command {
 				AllBanksLogger.warning("[Lottery] Lottery enabled by " + sender.getName());
 				return true;
 			}else if(args[1].equalsIgnoreCase("disable")){
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("lottery.enable")){
+					Translation.getAndSendMessage(sender, StringsID.LOTTERY_DISABLED, true);
+					return true;
+				}
+				
 				if(!Util.hasPermission(sender, "allbanks.commands.lottery.disable")){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);

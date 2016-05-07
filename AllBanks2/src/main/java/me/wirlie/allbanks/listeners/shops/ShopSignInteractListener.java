@@ -83,6 +83,12 @@ public class ShopSignInteractListener implements Listener {
 					return;
 				}
 				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.shop.enable")){
+					Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksShop"), true);
+					e.setCancelled(true);
+					return;
+				}
+				
 				String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
 				boolean isAdminShop = owner.equalsIgnoreCase(Shops.ADMIN_TAG);
 				
@@ -181,6 +187,12 @@ public class ShopSignInteractListener implements Listener {
 		}else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			if(sign.getLine(Shops.LINE_HEADER).equalsIgnoreCase(Shops.HEADER_FORMAT)) {
 				if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM)).equalsIgnoreCase("???")) {
+					
+					if(!AllBanks.getInstance().getConfig().getBoolean("modules.shop.enable")){
+						Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksShop"), true);
+						e.setCancelled(true);
+						return;
+					}
 					
 					String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
 					

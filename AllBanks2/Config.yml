@@ -86,3 +86,29 @@ topranks:
   # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.
   # Please do not set it with a minimal value (example: 1 second)
   update-cache-every: "5 minutes"
+modules:
+  banks:
+    # Enable/Disable BankLoan
+    bank-loan:
+      enable: true
+    # Enable/Disable BankXP
+    bank-xp:
+      enable: true
+    # Enable/Disable BankMoney
+    bank-money:
+      enable: true
+    # Enable/Disable BankTime
+    bank-time:
+      enable: true
+    # Enable/Disable BankChest
+    bank-chest:
+      enable: true
+  # Enable/Disable AllBanksShop (Shops)
+  shop:
+    enable: true
+  # Enable/Disable TopRanks
+  top-ranks:
+    enable: true
+  # Enable/Disable AllBanksLand
+  allbanksland:
+    enable: true

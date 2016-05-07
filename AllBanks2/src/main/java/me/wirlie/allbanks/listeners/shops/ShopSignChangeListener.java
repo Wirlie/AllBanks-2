@@ -60,6 +60,12 @@ public class ShopSignChangeListener implements Listener {
 				return;
 			}
 			
+			if(!AllBanks.getInstance().getConfig().getBoolean("modules.shop.enable")){
+				Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksShop"), true);
+				e.setCancelled(true);
+				return;
+			}
+			
 			boolean isAdminShop = false;
 			
 			if(lines[Shops.LINE_OWNER].equalsIgnoreCase(Shops.ADMIN_TAG)) {

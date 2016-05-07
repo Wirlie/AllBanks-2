@@ -76,6 +76,11 @@ public class CommandTopRank extends Command {
 				return true;
 			}else if(args[1].equalsIgnoreCase("bankmoney")) {
 				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.top-ranks.enable")){
+					Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>TopRanks"), true);
+					return true;
+				}
+				
 				int page = 1;
 				
 				if(args.length >= 3) {
@@ -196,6 +201,11 @@ public class CommandTopRank extends Command {
 				
 				return true;
 			}else if(args[1].equalsIgnoreCase("bankxp")) {
+				
+				if(!AllBanks.getInstance().getConfig().getBoolean("modules.top-ranks.enable")){
+					Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>TopRanks"), true);
+					return true;
+				}
 				
 				int page = 1;
 				

@@ -24,6 +24,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command;
@@ -63,6 +64,11 @@ public class CommandWorld extends Command {
 			
 			if(!Util.hasPermission(sender, "allbanks.land.commands.spawn")){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return true;
+			}
+			
+			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
+				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
 				return true;
 			}
 			

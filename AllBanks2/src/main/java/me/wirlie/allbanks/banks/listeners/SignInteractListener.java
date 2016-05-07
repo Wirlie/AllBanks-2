@@ -28,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
 import me.wirlie.allbanks.Banks.ABSignAction;
 import me.wirlie.allbanks.Banks.ABSignType;
@@ -115,6 +116,50 @@ public class SignInteractListener implements Listener {
 						//Sonido
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;
+					}
+					
+					switch(btype){
+					case ATM:
+						break;
+					case BANK_CHEST:
+						if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-chest.enable")){
+							Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankChest"), true);
+							e.setCancelled(true);
+							return;
+						}
+						break;
+					case BANK_LAND:
+						break;
+					case BANK_LOAN:
+						if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-loan.enable")){
+							Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankLoan"), true);
+							e.setCancelled(true);
+							return;
+						}
+						break;
+					case BANK_MONEY:
+						if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-money.enable")){
+							Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankMoney"), true);
+							e.setCancelled(true);
+							return;
+						}
+						break;
+					case BANK_TIME:
+						if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-time.enable")){
+							Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankTime"), true);
+							e.setCancelled(true);
+							return;
+						}
+						break;
+					case BANK_XP:
+						if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-xp.enable")){
+							Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankXP"), true);
+							e.setCancelled(true);
+							return;
+						}
+						break;
+					case DEFAULT:
+						break;
 					}
 					
 					//Comprobar si el usuario está en sesión

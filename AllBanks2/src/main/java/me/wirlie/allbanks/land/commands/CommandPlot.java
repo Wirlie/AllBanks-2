@@ -73,6 +73,11 @@ public class CommandPlot extends Command {
 				return true;
 			}
 			
+			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
+				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
+				return true;
+			}
+			
 			Player p = (Player) sender;
 			
 			if(!Util.hasPermission(p, "allbanks.land.commands.plot.claim")){
@@ -722,6 +727,11 @@ public class CommandPlot extends Command {
 			
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return true;
+			}
+			
+			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
+				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
 				return true;
 			}
 			
