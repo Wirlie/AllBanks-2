@@ -148,6 +148,21 @@ public class AllBanksLogger {
 	    	dirLog.mkdirs();
 	    }
 	    
+	    //Eliminar archivos viejos
+	    if(dirLog.listFiles().length > 20){
+	    	
+	    	int i = 1;
+	    	
+	    	for(File f : dirLog.listFiles()){
+	    		
+	    		if(i > 20){
+	    			f.delete();
+	    		}
+	    		
+	    		i++;
+	    	}
+	    }
+	    
 		fileLog = new File(AllBanks.getInstance().getDataFolder() + File.separator + "logs" + File.separator + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.DAY_OF_MONTH) + "-"+ calendar.get(Calendar.YEAR) + "-" + calendar.getTimeInMillis() + ".log");
  
 		initializedLogger = true;
