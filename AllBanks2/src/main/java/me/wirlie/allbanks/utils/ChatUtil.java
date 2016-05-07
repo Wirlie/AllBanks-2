@@ -54,6 +54,9 @@ public class ChatUtil {
 		txt = txt.replace("&l", ChatColor.BOLD+"");
 		txt = txt.replace("&r", ChatColor.RESET+"");
 		txt = txt.replace("&k", ChatColor.MAGIC+"");
+		txt = txt.replace("&m", ChatColor.STRIKETHROUGH+"");
+		txt = txt.replace("&o", ChatColor.ITALIC+"");
+		txt = txt.replace("&n", ChatColor.UNDERLINE+"");
 		return txt;
 	}
 	
@@ -82,6 +85,9 @@ public class ChatUtil {
 		txt = txt.replace(ChatColor.BOLD+"","");
 		txt = txt.replace(ChatColor.RESET+"","");
 		txt = txt.replace(ChatColor.MAGIC+"","");
+		txt = txt.replace(ChatColor.STRIKETHROUGH+"", "");
+		txt = txt.replace(ChatColor.ITALIC+"", "");
+		txt = txt.replace(ChatColor.UNDERLINE+"", "");
 		return txt;
 	}
 	
@@ -110,6 +116,9 @@ public class ChatUtil {
 		txt = txt.replace("&l", "");
 		txt = txt.replace("&r", "");
 		txt = txt.replace("&k", "");
+		txt = txt.replace("&m", "");
+		txt = txt.replace("&o", "");
+		txt = txt.replace("&n", "");
 		return txt;
 	}
 }
