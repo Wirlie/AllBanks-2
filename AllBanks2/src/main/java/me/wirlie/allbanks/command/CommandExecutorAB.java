@@ -61,8 +61,6 @@ public class CommandExecutorAB implements CommandExecutor {
 		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "help");
 		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "bankmoney");
 		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "bankxp");
-		//Recargar
-		CommandManagerAB.registerCommand(new CommandReload(), "reload");
 		//Ayuda
 		CommandManagerAB.registerCommand(new CommandHelp(), "help");
 		CommandManagerAB.registerCommand(new CommandHelp(), "help", "RegEx->([0-9]){1,}:<page>");
