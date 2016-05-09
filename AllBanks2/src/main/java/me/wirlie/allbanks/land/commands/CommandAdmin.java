@@ -16,7 +16,6 @@ import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.WorldGenerationCfg;
 import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationResult;
 import me.wirlie.allbanks.land.WorldConfiguration;
-import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.WorldLoadAsync;
 
 public class CommandAdmin extends Command {

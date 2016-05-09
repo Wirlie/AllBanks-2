@@ -25,7 +25,6 @@ import org.bukkit.entity.Player;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.InteractiveUtil;
-import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**

@@ -34,7 +34,6 @@ import me.wirlie.allbanks.AllBanks.StorageType;
 import me.wirlie.allbanks.tempdata.BankAccount;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil;
-import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**

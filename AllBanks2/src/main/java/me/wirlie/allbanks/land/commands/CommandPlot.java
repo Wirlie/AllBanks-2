@@ -17,7 +17,6 @@ import me.wirlie.allbanks.land.AllBanksPlayer;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.PlotConfiguration;
-import me.wirlie.allbanks.utils.Util;
 
 public class CommandPlot extends Command {
 	
