@@ -25,6 +25,9 @@ import java.util.regex.Pattern;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import me.wirlie.allbanks.utils.Util;
 
 /**
  * @author Wirlie
@@ -33,6 +36,11 @@ import org.bukkit.command.CommandSender;
 public class Command {
 
 	private List<String> commandArgs = new ArrayList<String>();
+	private String permissionNode = "";
+	
+	public Command(String permission){
+		permissionNode = permission;
+	}
 	
 	public enum CommandExecuteResult{
 		SUCCESS,
@@ -124,6 +132,20 @@ public class Command {
 		}
 		
 		return returnSyntax;
+	}
+	
+	public boolean hasPermission(CommandSender sender){
+		
+		if(permissionNode == null || permissionNode.equalsIgnoreCase("")) return true;
+		
+		return Util.hasPermission(sender, permissionNode);
+	}
+	
+	public boolean hasPermission(Player sender){
+		
+		if(permissionNode == null || permissionNode.equalsIgnoreCase("")) return true;
+		
+		return Util.hasPermission(sender, permissionNode);
 	}
 
 }

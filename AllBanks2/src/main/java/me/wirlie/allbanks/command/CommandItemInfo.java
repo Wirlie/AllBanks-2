@@ -28,7 +28,6 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.ItemNameUtil;
 import me.wirlie.allbanks.utils.ShopUtil;
-import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
@@ -37,6 +36,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  */
 public class CommandItemInfo extends Command {
 	
+	public CommandItemInfo(String permissionNode){
+		super(permissionNode);
+	}
+	
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		if(!(sender instanceof Player)) {
@@ -44,7 +47,7 @@ public class CommandItemInfo extends Command {
 			return CommandExecuteResult.OTHER;
 		}
 		
-		if(!Util.hasPermission(sender, "allbanks.commands.iteminfo")){
+		if(!this.hasPermission(sender)){
 			Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 			if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 			return CommandExecuteResult.NO_PERMISSIONS;

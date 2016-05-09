@@ -37,6 +37,10 @@ import me.wirlie.allbanks.utils.WorldLoadAsync;
  *
  */
 public class CommandWorld extends Command {
+	
+	public CommandWorld(String permissionNode){
+		super(permissionNode);
+	}
 
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args){
@@ -62,7 +66,7 @@ public class CommandWorld extends Command {
 		
 		if(args[0].equalsIgnoreCase("spawn")){
 			
-			if(!Util.hasPermission(sender, "allbanks.land.commands.spawn")){
+			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}

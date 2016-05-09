@@ -60,6 +60,10 @@ public class CommandTopRank extends Command {
 	private static Map<String, Integer> bankXPTopRankCache = new HashMap<String, Integer>();
 	private static long bankXPTopRankCacheTime = 0;
 	
+	public CommandTopRank(String permissionNode){
+		super(permissionNode);
+	}
+	
 	@Override
 	public CommandExecuteResult execute(final CommandSender sender, String[] args){
 		if(args.length >= 2){
@@ -97,7 +101,7 @@ public class CommandTopRank extends Command {
 				
 				final int finalPage = page;
 				
-				if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankmoney")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
@@ -223,7 +227,7 @@ public class CommandTopRank extends Command {
 				
 				final int finalPage = page;
 				
-				if(!Util.hasPermission(sender, "allbanks.commands.toprank.bankxp")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;

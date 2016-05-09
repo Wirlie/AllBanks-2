@@ -34,10 +34,14 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  */
 public class CommandHelp extends Command {
 	
+	public CommandHelp(String permissionNode){
+		super(permissionNode);
+	}
+	
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		//Comando de ayuda
-		if(!Util.hasPermission(sender, "allbanks.commands.help")){
+		if(!this.hasPermission(sender)){
 			Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 			if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 			return CommandExecuteResult.NO_PERMISSIONS;

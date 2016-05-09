@@ -38,7 +38,6 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.runnables.LotteryRunnable;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil;
-import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
@@ -46,6 +45,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  *
  */
 public class CommandLottery extends Command {
+	
+	public CommandLottery(String permissionNode){
+		super(permissionNode);
+	}
 	
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args) {
@@ -75,7 +78,7 @@ public class CommandLottery extends Command {
 						return CommandExecuteResult.OTHER;
 					}
 					
-					if(!Util.hasPermission(sender, "allbanks.commands.lottery.buyticket")){
+					if(!this.hasPermission(sender)){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 						return CommandExecuteResult.NO_PERMISSIONS;
@@ -202,7 +205,7 @@ public class CommandLottery extends Command {
 					return CommandExecuteResult.OTHER;
 				}
 				
-				if(!Util.hasPermission(sender, "allbanks.commands.lottery.info")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
@@ -258,7 +261,7 @@ public class CommandLottery extends Command {
 				}
 				
 				//Forzar para buscar un ganador
-				if(!Util.hasPermission(sender, "allbanks.commands.lottery.force")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
@@ -283,7 +286,7 @@ public class CommandLottery extends Command {
 				AllBanksLogger.warning("[Lottery] Lottery forced by " + sender.getName());
 				return CommandExecuteResult.SUCCESS;
 			}else if(args[1].equalsIgnoreCase("enable")){
-				if(!Util.hasPermission(sender, "allbanks.commands.lottery.enable")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
@@ -315,7 +318,7 @@ public class CommandLottery extends Command {
 					return CommandExecuteResult.OTHER;
 				}
 				
-				if(!Util.hasPermission(sender, "allbanks.commands.lottery.disable")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;

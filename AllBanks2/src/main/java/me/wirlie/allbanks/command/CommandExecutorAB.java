@@ -39,33 +39,30 @@ public class CommandExecutorAB implements CommandExecutor {
 	
 	public CommandExecutorAB(){
 		//ItemInfo
-		CommandManagerAB.registerCommand(new CommandItemInfo(), "iteminfo");
+		CommandManagerAB.registerCommand(new CommandItemInfo("allbanks.commands.iteminfo"), "iteminfo");
 		//Lotería
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "?");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "help");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "info");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "force");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "enable");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "disable");
-		CommandManagerAB.registerCommand(new CommandLottery(), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
+		CommandManagerAB.registerCommand(new CommandLottery(null), "lottery", "?");
+		CommandManagerAB.registerCommand(new CommandLottery(null), "lottery", "help");
+		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.info"), "lottery", "info");
+		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.force"), "lottery", "force");
+		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.enable"), "lottery", "enable");
+		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.disable"), "lottery", "disable");
+		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.buyticket"), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
 		//DataBase
-		CommandManagerAB.registerCommand(new CommandDataBase(), "database");
-		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "?");
-		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "help");
-		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "try-query", "RegEx->(.){1,}:<SQL>");
-		CommandManagerAB.registerCommand(new CommandDataBase(), "database", "try-update", "RegEx->(.){1,}:<SQL>");
+		CommandManagerAB.registerCommand(new CommandDataBase(null), "database", "?");
+		CommandManagerAB.registerCommand(new CommandDataBase(null), "database", "help");
+		CommandManagerAB.registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-query", "RegEx->(.){1,}:<SQL>");
+		CommandManagerAB.registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-update", "RegEx->(.){1,}:<SQL>");
 		//TopRank
-		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank");
-		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "?");
-		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "help");
-		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "bankmoney");
-		CommandManagerAB.registerCommand(new CommandTopRank(), "toprank", "bankxp");
+		CommandManagerAB.registerCommand(new CommandTopRank(null), "toprank", "?");
+		CommandManagerAB.registerCommand(new CommandTopRank(null), "toprank", "help");
+		CommandManagerAB.registerCommand(new CommandTopRank("allbanks.commands.toprank.bankmoney"), "toprank", "bankmoney");
+		CommandManagerAB.registerCommand(new CommandTopRank("allbanks.commands.toprank.bankxp"), "toprank", "bankxp");
 		//Ayuda
-		CommandManagerAB.registerCommand(new CommandHelp(), "help");
-		CommandManagerAB.registerCommand(new CommandHelp(), "help", "RegEx->([0-9]){1,}:<page>");
-		CommandManagerAB.registerCommand(new CommandHelp(), "?");
-		CommandManagerAB.registerCommand(new CommandHelp(), "?", "RegEx->([0-9]){1,}:<page>");
+		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "help");
+		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "help", "RegEx->([0-9]){1,}:<page>");
+		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "?");
+		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "?", "RegEx->([0-9]){1,}:<page>");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {

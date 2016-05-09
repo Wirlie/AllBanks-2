@@ -20,6 +20,10 @@ import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.WorldLoadAsync;
 
 public class CommandAdmin extends Command {
+	
+	public CommandAdmin(String permissionNode){
+		super(permissionNode);
+	}
 
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args){
@@ -51,7 +55,7 @@ public class CommandAdmin extends Command {
 			if(args.length > 3){
 				if(args[3].equalsIgnoreCase("generate")){
 					
-					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.generate")){
+					if(!this.hasPermission(sender)){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return CommandExecuteResult.NO_PERMISSIONS;
 					}
@@ -96,7 +100,7 @@ public class CommandAdmin extends Command {
 					}
 				}else if(args[3].equalsIgnoreCase("unload")){
 					
-					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.unload")){
+					if(!this.hasPermission(sender)){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return CommandExecuteResult.NO_PERMISSIONS;
 					}
@@ -129,7 +133,7 @@ public class CommandAdmin extends Command {
 					}
 				}else if(args[3].equalsIgnoreCase("remove")){
 					
-					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.remove")){
+					if(!this.hasPermission(sender)){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return CommandExecuteResult.NO_PERMISSIONS;
 					}
@@ -174,7 +178,7 @@ public class CommandAdmin extends Command {
 					}
 				}else if(args[3].equalsIgnoreCase("info")){
 					
-					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.info")){
+					if(!this.hasPermission(sender)){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return CommandExecuteResult.NO_PERMISSIONS;
 					}
@@ -251,7 +255,7 @@ public class CommandAdmin extends Command {
 					
 				}else if(args[3].equalsIgnoreCase("set")){
 					
-					if(!Util.hasPermission(sender, "allbanks.land.commands.admin.world.set")){
+					if(!this.hasPermission(sender)){
 						Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						return CommandExecuteResult.NO_PERMISSIONS;
 					}

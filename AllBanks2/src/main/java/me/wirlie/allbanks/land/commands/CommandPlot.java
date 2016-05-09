@@ -20,6 +20,10 @@ import me.wirlie.allbanks.land.PlotConfiguration;
 import me.wirlie.allbanks.utils.Util;
 
 public class CommandPlot extends Command {
+	
+	public CommandPlot(String permissionNode){
+		super(permissionNode);
+	}
 
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args){
@@ -80,7 +84,7 @@ public class CommandPlot extends Command {
 			
 			Player p = (Player) sender;
 			
-			if(!Util.hasPermission(p, "allbanks.land.commands.plot.claim")){
+			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				return CommandExecuteResult.SUCCESS;
 			}
@@ -159,7 +163,7 @@ public class CommandPlot extends Command {
 			
 			Player p = (Player) sender;
 			
-			if(!Util.hasPermission(p, "allbanks.land.commands.plot.dispose")){
+			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}
@@ -202,7 +206,7 @@ public class CommandPlot extends Command {
 			
 			Player p = (Player) sender;
 			
-			if(!Util.hasPermission(p, "allbanks.land.commands.plot.set.flags")){
+			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}
@@ -523,7 +527,7 @@ public class CommandPlot extends Command {
 				
 				Player p = (Player) sender;
 				
-				if(!Util.hasPermission(p, "allbanks.land.commands.plot.add")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
@@ -571,7 +575,7 @@ public class CommandPlot extends Command {
 				
 				Player p = (Player) sender;
 				
-				if(!Util.hasPermission(p, "allbanks.land.commands.plot.add")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
@@ -619,7 +623,7 @@ public class CommandPlot extends Command {
 				
 				Player p = (Player) sender;
 				
-				if(!Util.hasPermission(p, "allbanks.land.commands.plot.deny")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
@@ -667,7 +671,7 @@ public class CommandPlot extends Command {
 				
 				Player p = (Player) sender;
 				
-				if(!Util.hasPermission(p, "allbanks.land.commands.plot.deny")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}

@@ -43,6 +43,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  */
 public class CommandDataBase extends Command {
 	
+	public CommandDataBase(String permissionNode){
+		super(permissionNode);
+	}
+	
 	@Override
 	public CommandExecuteResult execute(CommandSender sender, String[] args) {
 		if(args.length >= 2){
@@ -58,7 +62,7 @@ public class CommandDataBase extends Command {
 					return CommandExecuteResult.OTHER;
 				}
 				
-				if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
@@ -136,7 +140,7 @@ public class CommandDataBase extends Command {
 					return CommandExecuteResult.OTHER;
 				}	
 				
-				if(!Util.hasPermission(sender, "allbanks.commands.database.executequery")){
+				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));
 					if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
