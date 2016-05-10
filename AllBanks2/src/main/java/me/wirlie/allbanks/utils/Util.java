@@ -30,9 +30,11 @@ import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Rotation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
@@ -275,7 +277,9 @@ public class Util {
 				e.getType().equals(EntityType.BOAT) ||
 				e.getType().equals(EntityType.DROPPED_ITEM) ||
 				e.getType().equals(EntityType.ENDER_CRYSTAL) ||
-				e.getType().equals(EntityType.ENDER_SIGNAL))
+				e.getType().equals(EntityType.ENDER_SIGNAL) ||
+				e.getType().equals(EntityType.PAINTING) ||
+				e.getType().equals(EntityType.ITEM_FRAME))
 		{
 			return true;
 		}
@@ -296,6 +300,37 @@ public class Util {
 		}
 		
 		return false;
+	}
+	
+	public static void itemFrameRotateLeft(ItemFrame frame){
+		Rotation rotation = frame.getRotation();
+		
+		switch(rotation){
+		case CLOCKWISE:
+			frame.setRotation(Rotation.CLOCKWISE_45);
+			break;
+		case CLOCKWISE_135:
+			frame.setRotation(Rotation.CLOCKWISE);
+			break;
+		case CLOCKWISE_45:
+			frame.setRotation(Rotation.NONE);
+			break;
+		case COUNTER_CLOCKWISE:
+			frame.setRotation(Rotation.FLIPPED_45);
+			break;
+		case COUNTER_CLOCKWISE_45:
+			frame.setRotation(Rotation.COUNTER_CLOCKWISE);
+			break;
+		case FLIPPED:
+			frame.setRotation(Rotation.CLOCKWISE_135);
+			break;
+		case FLIPPED_45:
+			frame.setRotation(Rotation.FLIPPED);
+			break;
+		case NONE:
+			frame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+			break;
+		}
 	}
 
 }

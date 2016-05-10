@@ -41,6 +41,7 @@ import me.wirlie.allbanks.utils.Util;
  *
  */
 public class PlotEntityListener implements Listener{
+	
 	@EventHandler
 	public void entityDamage(EntityDamageEvent event){
 		if(event instanceof EntityDamageByEntityEvent){

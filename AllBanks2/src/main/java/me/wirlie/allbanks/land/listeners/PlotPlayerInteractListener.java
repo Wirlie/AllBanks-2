@@ -19,29 +19,74 @@
 package me.wirlie.allbanks.land.listeners;
 
 import org.bukkit.Location;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
+import me.wirlie.allbanks.utils.Util;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
 public class PlotPlayerInteractListener implements Listener {
+
+	@EventHandler
+	public void onPlayerInteracEntity(PlayerInteractAtEntityEvent e){
+		Location loc = e.getRightClicked().getLocation();
+		Player p = e.getPlayer();
+		
+		if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
+			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
+			
+			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+				e.setCancelled(true);
+				if(e.getRightClicked().getType().equals(EntityType.ITEM_FRAME)){
+					ItemFrame frame = (ItemFrame) e.getRightClicked();
+					Util.itemFrameRotateLeft(frame);
+				}
+				return;
+			}
+			
+			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+			
+			if(!plot.hasOwner()){
+				e.setCancelled(true);
+				if(e.getRightClicked().getType().equals(EntityType.ITEM_FRAME)){
+					ItemFrame frame = (ItemFrame) e.getRightClicked();
+					Util.itemFrameRotateLeft(frame);
+				}
+				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				return;
+			}else{
+				if(!plot.havePermissions(p)){
+					e.setCancelled(true);
+					if(e.getRightClicked().getType().equals(EntityType.ITEM_FRAME)){
+						ItemFrame frame = (ItemFrame) e.getRightClicked();
+						Util.itemFrameRotateLeft(frame);
+					}
+					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return;
+				}
+			}
+		}
+	}
 	
 	@EventHandler
 	public void onPlayerUseBlock(PlayerInteractEvent e){
 		Block b = e.getClickedBlock();
-		
 		if(b != null){
 			Location loc = b.getLocation();
 			
@@ -76,7 +121,9 @@ public class PlotPlayerInteractListener implements Listener {
 						b.getType().equals(Material.ARMOR_STAND) || 
 						b.getType().equals(Material.FURNACE) || 
 						b.getType().equals(Material.JUKEBOX) || 
-						b.getType().equals(Material.DROPPER)){
+						b.getType().equals(Material.DROPPER) || 
+						b.getType().equals(Material.TRAPPED_CHEST))
+				{
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 						e.setCancelled(true);
 					}else{
