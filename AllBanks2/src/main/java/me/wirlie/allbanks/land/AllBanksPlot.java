@@ -46,7 +46,7 @@ public class AllBanksPlot {
 	private int plotX = 0;
 	private int plotZ = 0;
 	
-	String plotStringID;
+	private String plotStringID;
 	
 	private String ownerName = null;
 	
