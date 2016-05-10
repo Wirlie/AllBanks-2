@@ -30,11 +30,9 @@ import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Rotation;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
@@ -300,37 +298,6 @@ public class Util {
 		}
 		
 		return false;
-	}
-	
-	public static void itemFrameRotateLeft(ItemFrame frame){
-		Rotation rotation = frame.getRotation();
-		
-		switch(rotation){
-		case CLOCKWISE:
-			frame.setRotation(Rotation.CLOCKWISE_45);
-			break;
-		case CLOCKWISE_135:
-			frame.setRotation(Rotation.CLOCKWISE);
-			break;
-		case CLOCKWISE_45:
-			frame.setRotation(Rotation.NONE);
-			break;
-		case COUNTER_CLOCKWISE:
-			frame.setRotation(Rotation.FLIPPED_45);
-			break;
-		case COUNTER_CLOCKWISE_45:
-			frame.setRotation(Rotation.COUNTER_CLOCKWISE);
-			break;
-		case FLIPPED:
-			frame.setRotation(Rotation.CLOCKWISE_135);
-			break;
-		case FLIPPED_45:
-			frame.setRotation(Rotation.FLIPPED);
-			break;
-		case NONE:
-			frame.setRotation(Rotation.COUNTER_CLOCKWISE_45);
-			break;
-		}
 	}
 
 }

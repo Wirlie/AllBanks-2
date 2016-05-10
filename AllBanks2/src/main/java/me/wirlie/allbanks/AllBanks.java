@@ -73,6 +73,7 @@ import me.wirlie.allbanks.land.listeners.PlotPlayerDropItemListener;
 import me.wirlie.allbanks.land.listeners.PlotPlayerMoveListener;
 import me.wirlie.allbanks.land.listeners.PlotPlayerVehicleListener;
 import me.wirlie.allbanks.land.listeners.PlotPvPListener;
+import me.wirlie.allbanks.land.listeners.PlotTreeGrowEvent;
 import me.wirlie.allbanks.land.listeners.PlotPlayerInteractListener;
 import me.wirlie.allbanks.listeners.common.PlayerJoinUpdaterMessage;
 import me.wirlie.allbanks.listeners.shops.ShopChestInteractListener;
@@ -282,6 +283,7 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlotEntityListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlotEntityExplosionListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlotPvPListener(), this);
+		Bukkit.getPluginManager().registerEvents(new PlotTreeGrowEvent(), this);
 		
 		/*
 		 * RUNNABLES
