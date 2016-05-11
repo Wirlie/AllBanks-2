@@ -342,7 +342,10 @@ public class PlotPlayerInteractListener implements Listener {
 								p.getInventory().getItemInMainHand().getType().equals(Material.BOAT_BIRCH) ||
 								p.getInventory().getItemInMainHand().getType().equals(Material.BOAT_DARK_OAK) ||
 								p.getInventory().getItemInMainHand().getType().equals(Material.BOAT_JUNGLE) ||
-								p.getInventory().getItemInMainHand().getType().equals(Material.BOAT_SPRUCE))
+								p.getInventory().getItemInMainHand().getType().equals(Material.BOAT_SPRUCE) ||
+								p.getInventory().getItemInMainHand().getType().equals(Material.ITEM_FRAME) ||
+								p.getInventory().getItemInMainHand().getType().equals(Material.PAINTING) ||
+								p.getInventory().getItemInMainHand().getType().equals(Material.ARMOR_STAND))
 						{
 							if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 								e.setCancelled(true);
