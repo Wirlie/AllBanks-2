@@ -991,13 +991,15 @@ public class CommandPlot extends Command {
 							flagsLine4 += ChatColor.RED + "water-flow,";
 						}
 						
+						String flagsLine5 = "";
+						
 						if(plotc.allowTeleport()){
-							flagsLine4 += ChatColor.GREEN + "allow-plot-teleport,";
+							flagsLine5 += ChatColor.GREEN + "allow-plot-teleport,";
 						}else{
-							flagsLine4 += ChatColor.RED + "allow-plot-teleport,";
+							flagsLine5 += ChatColor.RED + "allow-plot-teleport,";
 						}
 						
-						replaceMap.put("%5%", flagsLine1 + "%BREAK%" + flagsLine2 + "%BREAK%" + flagsLine3 + "%BREAK%" + flagsLine4);
+						replaceMap.put("%5%", flagsLine1 + "%BREAK%" + flagsLine2 + "%BREAK%" + flagsLine3 + "%BREAK%" + flagsLine4 + "%BREAK%" + flagsLine5);
 						
 						String deny = "";
 						
@@ -1040,7 +1042,7 @@ public class CommandPlot extends Command {
 				String playerHome = null;
 				
 				//Por nombre
-				Pattern pattern = Pattern.compile("^([a-zA-Z0-9]){1,}:([0-9]){1,}$");
+				Pattern pattern = Pattern.compile("^([a-zA-Z0-9]{1,}):([-0-9]{1,})$");
 				Matcher matcher = pattern.matcher(teleportArgument);
 				
 				if(matcher.matches()){
@@ -1053,7 +1055,7 @@ public class CommandPlot extends Command {
 					
 					playerHome = matcher.group(1);
 				}else{
-					playerHome = matcher.group(1);
+					playerHome = teleportArgument;
 					homeID = 1;
 				}
 				
@@ -1083,6 +1085,10 @@ public class CommandPlot extends Command {
 				
 				if(homeID > plots.size()){
 					homeID = plots.size();
+				}
+				
+				if(homeID < 1){
+					homeID = 1;
 				}
 				
 				AllBanksPlot plot = new AllBanksPlot(plots.get(homeID - 1));

@@ -567,7 +567,7 @@ public class PlotConfiguration {
 				return false;
 			}
 		}else{
-			return false;
+			return true;
 		}
 	}
 }

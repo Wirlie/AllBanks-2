@@ -18,6 +18,7 @@
  */
 package me.wirlie.allbanks.land.listeners;
 
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -51,8 +52,10 @@ public class PlotPlayerBlockBreakListener implements Listener {
 			//Comprobar
 			AllBanksWorld abw = AllBanksWorld.getInstance(w.getName().toLowerCase());
 			//Es un camino o el limite del plot
-			if(!abw.locationIsPlot(x, z)){
+			if(!abw.locationIsPlot(x, z) && !b.getType().equals(Material.LEAVES) && !b.getType().equals(Material.LEAVES_2)){
 				e.setCancelled(true);
+				return;
+			}else if(!abw.locationIsPlot(x, z)){
 				return;
 			}
 			

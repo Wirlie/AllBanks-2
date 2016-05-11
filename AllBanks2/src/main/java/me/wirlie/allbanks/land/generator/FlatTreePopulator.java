@@ -72,6 +72,4 @@ public class FlatTreePopulator extends BlockPopulator {
 			}
 		}
 	}
-
-
 }
