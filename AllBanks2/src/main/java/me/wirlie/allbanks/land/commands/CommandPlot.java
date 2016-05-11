@@ -2,9 +2,13 @@ package me.wirlie.allbanks.land.commands;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -17,6 +21,7 @@ import me.wirlie.allbanks.land.AllBanksPlayer;
 import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.PlotConfiguration;
+import me.wirlie.allbanks.land.PlotID;
 
 public class CommandPlot extends Command {
 	
@@ -500,6 +505,21 @@ public class CommandPlot extends Command {
 									"%2%>>>" + plot.getPlotConfiguration().allowEntry()
 									), 
 							true);
+				}else if(args[2].equalsIgnoreCase("allow-plot-teleport")){
+					if(args[3].equalsIgnoreCase("true")){
+						plot.setPlotConfiguration("allow-plot-teleport", "true");
+					}else{
+						plot.setPlotConfiguration("allow-plot-teleport", "false");
+					}
+					
+					Translation.getAndSendMessage(
+							p, 
+							StringsID.PLOT_SET_FLAG_CHANGE_INFO, 
+							Translation.splitStringIntoReplaceHashMap(">>>", 
+									"%1%>>>Allow-Plot-Teleport", 
+									"%2%>>>" + plot.getPlotConfiguration().allowTeleport()
+									), 
+							true);
 				}else{
 					Translation.getAndSendMessage(
 							p,
@@ -766,7 +786,7 @@ public class CommandPlot extends Command {
 			
 			AllBanksPlayer player = new AllBanksPlayer(sender.getName());
 			
-			List<String> plots = player.getOwnedPlots();
+			List<PlotID> plots = player.getOwnedPlots();
 			
 			if(home > plots.size()){
 				home = plots.size();
@@ -777,12 +797,11 @@ public class CommandPlot extends Command {
 				return CommandExecuteResult.OTHER;
 			}
 			
-			String getPlotString = plots.get(home - 1);
-			String[] split = getPlotString.split(",");
+			PlotID pid = plots.get(home - 1);
 			
-			String worldID = split[0];
-			int plotX = Integer.parseInt(split[1]);
-			int plotZ = Integer.parseInt(split[2]);
+			String worldID = pid.getWorldID();
+			int plotX = pid.getPlotX();
+			int plotZ = pid.getPlotZ();
 			
 			if(!AllBanksWorld.worldIsAllBanksWorld(worldID)){
 				//¿¿Error??
@@ -972,6 +991,12 @@ public class CommandPlot extends Command {
 							flagsLine4 += ChatColor.RED + "water-flow,";
 						}
 						
+						if(plotc.allowTeleport()){
+							flagsLine4 += ChatColor.GREEN + "allow-plot-teleport,";
+						}else{
+							flagsLine4 += ChatColor.RED + "allow-plot-teleport,";
+						}
+						
 						replaceMap.put("%5%", flagsLine1 + "%BREAK%" + flagsLine2 + "%BREAK%" + flagsLine3 + "%BREAK%" + flagsLine4);
 						
 						String deny = "";
@@ -994,6 +1019,83 @@ public class CommandPlot extends Command {
 			}else{
 				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
 				return CommandExecuteResult.OTHER;
+			}
+		}else if(args[1].equalsIgnoreCase("teleport")){
+			if(args.length >= 3){
+				String teleportArgument = args[2];
+				
+				if(!(sender instanceof Player)){
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				Player p = (Player) sender;
+				
+				if(!this.hasPermission(sender)){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					return CommandExecuteResult.NO_PERMISSIONS;
+				}
+				
+				int homeID = 1;
+				String playerHome = null;
+				
+				//Por nombre
+				Pattern pattern = Pattern.compile("^([a-zA-Z0-9]){1,}:([0-9]){1,}$");
+				Matcher matcher = pattern.matcher(teleportArgument);
+				
+				if(matcher.matches()){
+					String homeIDSTR = matcher.group(2);
+					try{
+						homeID = Integer.parseInt(homeIDSTR);
+					}catch(NumberFormatException e){
+						homeID = 1;
+					}
+					
+					playerHome = matcher.group(1);
+				}else{
+					playerHome = matcher.group(1);
+					homeID = 1;
+				}
+				
+				OfflinePlayer pget = Bukkit.getPlayer(playerHome);
+				
+				if(pget == null){
+					for(OfflinePlayer poff : Bukkit.getOfflinePlayers()){
+						if(poff.getName().equalsIgnoreCase(playerHome)){
+							pget = poff;
+						}
+					}
+					
+					if(pget == null){
+						Translation.getAndSendMessage(p, StringsID.PLAYER_NOT_EXISTS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerHome), true);
+						return CommandExecuteResult.OTHER;
+					}
+				}
+				
+				AllBanksPlayer player = new AllBanksPlayer(playerHome);
+				
+				List<PlotID> plots = player.getOwnedPlots();
+				
+				if(plots.isEmpty()){
+					Translation.getAndSendMessage(p, StringsID.PLOT_PLAYER_NOT_HAVE_PLOTS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerHome), true);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				if(homeID > plots.size()){
+					homeID = plots.size();
+				}
+				
+				AllBanksPlot plot = new AllBanksPlot(plots.get(homeID - 1));
+				
+				if(!plot.getPlotConfiguration().allowTeleport() && !plot.havePermissions(p)){
+					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_ALLOW_TELEPORT, true);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				p.teleport(plot.getFirstBound());
+				Translation.getAndSendMessage(p, StringsID.PLOT_TELEPORT_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerHome), true);
+				
+				return CommandExecuteResult.SUCCESS;
 			}
 		}
 		

@@ -81,6 +81,20 @@ public class AllBanksPlot {
 		loadPlotData();
 	}
 	
+	public AllBanksPlot(PlotID pid) {
+		this.abw = pid.getWorld();
+		this.plotX = pid.getPlotX();
+		this.plotZ = pid.getPlotZ();
+		
+		plotStringID = plotX + "," + plotZ;
+		
+		int totalSize = abw.plotSize + abw.roadSize + 2;
+		firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, plotZ * totalSize);
+		secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, (plotZ * totalSize) + abw.plotSize);
+		
+		loadPlotData();
+	}
+
 	private void loadPlotData(){
 		if(plotCache.containsKey(plotStringID)){
 			//No se necesita obtener información de la base de datos

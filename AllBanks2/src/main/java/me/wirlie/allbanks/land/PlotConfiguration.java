@@ -115,6 +115,7 @@ public class PlotConfiguration {
 		plot_cfg.put("plot-friends", "");
 		plot_cfg.put("plot-player-deny", "");
 		plot_cfg.put("allow-entry", worldCfgYaml.getString("plot-default-cfg.allow-entry", "true"));
+		plot_cfg.put("allow-plot-teleport", worldCfgYaml.getString("plot-default-cfg.allow-plot-teleport", "true"));
 		
 		return new Gson().toJson(plot_cfg);
 	}
@@ -549,11 +550,24 @@ public class PlotConfiguration {
 		yaml.set("plot-default-cfg.msg-farewell", "" + Translation.get(StringsID.PLOT_FAREWELL_FORMAT, false)[0]);
 		yaml.set("plot-default-cfg.shop-spawn-visibility", "PUBLIC");
 		yaml.set("plot-default-cfg.allow-entry", "true");
+		yaml.set("plot-default-cfg.allow-plot-teleport", "true");
 		
 		try {
 			yaml.save(worldCfg);
 		} catch (IOException e) {
 			e.printStackTrace();
+		}
+	}
+
+	public boolean allowTeleport() {
+		if(plot_cfg.containsKey("allow-plot-teleport")){
+			if(plot_cfg.get("allow-plot-teleport").equalsIgnoreCase("true")){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false;
 		}
 	}
 }

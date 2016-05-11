@@ -96,7 +96,8 @@ public class CommandTabCompleterABLand implements TabCompleter{
 							"drop-item",
 							"msg-greeting",
 							"msg-farewell",
-							"allow-entry"
+							"allow-entry",
+							"allow-plot-teleport"
 							);
 				}else if(args[1].equalsIgnoreCase("teleport")){
 					return Arrays.asList(

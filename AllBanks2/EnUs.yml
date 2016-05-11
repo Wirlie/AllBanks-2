@@ -186,4 +186,8 @@ language-version: "1.1.3"
 179: "Go to home"
 180: "Lottery is disabled."
 181: "&f%1% &cis disabled."
+182: "&cPlayer &f%1% does not exists."
+183: "&f%1%'s &cdoes not have plots."
+184: "&cThis plot cannot be accessible from this command."
+185: "&eTeleporting to &f%1% &eplot."
 

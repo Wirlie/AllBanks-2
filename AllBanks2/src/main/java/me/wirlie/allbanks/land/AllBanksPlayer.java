@@ -50,7 +50,7 @@ public class AllBanksPlayer {
 		}
 	}
 	
-	public List<String> getOwnedPlots(){
+	public List<PlotID> getOwnedPlots(){
 		Statement stm = null;
 		ResultSet res = null;
 		
@@ -58,14 +58,14 @@ public class AllBanksPlayer {
 			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
 			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' ORDER BY id");
 		
-			List<String> returnList = new ArrayList<String>();
+			List<PlotID> returnList = new ArrayList<PlotID>();
 			
 			while(res.next()){
 				int X = res.getInt("plot_coord_X");
 				int Z = res.getInt("plot_coord_Z");
 				String worldID = res.getString("world_id");
 				
-				returnList.add(worldID + "," + X + "," + Z);
+				returnList.add(new PlotID(worldID, X, Z));
 			}
 			
 			return returnList;
@@ -80,7 +80,7 @@ public class AllBanksPlayer {
 			}
 		}
 		
-		return new ArrayList<String>();
+		return new ArrayList<PlotID>();
 	}
 	
 	public int currentPlots(String worldID){
