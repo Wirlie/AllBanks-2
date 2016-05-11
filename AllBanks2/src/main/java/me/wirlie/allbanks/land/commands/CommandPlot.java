@@ -1022,6 +1022,55 @@ public class CommandPlot extends Command {
 				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
 				return CommandExecuteResult.OTHER;
 			}
+		}else if(args[1].equalsIgnoreCase("autoclaim") || args[1].equalsIgnoreCase("auto")){
+			//Claimer automáticamente
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return CommandExecuteResult.OTHER;
+			}
+			
+			Player p = (Player) sender;
+			
+			if(!this.hasPermission(p)){
+				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
+			
+			if(!AllBanksWorld.worldIsAllBanksWorld(p.getLocation().getWorld().getName())){
+				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
+				return CommandExecuteResult.OTHER;
+			}
+			
+			AllBanksWorld abw = AllBanksWorld.getInstance(p.getLocation().getWorld().getName());
+			
+			//Comprobar límite
+			AllBanksPlayer abp = new AllBanksPlayer(p.getName());
+			
+			//Permiso especial
+			int plotLimit = abw.getWorldConfiguration().plotsPerUser();
+			
+			for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+				if(pinfo.getPermission().startsWith("allbanks.land." + abw.getID() + ".plot-limit.")){
+					try{
+						plotLimit = Integer.parseInt(pinfo.getPermission().replace("allbanks.land." + abw.getID() + ".plot-limit.", ""));
+					}catch(NumberFormatException e2){
+						plotLimit = abw.getWorldConfiguration().plotsPerUser();
+					}
+				}
+			}
+			
+			int currentPlots = abp.currentPlots(abw.getID());
+			
+			if((currentPlots + 1) > plotLimit){
+				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
+				return CommandExecuteResult.OTHER;
+			}
+			
+			AllBanksPlot plot = new AllBanksPlot(AllBanksPlot.PlotHelper.getNextAvailablePlot(abw));
+			
+			plot.claim(p.getName());
+			p.teleport(plot.getFirstBound());
+			
 		}else if(args[1].equalsIgnoreCase("teleport")){
 			if(args.length >= 3){
 				String teleportArgument = args[2];

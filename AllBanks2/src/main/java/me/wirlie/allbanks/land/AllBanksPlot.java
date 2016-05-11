@@ -249,4 +249,64 @@ public class AllBanksPlot {
 		
 	}
 	
+	public static class PlotHelper{
+		
+		private static int lastCursorIterations = 0;
+		
+		public static PlotID getNextAvailablePlot(AllBanksWorld abw){
+			while(true){
+				if(lastCursorIterations == 0){
+					if(!new AllBanksPlot(0, 0, abw).hasOwner()){
+						return new PlotID(abw, 0, 0);
+					}
+				}else{
+					int startX = -lastCursorIterations;
+					int startZ = lastCursorIterations;
+					int bound1X = startX + (lastCursorIterations * 2);
+					int bound2Z = startZ - (lastCursorIterations * 2);
+					int bound3X = startX;
+					int bound4Z = startZ - 1;
+					
+					//Start(X) -> Bound1(X)
+					for(int cursorX = startX; cursorX <= bound1X; cursorX++){
+						int cursorZ = startZ;
+						
+						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+							return new PlotID(abw, cursorX, cursorZ);
+						}
+					}
+					
+					//Bound1(X) -> Bound2(Z)
+					for(int cursorZ = startZ; cursorZ >= bound2Z; cursorZ--){
+						int cursorX = bound1X;
+						
+						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+							return new PlotID(abw, cursorX, cursorZ);
+						}
+					}
+					
+					//Bound2(Z) -> Bound3(X)
+					for(int cursorX = bound1X; cursorX >= bound3X; cursorX--){
+						int cursorZ = bound2Z;
+						
+						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+							return new PlotID(abw, cursorX, cursorZ);
+						}
+					}
+					
+					//Bound3(X) -> Bound4(Z)
+					for(int cursorZ = bound2Z; cursorZ <= bound4Z; cursorZ++){
+						int cursorX = startX;
+						
+						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+							return new PlotID(abw, cursorX, cursorZ);
+						}
+					}
+				}
+
+				lastCursorIterations++;
+			}
+		}
+	}
+	
 }

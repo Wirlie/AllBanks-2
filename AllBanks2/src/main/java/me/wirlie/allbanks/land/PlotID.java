@@ -3,11 +3,19 @@ package me.wirlie.allbanks.land;
 public class PlotID {
 	
 	private String worldID;
+	private AllBanksWorld worldInstance = null;
 	private int plotZ;
 	private int plotX;
 	
 	public PlotID(String worldID, int plotX, int plotZ){
 		this.worldID = worldID;
+		this.plotX = plotX;
+		this.plotZ  = plotZ;
+	}
+	
+	public PlotID(AllBanksWorld world, int plotX, int plotZ){
+		this.worldInstance = world;
+		this.worldID = world.getID();
 		this.plotX = plotX;
 		this.plotZ  = plotZ;
 	}
@@ -25,7 +33,11 @@ public class PlotID {
 	}
 
 	public AllBanksWorld getWorld() {
-		return AllBanksWorld.getInstance(getWorldID());
+		if(worldInstance == null){
+			return AllBanksWorld.getInstance(getWorldID());
+		}else{
+			return worldInstance;
+		}
 	}
 	
 }

@@ -135,6 +135,8 @@ public class WorldGenerationCfg {
 	public static String makeNewDefaultGeneratorConfigurationFile(String worldID){
 		File worldFileCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + "world-" + worldID + "-gen-config.yml");
 		
+		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
+		
 		try {
 			worldFileCfg.createNewFile();
 		} catch (IOException e) {

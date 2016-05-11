@@ -64,6 +64,8 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "home");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "home", "RegEx->([0-9]){1,}:<#>");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
+		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "auto");
+		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "autoclaim");
 	}
 	
 public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
