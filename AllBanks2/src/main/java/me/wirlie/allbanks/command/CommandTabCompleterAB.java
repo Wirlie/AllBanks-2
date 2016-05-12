@@ -18,6 +18,7 @@
  */
 package me.wirlie.allbanks.command;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -36,36 +37,103 @@ public class CommandTabCompleterAB implements TabCompleter {
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		
 		if(args.length == 1){
-			return Arrays.asList(
+			List<String> results = Arrays.asList(
 					"database",
 					"lottery",
 					"toprank",
 					"help",
-					"reload",
 					"iteminfo"
 					);
+			
+			if(args[0].replace(" ", "").equalsIgnoreCase("")){
+				return results;
+			}
+			
+			List<String> suggest = new ArrayList<String>();
+			for(String s : results){
+				if(s.contains(args[0].toLowerCase())){
+					suggest.add(s);
+				}
+			}
+			
+			if(suggest.isEmpty()){ 
+				return results;
+			}
+			
+			return suggest;
 		}
 		
 		if(args.length == 2){
 			if(args[0].equalsIgnoreCase("database")){
-				return Arrays.asList(
+				List<String> results = Arrays.asList(
 						"try-update",
 						"try-query",
 						"help"
 						);
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}else if(args[0].equalsIgnoreCase("toprank")){
-				return Arrays.asList(
+				List<String> results = Arrays.asList(
 						"bankmoney",
 						"bankxp",
 						"help"
 						);
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}else if(args[0].equalsIgnoreCase("help")){
-				return Arrays.asList(
+				List<String> results = Arrays.asList(
 						"1",
 						"2"
 						);
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}else if(args[0].equalsIgnoreCase("lottery")){
-				return Arrays.asList(
+				List<String> results = Arrays.asList(
 						"buyticket",
 						"info",
 						"force",
@@ -73,6 +141,23 @@ public class CommandTabCompleterAB implements TabCompleter {
 						"disable",
 						"help"
 						);
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}
 		}
 		
