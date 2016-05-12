@@ -104,7 +104,8 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"setShopSpawn",
 						"info",
 						"auto",
-						"autoclaim"
+						"autoclaim",
+						"list"
 						);
 				
 				if(args[1].replace(" ", "").equalsIgnoreCase("")){

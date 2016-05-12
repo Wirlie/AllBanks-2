@@ -204,4 +204,8 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 184: "&cEsta parcela no permite teletransportaciones."
 185: "&eYendo a la parcela de &f%1%"
 186: "&cNo tienes suficiente dinero."
+187: "&cError: No tienes ni una parcela."
+188: "&bParcelas de &e%1%&b (&f%2%&b):"
+189: "&7Parcela #%1%: %BREAK%&6ID: (&f%2%&6). &b[x:%3%, z:%4%, world:%5%]"
+190: "&eUsa &f/abl plot list %1% &epara ver la siguiente página."
 

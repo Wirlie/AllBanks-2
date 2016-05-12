@@ -66,6 +66,8 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "auto");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "autoclaim");
+		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "list");
+		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "list", "RegEx->([0-9]){1,}:<page>");
 	}
 	
 public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {

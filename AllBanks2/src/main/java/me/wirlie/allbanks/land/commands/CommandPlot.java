@@ -1152,6 +1152,66 @@ public class CommandPlot extends Command {
 				
 				return CommandExecuteResult.SUCCESS;
 			}
+		}else if(args[1].equalsIgnoreCase("list")){
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return CommandExecuteResult.OTHER;
+			}
+			
+			Player p = (Player) sender;
+			
+			if(!this.hasPermission(p)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
+			
+			AllBanksPlayer abp = new AllBanksPlayer(p);
+			
+			List<PlotID> plots = abp.getOwnedPlots();
+			
+			if(plots.isEmpty()){
+				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_NO_RESULT, true);
+				return CommandExecuteResult.SUCCESS;
+			}
+			
+			int page = 1;
+			
+			if(args.length >= 3){
+				try{
+					page = Integer.parseInt(args[2]);
+				}catch(NumberFormatException e){
+					page = 1;
+				}
+			}
+			
+			int startRes = (page - 1) * 5;
+			
+			if(startRes >= plots.size()){
+				startRes = 0;
+				page = 1;
+			}
+			
+			Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_LIST_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + p.getName(), "%2%>>>" + plots.size()), true);
+			
+			for(int i = startRes; i < plots.size() && i < (startRes + 5); i ++){
+				
+				PlotID pid = plots.get(i);
+				AllBanksPlot plot = new AllBanksPlot(pid);
+				
+				HashMap<String, String> replaceMap = new HashMap<String, String>();
+				replaceMap.put("%1%", String.valueOf(i + 1));
+				replaceMap.put("%2%", plot.getPlotX() + "," + plot.getPlotZ());
+				replaceMap.put("%3%", String.valueOf(plot.getFirstBound().getBlockX()));
+				replaceMap.put("%4%", String.valueOf(plot.getFirstBound().getBlockZ()));
+				replaceMap.put("%5%", plot.getFirstBound().getWorld().getName());
+				
+				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_LIST_ENTRY, replaceMap, true);
+			}
+			
+			if((startRes + 5) < plots.size())
+				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_SUGGEST_PAGES, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + (page + 1)), true);
+			
+			return CommandExecuteResult.SUCCESS;
 		}
 		
 		return CommandExecuteResult.INVALID_ARGUMENTS;

@@ -25,6 +25,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.bukkit.entity.Player;
+
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 
@@ -38,8 +40,7 @@ public class AllBanksPlayer {
 	
 	String playerName;
 	
-	public AllBanksPlayer(String playerName){
-		
+	public AllBanksPlayer(String playerName){		
 		this.playerName = playerName = playerName.toLowerCase();
 		
 		if(!playerCache.containsKey(playerName)){
@@ -50,6 +51,18 @@ public class AllBanksPlayer {
 		}
 	}
 	
+	public AllBanksPlayer(Player p) {
+		String playerName = p.getName();
+		this.playerName = playerName = playerName.toLowerCase();
+		
+		if(!playerCache.containsKey(playerName)){
+			playerCache.put(playerName, this);
+		}else{
+			//Leer desde el caché
+			//AllBanksPlayer cached = playerCache.get(playerName);
+		}
+	}
+
 	public List<PlotID> getOwnedPlots(){
 		Statement stm = null;
 		ResultSet res = null;
