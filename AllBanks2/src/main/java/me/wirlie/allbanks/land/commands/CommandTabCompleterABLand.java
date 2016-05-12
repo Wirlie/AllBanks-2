@@ -22,9 +22,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.land.AllBanksWorld;
 
@@ -37,22 +39,57 @@ public class CommandTabCompleterABLand implements TabCompleter{
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		
 		if(args.length == 1){
-			return Arrays.asList(
+			List<String> results = Arrays.asList(
 					"admin",
 					"plot",
 					"spawn"
 					);
+			
+			if(args[0].replace(" ", "").equalsIgnoreCase("")){
+				return results;
+			}
+			
+			List<String> suggest = new ArrayList<String>();
+			for(String s : results){
+				if(s.contains(args[0].toLowerCase())){
+					suggest.add(s);
+				}
+			}
+			
+			if(suggest.isEmpty()){ 
+				return results;
+			}
+			
+			return suggest;
 		}
 		
 		if(args.length == 2){
 			if(args[0].equalsIgnoreCase("admin")){
-				return Arrays.asList(
+				List<String> results = Arrays.asList(
 						"?",
 						"help",
 						"world"
 						);
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
+				
 			}else if(args[0].equalsIgnoreCase("plot")){
-				return Arrays.asList(
+				List<String> results = Arrays.asList(
 						"?",
 						"help",
 						"claim",
@@ -69,19 +106,92 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"auto",
 						"autoclaim"
 						);
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}else if(args[0].equalsIgnoreCase("spawn")){
-				return new ArrayList<String>(AllBanksWorld.registeredMaps.keySet());
+				List<String> results = new ArrayList<String>(AllBanksWorld.registeredMaps.keySet());
+				
+				if(args[1].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[1].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}
 		}
 		
 		if(args.length == 3){
 			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world")){
-				return new ArrayList<String>(AllBanksWorld.registeredMaps.keySet());
+				List<String> results = new ArrayList<String>(AllBanksWorld.registeredMaps.keySet());
+				
+				if(args[2].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[2].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}else if(args[0].equalsIgnoreCase("plot")){
 				if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("deny") || args[1].equalsIgnoreCase("undeny")){
-					return null;
+					List<String> results = new ArrayList<String>();
+					
+					for(Player p : Bukkit.getOnlinePlayers()){
+						results.add(p.getName());
+					}
+					
+					if(args[2].replace(" ", "").equalsIgnoreCase("")){
+						return results;
+					}
+					
+					List<String> suggest = new ArrayList<String>();
+					for(String s : results){
+						if(s.contains(args[2].toLowerCase())){
+							suggest.add(s);
+						}
+					}
+					
+					if(suggest.isEmpty()){ 
+						return results;
+					}
+					
+					return suggest;
+					
 				}else if(args[1].equalsIgnoreCase("set")){
-					return Arrays.asList(
+					List<String> results = Arrays.asList(
 							"fire-spread",
 							"explosions",
 							"mobs",
@@ -101,12 +211,46 @@ public class CommandTabCompleterABLand implements TabCompleter{
 							"allow-entry",
 							"allow-plot-teleport"
 							);
+					
+					if(args[2].replace(" ", "").equalsIgnoreCase("")){
+						return results;
+					}
+					
+					List<String> suggest = new ArrayList<String>();
+					for(String s : results){
+						if(s.contains(args[2].toLowerCase())){
+							suggest.add(s);
+						}
+					}
+					
+					if(suggest.isEmpty()){ 
+						return results;
+					}
+					
+					return suggest;
 				}else if(args[1].equalsIgnoreCase("teleport")){
-					return Arrays.asList(
-							"<PlotID>",
-							"<PlotOwner>",
-							"<PlotAlias>"
-							);
+					List<String> results = new ArrayList<String>();
+					
+					for(Player p : Bukkit.getOnlinePlayers()){
+						results.add(p.getName());
+					}
+					
+					if(args[2].replace(" ", "").equalsIgnoreCase("")){
+						return results;
+					}
+					
+					List<String> suggest = new ArrayList<String>();
+					for(String s : results){
+						if(s.contains(args[2].toLowerCase())){
+							suggest.add(s);
+						}
+					}
+					
+					if(suggest.isEmpty()){ 
+						return results;
+					}
+					
+					return suggest;
 				}
 			}
 		}
@@ -138,13 +282,30 @@ public class CommandTabCompleterABLand implements TabCompleter{
 			}
 			
 			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world")){
-				return Arrays.asList("generate", "unload", "remove", "info", "set");
+				List<String> results = Arrays.asList("generate", "unload", "remove", "info", "set");
+				
+				if(args[3].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[3].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}
 		}
 		
 		if(args.length == 5){
 			if(args[0].equalsIgnoreCase("admin") && args[1].equalsIgnoreCase("world") && args[3].equalsIgnoreCase("set")){
-				return Arrays.asList("allow-nether-portal",
+				List<String> results = Arrays.asList("allow-nether-portal",
 						"allow-tnt-explosion",
 						"allow-wither",
 						"animal-spawn",
@@ -153,6 +314,23 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"mob-spawn",
 						"wither-explosion",
 						"plots-per-user");
+				
+				if(args[4].replace(" ", "").equalsIgnoreCase("")){
+					return results;
+				}
+				
+				List<String> suggest = new ArrayList<String>();
+				for(String s : results){
+					if(s.contains(args[4].toLowerCase())){
+						suggest.add(s);
+					}
+				}
+				
+				if(suggest.isEmpty()){ 
+					return results;
+				}
+				
+				return suggest;
 			}
 		}
 		
