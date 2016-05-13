@@ -365,6 +365,7 @@ public class Translation{
 	}
 	
 	static boolean firstExecution = false;
+	static boolean debugTranslationFile = false;
 	
 	/**
 	 * Nos aseguramos de que un archivo de lenguaje se encuentra actualizado.
@@ -375,7 +376,7 @@ public class Translation{
 		
 		String version = readLanguage.getString("language-version", "null");
 		
-		if(!version.equalsIgnoreCase(AllBanks.getInstance().getDescription().getVersion()) || !firstExecution){
+		if(!version.equalsIgnoreCase(AllBanks.getInstance().getDescription().getVersion()) || !firstExecution && debugTranslationFile){
 			
 			firstExecution = true;
 			
@@ -396,26 +397,16 @@ public class Translation{
 			
 			int count = 0;
 			
-			String[] needsUpdate = new String[] { "20", "57" };
-			
-			keySearch:
 			for(String key : nativeYaml.getKeys(true)){
-				Object obj = readLanguage.get(key, null);
+				//Object obj = readLanguage.get(key, null);
 				
-				if(obj == null){
+				/*if(obj == null){
 					readLanguage.set(key, nativeYaml.get(key));
 					count++;
 					continue;
-				}else{
-					for(String needsUpd : needsUpdate){
-						if(key.equalsIgnoreCase(needsUpd)){
-							readLanguage.set(key, nativeYaml.get(key));
-							count++;
-							continue keySearch;
-						}
-					}
-				}
+				}*/
 				
+				readLanguage.set(key, nativeYaml.get(key));
 			}
 			
 			if(count > 0)

@@ -104,12 +104,12 @@ public class ConfigurationUtil{
 		return returnStr;
 	}
 	
-	public static String convertTimeValueToSecondsAndConvertIntoTimeAgo(String strTimeValue){
+	public static String convertTimeValueToSecondsAndConvertIntoTimeAgo(String strTimeValue, int maxShow){
 		int seconds = convertTimeValueToSeconds(strTimeValue);
 		
 		if(seconds == -1) return "Undefined";
 		
-		return convertSecondsIntoTimeAgo(seconds, 2);
+		return convertSecondsIntoTimeAgo(seconds, maxShow);
 	}
 	
 	/**

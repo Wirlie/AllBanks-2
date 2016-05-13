@@ -361,7 +361,7 @@ public class Banks {
 				if(player != null && sendInfoMessages){
 					HashMap<String, String> replaceMap = new HashMap<String, String>();
 					replaceMap.put("%1%", String.valueOf(AllBanks.getInstance().getConfig().getInt("banks.bank-loan.interest", 0)));
-					replaceMap.put("%2%", String.valueOf(ConfigurationUtil.convertTimeValueToSecondsAndConvertIntoTimeAgo(AllBanks.getInstance().getConfig().getString("banks.bank-loan.collect-interest-every"))));
+					replaceMap.put("%2%", String.valueOf(ConfigurationUtil.convertTimeValueToSecondsAndConvertIntoTimeAgo(AllBanks.getInstance().getConfig().getString("banks.bank-loan.collect-interest-every"), 3)));
 					Translation.getAndSendMessage(player, StringsID.BANKLOAN_STEP0_INFO, replaceMap, true);
 				}
 				break;

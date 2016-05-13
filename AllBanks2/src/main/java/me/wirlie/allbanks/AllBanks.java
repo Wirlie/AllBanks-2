@@ -59,7 +59,9 @@ import me.wirlie.allbanks.command.CommandTabCompleterAB;
 import me.wirlie.allbanks.hooks.HookManager;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.commands.CommandExecutorABLand;
+import me.wirlie.allbanks.land.commands.CommandExecutorABLandPlotAccess;
 import me.wirlie.allbanks.land.commands.CommandTabCompleterABLand;
+import me.wirlie.allbanks.land.commands.CommandTabCompleterABLandPlotAccess;
 import me.wirlie.allbanks.land.listeners.PlotBucketListener;
 import me.wirlie.allbanks.land.listeners.PlotEntityCroopsPhysicalListener;
 import me.wirlie.allbanks.land.listeners.PlotEntityExplosionListener;
@@ -247,6 +249,10 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginCommand("allbanksland").setExecutor(new CommandExecutorABLand());
 		AllBanksLogger.info("Commands: Set tab completer (/abland).");
 		Bukkit.getPluginCommand("allbanksland").setTabCompleter(new CommandTabCompleterABLand());
+		AllBanksLogger.info("Commands: Set executor (/plot).");
+		Bukkit.getPluginCommand("plot").setExecutor(new CommandExecutorABLandPlotAccess());
+		AllBanksLogger.info("Commands: Set tab completer (/plot).");
+		Bukkit.getPluginCommand("plot").setTabCompleter(new CommandTabCompleterABLandPlotAccess());
 		
 		//Hooks
 		HookManager.initializeHookManager();

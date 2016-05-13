@@ -35,6 +35,12 @@ import me.wirlie.allbanks.land.AllBanksWorld;
  *
  */
 public class CommandTabCompleterABLand implements TabCompleter{
+	
+	static CommandTabCompleterABLand instance;
+	
+	public CommandTabCompleterABLand(){
+		instance = this;
+	}
 
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {
 		
@@ -355,6 +361,10 @@ public class CommandTabCompleterABLand implements TabCompleter{
 		}
 		
 		return Arrays.asList("");
+	}
+
+	public static CommandTabCompleterABLand getInstance() {
+		return instance;
 	}
 
 }

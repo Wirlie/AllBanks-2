@@ -35,8 +35,12 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  *
  */
 public class CommandExecutorABLand implements CommandExecutor {
+	
+	static CommandExecutorABLand instance;
 
 	public CommandExecutorABLand(){
+		instance = this;
+		
 		//Relacionado a comandos Admin
 		CommandManagerABLand.registerCommand(new CommandAdmin(null), "admin", "?");
 		CommandManagerABLand.registerCommand(new CommandAdmin(null), "admin", "help");
@@ -127,5 +131,9 @@ public boolean onCommand(CommandSender sender, org.bukkit.command.Command comman
 		
 		return true;
 	}
+
+public static CommandExecutorABLand getInstance() {
+	return instance;
+}
 
 }
