@@ -62,14 +62,14 @@ public class CommandExecutorABLand implements CommandExecutor {
 		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "deny", "RegEx->(.){1,}:<Player>");
 		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "undeny", "RegEx->(.){1,}:<Player>");
 		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.set.flags"), "plot", "set", "RegEx->(.){1,}:<Config>", "RegEx->(.){1,}:<Value>");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "setHomeSpawn");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "setShopSpawn");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.sethomespawn"), "plot", "setHomeSpawn");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.setshopspawn"), "plot", "setShopSpawn");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "info");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "home");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "home", "RegEx->([0-9]){1,}:<#>");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "auto");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "autoclaim");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home", "RegEx->([0-9]){1,}:<#>");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.teleport"), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "auto");
+		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "autoclaim");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "list");
 		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "list", "RegEx->([0-9]){1,}:<page>");
 	}

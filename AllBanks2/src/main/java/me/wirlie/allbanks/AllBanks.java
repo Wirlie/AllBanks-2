@@ -1133,7 +1133,13 @@ public class AllBanks extends JavaPlugin {
 		//Permisos default
 		List<String> defaultPerms = userCfg.getStringList("default-permissions");
 		
-		if(Util.compareVersionsString("1.1", userCfg.getString("cfg-version", "0")) == 1){
+		if(Util.compareVersionsString("1.1.4", userCfg.getString("cfg-version", "0")) == 1){
+			if(!defaultPerms.contains("allbanks.land.commands.plot.sethomespawn")) defaultPerms.add("allbanks.land.commands.plot.sethomespawn");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.setshopspawn")) defaultPerms.add("allbanks.land.commands.plot.setshopspawn");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.home")) defaultPerms.add("allbanks.land.commands.plot.home");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.teleport")) defaultPerms.add("allbanks.land.commands.plot.teleport");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.auto")) defaultPerms.add("allbanks.land.commands.plot.auto");
+		}else if(Util.compareVersionsString("1.1", userCfg.getString("cfg-version", "0")) == 1){
 			if(!defaultPerms.contains("allbanks.land.commands.plot.claim")) defaultPerms.add("allbanks.land.commands.plot.claim");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.unclaim")) defaultPerms.add("allbanks.land.commands.plot.unclaim");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.set.flags")) defaultPerms.add("allbanks.land.commands.plot.set.flags");
