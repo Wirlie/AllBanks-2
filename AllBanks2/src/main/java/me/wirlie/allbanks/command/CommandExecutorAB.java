@@ -68,7 +68,7 @@ public class CommandExecutorAB implements CommandExecutor {
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		
 		if(CommandManagerAB.checkCommandMatch(args)){
-			CommandExecuteResult result = CommandManagerAB.executeCommand(sender, args);
+			CommandExecuteResult result = CommandManagerAB.executeCommand(sender, label, args);
 			String argsString = "";
 			for(String s : args){
 				argsString += s + " ";

@@ -37,7 +37,7 @@ public class CommandManagerAB {
 	
 	private static List<Command> registeredCommands = new ArrayList<Command>();
 	
-	public static void registerCommand(Command command, String... arguments){
+	public static void registerCommand(Command command, String label, String... arguments){
 		
 		List<String> argumentsRepresentation = new ArrayList<String>();
 		
@@ -62,10 +62,10 @@ public class CommandManagerAB {
 	/**
 	 * @param args
 	 */
-	public static CommandExecuteResult executeCommand(CommandSender sender, String[] args) {
+	public static CommandExecuteResult executeCommand(CommandSender sender, String label, String[] args) {
 		for(Command command : registeredCommands){
 			if(command.matchArguments(args)){
-				return command.execute(sender, args);
+				return command.execute(sender, label, args);
 			}
 		}
 		

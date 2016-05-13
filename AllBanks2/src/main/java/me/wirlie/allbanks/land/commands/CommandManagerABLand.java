@@ -61,12 +61,13 @@ public class CommandManagerABLand {
 	}
 
 	/**
+	 * @param label 
 	 * @param args
 	 */
-	public static CommandExecuteResult executeCommand(CommandSender sender, String[] args) {
+	public static CommandExecuteResult executeCommand(CommandSender sender, String label, String[] args) {
 		for(Command command : registeredCommands){
 			if(command.matchArguments(args)){
-				return command.execute(sender, args);
+				return command.execute(sender, label, args);
 			}
 		}
 		

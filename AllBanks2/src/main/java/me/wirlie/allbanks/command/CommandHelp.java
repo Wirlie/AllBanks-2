@@ -38,7 +38,7 @@ public class CommandHelp extends Command {
 	}
 	
 	@Override
-	public CommandExecuteResult execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String label, String[] args) {
 		//Comando de ayuda
 		if(!this.hasPermission(sender)){
 			Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, (sender instanceof Player));

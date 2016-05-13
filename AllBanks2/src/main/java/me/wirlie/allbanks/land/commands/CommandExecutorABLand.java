@@ -77,7 +77,7 @@ public class CommandExecutorABLand implements CommandExecutor {
 public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		
 		if(CommandManagerABLand.checkCommandMatch(args)){
-			CommandExecuteResult result = CommandManagerABLand.executeCommand(sender, args);
+			CommandExecuteResult result = CommandManagerABLand.executeCommand(sender, label, args);
 			String argsString = "";
 			for(String s : args){
 				argsString += s + " ";
@@ -118,7 +118,11 @@ public boolean onCommand(CommandSender sender, org.bukkit.command.Command comman
 			
 			for(Command cmd : possibleCommands){
 				
-				sender.sendMessage(ChatColor.GRAY + "/abl " + cmd.getSyntax());
+				if(label.equalsIgnoreCase("plot")){
+					sender.sendMessage(ChatColor.GRAY + "/plot " + cmd.getSyntax().replace("plot ", ""));
+				}else{
+					sender.sendMessage(ChatColor.GRAY + "/abl " + cmd.getSyntax());
+				}
 				
 				showed++;
 

@@ -65,7 +65,7 @@ public class CommandTopRank extends Command {
 	}
 	
 	@Override
-	public CommandExecuteResult execute(final CommandSender sender, String[] args){
+	public CommandExecuteResult execute(final CommandSender sender, String label, String[] args){
 		if(args.length >= 2){
 			
 			if(sender instanceof ConsoleCommandSender || sender instanceof BlockCommandSender){

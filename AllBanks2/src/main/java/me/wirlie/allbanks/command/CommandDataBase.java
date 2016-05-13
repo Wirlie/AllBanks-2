@@ -47,7 +47,7 @@ public class CommandDataBase extends Command {
 	}
 	
 	@Override
-	public CommandExecuteResult execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String label, String[] args) {
 		if(args.length >= 2){
 			if(args[1].equalsIgnoreCase("?") || args[1].equalsIgnoreCase("help")){
 				//comando de ayuda: /ab database ?

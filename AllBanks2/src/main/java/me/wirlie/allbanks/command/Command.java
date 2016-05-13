@@ -87,7 +87,7 @@ public class Command {
 		return true;
 	}
 
-	public CommandExecuteResult execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String label, String[] args) {
 		//Esto tiene que ser reemplazado con un override
 		return CommandExecuteResult.DEFAULT;
 	}

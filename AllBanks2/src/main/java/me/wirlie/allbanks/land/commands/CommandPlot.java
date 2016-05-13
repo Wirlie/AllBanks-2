@@ -30,9 +30,14 @@ public class CommandPlot extends Command {
 	}
 
 	@Override
-	public CommandExecuteResult execute(CommandSender sender, String[] args){
+	public CommandExecuteResult execute(CommandSender sender, String label, String[] args){
 		
 		boolean displayHelp = false;
+		String labelPrefix = "/abl plot";
+		
+		if(label.equalsIgnoreCase("plot")){
+			labelPrefix = "/plot";
+		}
 		
 		if(args.length <= 1){ 
 			//	/abland plot
@@ -57,19 +62,19 @@ public class CommandPlot extends Command {
 			switch(page){
 			default:
 			case 1:
-				sender.sendMessage(ChatColor.GRAY + "/abl plot claim " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_CLAIM_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot dispose " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_DISPOSE_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot set " + ChatColor.GOLD + "<flag> <value> ");
-				sender.sendMessage(ChatColor.GRAY + "/abl plot info " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_INFO_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot add " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_ADD_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot remove " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_REMOVE_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " claim " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_CLAIM_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " dispose " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_DISPOSE_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " set " + ChatColor.GOLD + "<flag> <value> ");
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " info " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_INFO_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " add " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_ADD_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " remove " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_REMOVE_DESC, false)[0]);
 			break;
 			case 2:
-				sender.sendMessage(ChatColor.GRAY + "/abl plot deny " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_DENY_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot undeny " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_UNDENY_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot setHomeSpawn " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_SETHOMESPAWN_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot setShopSpawn " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_SETSHOPPAWN_DESC, false)[0]);
-				sender.sendMessage(ChatColor.GRAY + "/abl plot home " + ChatColor.DARK_AQUA + "[#] " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_HOME_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " deny " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_DENY_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " undeny " + ChatColor.GOLD + "<player> " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_UNDENY_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " setHomeSpawn " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_SETHOMESPAWN_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " setShopSpawn " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_SETSHOPPAWN_DESC, false)[0]);
+				sender.sendMessage(ChatColor.GRAY + labelPrefix + " home " + ChatColor.DARK_AQUA + "[#] " + ChatColor.WHITE + "- " + Translation.get(StringsID.COMMAND_LAND_PLOT_HOME_DESC, false)[0]);
 				break;
 			}	
 			return CommandExecuteResult.SUCCESS;
@@ -1209,7 +1214,7 @@ public class CommandPlot extends Command {
 			}
 			
 			if((startRes + 5) < plots.size())
-				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_SUGGEST_PAGES, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + (page + 1)), true);
+				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_SUGGEST_PAGES, Translation.splitStringIntoReplaceHashMap(">>>", "%COMMAND_LABEL%>>>" + labelPrefix, "%1%>>>" + (page + 1)), true);
 			
 			return CommandExecuteResult.SUCCESS;
 		}

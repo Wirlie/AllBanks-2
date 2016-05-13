@@ -25,7 +25,7 @@ public class CommandAdmin extends Command {
 	}
 
 	@Override
-	public CommandExecuteResult execute(CommandSender sender, String[] args){
+	public CommandExecuteResult execute(CommandSender sender, String label, String[] args){
 		
 		boolean displayHelp = false;
 		

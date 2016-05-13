@@ -194,5 +194,5 @@ language-version: "1.1.4"
 187: "&cError: You do not have any plot."
 188: "&bPlots of &e%1%&b (&f%2%&b):"
 189: "&7Plot #%1%: %BREAK%&6ID: (&f%2%&6). &b[x:%3%, z:%4%, world:%5%]"
-190: "&eUse &f/abl plot list %1% &efor see the next page."
+190: "&eUse &f%COMMAND_LABEL% list %1% &efor see the next page."
 

@@ -41,7 +41,7 @@ public class CommandItemInfo extends Command {
 	}
 	
 	@Override
-	public CommandExecuteResult execute(CommandSender sender, String[] args) {
+	public CommandExecuteResult execute(CommandSender sender, String label, String[] args) {
 		if(!(sender instanceof Player)) {
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
 			return CommandExecuteResult.OTHER;
