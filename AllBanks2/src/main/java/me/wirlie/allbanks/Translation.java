@@ -396,12 +396,24 @@ public class Translation{
 			
 			int count = 0;
 			
+			String[] needsUpdate = new String[] { "20", "57" };
+			
+			keySearch:
 			for(String key : nativeYaml.getKeys(true)){
 				Object obj = readLanguage.get(key, null);
 				
 				if(obj == null){
 					readLanguage.set(key, nativeYaml.get(key));
 					count++;
+					continue;
+				}else{
+					for(String needsUpd : needsUpdate){
+						if(key.equalsIgnoreCase(needsUpd)){
+							readLanguage.set(key, nativeYaml.get(key));
+							count++;
+							continue keySearch;
+						}
+					}
 				}
 				
 			}

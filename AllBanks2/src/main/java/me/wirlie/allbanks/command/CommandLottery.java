@@ -36,6 +36,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.runnables.LotteryRunnable;
+import me.wirlie.allbanks.utils.ConfigurationUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
@@ -247,7 +248,7 @@ public class CommandLottery extends Command {
 				replaceMap.put("%6%", AllBanks.getEconomy().format(totalMoney.doubleValue()));
 				replaceMap.put("%7%", AllBanks.getEconomy().format(ticket_cost));
 				if(LotteryRunnable.enable)
-					replaceMap.put("%4%", String.valueOf(remainingTime));
+					replaceMap.put("%4%", String.valueOf(ConfigurationUtil.convertSecondsIntoTimeAgo((int) remainingTime, 2)));
 				else
 					replaceMap.put("%4%", ChatColor.RED + "----");
 				Translation.getAndSendMessage(sender, StringsID.LOTTER_CHECK_INFO, replaceMap, true);

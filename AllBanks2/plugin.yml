@@ -1,14 +1,10 @@
 name: AllBanks2
-version: 1.1.3
+version: 1.1.4
 load: POSTWORLD
 main: me.wirlie.allbanks.AllBanks
-softdepend: [WorldGuard, Towny, Residence]
+softdepend: [AllBanksPlotProtection, WorldGuard, Towny, Residence]
 commands:
   allbanks:
     description: AllBanks (Main command).
     usage: Syntax error, please use /ab ?
     aliases: [ab, abanks, allb]
-  allbanksland:
-    description: AllBanks Land, use /abland help
-    usage: Syntax error, please use /abland ?
-    aliases: [abland, abl, allbanksl]

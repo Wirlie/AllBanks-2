@@ -3,7 +3,7 @@
 ##
 ## AllBanks v1.0
 
-language-version: "1.1.3"
+language-version: "1.1.4"
 
 1: "Enabling plugin.%BREAK%Starting local database..."
 2: "Disabling plugin.%BREAK%Saving local database..."
@@ -24,7 +24,7 @@ language-version: "1.1.3"
 17: "&cThe database can not process your request. Error:"
 18: "&eRequest executed without problems."
 19: "&cThis only can be used on the console server."
-20: " %BREAK%&2Borrow:%BREAK%&eWrite in the chat the amount of money do you want to ask for loan.%BREAK%&eCurrently AllBanks charges %1%% of interest every %2% seconds."
+20: " %BREAK%&2Borrow:%BREAK%&eWrite in the chat the amount of money do you want to ask for loan.%BREAK%&eCurrently AllBanks charges %1%% of interest every: %BREAK%&e%2%."
 21: " %BREAK%&2Pay Loan:%BREAK%&Write in the chat the amount of money do you want to pay.%BREAK%&eCurrently you owe %1% to AllBanks."
 22: "&cYou cannot ask this amount of loan.%BREAK%&cYou can ask %1% for loan."
 23: "&cOnly you can write a number more than 0."
@@ -61,7 +61,7 @@ language-version: "1.1.3"
 54: "%LOTTERY_PREFIX%&cYou can not buy %1% ticket(s).%BREAK%%LOTTERY_PREFIX%You only can buy %2% ticket(s) more."
 55: "%LOTTERY_PREFIX%&aYou have bought &f%1% &aticket(s) for the lottery."
 56: "&cThere are not enough statistics yet, try it later."
-57: "&5 %BREAK%%LOTTERY_PREFIX% %BREAK%  &bTotal winners: &f%1% %BREAK%  &bTotal tickets bought: &f%2% %BREAK%  &bLast winner: &e%3% %BREAK%&2Next lottery: %BREAK%  &bRemaining time: &f%4% seconds %BREAK%  &bParticipants: &f%5% %BREAK%  &bMoney on the pot: &f%6% %BREAK%&2Prices: %BREAK%  &bTicket price: &f%7%"
+57: "&5 %BREAK%%LOTTERY_PREFIX% %BREAK%  &bTotal winners: &f%1% %BREAK%  &bTotal tickets bought: &f%2% %BREAK%  &bLast winner: &e%3% %BREAK%&2Next lottery: %BREAK%  &bRemaining time: &f%4% %BREAK%  &bParticipants: &f%5% %BREAK%  &bMoney on the pot: &f%6% %BREAK%&2Prices: %BREAK%  &bTicket price: &f%7%"
 58: "&eThe lottery has been enabled."
 59: "&eThe lottery has been disabled."
 60: "%LOTTERY_PREFIX%&b&l¡&e&l%1% &b&lhas won the lottery!"

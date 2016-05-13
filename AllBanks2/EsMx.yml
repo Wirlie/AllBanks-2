@@ -15,7 +15,7 @@
 #                                                                                                                         #
 ###########################################################################################################################
 
-language-version: "1.1.3"
+language-version: "1.1.4"
 LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
@@ -37,7 +37,7 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 17: "&cLa base de datos no pudo procesar tu petición. Error:"
 18: "&eConsulta ejecutada sin problemas."
 19: "&cUnicamente puede ser usado en la consola."
-20: " %BREAK%&2Pedir préstamo:%BREAK%&eEscribe en el chat la cantidad de dinero que deseas pedir prestado.%BREAK%&eActualmente AllBanks cobrará %1%% de interés cada %2% segundos."
+20: " %BREAK%&2Pedir préstamo:%BREAK%&eEscribe en el chat la cantidad de dinero que deseas pedir prestado.%BREAK%&eActualmente AllBanks cobrará %1%% de interés cada: %BREAK% &e%2%."
 21: " %BREAK%&2Pagar préstamo:%BREAK%&eEscribe en el chat la cantidad de dinero que deseas pagar.%BREAK%&eActualmente debes %1% a AllBanks."
 22: "&cNo puedes pedir esa cantidad de préstamo.%BREAK%&cPuedes pedir hasta %1%."
 23: "&cSólo puede ingresar un valor mayor a 0."
@@ -74,7 +74,7 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 54: "%LOTTERY_PREFIX%&cNo puedes comprar %1% boleto(s).%BREAK%%LOTTERY_PREFIX%Sólo puedes comprar %2% boleto(s) más."
 55: "%LOTTERY_PREFIX%&aCompraste &f%1% &aboletos para la lotería."
 56: "&cAún no hay estadísticas suficientes, inténtalo más tarde."
-57: "&5 %BREAK%%LOTTERY_PREFIX% %BREAK%  &bGanadores totales: &f%1% %BREAK%  &bTickets totales: &f%2% %BREAK%  &bÚltimo ganador: &e%3% %BREAK%&2Próxima lotería: %BREAK%  &bTiempo restante: &f%4% segundos %BREAK%  &bParticipantes: &f%5% %BREAK%  &bDinero total: &f%6% %BREAK%&2Precios: %BREAK%  &bCosto de ticket: &f%7%"
+57: "&5 %BREAK%%LOTTERY_PREFIX% %BREAK%  &bGanadores totales: &f%1% %BREAK%  &bTickets totales: &f%2% %BREAK%  &bÚltimo ganador: &e%3% %BREAK%&2Próxima lotería: %BREAK%  &bTiempo restante: &f%4% %BREAK%  &bParticipantes: &f%5% %BREAK%  &bDinero total: &f%6% %BREAK%&2Precios: %BREAK%  &bCosto de ticket: &f%7%"
 58: "&eLa lotería ha sido habilitada."
 59: "&eLa lotería ha sido deshabilitada."
 60: "%LOTTERY_PREFIX%&b&l¡&e&l%1% &b&lha ganado la lotería!"

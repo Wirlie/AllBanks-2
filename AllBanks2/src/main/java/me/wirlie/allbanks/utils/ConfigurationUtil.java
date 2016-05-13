@@ -104,6 +104,14 @@ public class ConfigurationUtil{
 		return returnStr;
 	}
 	
+	public static String convertTimeValueToSecondsAndConvertIntoTimeAgo(String strTimeValue){
+		int seconds = convertTimeValueToSeconds(strTimeValue);
+		
+		if(seconds == -1) return "Undefined";
+		
+		return convertSecondsIntoTimeAgo(seconds, 2);
+	}
+	
 	/**
 	 * Bueno, esto realmente ayuda con la configuración banks.bank-loan.collect-interest-every
 	 * ya que se encuentra en formato 0 days, 0 hours, 0 minutes, 0 seconds y es necesario
