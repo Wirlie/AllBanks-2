@@ -539,7 +539,7 @@ public class PlayerChatBankSessionListener implements Listener {
 						experienceLimit = -1;
 					}
 					
-					if(experienceLimit > 0 && (ba.BankXP.getRawXP() + depositXP) > experienceLimit){
+					if(experienceLimit >= 0 && (ba.BankXP.getRawXP() + depositXP) > experienceLimit){
 						//Se excede
 						int calculateRemainingExp = experienceLimit - ba.BankXP.getRawXP();
 						if(calculateRemainingExp < 0) calculateRemainingExp = 0;
