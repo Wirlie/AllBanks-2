@@ -20,6 +20,8 @@ package me.wirlie.allbanks.banks.listeners;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -133,6 +135,7 @@ public class PlayerChatBankSessionListener implements Listener {
 							}catch(NumberFormatException e2){
 								overrideConfiguration = false;
 							}
+							break;
 						}
 					}
 					
@@ -266,6 +269,7 @@ public class PlayerChatBankSessionListener implements Listener {
 							}catch(NumberFormatException e2){
 								overrideConfiguration = false;
 							}
+							break;
 						}
 					}
 					
@@ -420,6 +424,7 @@ public class PlayerChatBankSessionListener implements Listener {
 							}catch(NumberFormatException e2){
 								overrideConfiguration = false;
 							}
+							break;
 						}
 					}
 					
@@ -486,6 +491,64 @@ public class PlayerChatBankSessionListener implements Listener {
 						return;
 					}
 					
+					//Limite de experiencia
+					int experienceLimit = 0;
+					boolean overrideConfiguration = false;
+					
+					for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+						if(pinfo.getPermission().startsWith("allbanks.banks.bankxp.maxxp.")){
+							
+							String experienceLimitSTR = pinfo.getPermission().replace("allbanks.banks.bankxp.maxxp.", "");
+								
+							Pattern pattern = Pattern.compile("^([0-9]{1,})(L|Lvl|Levels)$", Pattern.CASE_INSENSITIVE);
+							Matcher matcher = pattern.matcher(experienceLimitSTR);
+								
+							if(matcher.matches()){
+								int levels = Integer.parseInt(matcher.group(1));
+								experienceLimit = ExperienceConversionUtil.getExpToLevel(levels);
+								overrideConfiguration = true;
+							}else{
+								overrideConfiguration = false;
+							}
+							
+							break;
+						}
+					}
+					
+					if(!overrideConfiguration){
+						String experienceLimitSTR = AllBanks.getInstance().getConfig().getString("banks.bank-xp.max-xp-player-can-save");
+						
+						Pattern pattern = Pattern.compile("^([0-9]{1,})(L|Lvl|Levels)$", Pattern.CASE_INSENSITIVE);
+						Matcher matcher = pattern.matcher(experienceLimitSTR);
+						
+						if(matcher.matches()){
+							int levels = Integer.parseInt(matcher.group(1));
+							experienceLimit = ExperienceConversionUtil.getExpToLevel(levels);
+						}else{
+							//Intentar el método de número
+							try{
+								experienceLimit = Integer.parseInt(experienceLimitSTR);
+							}catch(NumberFormatException e2){
+								AllBanksLogger.warning("[CONFIG] banks.bank-xp.max-xp-player-can-save invalid configuration: " + experienceLimitSTR + ", a number or a valid string '10L' has expected. Using default value: '100L'");
+								experienceLimit = ExperienceConversionUtil.getExpToLevel(100);
+							}
+						}
+					}
+					
+					if(experienceLimit < 0){
+						experienceLimit = -1;
+					}
+					
+					if(experienceLimit > 0 && (ba.BankXP.getRawXP() + depositXP) > experienceLimit){
+						//Se excede
+						int calculateRemainingExp = experienceLimit - ba.BankXP.getRawXP();
+						if(calculateRemainingExp < 0) calculateRemainingExp = 0;
+						
+						Translation.getAndSendMessage(p, StringsID.BANKXP_ERROR_DEPOSIT_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + calculateRemainingExp, "%2%>>>" + ExperienceConversionUtil.convertExpToLevel(calculateRemainingExp)), true);
+						
+						return;
+					}
+						
 					if(ba.BankXP.addXP(depositXP)){
 						ExperienceConversionUtil.setTotalExpToPlayer(p, ExperienceConversionUtil.getTotalExperience(p) - depositXP);
 						Translation.getAndSendMessage(p, StringsID.BANKXP_DEPOSIT_SUCCESS, true);

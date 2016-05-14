@@ -676,6 +676,14 @@ public class AllBanks extends JavaPlugin {
 			ok++;
 		}
 		
+		if(config.getString("banks.bank-xp.max-xp-player-can-save", null) == null){
+			AllBanksLogger.warning("[CONFIG] banks.bank-xp.max-xp-player-can-save -> return null, configuration not exists or not is a valid String.");
+			warns++;
+		}else{
+			AllBanksLogger.debug("[CONFIG] banks.bank-xp.max-xp-player-can-save -> ok: " + config.getString("banks.bank-xp.max-xp-player-can-save"));
+			ok++;
+		}
+		
 		if(config.getString("shop.admin-tag") == null){
 			AllBanksLogger.warning("[CONFIG] shop.admin-tag -> return null, configuration not exists or not is a valid String.");
 			warns++;
@@ -1035,6 +1043,13 @@ public class AllBanks extends JavaPlugin {
 					newLines.add("  # If this is configured with true, AllBanks will try to spawn a fake item if an Admin Shop is created.");
 				}else if(line.contains("enable-fake-item-for-user-shop:")) {
 					newLines.add("  # Enable fake items for shops of users");
+				}else if(line.contains("max-time-player-can-gather-in-bank:")) {
+					newLines.add("    # Max amount of time that a player can gather in the bank.");
+				}else if(line.contains("max-xp-player-can-save:")) {
+					newLines.add("    # How much xp can save the player in the bank?");
+					newLines.add("    # -1 = unlimited");
+					newLines.add("    # Supported values: Exp amount:     2000");
+					newLines.add("    #                   Levels:         10Lvl or 10Levels or 10L");
 				}else if(line.contains("update-cache-every:")) {
 					newLines.add("  # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.");
 					newLines.add("  # Please do not set it with a minimal value (example: 1 second)");

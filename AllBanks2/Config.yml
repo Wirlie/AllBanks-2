@@ -73,9 +73,17 @@ banks:
     pay-per-minute: 1.00
     # Add one minute every 60 seconds.
     add-minute-every: 60
+    # Max amount of time that a player can gather in the bank.
+    max-time-player-can-gather-in-bank: 100
   bank-chest:
     # Number of max virtual chest per player.
     max-virtual-chests-per-player: 1
+  bank-xp:
+    # How much xp can save the player in the bank?
+    # -1 = unlimited
+    # Supported values: Exp amount:     2000
+    #                   Levels:         10Lvl or 10Levels or 10L
+    max-xp-player-can-save: "100L"
 shop:
   admin-tag: "admin"
   # If this is configured with true, AllBanks will try to spawn a fake item if an Admin Shop is created.

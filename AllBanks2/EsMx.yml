@@ -208,4 +208,5 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 188: "&bParcelas de &e%1%&b (&f%2%&b):"
 189: "&7Parcela #%1%: %BREAK%&6ID: (&f%2%&6). &b[x:%3%, z:%4%, world:%5%]"
 190: "&eUsa &f%COMMAND_LABEL% list %1% &epara ver la siguiente página."
+191: "&cHaz alcanzado el límite para guardar experiencia.%BREAK%&cPuedes guardar hasta &f%1% exp (%2% niveles)&c."
 

@@ -43,11 +43,18 @@ public class BankTimerRunnable extends BukkitRunnable {
 			return;
 		}
 		
+		int maxTime = AllBanks.getInstance().getConfig().getInt("banks.bank-time.max-time-player-can-gather-in-bank");
+		
 		for(Player p : Bukkit.getOnlinePlayers()){
 			BankAccount ba = BankAccount.Cache.get(p.getUniqueId());
 			
 			if(ba == null){
 				//Ops... error
+				continue;
+			}
+			
+			if((ba.BankTime.getTime() + 1) > maxTime){
+				//limite alcanzado
 				continue;
 			}
 			
