@@ -22,6 +22,8 @@ import me.wirlie.allbanks.land.AllBanksPlot;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.PlotConfiguration;
 import me.wirlie.allbanks.land.PlotID;
+import me.wirlie.allbanks.utils.InteractiveUtil;
+import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 public class CommandPlot extends Command {
 	
@@ -85,16 +87,18 @@ public class CommandPlot extends Command {
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
 				return CommandExecuteResult.OTHER;
 			}
+
+			Player p = (Player) sender;
 			
 			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
 				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
-			Player p = (Player) sender;
-			
 			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.SUCCESS;
 			}
 			
@@ -103,6 +107,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				//No es un mundo de allbanks
 				Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -111,6 +116,7 @@ public class CommandPlot extends Command {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				//No es un plot
 				Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -119,6 +125,7 @@ public class CommandPlot extends Command {
 			if(plot.hasOwner()){
 				//Ya tiene dueño
 				Translation.getAndSendMessage(sender, StringsID.PLOT_PLOT_ALREADY_HAS_OWNER, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -142,12 +149,14 @@ public class CommandPlot extends Command {
 			
 			if((currentPlots + 1) > plotLimit){
 				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.OTHER;
 			}
 			
 			//Dinero??
 			if(!AllBanks.getEconomy().has(p, abw.getWorldConfiguration().claimCost().doubleValue())){
 				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_INSUFICIENT_MONEY, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getEconomy().format(abw.getWorldConfiguration().claimCost().doubleValue())), true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -162,7 +171,7 @@ public class CommandPlot extends Command {
 			replaceMap.put("%3%", plot.getAllBanksWorld().getID());
 			
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_CLAIM_SUCCESS, replaceMap, true);
-			
+			InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("dispose")){
 			if(!(sender instanceof Player)){
@@ -174,6 +183,7 @@ public class CommandPlot extends Command {
 			
 			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
@@ -182,6 +192,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				//No es un mundo de allbanks
 				Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -190,6 +201,7 @@ public class CommandPlot extends Command {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				//No es un plot
 				Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -198,13 +210,15 @@ public class CommandPlot extends Command {
 			if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 				//No tiene dueño o no es el dueño
 				Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
 			//Bien, remover
 			plot.unclaim();
 			Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_UNCLAIM_SUCCESS, true);
-		
+			InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+			
 			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("set")){
 			
@@ -217,6 +231,7 @@ public class CommandPlot extends Command {
 			
 			if(!this.hasPermission(sender)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
@@ -225,6 +240,7 @@ public class CommandPlot extends Command {
 			if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				//No es un mundo de allbanks
 				Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -233,6 +249,7 @@ public class CommandPlot extends Command {
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 				//No es un plot
 				Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -241,6 +258,7 @@ public class CommandPlot extends Command {
 			if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 				//No tiene dueño o no es el dueño
 				Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -535,6 +553,7 @@ public class CommandPlot extends Command {
 							true);
 				}
 				
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}else{
 				//argumentos inválidos
@@ -553,6 +572,7 @@ public class CommandPlot extends Command {
 				
 				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
@@ -561,6 +581,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -569,6 +590,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -577,13 +599,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().addFriend(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_ADD_FRIEND, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
-			
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
@@ -601,6 +624,7 @@ public class CommandPlot extends Command {
 				
 				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
@@ -609,6 +633,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -617,6 +642,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -625,13 +651,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().removeFriend(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_REMOVE_FRIEND, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
-			
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
@@ -649,6 +676,7 @@ public class CommandPlot extends Command {
 				
 				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
@@ -657,6 +685,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -665,6 +694,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -673,13 +703,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().setDeny(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_DENY_PLAYER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
-			
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
@@ -697,6 +728,7 @@ public class CommandPlot extends Command {
 				
 				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
@@ -705,6 +737,7 @@ public class CommandPlot extends Command {
 				if(!AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 					//No es un mundo de allbanks
 					Translation.getAndSendMessage(sender, StringsID.PLOT_INVALID_WORLD, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -713,6 +746,7 @@ public class CommandPlot extends Command {
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					//No es un plot
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -721,13 +755,14 @@ public class CommandPlot extends Command {
 				if(!plot.hasOwner() || plot.hasOwner() && !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					//No tiene dueño o no es el dueño
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				plot.getPlotConfiguration().setUndeny(playerName);
 				
 				Translation.getAndSendMessage(sender, StringsID.PLOT_UNDENY_PLAYER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerName), true);
-				
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}else{
 				//Argumentos inválidos
@@ -742,10 +777,18 @@ public class CommandPlot extends Command {
 			Location loc = p.getLocation();
 			
 			if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
+				
+				if(!this.hasPermission(p)){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
+					return CommandExecuteResult.NO_PERMISSIONS;
+				}
+				
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 				
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -753,18 +796,20 @@ public class CommandPlot extends Command {
 				
 				if(!plot.hasOwner()){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!plot.havePermissions(p) || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				//Solo el dueño puede establecer esto
 				plot.getPlotConfiguration().setPlotSpawnLocation(loc);
 				Translation.getAndSendMessage(sender, StringsID.PLOT_SET_HOME_BLOCK_SUCCESS, true);
-				
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}
 		}else if(args[1].equalsIgnoreCase("home")){
@@ -774,12 +819,19 @@ public class CommandPlot extends Command {
 				return CommandExecuteResult.OTHER;
 			}
 			
-			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
-				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
-				return CommandExecuteResult.OTHER;
+			Player p = (Player) sender;
+			
+			if(!this.hasPermission(p)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
+				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
-			Player p = (Player) sender;
+			if(!AllBanks.getInstance().getConfig().getBoolean("modules.allbanksland.enable")){
+				Translation.getAndSendMessage(sender, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksLand"), true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
+				return CommandExecuteResult.OTHER;
+			}
 			
 			int home = 1;
 			
@@ -799,6 +851,7 @@ public class CommandPlot extends Command {
 			
 			if(plots.isEmpty()){
 				Translation.getAndSendMessage(p, StringsID.PLOT_HOME_ERROR_NOT_PLOTS, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -810,7 +863,8 @@ public class CommandPlot extends Command {
 			
 			if(!AllBanksWorld.worldIsAllBanksWorld(worldID)){
 				//¿¿Error??
-				sender.sendMessage("Error, invalid World. (Reason: Unknow).");
+				p.sendMessage("Error, invalid World. (Reason: Unknow).");
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -830,6 +884,13 @@ public class CommandPlot extends Command {
 			}
 			
 			Player p = (Player) sender;
+			
+			if(!this.hasPermission(p)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
+			
 			Location loc = p.getLocation();
 			
 			if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
@@ -837,6 +898,7 @@ public class CommandPlot extends Command {
 				
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -844,18 +906,20 @@ public class CommandPlot extends Command {
 				
 				if(!plot.hasOwner()){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				if(!plot.havePermissions(p) || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
 					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
 				//Solo el dueño puede establecer esto
 				plot.getPlotConfiguration().setShopSpawnLocation(loc);
 				Translation.getAndSendMessage(sender, StringsID.PLOT_SET_HOME_BLOCK_SUCCESS, true);
-			
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}
 		}else if(args[1].equalsIgnoreCase("info")){
@@ -866,6 +930,12 @@ public class CommandPlot extends Command {
 			
 			Player p = (Player) sender;
 			Location loc = p.getLocation();
+			
+			if(!this.hasPermission(p)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
 			
 			if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
@@ -1016,14 +1086,19 @@ public class CommandPlot extends Command {
 						replaceMap.put("%6%", deny);
 						
 						Translation.getAndSendMessage(sender, StringsID.PLOT_INFO, replaceMap, false);
+						InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+						return CommandExecuteResult.SUCCESS;
 					}else{
-						Translation.getAndSendMessage(sender, StringsID.PLOT_INFO_NO_OWNER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + plot.getPlotX() + "," + plot.getPlotZ()), true);
+						InteractiveUtil.sendSound(p, SoundType.WARNING);
+						Translation.getAndSendMessage(p, StringsID.PLOT_INFO_NO_OWNER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + plot.getPlotX() + "," + plot.getPlotZ()), true);
 					}
 				}else{					
-					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
+					Translation.getAndSendMessage(p, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
 					return CommandExecuteResult.OTHER;
 				}
 			}else{
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
 				return CommandExecuteResult.OTHER;
 			}
@@ -1038,11 +1113,13 @@ public class CommandPlot extends Command {
 			
 			if(!this.hasPermission(p)){
 				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
 			if(!AllBanksWorld.worldIsAllBanksWorld(p.getLocation().getWorld().getName())){
 				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
@@ -1068,13 +1145,30 @@ public class CommandPlot extends Command {
 			
 			if((currentPlots + 1) > plotLimit){
 				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.OTHER;
 			}
 			
+			//Dinero??
+			if(!AllBanks.getEconomy().has(p, abw.getWorldConfiguration().claimCost().doubleValue())){
+				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_INSUFICIENT_MONEY, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getEconomy().format(abw.getWorldConfiguration().claimCost().doubleValue())), true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
+				return CommandExecuteResult.OTHER;
+			}
 			AllBanksPlot plot = new AllBanksPlot(AllBanksPlot.PlotHelper.getNextAvailablePlot(abw));
 			
 			plot.claim(p.getName());
 			p.teleport(plot.getFirstBound());
+			AllBanks.getEconomy().withdrawPlayer(p, abw.getWorldConfiguration().claimCost().doubleValue());
+			
+			HashMap<String, String> replaceMap = new HashMap<String, String>();
+			replaceMap.put("%1%", String.valueOf(plot.getPlotX()));
+			replaceMap.put("%2%", String.valueOf(plot.getPlotZ()));
+			replaceMap.put("%3%", plot.getAllBanksWorld().getID());
+			
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_CLAIM_SUCCESS, replaceMap, true);
+			InteractiveUtil.sendSound(p, SoundType.SUCCESS);
+			return CommandExecuteResult.SUCCESS;
 			
 		}else if(args[1].equalsIgnoreCase("teleport")){
 			if(args.length >= 3){
@@ -1089,6 +1183,7 @@ public class CommandPlot extends Command {
 				
 				if(!this.hasPermission(sender)){
 					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
 					return CommandExecuteResult.NO_PERMISSIONS;
 				}
 				
@@ -1134,6 +1229,7 @@ public class CommandPlot extends Command {
 				
 				if(plots.isEmpty()){
 					Translation.getAndSendMessage(p, StringsID.PLOT_PLAYER_NOT_HAVE_PLOTS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerHome), true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
@@ -1149,12 +1245,13 @@ public class CommandPlot extends Command {
 				
 				if(!plot.getPlotConfiguration().allowTeleport() && !plot.havePermissions(p)){
 					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_ALLOW_TELEPORT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
 					return CommandExecuteResult.OTHER;
 				}
 				
 				p.teleport(plot.getFirstBound());
 				Translation.getAndSendMessage(p, StringsID.PLOT_TELEPORT_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + playerHome), true);
-				
+				InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 				return CommandExecuteResult.SUCCESS;
 			}
 		}else if(args[1].equalsIgnoreCase("list")){
@@ -1167,6 +1264,7 @@ public class CommandPlot extends Command {
 			
 			if(!this.hasPermission(p)){
 				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.NO_PERMISSIONS;
 			}
 			
@@ -1176,6 +1274,7 @@ public class CommandPlot extends Command {
 			
 			if(plots.isEmpty()){
 				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_NO_RESULT, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 				return CommandExecuteResult.SUCCESS;
 			}
 			
@@ -1215,7 +1314,7 @@ public class CommandPlot extends Command {
 			
 			if((startRes + 5) < plots.size())
 				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_SUGGEST_PAGES, Translation.splitStringIntoReplaceHashMap(">>>", "%COMMAND_LABEL%>>>" + labelPrefix, "%1%>>>" + (page + 1)), true);
-			
+			InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 			return CommandExecuteResult.SUCCESS;
 		}
 		

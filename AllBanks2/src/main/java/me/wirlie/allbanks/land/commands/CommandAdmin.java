@@ -16,7 +16,8 @@ import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.land.WorldGenerationCfg;
 import me.wirlie.allbanks.land.AllBanksWorld.WorldGenerationResult;
 import me.wirlie.allbanks.land.WorldConfiguration;
-import me.wirlie.allbanks.utils.WorldLoadAsync;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
 
 public class CommandAdmin extends Command {
 	
@@ -79,10 +80,27 @@ public class CommandAdmin extends Command {
 					//Checar si la configuración de generación para este mundo existe
 					if(WorldGenerationCfg.generatorConfigurationFileExists(worldName)){
 						//Generar mundo
-						if(WorldLoadAsync.isBusy()){
-							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_ANOTHER_JOB_IN_PROGRESS, true);
-							return CommandExecuteResult.OTHER;
-						}
+						try {
+							//R1 Support
+				    		Class.forName("org.bukkit.craftbukkit.v1_9_R1.CraftServer");
+				    		if(WorldLoadAsync_1_9_R1.isBusy()){
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_ANOTHER_JOB_IN_PROGRESS, true);
+								return CommandExecuteResult.OTHER;
+							}
+				    	}catch (ClassNotFoundException e) {
+				    		try {
+								//R1 Support
+					    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
+					    		if(WorldLoadAsync_1_9_R2.isBusy()){
+									Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_ANOTHER_JOB_IN_PROGRESS, true);
+									return CommandExecuteResult.OTHER;
+								}
+					    	}catch (ClassNotFoundException e2) {
+					    		e2.printStackTrace();
+					    		return CommandExecuteResult.EXCEPTION;
+					    	}
+				    	}
+						
 						
 						WorldGenerationResult result = AllBanksWorld.generatePlotWorld(worldName, sender);
 						
@@ -114,7 +132,7 @@ public class CommandAdmin extends Command {
 					
 					if(world != null){
 						
-						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
+						if(WorldLoadAsync_1_9_R1.isBusy() && WorldLoadAsync_1_9_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
 							//En generación
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 							return CommandExecuteResult.OTHER;
@@ -150,7 +168,7 @@ public class CommandAdmin extends Command {
 						return CommandExecuteResult.OTHER;
 					}else{
 						
-						if(WorldLoadAsync.isBusy() && WorldLoadAsync.lastWorldGenerated.equalsIgnoreCase(worldName)){
+						if(WorldLoadAsync_1_9_R1.isBusy() && WorldLoadAsync_1_9_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
 							//En generación
 							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 							return CommandExecuteResult.OTHER;

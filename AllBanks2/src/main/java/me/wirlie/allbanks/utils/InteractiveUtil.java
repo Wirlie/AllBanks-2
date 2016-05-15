@@ -68,6 +68,7 @@ public class InteractiveUtil{
 		SWITCH_BANK_STEP,
 		VIRTUAL_CHEST_OPEN,
 		VIRTUAL_CHEST_CLOSE,
+		WARNING,
 		NEW_BANK;
 	}
 	
@@ -99,6 +100,10 @@ public class InteractiveUtil{
 			break;
 		case NEW_BANK:
 			sendSound = Sound.ENTITY_FIREWORK_BLAST;
+			soundPitch = 1;
+			break;
+		case WARNING:
+			sendSound = Sound.BLOCK_NOTE_PLING;
 			soundPitch = 1;
 			break;
 		}

@@ -48,7 +48,8 @@ public class Command {
 		INSUFICIENT_ARGUMENTS,
 		DEFAULT,
 		OTHER,
-		INVALID_ARGUMENTS
+		INVALID_ARGUMENTS,
+		EXCEPTION
 	}
 	
 	public void setArguments(String... args) {

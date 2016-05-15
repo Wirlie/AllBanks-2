@@ -82,7 +82,7 @@ banks:
     # How much xp can save the player in the bank?
     # -1 = unlimited
     # Supported values: Exp amount:     2000
-    #                   Levels:         10Lvl or 10Levels or 10L
+    #                   Levels:         100Lvl or 100Levels or 100L
     max-xp-player-can-save: "100L"
 shop:
   admin-tag: "admin"

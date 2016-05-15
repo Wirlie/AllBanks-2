@@ -18,7 +18,8 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
-import me.wirlie.allbanks.utils.WorldLoadAsync;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
 
 public class AllBanksWorld {
 	
@@ -113,7 +114,21 @@ public class AllBanksWorld {
 		new BukkitRunnable(){
 
 			public void run() {
-				WorldLoadAsync.createAsyncWorld(wc, sender, 0, worldCfg.world_height, 0);
+				try {
+					//R1 Support
+		    		Class.forName("org.bukkit.craftbukkit.v1_9_R1.CraftServer");
+		    		WorldLoadAsync_1_9_R1.createAsyncWorld(wc, sender, 0, worldCfg.world_height, 0);
+		    	}catch (ClassNotFoundException e) {
+		            //R2 Support
+		    		try {
+						//R1 Support
+			    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
+			    		WorldLoadAsync_1_9_R2.createAsyncWorld(wc, sender, 0, worldCfg.world_height, 0);
+			    	}catch (ClassNotFoundException e2) {
+			    		e2.printStackTrace();
+			            return;
+			        }
+		        }
 				
 				//Tabla en la base de datos
 				Statement stm = null;

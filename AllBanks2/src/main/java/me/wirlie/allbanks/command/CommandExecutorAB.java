@@ -92,6 +92,9 @@ public class CommandExecutorAB implements CommandExecutor {
 			case SUCCESS:
 				AllBanksLogger.info(sender.getName() + " has executed a command: (/" + label + " " + argsString + "), the result is SUCCESS. [Result: SUCCESS]");
 				break;
+			case EXCEPTION:
+				AllBanksLogger.info(sender.getName() + " has executed a command: (/" + label + " " + argsString + "), but a EXCEPTION has ocurred!!! [Result: SUCCESS]");
+				break;
 			}
 		}else{
 			List<Command> possibleCommands = CommandManagerAB.possibleMatches(args);

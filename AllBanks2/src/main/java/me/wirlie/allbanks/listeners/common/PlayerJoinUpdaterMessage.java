@@ -27,6 +27,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.utils.InteractiveUtil;
+import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
  * Enviar mensaje de actualización a los jugadores operadores.
@@ -44,6 +46,8 @@ public class PlayerJoinUpdaterMessage implements Listener {
 				if(p.isOp() && AllBanks.updatePending){
 					Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
 				}
+				
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
 			}
 		}.runTaskLater(AllBanks.getInstance(), 20 * 4);
 	}

@@ -12,8 +12,8 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <minecraft_version>1_9_R1</minecraft_version>
-    <minecraft.version>1.9</minecraft.version>
+    <minecraft_version>1_9_R2</minecraft_version>
+    <minecraft.version>1.9.4</minecraft.version>
   </properties>
   
   <repositories>
@@ -91,6 +91,13 @@
     	<version>1.9</version>
     	<scope>system</scope>
     	<systemPath>${project.basedir}/resources/R1.jar</systemPath>
+    </dependency>
+    <dependency>
+    	<groupId>org.bukkit</groupId>
+    	<artifactId>craftbukkitR2</artifactId>
+    	<version>1.9.4</version>
+    	<scope>system</scope>
+    	<systemPath>${project.basedir}/resources/R2.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
