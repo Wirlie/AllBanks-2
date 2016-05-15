@@ -131,12 +131,28 @@ public class CommandAdmin extends Command {
 					World world = Bukkit.getWorld(worldName);
 					
 					if(world != null){
-						
-						if(WorldLoadAsync_1_9_R1.isBusy() && WorldLoadAsync_1_9_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
-							//En generación
-							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-							return CommandExecuteResult.OTHER;
-						}
+						try {
+							//R1 Support
+				    		Class.forName("org.bukkit.craftbukkit.v1_9_R1.CraftServer");
+				    		if(WorldLoadAsync_1_9_R1.isBusy() && WorldLoadAsync_1_9_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
+								//En generación
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+								return CommandExecuteResult.OTHER;
+							}
+				    	}catch (ClassNotFoundException e) {
+				    		try {
+								//R1 Support
+					    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
+					    		if(WorldLoadAsync_1_9_R2.isBusy() && WorldLoadAsync_1_9_R2.lastWorldGenerated.equalsIgnoreCase(worldName)){
+									//En generación
+									Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+									return CommandExecuteResult.OTHER;
+								}
+					    	}catch (ClassNotFoundException e2) {
+					    		e2.printStackTrace();
+					    		return CommandExecuteResult.EXCEPTION;
+					    	}
+				    	}
 						
 						//Descargar mundo
 						if(AllBanksWorld.unloadPlotWorld(worldName, true)){
@@ -167,12 +183,28 @@ public class CommandAdmin extends Command {
 						Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_REMOVE_WORLD_ERROR_WORLD_NEED_UNLOAD, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 						return CommandExecuteResult.OTHER;
 					}else{
-						
-						if(WorldLoadAsync_1_9_R1.isBusy() && WorldLoadAsync_1_9_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
-							//En generación
-							Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
-							return CommandExecuteResult.OTHER;
-						}
+						try {
+							//R1 Support
+				    		Class.forName("org.bukkit.craftbukkit.v1_9_R1.CraftServer");
+				    		if(WorldLoadAsync_1_9_R1.isBusy() && WorldLoadAsync_1_9_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
+								//En generación
+								Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+								return CommandExecuteResult.OTHER;
+							}
+				    	}catch (ClassNotFoundException e) {
+				    		try {
+								//R1 Support
+					    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
+					    		if(WorldLoadAsync_1_9_R2.isBusy() && WorldLoadAsync_1_9_R2.lastWorldGenerated.equalsIgnoreCase(worldName)){
+									//En generación
+									Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+									return CommandExecuteResult.OTHER;
+								}
+					    	}catch (ClassNotFoundException e2) {
+					    		e2.printStackTrace();
+					    		return CommandExecuteResult.EXCEPTION;
+					    	}
+				    	}
 						
 						//Carpeta del mundo
 						int check = AllBanksWorld.removePlotWorldFolderAndDataBase(worldName);
