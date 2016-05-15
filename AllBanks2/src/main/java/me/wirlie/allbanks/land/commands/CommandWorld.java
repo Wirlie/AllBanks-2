@@ -30,7 +30,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.land.AllBanksWorld;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
-import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_4_R2;
 
 /**
  * @author Wirlie
@@ -101,7 +101,7 @@ public class CommandWorld extends Command {
 				    		try {
 								//R1 Support
 					    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
-					    		if(WorldLoadAsync_1_9_R2.isBusy() && WorldLoadAsync_1_9_R2.lastWorldGenerated.equalsIgnoreCase(worldName)){
+					    		if(WorldLoadAsync_1_9_4_R2.isBusy() && WorldLoadAsync_1_9_4_R2.lastWorldGenerated.equalsIgnoreCase(worldName)){
 									//El mundo se está generando
 									Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 								}else{

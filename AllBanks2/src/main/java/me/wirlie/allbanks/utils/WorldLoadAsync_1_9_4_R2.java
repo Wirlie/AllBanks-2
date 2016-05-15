@@ -59,7 +59,7 @@ import net.minecraft.server.v1_9_R2.WorldSettings;
  * @author Wirlie
  *
  */
-public class WorldLoadAsync_1_9_R2 {
+public class WorldLoadAsync_1_9_4_R2 {
 
 	private static ChunkGenerator generator;
 	private static Chunk waitForChunk;
