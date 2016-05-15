@@ -66,13 +66,15 @@ public class CommandExecutorAB implements CommandExecutor {
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
-		
 		if(CommandManagerAB.checkCommandMatch(args)){
-			CommandExecuteResult result = CommandManagerAB.executeCommand(sender, label, args);
+			
 			String argsString = "";
 			for(String s : args){
 				argsString += s + " ";
 			}
+			
+			CommandExecuteResult result = CommandManagerAB.executeCommand(sender, label, args);
+			
 			switch(result){
 			case DEFAULT:
 				AllBanksLogger.info(sender.getName() + " has tried to execute: (/" + label + " " + argsString + "), but, a DEFAULT result returned (probably this command does not exists) [Result:DEFAULT]");

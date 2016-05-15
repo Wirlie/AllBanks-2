@@ -37,7 +37,7 @@ public class CommandManagerAB {
 	
 	private static List<Command> registeredCommands = new ArrayList<Command>();
 	
-	public static void registerCommand(Command command, String label, String... arguments){
+	public static void registerCommand(Command command, String... arguments){
 		
 		List<String> argumentsRepresentation = new ArrayList<String>();
 		

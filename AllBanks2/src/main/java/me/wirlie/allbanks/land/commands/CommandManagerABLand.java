@@ -66,7 +66,7 @@ public class CommandManagerABLand {
 	 */
 	public static CommandExecuteResult executeCommand(CommandSender sender, String label, String[] args) {
 		for(Command command : registeredCommands){
-			if(command.matchArguments(args)){
+			if(command.matchArguments(args)){	
 				return command.execute(sender, label, args);
 			}
 		}

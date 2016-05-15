@@ -4,6 +4,7 @@
 ## AllBanks v1.0
 
 language-version: "1.1.4"
+LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 
 1: "Enabling plugin.%BREAK%Starting local database..."
 2: "Disabling plugin.%BREAK%Saving local database..."
