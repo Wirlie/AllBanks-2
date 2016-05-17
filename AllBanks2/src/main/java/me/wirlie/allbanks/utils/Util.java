@@ -99,17 +99,22 @@ public class Util {
 		return radiusEntities.toArray(new Entity[radiusEntities.size()]);
 	}
 
-
+	public enum CompareVersionResult{
+		VERSION_1_IS_GREATER,
+		VERSION_2_IS_GREATER,
+		VERSION_EQUALS,
+		NUMBER_FORMAT_EXCEPTION
+	}
 	
 	/**
 	 * Compara dos versiones del tipo {@code 1.0.0}.
-	 * @param version1 Version
-	 * @param version2 Version que se desea comparar con {@code arg0}
+	 * @param pluginVersion Version
+	 * @param bukkitVersion Version que se desea comparar con {@code arg0}
 	 * @return 1 si {@code version1} > {@code version2} <br> 0 si {@code arg0} = {@code arg1} <br> -1 si {@code version1} < {@code version2} <br> -2 si la operación falla
 	 */
 	
-	public static int compareVersionsString(String version1, String version2) {
-		if(version1.equalsIgnoreCase(version2)) return 0;
+	public static CompareVersionResult compareVersionsString(String version1, String version2) {
+		if(version1.equalsIgnoreCase(version2)) return CompareVersionResult.VERSION_EQUALS;
 		
     	List<String> version1Split = new ArrayList<String>(Arrays.asList(version1.split("\\D")));
 		List<String> version2Split = new ArrayList<String>(Arrays.asList(version2.split("\\D")));
@@ -122,7 +127,6 @@ public class Util {
     		for(int i = 0; i < excedent; i++) {
     			version2Split.add("0");
     		}
-    		
     	}else {
     		//Igualar version 1 a version 2
     		int excedent = maxParameters - version1Split.size();
@@ -134,20 +138,21 @@ public class Util {
     	for(int i = 0; i < maxParameters; i++) {
     		//Comprobar si es posible comparar ambos parámetros en ambos splits
 			try {
-				int version1ValueParameter = Integer.parseInt(version1Split.get(i));
-				int version2ValueParameter = Integer.parseInt(version2Split.get(i));
+				int version1Arg = Integer.parseInt(version1Split.get(i));
+				int version2Arg = Integer.parseInt(version2Split.get(i));
 				
-				if(version1ValueParameter > version2ValueParameter) {
-					return 1;
-				}else {
-					continue;
+				if(version1Arg < version2Arg) {
+					return CompareVersionResult.VERSION_2_IS_GREATER;
+				} else if(version1Arg > version2Arg) {
+					return CompareVersionResult.VERSION_1_IS_GREATER;
 				}
 			}catch (NumberFormatException e) {
-				return -2;
+				return CompareVersionResult.NUMBER_FORMAT_EXCEPTION;
 			}
     	}
-
-        return -1;
+    	
+    	//??
+		return null;
 	}
 	
 	//Directorios

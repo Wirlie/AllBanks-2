@@ -92,6 +92,7 @@ import me.wirlie.allbanks.utils.ConfigurationUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FakeItemManager;
 import me.wirlie.allbanks.utils.Util;
+import me.wirlie.allbanks.utils.Util.CompareVersionResult;
 import net.milkbowl.vault.economy.Economy;
 
 /**
@@ -1149,13 +1150,13 @@ public class AllBanks extends JavaPlugin {
 		//Permisos default
 		List<String> defaultPerms = userCfg.getStringList("default-permissions");
 		
-		if(Util.compareVersionsString("1.1.4", userCfg.getString("cfg-version", "0")) == 1){
+		if(Util.compareVersionsString("1.1.4", userCfg.getString("cfg-version", "0")) == CompareVersionResult.VERSION_1_IS_GREATER){
 			if(!defaultPerms.contains("allbanks.land.commands.plot.sethomespawn")) defaultPerms.add("allbanks.land.commands.plot.sethomespawn");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.setshopspawn")) defaultPerms.add("allbanks.land.commands.plot.setshopspawn");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.home")) defaultPerms.add("allbanks.land.commands.plot.home");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.teleport")) defaultPerms.add("allbanks.land.commands.plot.teleport");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.auto")) defaultPerms.add("allbanks.land.commands.plot.auto");
-		}else if(Util.compareVersionsString("1.1", userCfg.getString("cfg-version", "0")) == 1){
+		}else if(Util.compareVersionsString("1.1", userCfg.getString("cfg-version", "0")) == CompareVersionResult.VERSION_1_IS_GREATER){
 			if(!defaultPerms.contains("allbanks.land.commands.plot.claim")) defaultPerms.add("allbanks.land.commands.plot.claim");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.unclaim")) defaultPerms.add("allbanks.land.commands.plot.unclaim");
 			if(!defaultPerms.contains("allbanks.land.commands.plot.set.flags")) defaultPerms.add("allbanks.land.commands.plot.set.flags");
@@ -1266,10 +1267,10 @@ public class AllBanks extends JavaPlugin {
 			return VersionCheckResult.COMPATIBLE;
 		}else{
 			//Detectar si se está usando una versión incompatible o una versión no probada
-			if(Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == 1 
-				|| Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == 0 
-				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == -1 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
-				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == 0 && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
+			if(Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == CompareVersionResult.VERSION_1_IS_GREATER 
+				|| Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == CompareVersionResult.VERSION_EQUALS 
+				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_2_IS_GREATER && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
+				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_EQUALS && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
 				AllBanks.getInstance().getLogger().severe("Please use the correct version of CraftBukkit/Spigot.");
 				AllBanks.getInstance().getLogger().severe("For this build, CB 1.9 is expected.");
 				return VersionCheckResult.NOT_COMPATIBLE;

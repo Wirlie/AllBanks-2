@@ -17,6 +17,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
 import me.wirlie.allbanks.utils.Util;
+import me.wirlie.allbanks.utils.Util.CompareVersionResult;
 
 /**
  * Check for updates on BukkitDev for a given plugin, and download the updates if needed.
@@ -595,7 +596,9 @@ public class Updater {
      */
     public boolean shouldUpdate(String pluginVersion, String serverVersion) {
 
-    	if(Util.compareVersionsString(serverVersion, pluginVersion) == 1){
+    	CompareVersionResult checkResult = Util.compareVersionsString(serverVersion, pluginVersion);
+    	System.out.println("SSSSSS" + checkResult + " pv: " + pluginVersion + " sv: " + serverVersion);
+    	if(checkResult == CompareVersionResult.VERSION_1_IS_GREATER){
     		return true;
     	}
     	
