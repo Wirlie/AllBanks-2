@@ -35,45 +35,45 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  * @since AllBanks v1.0
  *
  */
-public class CommandExecutorAB implements CommandExecutor {
+public class CommandExecutorAB extends AllBanksExecutor implements CommandExecutor{
 	
 	public CommandExecutorAB(){
 		//ItemInfo
-		CommandManagerAB.registerCommand(new CommandItemInfo("allbanks.commands.iteminfo"), "iteminfo");
+		registerCommand(new CommandItemInfo("allbanks.commands.iteminfo"), "iteminfo");
 		//Lotería
-		CommandManagerAB.registerCommand(new CommandLottery(null), "lottery", "?");
-		CommandManagerAB.registerCommand(new CommandLottery(null), "lottery", "help");
-		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.info"), "lottery", "info");
-		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.force"), "lottery", "force");
-		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.enable"), "lottery", "enable");
-		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.disable"), "lottery", "disable");
-		CommandManagerAB.registerCommand(new CommandLottery("allbanks.commands.lottery.buyticket"), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
+		registerCommand(new CommandLottery(null), "lottery", "?");
+		registerCommand(new CommandLottery(null), "lottery", "help");
+		registerCommand(new CommandLottery("allbanks.commands.lottery.info"), "lottery", "info");
+		registerCommand(new CommandLottery("allbanks.commands.lottery.force"), "lottery", "force");
+		registerCommand(new CommandLottery("allbanks.commands.lottery.enable"), "lottery", "enable");
+		registerCommand(new CommandLottery("allbanks.commands.lottery.disable"), "lottery", "disable");
+		registerCommand(new CommandLottery("allbanks.commands.lottery.buyticket"), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
 		//DataBase
-		CommandManagerAB.registerCommand(new CommandDataBase(null), "database", "?");
-		CommandManagerAB.registerCommand(new CommandDataBase(null), "database", "help");
-		CommandManagerAB.registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-query", "RegEx->(.){1,}:<SQL>");
-		CommandManagerAB.registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-update", "RegEx->(.){1,}:<SQL>");
+		registerCommand(new CommandDataBase(null), "database", "?");
+		registerCommand(new CommandDataBase(null), "database", "help");
+		registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-query", "RegEx->(.){1,}:<SQL>");
+		registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-update", "RegEx->(.){1,}:<SQL>");
 		//TopRank
-		CommandManagerAB.registerCommand(new CommandTopRank(null), "toprank", "?");
-		CommandManagerAB.registerCommand(new CommandTopRank(null), "toprank", "help");
-		CommandManagerAB.registerCommand(new CommandTopRank("allbanks.commands.toprank.bankmoney"), "toprank", "bankmoney");
-		CommandManagerAB.registerCommand(new CommandTopRank("allbanks.commands.toprank.bankxp"), "toprank", "bankxp");
+		registerCommand(new CommandTopRank(null), "toprank", "?");
+		registerCommand(new CommandTopRank(null), "toprank", "help");
+		registerCommand(new CommandTopRank("allbanks.commands.toprank.bankmoney"), "toprank", "bankmoney");
+		registerCommand(new CommandTopRank("allbanks.commands.toprank.bankxp"), "toprank", "bankxp");
 		//Ayuda
-		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "help");
-		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "help", "RegEx->([0-9]){1,}:<page>");
-		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "?");
-		CommandManagerAB.registerCommand(new CommandHelp("allbanks.commands.help"), "?", "RegEx->([0-9]){1,}:<page>");
+		registerCommand(new CommandHelp("allbanks.commands.help"), "help");
+		registerCommand(new CommandHelp("allbanks.commands.help"), "help", "RegEx->([0-9]){1,}:<page>");
+		registerCommand(new CommandHelp("allbanks.commands.help"), "?");
+		registerCommand(new CommandHelp("allbanks.commands.help"), "?", "RegEx->([0-9]){1,}:<page>");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
-		if(CommandManagerAB.checkCommandMatch(args)){
+		if(checkCommandMatch(args)){
 			
 			String argsString = "";
 			for(String s : args){
 				argsString += s + " ";
 			}
 			
-			CommandExecuteResult result = CommandManagerAB.executeCommand(sender, label, args);
+			CommandExecuteResult result = executeCommand(sender, label, args);
 			
 			switch(result){
 			case DEFAULT:
@@ -99,14 +99,20 @@ public class CommandExecutorAB implements CommandExecutor {
 				break;
 			}
 		}else{
-			List<Command> possibleCommands = CommandManagerAB.possibleMatches(args);
+			List<Command> possibleCommands = possibleMatches(args);
 			
 			if(possibleCommands.size() == 0){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab help"), true);
 				return true;
 			}
+			
+			String argsCommand = "";
+			
+			for(String s : args){
+				argsCommand += s + " ";
+			}
 
-			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/ab " + argsCommand), true);
 
 			int showed = 0;
 			
@@ -124,4 +130,5 @@ public class CommandExecutorAB implements CommandExecutor {
 		
 		return true;
 	}
+	
 }

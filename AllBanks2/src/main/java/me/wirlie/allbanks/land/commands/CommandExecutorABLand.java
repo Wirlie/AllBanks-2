@@ -26,6 +26,7 @@ import org.bukkit.command.CommandSender;
 
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.command.AllBanksExecutor;
 import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.command.Command.CommandExecuteResult;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -34,7 +35,7 @@ import me.wirlie.allbanks.logger.AllBanksLogger;
  * @author Wirlie
  *
  */
-public class CommandExecutorABLand implements CommandExecutor {
+public class CommandExecutorABLand extends AllBanksExecutor implements CommandExecutor {
 	
 	static CommandExecutorABLand instance;
 
@@ -42,42 +43,42 @@ public class CommandExecutorABLand implements CommandExecutor {
 		instance = this;
 		
 		//Relacionado a comandos Admin
-		CommandManagerABLand.registerCommand(new CommandAdmin(null), "admin", "?");
-		CommandManagerABLand.registerCommand(new CommandAdmin(null), "admin", "help");
-		CommandManagerABLand.registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.generate"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "generate");
-		CommandManagerABLand.registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.unload"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "unload");
-		CommandManagerABLand.registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.remove"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "remove");
-		CommandManagerABLand.registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.info"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "info");
-		CommandManagerABLand.registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.set"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "set", "RegEx->(.){1,}:<Flag>", "RegEx->(.){1,}:<Value>");
+		registerCommand(new CommandAdmin(null), "admin", "?");
+		registerCommand(new CommandAdmin(null), "admin", "help");
+		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.generate"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "generate");
+		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.unload"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "unload");
+		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.remove"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "remove");
+		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.info"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "info");
+		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.set"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "set", "RegEx->(.){1,}:<Flag>", "RegEx->(.){1,}:<Value>");
 		
 		//Spawns de mundos
-		CommandManagerABLand.registerCommand(new CommandWorld("allbanks.land.commands.spawn"), "spawn", "RegEx->(.){1,}:<worldName>");
+		registerCommand(new CommandWorld("allbanks.land.commands.spawn"), "spawn", "RegEx->(.){1,}:<worldName>");
 		//Relacionado al plot y comandos de usuario
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "?");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "help");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.claim"), "plot", "claim");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.dispose"), "plot", "dispose");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.add"), "plot", "add", "RegEx->(.){1,}:<Player>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.add"), "plot", "remove", "RegEx->(.){1,}:<Player>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "deny", "RegEx->(.){1,}:<Player>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "undeny", "RegEx->(.){1,}:<Player>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.set.flags"), "plot", "set", "RegEx->(.){1,}:<Config>", "RegEx->(.){1,}:<Value>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.sethomespawn"), "plot", "setHomeSpawn");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.setshopspawn"), "plot", "setShopSpawn");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "info");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home", "RegEx->([0-9]){1,}:<#>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.teleport"), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "auto");
-		CommandManagerABLand.registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "autoclaim");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "list");
-		CommandManagerABLand.registerCommand(new CommandPlot(null), "plot", "list", "RegEx->([0-9]){1,}:<page>");
+		registerCommand(new CommandPlot(null), "plot", "?");
+		registerCommand(new CommandPlot(null), "plot", "help");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.claim"), "plot", "claim");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.dispose"), "plot", "dispose");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.add"), "plot", "add", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.add"), "plot", "remove", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "deny", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "undeny", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.set.flags"), "plot", "set", "RegEx->(.){1,}:<Config>", "RegEx->(.){1,}:<Value>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.sethomespawn"), "plot", "setHomeSpawn");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.setshopspawn"), "plot", "setShopSpawn");
+		registerCommand(new CommandPlot(null), "plot", "info");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home", "RegEx->([0-9]){1,}:<#>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.teleport"), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "auto");
+		registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "autoclaim");
+		registerCommand(new CommandPlot(null), "plot", "list");
+		registerCommand(new CommandPlot(null), "plot", "list", "RegEx->([0-9]){1,}:<page>");
 	}
 	
-public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
+	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
 		
-		if(CommandManagerABLand.checkCommandMatch(args)){
-			CommandExecuteResult result = CommandManagerABLand.executeCommand(sender, label, args);
+		if(checkCommandMatch(args)){
+			CommandExecuteResult result = executeCommand(sender, label, args);
 			String argsString = "";
 			for(String s : args){
 				argsString += s + " ";
@@ -108,14 +109,20 @@ public boolean onCommand(CommandSender sender, org.bukkit.command.Command comman
 			}
 			
 		}else{
-			List<Command> possibleCommands = CommandManagerABLand.possibleMatches(args);
+			List<Command> possibleCommands = possibleMatches(args);
 			
 			if(possibleCommands.size() == 0){
-				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abland help"), true);
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_NO_ARGUMENT_MATCH, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abl help"), true);
 				return true;
 			}
+			
+			String argsCommand = "";
+			
+			for(String s : args){
+				argsCommand += s + " ";
+			}
 
-			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, true);
+			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abl " + argsCommand), true);
 			
 			int showed = 0;
 			
@@ -139,8 +146,8 @@ public boolean onCommand(CommandSender sender, org.bukkit.command.Command comman
 		return true;
 	}
 
-public static CommandExecutorABLand getInstance() {
-	return instance;
-}
+	public static CommandExecutorABLand getInstance() {
+		return instance;
+	}
 
 }

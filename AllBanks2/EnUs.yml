@@ -3,7 +3,7 @@
 ##
 ## AllBanks v1.0
 
-language-version: "1.1.4.1"
+language-version: "1.1.5"
 LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 
 1: "Enabling plugin.%BREAK%Starting local database..."
@@ -125,7 +125,7 @@ LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 117: "Execute a SQL statement of the type ExecuteUpdate."
 118: "&c&lAllBanks2 has been updated to version &f&l%1%&c&l, please reload the server to complete the update."
 119: "&cWhat do you mean?, please use &f%1%"
-120: "&bDo you mean...?"
+120: "&bPossible commands for: &6%1%"
 121: "&cAll possible commands are not shown, use &f%1% &cfor see all commands."
 122: "&cThe world &f%1% &cnot be has been generated because it already exists."
 123: "&eGenerating world &f%1% &e, please wait."
