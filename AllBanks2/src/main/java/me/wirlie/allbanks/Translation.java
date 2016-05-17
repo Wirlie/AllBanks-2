@@ -365,7 +365,7 @@ public class Translation{
 	}
 	
 	static boolean firstExecution = false;
-	static boolean debugTranslationFile = false;
+	static boolean debugTranslationFile = AllBanks.getInstance().getConfig().getBoolean("debug-mode", false);
 	
 	/**
 	 * Nos aseguramos de que un archivo de lenguaje se encuentra actualizado.
@@ -382,7 +382,7 @@ public class Translation{
 			
 			//No concuerda, intentar actualizar.
 			if(firstExecution)
-				Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResourceName() + " " + version + " to " + AllBanks.getInstance().getDescription().getVersion());
+				Console.sendMessage(ChatColor.YELLOW + "[Translation] Updating " + lang.getResourceName() + " v" + version + " to v" + AllBanks.getInstance().getDescription().getVersion());
 			
 			AllBanks.getInstance().saveResource(lang.getResourceName(), true);
 			File nativeLangFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + lang.getResourceName());
@@ -395,8 +395,6 @@ public class Translation{
 			
 			YamlConfiguration nativeYaml = YamlConfiguration.loadConfiguration(nativeLangFile);
 			
-			int count = 0;
-			
 			for(String key : nativeYaml.getKeys(true)){
 				//Object obj = readLanguage.get(key, null);
 				
@@ -408,11 +406,6 @@ public class Translation{
 				
 				readLanguage.set(key, nativeYaml.get(key));
 			}
-			
-			if(count > 0)
-				Console.sendMessage(ChatColor.GREEN + "[Translation] " + count + " translations updated!");
-			else
-				Console.sendMessage(ChatColor.YELLOW + "[Translation] 0 translations updated.");
 			
 			//Actualizar version
 			readLanguage.set("language-version", AllBanks.getInstance().getDescription().getVersion());

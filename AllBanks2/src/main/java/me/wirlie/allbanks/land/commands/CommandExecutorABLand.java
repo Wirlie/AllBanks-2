@@ -121,8 +121,12 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 			for(String s : args){
 				argsCommand += s + " ";
 			}
-
-			Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abl " + argsCommand), true);
+			
+			if(label.equalsIgnoreCase("plot")){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/plot " + argsCommand.replace("plot ", "")), true);
+			}else{
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_POSSIBLE_COMMANDS_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>/abl " + argsCommand), true);
+			}
 			
 			int showed = 0;
 			

@@ -19,9 +19,13 @@
 package me.wirlie.allbanks.land.listeners;
 
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Minecart;
+import org.bukkit.entity.Painting;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -60,19 +64,28 @@ public class PlotEntityListener implements Listener{
 					AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 					
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						//Todas las entidades fuera de un plot pueden ser atacables.
+						if(ent instanceof Minecart || ent instanceof ArmorStand || ent instanceof Painting || ent instanceof ItemFrame){
+							if(!abw.hasAdminPermissions(p)){
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								e.setCancelled(true);
+							}
+						}
 						return;
 					}
 					
 					AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 					
 					if(!plot.hasOwner()){
-						//Todas las entidades que estén en un plot que no tenga dueño pueden ser atacables
+						if(ent instanceof Minecart || ent instanceof ArmorStand || ent instanceof Painting || ent instanceof ItemFrame){
+							if(!abw.hasAdminPermissions(p)){
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								e.setCancelled(true);
+							}
+						}
 						return;
 					}
 					
 					if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
-						//No tiene derecho de hacer eso para atacar entidades no hostiles
 						e.setCancelled(true);
 						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
 						return;
@@ -90,19 +103,28 @@ public class PlotEntityListener implements Listener{
 						AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 						
 						if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-							//Todas las entidades fuera de un plot pueden ser atacables.
+							if(ent instanceof Minecart || ent instanceof ArmorStand || ent instanceof Painting || ent instanceof ItemFrame){
+								if(!abw.hasAdminPermissions(p)){
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+									e.setCancelled(true);
+								}
+							}
 							return;
 						}
 						
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
 						if(!plot.hasOwner()){
-							//Todas las entidades que estén en un plot que no tenga dueño pueden ser atacables
+							if(ent instanceof Minecart || ent instanceof ArmorStand || ent instanceof Painting || ent instanceof ItemFrame){
+								if(!abw.hasAdminPermissions(p)){
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+									e.setCancelled(true);
+								}
+							}
 							return;
 						}
 						
 						if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
-							//No tiene derecho de hacer eso para atacar entidades no hostiles
 							e.setCancelled(true);
 							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
 							return;

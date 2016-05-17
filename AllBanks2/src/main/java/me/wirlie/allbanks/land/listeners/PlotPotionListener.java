@@ -21,21 +21,31 @@ public class PlotPotionListener implements Listener {
             Player p = (Player) e.getEntity().getShooter();
             
             if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
-            	AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
-            	
-            	if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-            		Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-            		e.setCancelled(true);
-            		return;
-            	}
-            	
-            	AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
-            	
-            	if(!plot.hasOwner() || !plot.havePermissions(p)){
-            		e.setCancelled(true);
-            		Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-            	}
-            }
+				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
+				
+				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					}
+				}else{
+					AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+					
+					if(plot.hasOwner()){
+						if(!plot.havePermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return;
+						}
+					}else{
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return;
+						}
+					}
+				}
+			}
         }
     }
 	
@@ -46,21 +56,31 @@ public class PlotPotionListener implements Listener {
             Player p = (Player) e.getEntity().getShooter();
             
             if(AllBanksWorld.worldIsAllBanksWorld(loc.getWorld().getName())){
-            	AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
-            	
-            	if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-            		Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-            		e.setCancelled(true);
-            		return;
-            	}
-            	
-            	AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
-            	
-            	if(!plot.hasOwner() || !plot.havePermissions(p)){
-            		e.setCancelled(true);
-            		Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-            	}
-            }
+				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
+				
+				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					}
+				}else{
+					AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+					
+					if(plot.hasOwner()){
+						if(!plot.havePermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return;
+						}
+					}else{
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return;
+						}
+					}
+				}
+			}
         }
     }
 	

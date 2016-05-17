@@ -22,6 +22,9 @@ import org.bukkit.Location;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.ItemFrame;
+import org.bukkit.entity.Minecart;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -43,6 +46,9 @@ public class PlotPlayerInteractListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)
 	public void onPlayerInteracEntity(PlayerInteractEntityEvent e){
+		
+		if(!(e.getRightClicked() instanceof ArmorStand) && !(e.getRightClicked() instanceof Minecart) && !(e.getRightClicked() instanceof ItemFrame)) return;
+		
 		Location loc = e.getRightClicked().getLocation();
 		Player p = e.getPlayer();
 		
@@ -50,21 +56,25 @@ public class PlotPlayerInteractListener implements Listener {
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 			
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-				e.setCancelled(true);
-				return;
-			}
-			
-			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
-			
-			if(!plot.hasOwner()){
-				e.setCancelled(true);
-				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-				return;
-			}else{
-				if(!plot.havePermissions(p)){
+				if(!abw.hasAdminPermissions(p)){
 					e.setCancelled(true);
 					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return;
+				}
+			}else{
+				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+				
+				if(plot.hasOwner()){
+					if(!plot.havePermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
+				}else{
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
 				}
 			}
 		}
@@ -73,6 +83,9 @@ public class PlotPlayerInteractListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	//# ARMOR STAND
 	public void playerInteractWithArmorStand(PlayerInteractAtEntityEvent e){
+		
+		if(!(e.getRightClicked() instanceof ArmorStand) && !(e.getRightClicked() instanceof Minecart) && !(e.getRightClicked() instanceof ItemFrame)) return;
+		
 		Location loc = e.getRightClicked().getLocation();
 		Player p = e.getPlayer();
 		
@@ -80,21 +93,25 @@ public class PlotPlayerInteractListener implements Listener {
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 			
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-				e.setCancelled(true);
-				return;
-			}
-			
-			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
-			
-			if(!plot.hasOwner()){
-				e.setCancelled(true);
-				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-				return;
-			}else{
-				if(!plot.havePermissions(p)){
+				if(!abw.hasAdminPermissions(p)){
 					e.setCancelled(true);
 					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return;
+				}
+			}else{
+				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+				
+				if(plot.hasOwner()){
+					if(!plot.havePermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
+				}else{
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
 				}
 			}
 		}
@@ -111,22 +128,57 @@ public class PlotPlayerInteractListener implements Listener {
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 				
 				if(b.getType().equals(Material.GOLD_PLATE) || b.getType().equals(Material.IRON_PLATE) || b.getType().equals(Material.WOOD_PLATE) || b.getType().equals(Material.STONE_PLATE)){
-					if(e.getAction().equals(Action.PHYSICAL))
+					if(e.getAction().equals(Action.PHYSICAL)){
 						if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-							e.setCancelled(true);
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							}
 						}else{
 							AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 							
-							if(!plot.hasOwner()){
-								e.setCancelled(true);
-								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-							}else{
-								if(!plot.getPlotConfiguration().usePressurePlate() && !plot.havePermissions(p)){
+							if(plot.hasOwner()){
+								if(!plot.havePermissions(p) && !plot.getPlotConfiguration().usePressurePlate()){
 									e.setCancelled(true);
 									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+									return;
+								}
+							}else{
+								if(!abw.hasAdminPermissions(p)){
+									e.setCancelled(true);
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+									return;
 								}
 							}
 						}
+					}
+				}
+				
+				if(b.getType().equals(Material.TRIPWIRE_HOOK) || b.getType().equals(Material.STRING)){
+					if(e.getAction().equals(Action.PHYSICAL)){
+						if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							}
+						}else{
+							AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+							
+							if(plot.hasOwner()){
+								if(!plot.havePermissions(p) && !plot.getPlotConfiguration().usePressurePlate()){
+									e.setCancelled(true);
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+									return;
+								}
+							}else{
+								if(!abw.hasAdminPermissions(p)){
+									e.setCancelled(true);
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+									return;
+								}
+							}
+						}
+					}
 				}
 				
 				if(b.getType().equals(Material.CHEST) || 
@@ -137,21 +189,33 @@ public class PlotPlayerInteractListener implements Listener {
 						b.getType().equals(Material.ARMOR_STAND) || 
 						b.getType().equals(Material.FURNACE) || 
 						b.getType().equals(Material.JUKEBOX) || 
-						b.getType().equals(Material.DROPPER) || 
+						b.getType().equals(Material.DROPPER) ||
+						b.getType().equals(Material.NOTE_BLOCK) ||
+						b.getType().equals(Material.REDSTONE_COMPARATOR_OFF) ||
+						b.getType().equals(Material.REDSTONE_COMPARATOR_ON) ||
+						b.getType().equals(Material.DIODE_BLOCK_OFF) ||
+						b.getType().equals(Material.DIODE_BLOCK_ON) ||
 						b.getType().equals(Material.TRAPPED_CHEST))
 				{
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
+						if(plot.hasOwner()){
 							if(!plot.havePermissions(p)){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -159,17 +223,24 @@ public class PlotPlayerInteractListener implements Listener {
 				
 				if(b.getType().equals(Material.LEVER)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
-							if(!plot.getPlotConfiguration().useLever() && !plot.havePermissions(p)){
+						if(plot.hasOwner()){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useLever()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -187,17 +258,24 @@ public class PlotPlayerInteractListener implements Listener {
 				{
 					//Puerta
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
-							if(!plot.getPlotConfiguration().useDoor() && !plot.havePermissions(p)){
+						if(plot.hasOwner()){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useDoor()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -211,17 +289,24 @@ public class PlotPlayerInteractListener implements Listener {
 						b.getType().equals(Material.SPRUCE_FENCE_GATE))
 				{
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
-							if(!plot.getPlotConfiguration().useFenceGate() && !plot.havePermissions(p)){
+						if(plot.hasOwner()){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useFenceGate()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -229,25 +314,49 @@ public class PlotPlayerInteractListener implements Listener {
 				
 				if(b.getType().equals(Material.ENCHANTMENT_TABLE)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
+					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
 						if(plot.hasOwner()){
-							if(!plot.getPlotConfiguration().useEnchantmentTable() && !plot.havePermissions(p)){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useEnchantmentTable()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
 				}
 				
 				if(b.getType().equals(Material.WORKBENCH)){
-					if(abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
+					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
 						if(plot.hasOwner()){
-							if(!plot.getPlotConfiguration().useWorkbench() && !plot.havePermissions(p)){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useWorkbench()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -255,17 +364,24 @@ public class PlotPlayerInteractListener implements Listener {
 				
 				if(b.getType().equals(Material.ANVIL)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
-							if(!plot.getPlotConfiguration().useAnvil() && !plot.havePermissions(p)){
+						if(plot.hasOwner()){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useAnvil()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -273,17 +389,24 @@ public class PlotPlayerInteractListener implements Listener {
 				
 				if(b.getType().equals(Material.CAKE_BLOCK)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
+						if(plot.hasOwner()){
 							if(!plot.havePermissions(p)){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -291,17 +414,24 @@ public class PlotPlayerInteractListener implements Listener {
 				
 				if(b.getType().equals(Material.STONE_BUTTON) || b.getType().equals(Material.WOOD_BUTTON)){
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						e.setCancelled(true);
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
 					}else{
 						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 						
-						if(!plot.hasOwner()){
-							e.setCancelled(true);
-							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						}else{
-							if(!plot.getPlotConfiguration().useButton() && !plot.havePermissions(p)){
+						if(plot.hasOwner()){
+							if(!plot.havePermissions(p) && !plot.getPlotConfiguration().useButton()){
 								e.setCancelled(true);
 								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
 							}
 						}
 					}
@@ -321,17 +451,24 @@ public class PlotPlayerInteractListener implements Listener {
 								p.getInventory().getItemInMainHand().getType().equals(Material.STORAGE_MINECART))
 						{
 							if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-								e.setCancelled(true);
+								if(!abw.hasAdminPermissions(p)){
+									e.setCancelled(true);
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								}
 							}else{
 								AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 								
-								if(!plot.hasOwner()){
-									e.setCancelled(true);
-									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-								}else{
+								if(plot.hasOwner()){
 									if(!plot.havePermissions(p)){
 										e.setCancelled(true);
 										Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+										return;
+									}
+								}else{
+									if(!abw.hasAdminPermissions(p)){
+										e.setCancelled(true);
+										Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+										return;
 									}
 								}
 							}
@@ -348,17 +485,24 @@ public class PlotPlayerInteractListener implements Listener {
 								p.getInventory().getItemInMainHand().getType().equals(Material.ARMOR_STAND))
 						{
 							if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-								e.setCancelled(true);
+								if(!abw.hasAdminPermissions(p)){
+									e.setCancelled(true);
+									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								}
 							}else{
 								AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 								
-								if(!plot.hasOwner()){
-									e.setCancelled(true);
-									Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-								}else{
+								if(plot.hasOwner()){
 									if(!plot.havePermissions(p)){
 										e.setCancelled(true);
 										Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+										return;
+									}
+								}else{
+									if(!abw.hasAdminPermissions(p)){
+										e.setCancelled(true);
+										Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+										return;
 									}
 								}
 							}

@@ -47,18 +47,27 @@ public class PlotPlayerBlockPlaceListener implements Listener {
 			AllBanksWorld abw = AllBanksWorld.getInstance(bl.getWorld().getName());
 			
 			if(!abw.locationIsPlot(bl.getBlockX(), bl.getBlockZ())){
-				e.setCancelled(true);
-				return;
+				if(!abw.hasAdminPermissions(p)){
+					e.setCancelled(true);
+					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				}
+			}else{
+				AllBanksPlot plot = abw.getPlot(bl.getBlockX(), bl.getBlockZ());
+				
+				if(plot.hasOwner()){
+					if(!plot.havePermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
+				}else{
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
+				}
 			}
-			
-			AllBanksPlot plot = abw.getPlot(bl.getBlockX(), bl.getBlockZ());
-			
-			if(!plot.hasOwner() || !plot.havePermissions(p)){
-				e.setCancelled(true);
-				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-				return;
-			}
-			
 		}
 	}
 }

@@ -18,8 +18,8 @@
  */
 package me.wirlie.allbanks.land.listeners;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,30 +43,32 @@ public class PlotPlayerBlockBreakListener implements Listener {
 		
 		Player p = e.getPlayer();
 		Block b = e.getBlock();
-		World w = b.getWorld();
+		Location bl = b.getLocation();
 		
-		if(AllBanksWorld.worldIsAllBanksWorld(w.getName().toLowerCase())){
+		if(AllBanksWorld.worldIsAllBanksWorld(bl.getWorld().getName())){
+			AllBanksWorld abw = AllBanksWorld.getInstance(bl.getWorld().getName());
 			
-			int x = b.getLocation().getBlockX();
-			int z = b.getLocation().getBlockZ();
-			//Comprobar
-			AllBanksWorld abw = AllBanksWorld.getInstance(w.getName().toLowerCase());
-			//Es un camino o el limite del plot
-			if(!abw.locationIsPlot(x, z) && !b.getType().equals(Material.LEAVES) && !b.getType().equals(Material.LEAVES_2)){
-				e.setCancelled(true);
-				return;
-			}else if(!abw.locationIsPlot(x, z)){
-				return;
-			}
-			
-			//Obtener el plot
-			AllBanksPlot plot = abw.getPlot(x, z);
-			
-			if(!plot.hasOwner() || !plot.havePermissions(p)){
-				//No es de nadie o no es el dueño.
-				Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-				e.setCancelled(true);
-				return;
+			if(!abw.locationIsPlot(bl.getBlockX(), bl.getBlockZ())){
+				if(!abw.hasAdminPermissions(p) && !(b.getType().equals(Material.LEAVES) || b.getType().equals(Material.LEAVES_2))){
+					e.setCancelled(true);
+					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+				}
+			}else{
+				AllBanksPlot plot = abw.getPlot(bl.getBlockX(), bl.getBlockZ());
+				
+				if(plot.hasOwner()){
+					if(!plot.havePermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
+				}else{
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						return;
+					}
+				}
 			}
 		}
 		

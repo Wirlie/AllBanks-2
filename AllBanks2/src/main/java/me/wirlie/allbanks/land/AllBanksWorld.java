@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
@@ -380,6 +381,14 @@ public class AllBanksWorld {
 	
 	public WorldConfiguration getWorldConfiguration(){
 		return new WorldConfiguration(getID());
+	}
+	
+	public boolean hasAdminPermissions(Player p){
+		if(Util.hasPermission(p, "allbanks.land.admin") || p.isOp()){
+			return true;
+		}
+		
+		return false;
 	}
 	
 }

@@ -115,22 +115,26 @@ public class PlotPlayerVehicleListener implements Listener {
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 				
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-					//Todas las entidades fuera de un plot pueden ser atacables.
-					return;
-				}
-				
-				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
-				
-				if(!plot.hasOwner()){
-					//Todas las entidades que estén en un plot que no tenga dueño pueden ser atacables
-					return;
-				}
-				
-				if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
-					//No tiene derecho de hacer eso para atacar entidades no hostiles
-					e.setCancelled(true);
-					Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-					return;
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					}
+				}else{
+					AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+					
+					if(plot.hasOwner()){
+						if(!plot.havePermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return;
+						}
+					}else{
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return;
+						}
+					}
 				}
 			}
 		}else if(damager instanceof Arrow){
@@ -145,22 +149,26 @@ public class PlotPlayerVehicleListener implements Listener {
 					AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 					
 					if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-						//Todas las entidades fuera de un plot pueden ser atacables.
-						return;
-					}
-					
-					AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
-					
-					if(!plot.hasOwner()){
-						//Todas las entidades que estén en un plot que no tenga dueño pueden ser atacables
-						return;
-					}
-					
-					if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
-						//No tiene derecho de hacer eso para atacar entidades no hostiles
-						e.setCancelled(true);
-						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
-						return;
+						if(!abw.hasAdminPermissions(p)){
+							e.setCancelled(true);
+							Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+						}
+					}else{
+						AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
+						
+						if(plot.hasOwner()){
+							if(!plot.havePermissions(p) && !Util.entityIsHostil(ent)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}else{
+							if(!abw.hasAdminPermissions(p)){
+								e.setCancelled(true);
+								Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+								return;
+							}
+						}
 					}
 				}
 			}

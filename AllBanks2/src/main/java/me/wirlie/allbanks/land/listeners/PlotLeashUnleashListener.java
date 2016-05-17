@@ -45,14 +45,14 @@ public class PlotLeashUnleashListener implements Listener {
 			AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 			
 			if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-				//Si esta permitido usar esto en la calle.
+				if(!abw.hasAdminPermissions(p)) e.setCancelled(true);
 				return;
 			}
 			
 			AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 			
 			if(!plot.hasOwner()){
-				//Si esta permitido hacer esto en un plot sin dueño
+				if(!abw.hasAdminPermissions(p)) e.setCancelled(true);
 				return;
 			}
 			
@@ -75,14 +75,20 @@ public class PlotLeashUnleashListener implements Listener {
 				AllBanksWorld abw = AllBanksWorld.getInstance(loc.getWorld().getName());
 				
 				if(!abw.locationIsPlot(loc.getBlockX(), loc.getBlockZ())){
-					e.setCancelled(true);
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					}
 					return;
 				}
 				
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 				
 				if(!plot.hasOwner()){
-					e.setCancelled(true);
+					if(!abw.hasAdminPermissions(p)){
+						e.setCancelled(true);
+						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					}
 					return;
 				}
 				
