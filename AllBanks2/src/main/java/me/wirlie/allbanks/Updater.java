@@ -597,7 +597,6 @@ public class Updater {
     public boolean shouldUpdate(String pluginVersion, String serverVersion) {
 
     	CompareVersionResult checkResult = Util.compareVersionsString(serverVersion, pluginVersion);
-    	System.out.println("SSSSSS" + checkResult + " pv: " + pluginVersion + " sv: " + serverVersion);
     	if(checkResult == CompareVersionResult.VERSION_1_IS_GREATER){
     		return true;
     	}

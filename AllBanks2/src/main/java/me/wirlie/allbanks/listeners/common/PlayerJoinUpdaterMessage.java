@@ -43,7 +43,7 @@ public class PlayerJoinUpdaterMessage implements Listener {
 			new BukkitRunnable(){
 				public void run(){
 					if(p.isOp()){
-						Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
+						Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.updatePendingVersion), true);
 					}
 				}
 			}.runTaskLater(AllBanks.getInstance(), 20 * 4);

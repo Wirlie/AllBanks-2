@@ -111,6 +111,7 @@ public class AllBanks extends JavaPlugin {
 	private static StorageType storageMethod = StorageType.SQLITE;
 	private static Economy econ = null;
 	public static boolean updatePending = false;
+	public static String updatePendingVersion = "";
 	
 	/** Resultados usados al momento de comparar versiones. */
 	private enum VersionCheckResult{
@@ -418,19 +419,20 @@ public class AllBanks extends JavaPlugin {
 					}else if(updater.getResult() == UpdateResult.SUCCESS){
 						AllBanks.getInstance().getLogger().info("[Updater] Please reload AllBanks... ");
 						updatePending = true;
+						updatePendingVersion = updater.getLatestName().split(" v")[1];
 						
-						//Nuevo Runnable para informar a los administradores cada hora.
+						//Nuevo Runnable para informar a los administradores 2 horas.
 						new BukkitRunnable(){
 							public void run(){
 								for(Object obp : Bukkit.getOnlinePlayers().toArray()){
 									Player p = (Player) obp;
 									
 									if(p.isOp() && AllBanks.updatePending){
-										Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getInstance().getDescription().getVersion()), true);
+										Translation.getAndSendMessage(p, StringsID.UPDATER_PLEASE_RELOAD_ALLBANKS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.updatePendingVersion), true);
 									}
 								}
 							}
-						}.runTaskTimer(AllBanks.getInstance(), 0, 20 * 60 * 60);
+						}.runTaskTimer(AllBanks.getInstance(), 0, 20 * 60 * 120);
 						
 						return;
 					}else{
