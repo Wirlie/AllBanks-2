@@ -16,6 +16,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.land.generator.WorldGenerationCfg;
+import me.wirlie.allbanks.land.generator.WorldGenerator;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;

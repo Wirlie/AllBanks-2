@@ -16,11 +16,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package me.wirlie.allbanks.land;
+package me.wirlie.allbanks.land.generator;
 
 import org.bukkit.generator.ChunkGenerator;
-
-import me.wirlie.allbanks.land.generator.WorldChunkGenerator;
 /**
  * @author Wirlie
  *

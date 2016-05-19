@@ -26,8 +26,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.generator.BlockPopulator;
 
-import me.wirlie.allbanks.land.WorldGenerationCfg;
-
 /**
  * @author Wirlie
  *
