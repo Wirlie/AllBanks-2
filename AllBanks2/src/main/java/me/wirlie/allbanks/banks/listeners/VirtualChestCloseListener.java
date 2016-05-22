@@ -26,6 +26,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -136,6 +138,27 @@ public class VirtualChestCloseListener implements Listener{
 				//Actualizar ultimo uso, para evitar un cierre automático por falta de actividad
 				bs.updateLastUse();
 			}
+		}
+	}
+	
+	@EventHandler
+	public void inventoryInteract(InventoryClickEvent e){
+		if(e.getInventory().getName().equalsIgnoreCase("AB2:ItemPreview")){
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void inventoryInteract(InventoryDragEvent e){
+		if(e.getInventory().getName().equalsIgnoreCase("AB2:ItemPreview")){
+			e.setCancelled(true);
+		}
+	}
+	
+	@EventHandler
+	public void inventoryInteract(InventoryMoveItemEvent e){
+		if(e.getInitiator().getName().equalsIgnoreCase("AB2:ItemPreview") || e.getDestination().getName().equalsIgnoreCase("AB2:ItemPreview")){
+			e.setCancelled(true);
 		}
 	}
 	

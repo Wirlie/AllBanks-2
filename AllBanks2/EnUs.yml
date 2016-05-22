@@ -197,4 +197,7 @@ LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 189: "&7Plot #%1%: %BREAK%&6ID: (&f%2%&6). &b[x:%3%, z:%4%, world:%5%]"
 190: "&eUse &f%COMMAND_LABEL% list %1% &efor see the next page."
 191: "&cYou have reached the limit for saving experience. %BREAK%&cYou can save up to &f%1% exp (%2% levels)&c."
+192: "&5Item Preview: "
+193: "Preview"
+194: "Click here to show preview"
 

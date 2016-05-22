@@ -18,9 +18,13 @@
  */
 package me.wirlie.allbanks.command;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import me.wirlie.allbanks.StringsID;
@@ -28,6 +32,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.ItemNameUtil;
 import me.wirlie.allbanks.utils.ShopUtil;
+import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 
 /**
@@ -53,27 +58,63 @@ public class CommandItemInfo extends Command {
 			return CommandExecuteResult.NO_PERMISSIONS;
 		}
 		
-		Player p = (Player) sender;
-		ItemStack itemHand = p.getInventory().getItemInMainHand();
-		
-		if(ShopUtil.itemNeedResolveCustomDurability(itemHand)){
-			String resolveID = ShopUtil.resolveCustomDurabilityIDFor(itemHand);
+		if(args[0].equalsIgnoreCase("iteminfo")){
+			Player p = (Player) sender;
+			ItemStack itemHand = p.getInventory().getItemInMainHand();
 			
-			if(resolveID == null) throw new NullPointerException("Cannot resolve a custom ID, null returned");
+			if(ShopUtil.itemNeedResolveCustomDurability(itemHand)){
+				String resolveID = ShopUtil.resolveCustomDurabilityIDFor(itemHand);
+				
+				if(resolveID == null) throw new NullPointerException("Cannot resolve a custom ID, null returned");
+				
+				String name = ItemNameUtil.getItemName(itemHand);
+	
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + name + ChatColor.AQUA + resolveID);
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + resolveID);
+			} else {
+				
+				String name = ItemNameUtil.getItemName(itemHand);
+				
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
+				sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + ":" + itemHand.getDurability());
+			}
+			return CommandExecuteResult.SUCCESS;
+		}else if(args[0].equalsIgnoreCase("showpreview")){
+			if(!(sender instanceof Player)) {
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return CommandExecuteResult.OTHER;
+			}
 			
-			String name = ItemNameUtil.getItemName(itemHand);
-
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + name + ChatColor.AQUA + resolveID);
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + resolveID);
-		} else {
+			if(!this.hasPermission(sender)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				if(sender instanceof Player) InteractiveUtil.sendSound((Player) sender, SoundType.DENY);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
 			
-			String name = ItemNameUtil.getItemName(itemHand);
+			Player p = (Player) sender;
 			
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.NAME, false)[0] + ": " + ChatColor.GRAY + name);
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.DURABILITY, false)[0] + ": " + ChatColor.GRAY + itemHand.getDurability());
-			sender.sendMessage(ChatColor.GOLD + Translation.get(StringsID.SHOP_FOR_SHOP_LINE, false)[0] + ": " + ChatColor.GRAY + name + ":" + itemHand.getDurability());
+			Location loc = Util.convertStringToLocation(args[1]);
+			Inventory fakeInv = Bukkit.createInventory(p, 9, "AB2:ItemPreview");
+			
+			fakeInv.setItem(0, ShopUtil.getItemStack(loc)); //slot 1
+			
+			ItemStack glassPane = new ItemStack(Material.STAINED_GLASS_PANE);
+			glassPane.setDurability((short) 14);
+			
+			fakeInv.setItem(1, glassPane); //slot 2
+			fakeInv.setItem(2, glassPane); //slot 3
+			fakeInv.setItem(3, glassPane); //slot 4
+			fakeInv.setItem(4, glassPane); //slot 5
+			fakeInv.setItem(5, glassPane); //slot 6
+			fakeInv.setItem(6, glassPane); //slot 7
+			fakeInv.setItem(7, glassPane); //slot 8
+			fakeInv.setItem(8, glassPane); //slot 9
+			
+			p.openInventory(fakeInv);
 		}
-		return CommandExecuteResult.SUCCESS;
+		
+		return CommandExecuteResult.INVALID_ARGUMENTS;
 	}
 }

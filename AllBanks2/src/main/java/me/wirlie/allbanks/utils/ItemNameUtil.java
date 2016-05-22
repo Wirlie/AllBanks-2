@@ -447,7 +447,7 @@ public class ItemNameUtil {
 			.put("BOAT_BIRCH" , 		"BoatBirch")
 			.put("BOAT_JUNGLE" , 		"BoatJungle")
 			.put("BOAT_ACACIA" , 		"BoatAcacia")
-			.put("BOAT_DARK_OAK" , 		"BoatDark Oak")
+			.put("BOAT_DARK_OAK" , 		"BoatDarkOak")
 			.put("GOLD_RECORD" , 		"GoldRecord")
 			.put("GREEN_RECORD" , 		"GreenRecord")
 			.put("RECORD_3" , 			"Record 03")

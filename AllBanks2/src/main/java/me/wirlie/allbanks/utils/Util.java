@@ -29,6 +29,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
@@ -36,6 +37,8 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
+import net.minecraft.server.v1_9_R1.EnumChatFormat;
+import net.minecraft.server.v1_9_R1.NBTTagCompound;
 
 /**
  * Utilidades
@@ -62,6 +65,20 @@ public class Util {
 	    
 	    return (directory.delete());
 	}
+	
+	public static String getItemCodeOrGetCustomName(net.minecraft.server.v1_9_R1.ItemStack stack) {
+        NBTTagCompound tag = stack.getTag();
+
+        if ((tag != null) && (tag.hasKeyOfType("display", 10))) {
+            NBTTagCompound nbttagcompound = tag.getCompound("display");
+
+            if (nbttagcompound.hasKeyOfType("Name", 8)) {
+                return EnumChatFormat.ITALIC + nbttagcompound.getString("Name");
+            }
+        }
+
+        return stack.a() + ".name";
+    }
 	
 	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
 	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
@@ -303,6 +320,56 @@ public class Util {
 		}
 		
 		return false;
+	}
+
+	public static ChatColor convertEnumChatFormatToChatColor(EnumChatFormat e) {
+		
+		switch(e){
+		case AQUA:
+			return ChatColor.AQUA;
+		case BLACK:
+			return ChatColor.BLACK;
+		case BLUE:
+			return ChatColor.BLUE;
+		case BOLD:
+			return ChatColor.BOLD;
+		case DARK_AQUA:
+			return ChatColor.DARK_AQUA;
+		case DARK_BLUE:
+			return ChatColor.DARK_BLUE;
+		case DARK_GRAY:
+			return ChatColor.DARK_GRAY;
+		case DARK_GREEN:
+			return ChatColor.DARK_GREEN;
+		case DARK_PURPLE:
+			return ChatColor.DARK_PURPLE;
+		case DARK_RED:
+			return ChatColor.DARK_RED;
+		case GOLD:
+			return ChatColor.GOLD;
+		case GRAY:
+			return ChatColor.GRAY;
+		case GREEN:
+			return ChatColor.GREEN;
+		case ITALIC:
+			return ChatColor.ITALIC;
+		case LIGHT_PURPLE:
+			return ChatColor.LIGHT_PURPLE;
+		case RED:
+			return ChatColor.RED;
+		case RESET:
+			return ChatColor.RESET;
+		case STRIKETHROUGH:
+			return ChatColor.STRIKETHROUGH;
+		case UNDERLINE:
+			return ChatColor.UNDERLINE;
+		case WHITE:
+			return ChatColor.WHITE;
+		case YELLOW:
+			return ChatColor.YELLOW;
+		default:
+			return ChatColor.WHITE;
+		}
 	}
 
 }

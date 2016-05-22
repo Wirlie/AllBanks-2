@@ -40,6 +40,7 @@ public class CommandExecutorAB extends AllBanksExecutor implements CommandExecut
 	public CommandExecutorAB(){
 		//ItemInfo
 		registerCommand(new CommandItemInfo("allbanks.commands.iteminfo"), "iteminfo");
+		registerCommand(new CommandItemInfo(null), "showPreview");
 		//Lotería
 		registerCommand(new CommandLottery(null), "lottery", "?");
 		registerCommand(new CommandLottery(null), "lottery", "help");

@@ -18,6 +18,7 @@
  */
 package me.wirlie.allbanks.listeners.shops;
 
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -49,6 +51,8 @@ import me.wirlie.allbanks.utils.ItemNameUtil;
 import me.wirlie.allbanks.utils.ShopUtil;
 import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
+import me.wirlie.allbanks.utils.chatcomposer.TextualComponent;
 
 /**
  * Detectar cuando un jugador interactua con una tienda.
@@ -59,7 +63,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 public class ShopSignInteractListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)
-	public void onSignInteract(PlayerInteractEvent e) {
+	public void onSignInteract(PlayerInteractEvent e) throws InvocationTargetException, IllegalAccessException {
 		Block b = e.getClickedBlock();
 		Player p = e.getPlayer();
 		
@@ -105,7 +109,8 @@ public class ShopSignInteractListener implements Listener {
 				} else {
 					//Bien, el banco se encuentra configurado adecuadamente.
 					//¿Está tratando de usar una tienda de sí mismo?
-					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+					//TODO REMOVER ESTO
+					if(!ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;
@@ -113,80 +118,107 @@ public class ShopSignInteractListener implements Listener {
 					
 					//Bien, está usando la tienda de alguien más. (BUY)
 					
-					//No tiene la etiqueta S:X
-					if(!ShopUtil.signSupportBuyAction(sign)) {
-						Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_BUY_ACTION, true);
-						return;
-					}
-					
 					//¿Tiene el cofre?
 					if(!ShopUtil.validateNearbyChest(sign.getLocation()) && !isAdminShop) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_NO_CHEST_FOUND, true);
 						return;
 					}
-					//Bien, vamos a COMPRAR el objeto al jugador.
-					ItemStack shopItem = ShopUtil.getItemStack(sign);
 					
-					if(!ShopUtil.checkItemForPlayerInventory(p, shopItem, false)){
-						if(ShopUtil.itemNeedResolveCustomDurability(shopItem)){
-							String customID = ShopUtil.resolveCustomDurabilityIDFor(shopItem);
-							Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + customID), true);
-						}else{
-							Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + ((shopItem.getDurability() > 0) ? ":" + shopItem.getDurability() : "")), true);
-						}
-						return;
-					}
-					
-					//Bien, cuantos objetos tiene.
-					int totalItems = ShopUtil.getTotalItemsInventory(p.getInventory(), shopItem);
-					int shopTotalItems = shopItem.getAmount();
-					//Para una "exactitud", si la división es infinita solo tomaremos 10 digitos decimales con el fin de hacer un poco más exacta la división
-					BigDecimal pricePerItem = ShopUtil.getBuyPrice(sign).divide(new BigDecimal(shopTotalItems), 10, RoundingMode.HALF_UP);
-					if(totalItems > shopTotalItems) totalItems = shopTotalItems;
-
-					//Cuanto espacio hay en el cofre
-					int freeSpace = InventoryUtil.getInventoryFreeSpaceForItem(sign, shopItem);
-					
-					if(isAdminShop) freeSpace = Integer.MAX_VALUE;
-
-					if(freeSpace <= 0) {
-						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_SHOPCHEST_NOT_HAVE_SPACE, true);
-						return;
-					}
-					
-					if(freeSpace < totalItems) {
-						totalItems = freeSpace;
-					}
-					
-					BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalItems));
-					
-					//Bien, ahora vamos a quitarle los objetos al jugador y a pagarle
-					if(!isAdminShop && !AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
-						Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_OWNER_OF_SHOP_CANNOT_HAVE_MONEY_FOR_BUY, true);
-						return;
-					}
-					if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
-						//Quitar objetos
-						InventoryUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
-						p.updateInventory();
-						//Colocar objetos en el cofre
-						if(!isAdminShop) InventoryUtil.putItemsToInventory(sign, shopItem, totalItems);
-						//Pagar al jugador
-						AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
-						//Mensaje
-						HashMap<String, String> replaceMap = new HashMap<String, String>();
-						replaceMap.put("%1%", String.valueOf(totalItems));
-						replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
-						replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+					//Ok, vamos a mostrar un mensaje con la previsualización si está usando shift
+					if(!p.isSneaking()){
 						
-						Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
-						return;
+						//No tiene la etiqueta S:X
+						if(!ShopUtil.signSupportBuyAction(sign)) {
+							Translation.getAndSendMessage(p, StringsID.SHOP_NOT_SUPPORT_BUY_ACTION, true);
+							return;
+						}
+						
+						//Bien, vamos a COMPRAR el objeto al jugador.
+						ItemStack shopItem = ShopUtil.getItemStack(sign);
+						
+						if(!ShopUtil.checkItemForPlayerInventory(p, shopItem, false)){
+							if(ShopUtil.itemNeedResolveCustomDurability(shopItem)){
+								String customID = ShopUtil.resolveCustomDurabilityIDFor(shopItem);
+								Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + customID), true);
+							}else{
+								Translation.getAndSendMessage(p, StringsID.SHOP_PLAYER_NO_HAVE_THIS_ITEM, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + ItemNameUtil.getItemName(shopItem) + ((shopItem.getDurability() > 0) ? ":" + shopItem.getDurability() : "")), true);
+							}
+							return;
+						}
+						
+						//Bien, cuantos objetos tiene.
+						int totalItems = ShopUtil.getTotalItemsInventory(p.getInventory(), shopItem);
+						int shopTotalItems = shopItem.getAmount();
+						//Para una "exactitud", si la división es infinita solo tomaremos 10 digitos decimales con el fin de hacer un poco más exacta la división
+						BigDecimal pricePerItem = ShopUtil.getBuyPrice(sign).divide(new BigDecimal(shopTotalItems), 10, RoundingMode.HALF_UP);
+						if(totalItems > shopTotalItems) totalItems = shopTotalItems;
+	
+						//Cuanto espacio hay en el cofre
+						int freeSpace = InventoryUtil.getInventoryFreeSpaceForItem(sign, shopItem);
+						
+						if(isAdminShop) freeSpace = Integer.MAX_VALUE;
+	
+						if(freeSpace <= 0) {
+							Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_SHOPCHEST_NOT_HAVE_SPACE, true);
+							return;
+						}
+						
+						if(freeSpace < totalItems) {
+							totalItems = freeSpace;
+						}
+						
+						BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalItems));
+						
+						//Bien, ahora vamos a quitarle los objetos al jugador y a pagarle
+						if(!isAdminShop && !AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
+							Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_OWNER_OF_SHOP_CANNOT_HAVE_MONEY_FOR_BUY, true);
+							return;
+						}
+						if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
+							//Quitar objetos
+							InventoryUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
+							p.updateInventory();
+							//Colocar objetos en el cofre
+							if(!isAdminShop) InventoryUtil.putItemsToInventory(sign, shopItem, totalItems);
+							//Pagar al jugador
+							AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
+							//Mensaje
+							HashMap<String, String> replaceMap = new HashMap<String, String>();
+							replaceMap.put("%1%", String.valueOf(totalItems));
+							replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
+							replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+							
+							Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
+							return;
+						}
+					}else{
+						//Está usando shift
+						ItemStack item = ShopUtil.getItemStack(sign);
+						new BuildChatMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
+							.then("[ ")
+								.color(ChatColor.BLUE)
+							.then(TextualComponent.localizedText(Util.getItemCodeOrGetCustomName(CraftItemStack.asNMSCopy(item))))
+								.color(Util.convertEnumChatFormatToChatColor(CraftItemStack.asNMSCopy(item).u().e))
+								.itemTooltip(item)
+							.then(" ]")
+								.color(ChatColor.BLUE)
+							.then(" [ ")
+								.color(ChatColor.BLUE)
+							.then(Translation.get(StringsID.ITEM_PREVIEW_BUTTON, false)[0])
+								.color(ChatColor.GRAY)
+								.tooltip(ChatColor.YELLOW + Translation.get(StringsID.CLICK_HERE_TO_SHOW_PREVIEW, false)[0])
+								.command("/ab showPreview " + Util.convertLocationToString(sign.getLocation(), true))
+							.then(" ]")
+								.color(ChatColor.BLUE)
+							.send(p);
 					}
 				}
 			}
 		}else if(e.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
 			if(sign.getLine(Shops.LINE_HEADER).equalsIgnoreCase(Shops.HEADER_FORMAT)) {
 				if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM)).equalsIgnoreCase("???")) {
+					
+					e.setCancelled(true);
 					
 					if(!AllBanks.getInstance().getConfig().getBoolean("modules.shop.enable")){
 						Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>AllBanksShop"), true);
@@ -231,8 +263,6 @@ public class ShopSignInteractListener implements Listener {
 								
 								if(adminShop || !adminShop && spawnFakeItemUserShops)
 									FakeItemManager.SpawnFakeItemForShop(sign.getLocation());
-								
-								e.setCancelled(true);
 							}
 						}
 					}
@@ -244,7 +274,8 @@ public class ShopSignInteractListener implements Listener {
 					boolean isAdminShop = owner.equalsIgnoreCase(Shops.ADMIN_TAG);
 					
 					//¿Está tratando de usar una tienda de sí mismo?
-					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+					//TODO Remover esto
+					if(!ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;

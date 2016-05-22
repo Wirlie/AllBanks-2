@@ -105,14 +105,14 @@ public class ShopUtil {
 	public static ItemStack getItemStack(Sign sign) {
 		String itemLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM));
 		
-		Pattern defaultItemSyntax = Pattern.compile("^([A-Za-z]{1,})(|:([0-9]{1,}))$");
-		Pattern specialItemSyntax = Pattern.compile("^([A-Za-z]{1,})#([0-9]{1,})$");
+		Pattern defaultItemSyntax = Pattern.compile("^([A-Za-z0-9 ]{1,})(|:([0-9]{1,}))$");
+		Pattern specialItemSyntax = Pattern.compile("^([A-Za-z0-9 ]{1,})#([0-9]{1,})$");
 		
 		Matcher match = defaultItemSyntax.matcher(itemLine);
-		
+
 		if(match.matches()){
 			String[] split = itemLine.split(":");
-			
+
 			if(split.length == 2) {
 				int durability = Integer.parseInt(match.group(2).replace(":", ""));
 				Material mat = ItemNameUtil.getItemByShortName(match.group(1));
@@ -123,7 +123,6 @@ public class ShopUtil {
 				item.setDurability((short) durability);
 				return item;
 			}else {
-				
 				Material mat = ItemNameUtil.getItemByShortName(match.group(1));
 				
 				if(mat == null) return null;
@@ -227,9 +226,9 @@ public class ShopUtil {
 			ItemStack oneItem = item.clone();
 			oneItem.setAmount(1);
 			
-			if(!checkAmount && oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) 
+			if(!checkAmount && oneItem.equals(oneShopItem) && oneItem.getItemMeta().equals(shopItem.getItemMeta()) && oneItem.getDurability() == oneShopItem.getDurability()) 
 				return true;
-			else if (checkAmount && oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) {
+			else if (checkAmount && oneItem.equals(oneShopItem) && oneItem.getItemMeta().equals(shopItem.getItemMeta()) && oneItem.getDurability() == oneShopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -254,7 +253,7 @@ public class ShopUtil {
 			ItemStack oneItem = item.clone();
 			oneItem.setAmount(1);
 			
-			if (oneItem.equals(oneShopItem) && oneItem.getDurability() == oneShopItem.getDurability()) {
+			if (oneItem.equals(oneShopItem) && oneItem.getItemMeta().equals(shopItem.getItemMeta()) && oneItem.getDurability() == oneShopItem.getDurability()) {
 				totalItems += item.getAmount();
 			}
 		}
@@ -304,6 +303,13 @@ public class ShopUtil {
 	}
 	
 	public static boolean itemNeedResolveCustomDurability(ItemStack item){
+		
+		if(item.getItemMeta().getDisplayName() != null){
+			return true;
+		}else if(!item.getItemMeta().getEnchants().isEmpty()){
+			return true;
+		}
+		
 		return itemNeedResolveCustomDurability(item.getType());
 	}
 	
@@ -328,6 +334,8 @@ public class ShopUtil {
 		
 		item.setAmount(1);
 		
+		boolean resolve = false;
+		
 		switch(item.getType()){
 		case BANNER:
 		case POTION:
@@ -337,7 +345,20 @@ public class ShopUtil {
 		case TIPPED_ARROW:
 		case SPLASH_POTION:
 		case LINGERING_POTION:
-			
+			resolve = true;
+			break;
+		default:
+			resolve = false;
+			break;
+		}
+		
+		if(item.getItemMeta().getDisplayName() != null){
+			resolve = true;
+		}else if(!item.getItemMeta().getEnchants().isEmpty()){
+			resolve = true;
+		}
+		
+		if(resolve){
 			String base64str = ItemStackBase64.toBase64(item);
 			
 			Statement selectStatement = null;
@@ -378,7 +399,7 @@ public class ShopUtil {
 						e.printStackTrace();
 					}
 			}
-		default:
+		}else{
 			return null;
 		}
 	}
