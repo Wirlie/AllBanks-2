@@ -110,8 +110,7 @@ public class ShopSignInteractListener implements Listener {
 				} else {
 					//Bien, el banco se encuentra configurado adecuadamente.
 					//¿Está tratando de usar una tienda de sí mismo?
-					//TODO REMOVER ESTO
-					if(!ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;
@@ -296,8 +295,7 @@ public class ShopSignInteractListener implements Listener {
 					boolean isAdminShop = owner.equalsIgnoreCase(Shops.ADMIN_TAG);
 					
 					//¿Está tratando de usar una tienda de sí mismo?
-					//TODO Remover esto
-					if(!ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						return;
