@@ -726,15 +726,24 @@ public class Banks {
 	 */
 	
 	public static List<Sign> getABSignsBySupportBlock(Block block){
-		//TODO Se necesita agregar un método que compruebe la dirección del letrero para verificar si el letrero realmente está siendo sujetado por el bloque.
 		List<Sign> returnList = new ArrayList<Sign>();
 		
 		for(int i = 0; i < 4; i++){
 			Block relativeBlock = (i == 0) ? block.getRelative(BlockFace.NORTH) : ((i == 1) ? block.getRelative(BlockFace.SOUTH) : ((i == 2) ? block.getRelative(BlockFace.WEST) : block.getRelative(BlockFace.EAST)));
 		
 			if(relativeBlock.getType().equals(Material.WALL_SIGN)){
-				if(signIsABSign((Sign) relativeBlock.getState())){
-					returnList.add((Sign) relativeBlock.getState());
+				
+				Sign sign = (Sign) relativeBlock.getState();
+				
+				if(signIsABSign(sign)){
+					
+					BlockFace face = ((org.bukkit.material.Sign) sign.getData()).getFacing();
+					if(i == 0 && face == BlockFace.NORTH ||
+							i == 1 && face == BlockFace.SOUTH ||
+							i == 2 && face == BlockFace.WEST ||
+							i == 3 && face == BlockFace.EAST){
+						returnList.add((Sign) relativeBlock.getState());
+					}
 				}
 			}
 		}
