@@ -262,7 +262,16 @@ public class ShopSignInteractListener implements Listener {
 								
 								Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURATION_SUCCESS, true);
 								InteractiveUtil.sendSound(p, SoundType.SUCCESS);
-								e.setCancelled(true);
+								
+								boolean adminShop = false;
+								if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(Shops.ADMIN_TAG)){
+									adminShop = true;
+								}
+								
+								boolean spawnFakeItemUserShops = AllBanks.getInstance().getConfig().getBoolean("shop.enable-fake-item-for-user-shop", true);
+								
+								if(adminShop || !adminShop && spawnFakeItemUserShops)
+									FakeItemManager.SpawnFakeItemForShop(sign.getLocation());
 							}else{
 								if(item.getDurability() > 0) {
 									sign.setLine(Shops.LINE_ITEM, ChatColor.DARK_AQUA + ItemNameUtil.getItemName(item) + ":" + item.getDurability());
