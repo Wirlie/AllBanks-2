@@ -19,9 +19,11 @@
 package me.wirlie.allbanks.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,11 +34,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Console;
+import me.wirlie.allbanks.StringsID;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Utilidades
@@ -339,5 +345,138 @@ public class Util {
 		}else{
 			return Util_R2.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R2.EnumChatFormat) e);
 		}
+	}
+
+	/**
+	 * Verificar si la versión del servidor es compatible con esta version de AllBanks.
+	 * @return Resultado de la operación.
+	 */
+	public static AllBanks.VersionCheckResult verifyServerVersion() {
+		
+		AllBanksLogger.info("Verifying compatibles versions...");
+		
+		String rawBukkitVersion = Bukkit.getServer().getBukkitVersion();
+		String rawVersion = Bukkit.getServer().getBukkitVersion().split("-")[0];
+		
+		
+		//String[] version = Bukkit.getServer().getBukkitVersion().split("-");
+		
+		//String mcversion = version[0];
+		//String bukkitversion = version[1];
+		
+		boolean compatible = false;
+		
+		for(String sv : AllBanks.COMPATIBLE_VERSIONS){
+			if(rawVersion.equalsIgnoreCase(sv)){
+				//La version es igual al minimo o maximo, no es necesario calcular nada
+				compatible = true;
+				break;
+			}
+		}
+		
+		HashMap<String, String> replaceMap = new HashMap<String, String>();
+		replaceMap.put("%1%", rawBukkitVersion);
+		
+		if(compatible){
+			AllBanksLogger.info("You are using a compatible version of CraftBukkit.");
+			Console.sendMessage(StringsID.YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+			return AllBanks.VersionCheckResult.COMPATIBLE;
+		}else{
+			//Detectar si se está usando una versión incompatible o una versión no probada
+			if(compareVersionsString(AllBanks.INCOMPATIBLE_MIN, rawVersion) == CompareVersionResult.VERSION_1_IS_GREATER 
+				|| compareVersionsString(AllBanks.INCOMPATIBLE_MIN, rawVersion) == CompareVersionResult.VERSION_EQUALS 
+				|| compareVersionsString(AllBanks.INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_2_IS_GREATER && !AllBanks.INCOMPATIBLE_MAX.equalsIgnoreCase("0")
+				|| compareVersionsString(AllBanks.INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_EQUALS && !AllBanks.INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
+				AllBanksLogger.severe("Please use the correct version of CraftBukkit/Spigot.", true);
+				AllBanksLogger.severe("For this build, CB 1.9 is expected.", true);
+				return AllBanks.VersionCheckResult.NOT_COMPATIBLE;
+			} else {
+				AllBanksLogger.severe("You are not using a compatible version of CraftBukkit.");
+				Console.sendMessage(StringsID.YOU_ARENT_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
+				return AllBanks.VersionCheckResult.PROCCEED_WITH_PRECAUTION;
+			}
+		}
+		
+	}
+
+	/**
+	 * Obtener la versión de Bukkit (sólamente la parte de la versión del servidor)
+	 * @return Devuelve la versión de Bukkit en un formato de "1.0.0"
+	 */
+	public static String getBukkitVersion(){
+		return Bukkit.getServer().getBukkitVersion().split("-")[0];
+	}
+
+	/**
+	 * Actualizar la configuración del usuario con la configuración nativa de AllBanks.
+	 */
+	public static void UpdateConfigWithNativeFile(){
+		//Copiar la anterior Configuración
+		File Config = new File(AllBanks.getInstance().getDataFolder() + File.separator + "Config.yml");
+		File tempConfig = new File(AllBanks.getInstance().getDataFolder() + File.separator + "TMP-Config.yml");
+	
+		AllBanksLogger.info("Renaming Config.yml to TMP-Config.yml");
+		Config.renameTo(tempConfig);
+		
+		//guardar nueva configuración
+		AllBanksLogger.info("Saving native resource: Config.yml");
+		AllBanks.getInstance().saveResource("Config.yml", true);
+		
+		//Comenzar a comparar
+		AllBanksLogger.info("Loading: TMP-Config.yml");
+		YamlConfiguration nativeCfg = YamlConfiguration.loadConfiguration(Config);
+		AllBanksLogger.info("Loading: Config.yml");
+		YamlConfiguration userCfg = YamlConfiguration.loadConfiguration(tempConfig);
+		
+		AllBanksLogger.info("Searching for changes...");
+		for(String key : nativeCfg.getKeys(true)){
+			Object obj = userCfg.get(key, null);
+			
+			if(obj == null){
+				userCfg.set(key, nativeCfg.get(key));
+				AllBanksLogger.info("New entry: " + key);
+			}
+		}
+		
+		//Permisos default
+		List<String> defaultPerms = userCfg.getStringList("default-permissions");
+		
+		if(compareVersionsString("1.1.4", userCfg.getString("cfg-version", "0")) == CompareVersionResult.VERSION_1_IS_GREATER){
+			if(!defaultPerms.contains("allbanks.land.commands.plot.sethomespawn")) defaultPerms.add("allbanks.land.commands.plot.sethomespawn");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.setshopspawn")) defaultPerms.add("allbanks.land.commands.plot.setshopspawn");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.home")) defaultPerms.add("allbanks.land.commands.plot.home");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.teleport")) defaultPerms.add("allbanks.land.commands.plot.teleport");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.auto")) defaultPerms.add("allbanks.land.commands.plot.auto");
+		}else if(compareVersionsString("1.1", userCfg.getString("cfg-version", "0")) == CompareVersionResult.VERSION_1_IS_GREATER){
+			if(!defaultPerms.contains("allbanks.land.commands.plot.claim")) defaultPerms.add("allbanks.land.commands.plot.claim");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.unclaim")) defaultPerms.add("allbanks.land.commands.plot.unclaim");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.set.flags")) defaultPerms.add("allbanks.land.commands.plot.set.flags");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.add")) defaultPerms.add("allbanks.land.commands.plot.add");
+			if(!defaultPerms.contains("allbanks.land.commands.plot.deny")) defaultPerms.add("allbanks.land.commands.plot.deny");
+		}
+		
+		//Actualizar la versión
+		AllBanksLogger.info("Updating cfg-version...");
+		userCfg.set("cfg-version", AllBanks.getInstance().getDescription().getVersion());
+		
+		userCfg.set("default-permissions", defaultPerms);
+		
+		//guardar
+		AllBanksLogger.info("Saving changes...");
+		try {
+			userCfg.save(tempConfig);
+			AllBanksLogger.info("Success!");
+		} catch (IOException e) {
+			AllBanksLogger.severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)", true);
+			e.printStackTrace();
+		}
+		
+		//eliminar configuración nativa
+		AllBanksLogger.info("Removing temporal file (Config.yml)");
+		Config.delete();
+		//Cambiar configuración temporal a su estado normal
+		AllBanksLogger.info("Renaming TMP-Config.yml to Config.yml (restore file)");
+		tempConfig.renameTo(Config);
+		AllBanksLogger.info("Success: 0 problems found.");
 	}
 }
