@@ -42,6 +42,10 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 	public CommandExecutorABLand(){
 		instance = this;
 		
+		//Ayuda
+		registerCommand(new CommandHelp(null), "?");
+		registerCommand(new CommandHelp(null), "help");
+		
 		//Relacionado a comandos Admin
 		registerCommand(new CommandAdmin(null), "admin", "?");
 		registerCommand(new CommandAdmin(null), "admin", "help");
@@ -53,6 +57,7 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 		
 		//Spawns de mundos
 		registerCommand(new CommandWorld("allbanks.land.commands.spawn"), "spawn", "RegEx->(.){1,}:<worldName>");
+		
 		//Relacionado al plot y comandos de usuario
 		registerCommand(new CommandPlot(null), "plot", "?");
 		registerCommand(new CommandPlot(null), "plot", "help");

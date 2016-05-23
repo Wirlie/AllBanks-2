@@ -20,8 +20,11 @@ package me.wirlie.allbanks;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
@@ -222,6 +225,22 @@ public class Translation{
 	 */
 	public static String[] get(StringsID strPath, boolean prefix){
 		return get(strPath.getPath(), new HashMap<String, String>(), prefix, false);
+	}
+	
+	/**
+	 * Obtener una traducción múltiple.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
+	 */
+	public static List<String> getMultiple(boolean prefix, StringsID... IDS){
+		
+		List<String> returnList = new ArrayList<String>();
+		for(StringsID id : IDS){
+			returnList.addAll(Arrays.asList(get(id.getPath(), new HashMap<String, String>(), prefix, false)));
+		}
+		
+		return returnList;
 	}
 	
 	/**
