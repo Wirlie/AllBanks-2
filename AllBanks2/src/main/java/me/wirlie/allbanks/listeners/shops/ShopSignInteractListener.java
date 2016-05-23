@@ -28,7 +28,6 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -52,6 +51,7 @@ import me.wirlie.allbanks.utils.ItemNameUtil;
 import me.wirlie.allbanks.utils.ShopUtil;
 import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.utils.Util.VersionPackage;
 import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
 import me.wirlie.allbanks.utils.chatcomposer.TextualComponent;
 
@@ -195,11 +195,31 @@ public class ShopSignInteractListener implements Listener {
 					}else{
 						//Está usando shift
 						ItemStack item = ShopUtil.getItemStack(sign);
-						new BuildChatMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
+						
+						if(Util.resolveNMSVersion().equals(VersionPackage.NMS_1_9_R1)){
+							new BuildChatMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
+								.then("[ ")
+									.color(ChatColor.BLUE)
+								.then(TextualComponent.localizedText(Util.getItemCodeOrGetCustomName(org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack.asNMSCopy(item))))
+									.color(Util.convertEnumChatFormatToChatColor(org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack.asNMSCopy(item).u().e))
+									.itemTooltip(item)
+								.then(" ]")
+									.color(ChatColor.BLUE)
+								.then(" [ ")
+									.color(ChatColor.BLUE)
+								.then(Translation.get(StringsID.ITEM_PREVIEW_BUTTON, false)[0])
+									.color(ChatColor.GRAY)
+									.tooltip(ChatColor.YELLOW + Translation.get(StringsID.CLICK_HERE_TO_SHOW_PREVIEW, false)[0])
+									.command("/ab showPreview " + Util.convertLocationToString(sign.getLocation(), true))
+								.then(" ]")
+									.color(ChatColor.BLUE)
+								.send(p);
+						}else if(Util.resolveNMSVersion().equals(VersionPackage.NMS_1_9_R2)){
+							new BuildChatMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
 							.then("[ ")
 								.color(ChatColor.BLUE)
-							.then(TextualComponent.localizedText(Util.getItemCodeOrGetCustomName(CraftItemStack.asNMSCopy(item))))
-								.color(Util.convertEnumChatFormatToChatColor(CraftItemStack.asNMSCopy(item).u().e))
+							.then(TextualComponent.localizedText(Util.getItemCodeOrGetCustomName(org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack.asNMSCopy(item))))
+								.color(Util.convertEnumChatFormatToChatColor(org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack.asNMSCopy(item).u().e))
 								.itemTooltip(item)
 							.then(" ]")
 								.color(ChatColor.BLUE)
@@ -212,6 +232,7 @@ public class ShopSignInteractListener implements Listener {
 							.then(" ]")
 								.color(ChatColor.BLUE)
 							.send(p);
+					}
 					}
 				}
 			}
