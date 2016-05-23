@@ -147,7 +147,7 @@ public class AllBanks extends JavaPlugin {
 		
 		//Inicializar logger.
 		AllBanksLogger.initializeLogger();
-		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion() + " - CB: " + Bukkit.getBukkitVersion());
+		AllBanksLogger.info("Enabling AllBanks " + getDescription().getVersion() + " - CB: " + Bukkit.getBukkitVersion(), true);
 
 		//Comprobar si la configuración se encuentra actualizada.
 		ensureConfigIsUpToDate();
@@ -206,7 +206,7 @@ public class AllBanks extends JavaPlugin {
 		if(!DataBaseSQLite.tryForClass()) {
     		AllBanksLogger.severe("Ops! Class not found: org.sqlite.JDBC", true);
     		AllBanksLogger.severe("JDBC driver is required, disabling AllBanks...", true);
-    		Bukkit.getServer().getPluginManager().disablePlugin(this);
+    		setEnabled(false);
     		return;
 		}
 		
@@ -235,13 +235,7 @@ public class AllBanks extends JavaPlugin {
 		AllBanksWorld.loadWorldsStartup();
 		
 		//Instalar la economía, si no se ha encontrado Vault o algún plugin de economía AllBanks se deshabilitará con un aviso.
-		if(!setupEconomy()){
-		    Bukkit.getPluginManager().disablePlugin(this);
-		    return;
-		}
-		
-		//Mensaje de habilitando
-		Console.sendMessage(StringsID.ENABLING);
+		setupEconomy();
 		
 		//Registrar comandos y TabCompleter
 		AllBanksLogger.info("Commands: Set executor (/allbanks).");
@@ -318,15 +312,10 @@ public class AllBanks extends JavaPlugin {
 
 			AllBanksLogger.severe("Invalid configuration :");
 			//No se puede usar el sistema cuando el tiempo es inválido.
-			getLogger().severe("Invalid configuration in Config.yml.");
-			getLogger().severe("banks.bank-loan.collect-interest-every is not valid.");
-			getLogger().severe("Please set a numeric value more than 0.");
-			getLogger().severe("BankLoan: Collect Loan System disabled...");
-			
-			AllBanksLogger.severe("Invalid configuration in Config.yml.");
-			AllBanksLogger.severe("banks.bank-loan.collect-interest-every is not valid.");
-			AllBanksLogger.severe("Please set a numeric value more than 0.");
-			AllBanksLogger.severe("BankLoan: Collect Loan System disabled...");
+			AllBanksLogger.severe("Invalid configuration in Config.yml.", true);
+			AllBanksLogger.severe("banks.bank-loan.collect-interest-every is not valid.", true);
+			AllBanksLogger.severe("Please set a numeric value more than 0.", true);
+			AllBanksLogger.severe("BankLoan: Collect Loan System disabled...", true);
 
 			AllBanksLogger.info("Aborting enabling of BankLoanRunnable...");
 		}else{
@@ -347,10 +336,10 @@ public class AllBanks extends JavaPlugin {
 			long nextCollection = collectLoanEvery - ((currentTime - lastExec) / 1000);
 			
 			if(lastExec == 0){
-				AllBanksLogger.info("BankLoanRunnable: Initializing system...", true);
-				AllBanksLogger.info("BankLoanRunnable: Next execution: " + collectLoanEvery + " seconds.", true);
+				AllBanksLogger.info("&7[&fBankLoanRunnable&7] &bInitializing system.", true);
+				AllBanksLogger.info("&7[&fBankLoanRunnable&7] &bNext execution: " + collectLoanEvery + " seconds.", true);
 				
-				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)");
+				AllBanksLogger.info("[BankLoanRunnable] Starting runnable (TaskTimer)");
 				
 				new BankLoanRunnable().runTaskTimer(this, collectLoanEvery * 20, collectLoanEvery * 20);
 				
@@ -364,10 +353,10 @@ public class AllBanks extends JavaPlugin {
 				}
 			}else{
 				if(nextCollection < 10) nextCollection = 10;
-				AllBanksLogger.info("BankLoanRunnable: Initializing system...", true);
-				AllBanksLogger.info("BankLoanRunnable: Next execution: " + nextCollection + " seconds.", true);
+				AllBanksLogger.info("&7[&fBankLoanRunnable&7] &bInitializing system.", true);
+				AllBanksLogger.info("&7[&fBankLoanRunnable&7] &bNext execution: " + nextCollection + " seconds.", true);
 				
-				AllBanksLogger.info("BankLoanRunnable: Starting runnable (TaskTimer)");
+				AllBanksLogger.info("[BankLoanRunnable] Starting runnable (TaskTimer)");
 				
 				new BankLoanRunnable().runTaskTimer(this, nextCollection * 20, collectLoanEvery * 20);
 			}
@@ -388,7 +377,7 @@ public class AllBanks extends JavaPlugin {
 		Runnable updaterRunnable = new Runnable(){
 			public void run() {
 				if(updatePending){
-					AllBanks.getInstance().getLogger().info("[Updater] AllBanks already updated!");
+					AllBanksLogger.info("&7[&fUpdater&7] &bAllBanks already updated!", true);
 					return;
 				}
 				
@@ -406,18 +395,18 @@ public class AllBanks extends JavaPlugin {
 				
 				if(checkForUpdates) {
 					
-					AllBanks.getInstance().getLogger().info("[Updater] Checking for Updates ...");
+					AllBanksLogger.info("&7[&fUpdater&7] &bChecking for Updates ...", true);
 
 					//Iniciar actualizador
 					Updater updater = new Updater(AllBanks.getInstance(), 98949, AllBanks.getInstance().getFile(), uptype, true);
 					
 					//Resolver resultado del actualizador
 					if (updater.getResult() == UpdateResult.UPDATE_AVAILABLE) {
-					    AllBanks.getInstance().getLogger().info("[Updater] New version available! " + updater.getLatestName());
+					    AllBanksLogger.info("&7[&fUpdater&7] &bNew version available! " + updater.getLatestName(), true);
 					}else if(updater.getResult() == UpdateResult.NO_UPDATE) {
-						AllBanks.getInstance().getLogger().info("[Updater] No updates found. Your AllBanks plugin is up to date.");
+						AllBanksLogger.info("&7[&fUpdater&7] &bNo updates found. Your AllBanks plugin is up to date.", true);
 					}else if(updater.getResult() == UpdateResult.SUCCESS){
-						AllBanks.getInstance().getLogger().info("[Updater] Please reload AllBanks... ");
+						AllBanksLogger.info("&7[&fUpdater&7] &bPlease reload AllBanks... ", true);
 						updatePending = true;
 						updatePendingVersion = updater.getLatestName().split(" v")[1];
 						
@@ -436,7 +425,7 @@ public class AllBanks extends JavaPlugin {
 						
 						return;
 					}else{
-						AllBanks.getInstance().getLogger().info("[Updater] A problem was ocurred: " + updater.getResult());
+						AllBanksLogger.info("&7[&fUpdater&7] &bA problem was ocurred: " + updater.getResult(), true);
 					}
 				}
 			}
@@ -450,9 +439,9 @@ public class AllBanks extends JavaPlugin {
 			try {
 		        Metrics metrics = new Metrics(this);
 		        metrics.start();
-		        getLogger().info("Metrics started!");
+		        AllBanksLogger.info("&7[&fMetrics&7] &bMetrics started!", true);
 		    } catch (IOException e) {
-		        getLogger().info("Metrics failed...");
+		    	AllBanksLogger.severe("&7[&fMetrics&7] &cMetrics failed.", true);
 		        e.printStackTrace();
 		    }
 		}
@@ -469,9 +458,9 @@ public class AllBanks extends JavaPlugin {
 		}
 		
 		if(!configFile.exists()){
-			AllBanksLogger.severe("AllBanks cannot find the configuration file!!", true);
-			AllBanksLogger.severe("AbsolutePath: " + configFile.getAbsolutePath(), true);
-			AllBanksLogger.severe("Check if your server have write permissions for the plugin folder.");
+			AllBanksLogger.severe("[CONFIG] AllBanks cannot find the configuration file!!", true);
+			AllBanksLogger.severe("[CONFIG] AbsolutePath: " + configFile.getAbsolutePath(), true);
+			AllBanksLogger.severe("[CONFIG] Check if your server have write permissions for plugins folder.");
 			return null;
 		}
 		
@@ -771,22 +760,27 @@ public class AllBanks extends JavaPlugin {
 	 * Instalar Vault y plugin de economía.
 	 * @return true si la instalación fue exitosa.
 	 */
-	private boolean setupEconomy() {
+	private void setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
         	Console.sendMessage(ChatColor.RED + "[Error] Ops! Vault plugin is required for AllBanks...");
         	AllBanksLogger.severe("Vault plugin is required for AllBanks...");
-        	return false;
+        	setEnabled(false);
+        	throw new IllegalStateException("Vault is required.");
         }
         
         RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
         if (rsp == null) {
         	Console.sendMessage(ChatColor.RED + "[Error] Ops! An economy plugin is required for AllBanks...");
         	AllBanksLogger.severe("An economy plugin is required for AllBanks...");
-        	return false;
+        	setEnabled(false);
+        	throw new IllegalStateException("EconomyPlugin is required.");
         }
         
         econ = rsp.getProvider();
-        return econ != null;
+        if(econ == null){
+        	setEnabled(false);
+        	throw new IllegalStateException("ServicesManager cannot find an Economy.class Provider.");
+        }
     }
 	
 	/**
@@ -1178,9 +1172,8 @@ public class AllBanks extends JavaPlugin {
 			userCfg.save(tempConfig);
 			AllBanksLogger.info("Success!");
 		} catch (IOException e) {
-			getInstance().getLogger().severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)");
+			AllBanksLogger.severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)", true);
 			e.printStackTrace();
-			AllBanksLogger.severe("An error has ocurred while trying update Config.yml to the latest version. (IOException)");
 		}
 		
 		//eliminar configuración nativa
@@ -1273,8 +1266,8 @@ public class AllBanks extends JavaPlugin {
 				|| Util.compareVersionsString(INCOMPATIBLE_MIN, rawVersion) == CompareVersionResult.VERSION_EQUALS 
 				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_2_IS_GREATER && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")
 				|| Util.compareVersionsString(INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_EQUALS && !INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
-				AllBanks.getInstance().getLogger().severe("Please use the correct version of CraftBukkit/Spigot.");
-				AllBanks.getInstance().getLogger().severe("For this build, CB 1.9 is expected.");
+				AllBanksLogger.severe("Please use the correct version of CraftBukkit/Spigot.", true);
+				AllBanksLogger.severe("For this build, CB 1.9 is expected.", true);
 				return VersionCheckResult.NOT_COMPATIBLE;
 			} else {
 				AllBanksLogger.severe("You are not using a compatible version of CraftBukkit.");

@@ -40,6 +40,7 @@ import org.bukkit.util.Vector;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Administrador de objetos falsos usados para las tiendas
@@ -56,59 +57,68 @@ public class FakeItemManager extends BukkitRunnable {
 	}
 	
 	private void loadBackup() {
-		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
 		
-		readkeys:
-		for(String key : yaml.getKeys(false)){
-			//Parámetros
-			String itemLocStr = yaml.getString(key + ".itemLoc", null);
-			String itemUUIDStr = yaml.getString(key + ".itemUUID", null);
-			//Transformar parámetros en valores
-			Location signLoc = transformKeyToSignloc(key);
-			Location itemLoc = Util.convertStringToLocation(itemLocStr);
-			UUID itemUUID = UUID.fromString(itemUUIDStr);
+		AllBanksLogger.info("&7[&fFakeItemManager&7] &eDelaying load. Waiting until all plugins have been loaded.", true);
+		
+		new BukkitRunnable(){
+			public void run(){
+				AllBanksLogger.info("&7[&fFakeItemManager&7] &bLoading Backup.", true);
 			
-			//Comprobar si existe
-			for(Entity e : Util.getNearbyEntities(itemLoc, 2)){
-				if(e instanceof Item){
-					if(e.getUniqueId().equals(itemUUID)){
-						//existe, colocar en el mapa
-						itemsLoc.put(signLoc, (Item) e);
-						//El parámetro "readkeys" interrumpe el estado for() anterior
-						continue readkeys;
+				YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
+				
+				readkeys:
+				for(String key : yaml.getKeys(false)){
+					//Parámetros
+					String itemLocStr = yaml.getString(key + ".itemLoc", null);
+					String itemUUIDStr = yaml.getString(key + ".itemUUID", null);
+					//Transformar parámetros en valores
+					Location signLoc = transformKeyToSignloc(key);
+					Location itemLoc = Util.convertStringToLocation(itemLocStr);
+					UUID itemUUID = UUID.fromString(itemUUIDStr);
+					
+					//Comprobar si existe
+					for(Entity e : Util.getNearbyEntities(itemLoc, 2)){
+						if(e instanceof Item){
+							if(e.getUniqueId().equals(itemUUID)){
+								//existe, colocar en el mapa
+								itemsLoc.put(signLoc, (Item) e);
+								//El parámetro "readkeys" interrumpe el estado for() anterior
+								continue readkeys;
+							}
+						}
 					}
+					
+					//No existe, intentar regenerar
+					Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
+					ItemStack shopItem = ShopUtil.getItemStack(signLoc);
+					
+					if(shopItem == null){
+						continue;
+					}
+					
+					shopItem.setAmount(1);
+					
+					Item item = signLoc.getWorld().dropItem(calculateItemLoc, shopItem);
+					item.setPickupDelay(Integer.MAX_VALUE);
+					item.setVelocity(new Vector(0, 0, 0));
+					item.teleport(calculateItemLoc);
+					
+					//Actualizar datos
+					yaml.set(key + ".itemUUID", item.getUniqueId().toString());
+					yaml.set(key + ".itemLoc", Util.convertLocationToString(calculateItemLoc, false));
+				
+					//Regenerado, colocar en el mapa
+					itemsLoc.put(signLoc, item);
+				}
+				
+				//Guardar, en caso de que se hayan hecho cambios.
+				try {
+					yaml.save(getBackupFile());
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
-			
-			//No existe, intentar regenerar
-			Location calculateItemLoc = signLoc.clone().subtract(0, 0.1, 0).add(0.5, 0, 0.5);
-			ItemStack shopItem = ShopUtil.getItemStack(signLoc);
-			
-			if(shopItem == null){
-				continue;
-			}
-			
-			shopItem.setAmount(1);
-			
-			Item item = signLoc.getWorld().dropItem(calculateItemLoc, shopItem);
-			item.setPickupDelay(Integer.MAX_VALUE);
-			item.setVelocity(new Vector(0, 0, 0));
-			item.teleport(calculateItemLoc);
-			
-			//Actualizar datos
-			yaml.set(key + ".itemUUID", item.getUniqueId().toString());
-			yaml.set(key + ".itemLoc", Util.convertLocationToString(calculateItemLoc, false));
-		
-			//Regenerado, colocar en el mapa
-			itemsLoc.put(signLoc, item);
-		}
-		
-		//Guardar, en caso de que se hayan hecho cambios.
-		try {
-			yaml.save(getBackupFile());
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		}.runTaskLater(AllBanks.getInstance(), 1);
 	}
 	
 	public static void SpawnFakeItemForShop(Location signLoc){
@@ -224,14 +234,14 @@ public class FakeItemManager extends BukkitRunnable {
 				//Tratamos de despejar el bloque en donde se colocará el objeto
 				Block b = calculateItemLoc.getBlock();
 				
-				if(!materialIsSlab(b.getType()) && !b.getType().equals(Material.AIR)){
+				if(!materialIsSlab(b.getType()) && !b.getType().equals(Material.AIR) && !b.getType().equals(Material.CHEST)){
 					b.breakNaturally();
 				}
 				
 				//Ahora, buscaremos el bloque de abajo
 				Block downb = b.getRelative(BlockFace.DOWN);
 				
-				if(downb.getType().equals(Material.AIR)){
+				if(downb.getType().equals(Material.AIR) && !b.getType().equals(Material.CHEST)){
 					downb.setType(Material.LOG);
 				}
 				

@@ -18,6 +18,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.land.generator.WorldGenerationCfg;
 import me.wirlie.allbanks.land.generator.WorldGenerator;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
@@ -184,7 +185,7 @@ public class AllBanksWorld {
 				
 				if(worldFolder.exists() && worldFolder.isDirectory()){
 					if(Bukkit.getWorld(worldID) == null){
-						AllBanks.getInstance().getLogger().info("Loading world " + worldID + "...");
+						AllBanksLogger.info("&7[&fAllBanksLand&7] &bLoading world " + worldID + "...", true);
 						WorldGenerationCfg worldCfg = new WorldGenerationCfg(worldID);
 						
 						worldCfg.plot_size = plotSize;
@@ -197,7 +198,7 @@ public class AllBanksWorld {
 						if(!registeredMaps.containsKey(worldID.toLowerCase())) registeredMaps.put(worldID.toLowerCase(), new AllBanksWorld(worldID.toLowerCase()));
 					}
 				}else{
-					AllBanks.getInstance().getLogger().warning("Invalid world entry for " + worldID + ", invalid file path. (Removed)");
+					AllBanksLogger.warning("&7[&fAllBanksLand&7] &eInvalid world entry for " + worldID + ", invalid file path. (Removed)", true);
 					removeList.add(worldID);
 				}
 			}

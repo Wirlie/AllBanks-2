@@ -32,6 +32,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Console;
+import me.wirlie.allbanks.utils.ChatUtil;
 
 /**
  * Logger interno, para guardar información importante.
@@ -98,16 +100,16 @@ public class AllBanksLogger {
 		if(showOnMainConsole){
 			switch(level){
 			case INFO:
-				AllBanks.getInstance().getLogger().info(message);
+				Console.sendMessage(ChatUtil.replaceChatFormat(message));
 				break;
 			case SEVERE:
-				AllBanks.getInstance().getLogger().severe(message);
+				Console.sendMessage(ChatUtil.replaceChatFormat(message));
 				break;
 			case WARNING:
-				AllBanks.getInstance().getLogger().warning(message);
+				Console.sendMessage(ChatUtil.replaceChatFormat(message));
 				break;
 			case DEBUG:
-				AllBanks.getInstance().getLogger().info(message);
+				Console.sendMessage(ChatUtil.replaceChatFormat(message));
 				break;
 			
 			}
@@ -127,7 +129,7 @@ public class AllBanksLogger {
 	    
 		String prefix = "[" + level.toString() + " " + hours + ":" + minutes + ":" + seconds + "]";
 		String subfix = " | (Source: " + threadInfo.getClassName().substring(threadInfo.getClassName().lastIndexOf(".") + 1) + "." + threadInfo.getMethodName() + "():" + threadInfo.getLineNumber() + ")";
-		String writeMessage = prefix + " " + message + " " + subfix;
+		String writeMessage = prefix + " " + ChatUtil.supressChatFormat(message) + " " + subfix;
 		
 		try{
 			FileOutputStream outputStream = new FileOutputStream(fileLog, true);

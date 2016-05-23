@@ -45,6 +45,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachmentInfo;
 
 import me.wirlie.allbanks.AllBanks.StorageType;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 import me.wirlie.allbanks.tempdata.BankAccount;
 import me.wirlie.allbanks.tempdata.BankSession;
 import me.wirlie.allbanks.utils.ChatUtil;
@@ -195,7 +196,7 @@ public class Banks {
 		
 		}
 		
-		AllBanks.getInstance().getLogger().warning("Method playerHasPermission returned with false (default), Action: " + signAction + ", btype: " + signType);
+		AllBanksLogger.warning("&7[&fPermission&7] &eMethod playerHasPermission returned with false (default), Action: " + signAction + ", btype: " + signType, true);
 		return false;
 	}
 	
@@ -847,7 +848,7 @@ public class Banks {
 		}
 		
 		if(totalUpdated > 0){
-			AllBanks.getInstance().getLogger().info(totalUpdated + " files changed from AllBanks/VirtualChest/");
+			AllBanksLogger.info("&7[&fAllBanksChest&7] &bUpgrade: " + totalUpdated + " files changed from AllBanks/VirtualChest/", true);
 		}
 	}
 	

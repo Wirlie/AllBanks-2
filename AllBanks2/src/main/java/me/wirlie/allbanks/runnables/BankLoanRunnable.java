@@ -52,14 +52,14 @@ public class BankLoanRunnable extends BukkitRunnable {
 	public synchronized void run() {
 		
 		if(DataBaseUtil.databaseIsLocked()){
-			AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Database is locked! Aborting...");
+			AllBanksLogger.severe("&7[&fCollectLoanSystem&7] &cDatabase is locked! Aborting...", true);
 			return;
 		}
 
 		long currentTime = new Date().getTime();
 		int affectedAccounts = 0;
 		
-		AllBanks.getInstance().getLogger().info("[CollectLoanSystem] Reading Database...");
+		AllBanksLogger.info("&7[&fCollectLoanSystem&7] &bReading Database...", true);
 		AllBanksLogger.info("BankTimerRunnable: Executed (reading database).");
 		
 		if(AllBanks.getStorageMethod().equals(StorageType.FLAT_FILE)) {
@@ -160,9 +160,8 @@ public class BankLoanRunnable extends BukkitRunnable {
 					affectedAccounts++;
 					
 				}
-	
-				AllBanksLogger.info("BankTimerRunnable: " + affectedAccounts + " accounts modified.");
-				AllBanks.getInstance().getLogger().info("[CollectLoanSystem] " + affectedAccounts + " accounts affected...");
+				
+				AllBanksLogger.info("&7[&fCollectLoanSystem&7] &b" + affectedAccounts + " accounts affected...", true);
 			} catch (SQLException e) {
 				DataBaseUtil.checkDatabaseIsLocked(e);
 			}finally{

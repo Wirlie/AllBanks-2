@@ -21,9 +21,9 @@ package me.wirlie.allbanks.utils;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Funciones de utilidad para la configuración.
@@ -139,8 +139,8 @@ public class ConfigurationUtil{
 			
 			if(!m.matches()){
 				//invalido, el valor -1 hace que el sistema automático nunca se ejecute.
-				AllBanks.getInstance().getLogger().warning("Invalid timeValue: " + s);
-				AllBanks.getInstance().getLogger().warning("Valid values: days | day | hours | hour | minutes | minute | seconds | second");
+				AllBanksLogger.warning("&7[&fUtil&7] &eInvalid timeValue: " + s, true);
+				AllBanksLogger.warning("&7[&fUtil&7] &eValid values: days | day | hours | hour | minutes | minute | seconds | second", true);
 				try{
 					throw new IllegalArgumentException("Invalid timeValue: " + s);
 				}catch(IllegalArgumentException e){
@@ -150,8 +150,8 @@ public class ConfigurationUtil{
 			}else{
 				
 				if(m.groupCount() != 2){
-					AllBanks.getInstance().getLogger().warning("The value " + s + " does not have a valid syntax for a timeValue.");
-					AllBanks.getInstance().getLogger().warning("Valid syntax: '{INT} {StringValue}', example: '1 day', '1 minute'");
+					AllBanksLogger.warning("&7[&fUtil&7] &eThe value " + s + " does not have a valid syntax for a timeValue.", true);
+					AllBanksLogger.warning("&7[&fUtil&7] &eValid syntax: '{INT} {StringValue}', example: '1 day', '1 minute'", true);
 					//invalido, el valor -1 hace que el sistema automático nunca se ejecute.
 					return -1;
 				}
@@ -162,9 +162,9 @@ public class ConfigurationUtil{
 				try{
 					intValue = Integer.parseInt(m.group(1));
 				}catch(NumberFormatException e){
-					AllBanks.getInstance().getLogger().warning("The value " + m.group(1) + " is not a valid number.");
-					AllBanks.getInstance().getLogger().warning("Matched string: " + s);
-					AllBanks.getInstance().getLogger().warning("Full string: " + strTimeValue);
+					AllBanksLogger.warning("&7[&fUtil&7] &eThe value " + m.group(1) + " is not a valid number.", true);
+					AllBanksLogger.warning("&7[&fUtil&7] &eMatched string: " + s, true);
+					AllBanksLogger.warning("&7[&fUtil&7] &eFull string: " + strTimeValue, true);
 					e.printStackTrace();
 					//invalido, el valor -1 hace que el sistema automático nunca se ejecute.
 					return -1;

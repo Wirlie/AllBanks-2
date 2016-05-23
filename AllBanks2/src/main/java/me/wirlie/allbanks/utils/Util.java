@@ -37,8 +37,6 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
-import net.minecraft.server.v1_9_R1.EnumChatFormat;
-import net.minecraft.server.v1_9_R1.NBTTagCompound;
 
 /**
  * Utilidades
@@ -65,21 +63,7 @@ public class Util {
 	    
 	    return (directory.delete());
 	}
-	
-	public static String getItemCodeOrGetCustomName(net.minecraft.server.v1_9_R1.ItemStack stack) {
-        NBTTagCompound tag = stack.getTag();
 
-        if ((tag != null) && (tag.hasKeyOfType("display", 10))) {
-            NBTTagCompound nbttagcompound = tag.getCompound("display");
-
-            if (nbttagcompound.hasKeyOfType("Name", 8)) {
-                return EnumChatFormat.ITALIC + nbttagcompound.getString("Name");
-            }
-        }
-
-        return stack.a() + ".name";
-    }
-	
 	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
 	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
 	        new Comparator<Map.Entry<K,V>>() {
@@ -99,7 +83,7 @@ public class Util {
 	    return sortedEntries;
 	}
 	
-	public static Entity[] getNearbyEntities(Location l, int radius) {
+	public static Entity[] getNearbyEntities(Location l, int radius) {	
 		int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
 		HashSet<Entity> radiusEntities = new HashSet<Entity>();
 
@@ -321,55 +305,39 @@ public class Util {
 		
 		return false;
 	}
-
-	public static ChatColor convertEnumChatFormatToChatColor(EnumChatFormat e) {
+	
+	public enum VersionPackage{
+		NMS_1_9_R1,
+		NMS_1_9_R2,
+		NOT_SUPPORTED,
+	}
+	
+	public static VersionPackage resolveNMSVersion(){
+		String name = AllBanks.getInstance().getServer().getClass().getPackage().getName();
+		String version = name.substring(name.lastIndexOf('.') + 1);
 		
-		switch(e){
-		case AQUA:
-			return ChatColor.AQUA;
-		case BLACK:
-			return ChatColor.BLACK;
-		case BLUE:
-			return ChatColor.BLUE;
-		case BOLD:
-			return ChatColor.BOLD;
-		case DARK_AQUA:
-			return ChatColor.DARK_AQUA;
-		case DARK_BLUE:
-			return ChatColor.DARK_BLUE;
-		case DARK_GRAY:
-			return ChatColor.DARK_GRAY;
-		case DARK_GREEN:
-			return ChatColor.DARK_GREEN;
-		case DARK_PURPLE:
-			return ChatColor.DARK_PURPLE;
-		case DARK_RED:
-			return ChatColor.DARK_RED;
-		case GOLD:
-			return ChatColor.GOLD;
-		case GRAY:
-			return ChatColor.GRAY;
-		case GREEN:
-			return ChatColor.GREEN;
-		case ITALIC:
-			return ChatColor.ITALIC;
-		case LIGHT_PURPLE:
-			return ChatColor.LIGHT_PURPLE;
-		case RED:
-			return ChatColor.RED;
-		case RESET:
-			return ChatColor.RESET;
-		case STRIKETHROUGH:
-			return ChatColor.STRIKETHROUGH;
-		case UNDERLINE:
-			return ChatColor.UNDERLINE;
-		case WHITE:
-			return ChatColor.WHITE;
-		case YELLOW:
-			return ChatColor.YELLOW;
-		default:
-			return ChatColor.WHITE;
+		if(version.equalsIgnoreCase("v1_9_R1")){
+			return VersionPackage.NMS_1_9_R1;
+		}else if(version.equalsIgnoreCase("v1_9_R2")){
+			return VersionPackage.NMS_1_9_R2;
+		}else{
+			return VersionPackage.NOT_SUPPORTED;
 		}
 	}
 
+	public static String getItemCodeOrGetCustomName(Object asNMSCopy) {
+		if(resolveNMSVersion() == VersionPackage.NMS_1_9_R1){
+			return Util_R1.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R1.ItemStack) asNMSCopy);
+		}else{
+			return Util_R2.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R2.ItemStack) asNMSCopy);
+		}
+	}
+
+	public static ChatColor convertEnumChatFormatToChatColor(Object e) {
+		if(resolveNMSVersion() == VersionPackage.NMS_1_9_R1){
+			return Util_R1.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R1.EnumChatFormat) e);
+		}else{
+			return Util_R2.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R2.EnumChatFormat) e);
+		}
+	}
 }

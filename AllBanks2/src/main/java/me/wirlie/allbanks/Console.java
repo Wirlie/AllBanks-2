@@ -21,6 +21,9 @@ package me.wirlie.allbanks;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+
+import me.wirlie.allbanks.utils.ChatUtil;
 
 /**
  * Esta clase se encarga de enviar mensajes a la consola junto con el prefix de AllBanks.
@@ -30,7 +33,7 @@ import org.bukkit.Bukkit;
 public class Console {
 	
 	/** Prefix de AllBanks sin formato **/
-	static String simplePrefix = "[" + AllBanks.getInstance().getDescription().getName() + "] ";
+	static String simplePrefix = ChatColor.DARK_GREEN + "[" + ChatColor.GREEN + AllBanks.getInstance().getDescription().getName() + " " + AllBanks.getInstance().getDescription().getVersion() + ChatColor.DARK_GREEN + "] " + ChatColor.AQUA;
 	
 	/**
 	 * Enviar un mensaje a la consola.
@@ -58,6 +61,6 @@ public class Console {
 	 * @param str Cadena de texto.
 	 */
 	public static void sendMessage(String str){
-		Bukkit.getConsoleSender().sendMessage(simplePrefix + str);
+		Bukkit.getConsoleSender().sendMessage(simplePrefix + ChatUtil.replaceChatFormat(str));
 	}
 }

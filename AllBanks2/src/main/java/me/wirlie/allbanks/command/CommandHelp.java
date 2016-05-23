@@ -26,6 +26,7 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
 
 /**
  * @author Wirlie
@@ -68,12 +69,64 @@ public class CommandHelp extends Command {
 		
 		switch(page) {
 		case 1:
-			sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab ? " + ChatColor.AQUA + "[page]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_HELP_DESC.toString(false));
-			sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "[bankmoney|bankxp]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
-			sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "info" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_INFO_DESC.toString(false));
-			sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "buyticket [amount]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_BUYTICKET_DESC.toString(false));
-			sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "[enable|disable]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC.toString(false));
-			sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
+			
+			if(sender instanceof Player){
+				//Jugador
+				
+				//	/ab ? <pagina>
+				new BuildChatMessage()
+					.then("/ab ")
+						.color(ChatColor.GRAY)
+						.suggest("/ab ? 1")
+					.then("? ")
+						.color(ChatColor.GOLD)
+						.suggest("/ab ? 1")
+					.then("[page]")
+						.color(ChatColor.GREEN)
+						.tooltip(Translation.get(StringsID.COMMAND_HELP_TOOLTIP_ARG_PAGE, false))
+						.suggest("/ab ? 1")
+					.send(sender);
+				;
+				
+				//	/ab toprank bankmoney <page>
+				new BuildChatMessage()
+				.then("/ab ")
+					.color(ChatColor.GRAY)
+					.suggest("/ab toprank bankmoney 1")
+				.then("toprank bankmoney ")
+					.color(ChatColor.GOLD)
+					.suggest("/ab toprank bankmoney 1")
+				.then("[page]")
+					.color(ChatColor.GREEN)
+					.tooltip(Translation.get(StringsID.COMMAND_HELP_TOOLTIP_ARG_PAGE, false))
+					.suggest("/ab toprank bankmoney 1")
+				.send(sender);
+				
+				//	/ab toprank bankxp <page>
+				new BuildChatMessage()
+				.then("/ab ")
+					.color(ChatColor.GRAY)
+					.suggest("/ab bankxp bankxp 1")
+				.then("toprank bankxp ")
+					.color(ChatColor.GOLD)
+					.suggest("/ab bankxp bankxp 1")
+				.then("[page]")
+					.color(ChatColor.GREEN)
+					.tooltip(Translation.get(StringsID.COMMAND_HELP_TOOLTIP_ARG_PAGE, false))
+					.suggest("/ab toprank bankxp 1")
+				.send(sender);
+				
+				
+			;
+			}else{
+				//Enviado desde la consola.
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab ? " + ChatColor.AQUA + "[page]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_HELP_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab toprank " + ChatColor.AQUA + "[bankmoney|bankxp]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_TOPRANK_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "info" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_INFO_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "buyticket [amount]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_BUYTICKET_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "[enable|disable]" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC.toString(false));
+				sender.sendMessage(Translation.getPluginPrefix() + ChatColor.GRAY + "/ab lottery " + ChatColor.AQUA + "force" + ChatColor.GOLD + " - " + ChatColor.WHITE + StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC.toString(false));
+			}
 			
 			break;
 			

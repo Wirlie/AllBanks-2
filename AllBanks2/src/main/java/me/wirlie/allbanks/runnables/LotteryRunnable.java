@@ -70,13 +70,9 @@ public class LotteryRunnable extends BukkitRunnable {
 		
 		if(runEvery <= 0){
 			//inválido
-			AllBanks.getInstance().getLogger().severe("[Lottery] Can not start runnable!");
-			AllBanks.getInstance().getLogger().severe("[Lottery] Invalid configuration value: " + runEvery);
-			AllBanks.getInstance().getLogger().severe("[Lottery] on: lottery.get-winer-every");
-			
-			AllBanksLogger.severe("[Lottery] Can not start runnable!");
-			AllBanksLogger.severe("[Lottery] Invalid configuration value: " + runEvery);
-			AllBanksLogger.severe("[Lottery] on: lottery.get-winer-every");
+			AllBanksLogger.severe("&7[&fLottery&7] &cCan not start runnable!", true);
+			AllBanksLogger.severe("&7[&fLottery&7] &cInvalid configuration value: " + runEvery, true);
+			AllBanksLogger.severe("&7[&fLottery&7] &con: lottery.get-winer-every", true);
 			
 			initialized = true;
 			return;

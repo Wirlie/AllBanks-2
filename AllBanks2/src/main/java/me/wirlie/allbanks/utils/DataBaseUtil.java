@@ -23,7 +23,7 @@ import java.sql.SQLException;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.Console;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -69,8 +69,8 @@ public class DataBaseUtil{
 	}
 	
 	public static void sendServerMessage(){
-		AllBanks.getInstance().getLogger().severe("Database is locked!! Please restart your server for unlock the database...");
-		AllBanks.getInstance().getLogger().severe("AllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.");
+		Console.sendMessage("&7[&fDataBase&7] &cDatabase is locked!! Please restart your server for unlock the database...");
+		Console.sendMessage("&7[&fDataBase&7] &cAllBanks will still work (to avoid vandalism actions with the signs), however, it is possible that many functions of AllBanks not work.");
 	}
 	
 	public static boolean databaseIsLocked(Player p){
