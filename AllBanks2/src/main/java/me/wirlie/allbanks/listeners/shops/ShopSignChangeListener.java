@@ -29,6 +29,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -53,7 +54,7 @@ public class ShopSignChangeListener implements Listener {
 			//Bien antes que nada, el usuario tiene permisos?
 			final Player p = e.getPlayer();
 			
-			if(!Util.hasPermission(p, "allbanks.sign.shop.new")) {
+			if(!Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 				Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 				InteractiveUtil.sendSound(p, SoundType.DENY);
 				e.getBlock().breakNaturally();
@@ -69,7 +70,7 @@ public class ShopSignChangeListener implements Listener {
 			boolean isAdminShop = false;
 			
 			if(lines[Shops.LINE_OWNER].equalsIgnoreCase(Shops.ADMIN_TAG)) {
-				if(!Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+				if(!Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 					Translation.getAndSendMessage(p, StringsID.SHOP_NO_PERMISSIONS_FOR_ADMIN_SHOP, true);
 					InteractiveUtil.sendSound(p, SoundType.DENY);
 					e.getBlock().breakNaturally();

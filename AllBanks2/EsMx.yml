@@ -239,4 +239,5 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 219: "Teletransportarse a una parcela de un jugador."
 220: "&eJugador. %BREAK%Para ir a una segunda parcela puedes usar%BREAK%: despues del nombre, por ejemplo Wirlie:2%BREAK%te llevará a la parcela 2 de Wirlie.%BREAK%&2Valor aceptado: &fTexto&2."
 221: "&8Generando..."
+222: "&cInsufficient permission to see this command."
 

@@ -115,8 +115,6 @@ public class SignChangeListener implements Listener {
 				}
 				
 				btype = ABSignType.BANK_MONEY;
-			}else if(lines[1].equalsIgnoreCase("BankLand") || lines[1].equalsIgnoreCase("Land")){
-				btype = ABSignType.BANK_LAND;
 			}else if(lines[1].equalsIgnoreCase("ATM")){
 				btype = ABSignType.ATM;
 			}
@@ -149,12 +147,6 @@ public class SignChangeListener implements Listener {
 				public void run() {
 					if(e.getBlock().getType().equals(Material.AIR))
 						return;
-					
-					if(btypefinal.equals(ABSignType.BANK_LAND) || btypefinal.equals(ABSignType.ATM)) {
-						Translation.getAndSendMessage(p, StringsID.NOT_YET_IMPLEMENTED, true);
-						e.getBlock().breakNaturally();
-						return;
-					}
 					
 					if(Banks.registerNewABSign(e.getBlock().getLocation(), p)){
 						Banks.switchSignToInitialState((Sign) e.getBlock().getState(), btypefinal);

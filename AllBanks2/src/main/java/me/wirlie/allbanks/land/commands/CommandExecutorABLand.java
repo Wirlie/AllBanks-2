@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.AllBanksExecutor;
@@ -49,11 +50,11 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 		//Relacionado a comandos Admin
 		registerCommand(new CommandAdmin(null), "admin", "?");
 		registerCommand(new CommandAdmin(null), "admin", "help");
-		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.generate"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "generate");
-		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.unload"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "unload");
-		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.remove"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "remove");
-		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.info"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "info");
-		registerCommand(new CommandAdmin("allbanks.land.commands.admin.world.set"), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "set", "RegEx->(.){1,}:<Flag>", "RegEx->(.){1,}:<Value>");
+		registerCommand(new CommandAdmin(PermissionsConstants.COMMAND_LAND_ADMIN_WORLD_GENERATE_PERMISSION), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "generate");
+		registerCommand(new CommandAdmin(PermissionsConstants.COMMAND_LAND_ADMIN_WORLD_UNLOAD_PERMISSION), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "unload");
+		registerCommand(new CommandAdmin(PermissionsConstants.COMMAND_LAND_ADMIN_WORLD_REMOVE_PERMISSION), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "remove");
+		registerCommand(new CommandAdmin(PermissionsConstants.COMMAND_LAND_ADMIN_WORLD_INFO_PERMISSION), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "info");
+		registerCommand(new CommandAdmin(PermissionsConstants.COMMAND_LAND_ADMIN_WORLD_SET_PERMISSION), "admin", "world", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<worldName>", "set", "RegEx->(.){1,}:<Flag>", "RegEx->(.){1,}:<Value>");
 		
 		//Spawns de mundos
 		registerCommand(new CommandWorld("allbanks.land.commands.spawn"), "spawn", "RegEx->(.){1,}:<worldName>");
@@ -61,21 +62,21 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 		//Relacionado al plot y comandos de usuario
 		registerCommand(new CommandPlot(null), "plot", "?");
 		registerCommand(new CommandPlot(null), "plot", "help");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.claim"), "plot", "claim");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.dispose"), "plot", "dispose");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.add"), "plot", "add", "RegEx->(.){1,}:<Player>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.add"), "plot", "remove", "RegEx->(.){1,}:<Player>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "deny", "RegEx->(.){1,}:<Player>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.deny"), "plot", "undeny", "RegEx->(.){1,}:<Player>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.set.flags"), "plot", "set", "RegEx->(.){1,}:<Config>", "RegEx->(.){1,}:<Value>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.sethomespawn"), "plot", "setHomeSpawn");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.setshopspawn"), "plot", "setShopSpawn");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_CLAIM_PERMISSION), "plot", "claim");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_DISPOSE_PERMISSION), "plot", "dispose");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_ADD_PERMISSION), "plot", "add", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_ADD_PERMISSION), "plot", "remove", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_DENY_PERMISSION), "plot", "deny", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_DENY_PERMISSION), "plot", "undeny", "RegEx->(.){1,}:<Player>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_SET_FLAGS_PERMISSION), "plot", "set", "RegEx->(.){1,}:<Config>", "RegEx->(.){1,}:<Value>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_SETHOMESPAWN_PERMISSION), "plot", "setHomeSpawn");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_SETSHOPSPAWN_PERMISSION), "plot", "setShopSpawn");
 		registerCommand(new CommandPlot(null), "plot", "info");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.home"), "plot", "home", "RegEx->([0-9]){1,}:<#>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.teleport"), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "auto");
-		registerCommand(new CommandPlot("allbanks.land.commands.plot.auto"), "plot", "autoclaim");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_HOME_PERMISSION), "plot", "home");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_HOME_PERMISSION), "plot", "home", "RegEx->([0-9]){1,}:<#>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_TELEPORT_PERMISSION), "plot", "teleport", "RegEx->(.){1,}:<PlotOwner>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_AUTO_PERMISSION), "plot", "auto");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_AUTO_PERMISSION), "plot", "autoclaim");
 		registerCommand(new CommandPlot(null), "plot", "list");
 		registerCommand(new CommandPlot(null), "plot", "list", "RegEx->([0-9]){1,}:<page>");
 	}

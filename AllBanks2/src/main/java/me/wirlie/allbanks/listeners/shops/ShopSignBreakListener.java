@@ -28,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -83,7 +84,7 @@ public class ShopSignBreakListener implements Listener {
 				String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
 
 				if(owner.equalsIgnoreCase(Shops.ADMIN_TAG)) {
-					if(!Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+					if(!Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 						Translation.getAndSendMessage(p, StringsID.NO_PERMISSIONS_FOR_THIS, true);
 						InteractiveUtil.sendSound(p, SoundType.DENY);
 						e.setCancelled(true);
@@ -143,7 +144,7 @@ public class ShopSignBreakListener implements Listener {
 				if(owner.equalsIgnoreCase(p.getName())) canBreakSign = true;
 
 				//Está intentando remover su propio letrero?
-				if(canBreakSign || Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+				if(canBreakSign || Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 					if(Banks.removeSignFromAllBanks(sign.getLocation())) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_REMOVED, true);
 						InteractiveUtil.sendSound(p, SoundType.SUCCESS);

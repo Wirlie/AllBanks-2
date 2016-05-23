@@ -128,8 +128,6 @@ public class SignInteractListener implements Listener {
 							return;
 						}
 						break;
-					case BANK_LAND:
-						break;
 					case BANK_LOAN:
 						if(!AllBanks.getInstance().getConfig().getBoolean("modules.banks.bank-loan.enable")){
 							Translation.getAndSendMessage(p, StringsID.MODULE_DISABLED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>BankLoan"), true);

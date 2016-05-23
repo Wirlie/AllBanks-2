@@ -95,8 +95,6 @@ public class PlayerChatBankSessionListener implements Listener {
 					break;
 				}
 				break;
-			case BANK_LAND:
-				break;
 			case BANK_LOAN:
 				switch(step){
 				case 0:

@@ -39,6 +39,7 @@ import org.bukkit.inventory.ItemStack;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -98,7 +99,7 @@ public class ShopSignInteractListener implements Listener {
 				
 				//La última línea tiene un ???
 				if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM)).equalsIgnoreCase("???")) {
-					if(owner.equalsIgnoreCase(p.getName()) || isAdminShop && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+					if(owner.equalsIgnoreCase(p.getName()) || isAdminShop && Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 						Translation.getAndSendMessage(p, StringsID.SHOP_CONFIGURE_NEEDED, true);
 					} else {
 						Translation.getAndSendMessage(p, StringsID.SHOP_IS_NOT_CONFIGURED, true);
@@ -228,7 +229,7 @@ public class ShopSignInteractListener implements Listener {
 					
 					String owner = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
 					
-					if(owner.equalsIgnoreCase(p.getName()) || owner.equalsIgnoreCase(Shops.ADMIN_TAG) && Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+					if(owner.equalsIgnoreCase(p.getName()) || owner.equalsIgnoreCase(Shops.ADMIN_TAG) && Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 						ItemStack item = p.getInventory().getItemInMainHand();
 						
 						if(!item.getType().equals(Material.AIR)) {

@@ -227,4 +227,5 @@ LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 219: "Teleport to a plot of a player."
 220: "&ePlayer. %BREAK%To go to a second plot you can use%BREAK%: after the name, for example Wirlie:2%BREAK%will take you to the plot #2 of Wirlie.%BREAK%&2Accepted value: &fText&2."
 221: "&8Generating..."
+222: "&cInsufficient permission to see this command."
 

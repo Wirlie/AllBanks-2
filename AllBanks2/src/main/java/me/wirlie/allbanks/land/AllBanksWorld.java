@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.land.generator.WorldGenerationCfg;
 import me.wirlie.allbanks.land.generator.WorldGenerator;
 import me.wirlie.allbanks.logger.AllBanksLogger;
@@ -387,7 +388,7 @@ public class AllBanksWorld {
 	}
 	
 	public boolean hasAdminPermissions(Player p){
-		if(Util.hasPermission(p, "allbanks.land.admin") || p.isOp()){
+		if(Util.hasPermission(p, PermissionsConstants.LAND_ADMIN_PERMISSION) || p.isOp()){
 			return true;
 		}
 		

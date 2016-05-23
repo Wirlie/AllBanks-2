@@ -27,6 +27,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.utils.Util;
 
 /**
@@ -230,7 +231,7 @@ public class AllBanksPlot {
 			return true;
 		}
 		
-		if(Util.hasPermission(player, "allbanks.land.admin")){
+		if(Util.hasPermission(player, PermissionsConstants.LAND_ADMIN_PERMISSION)){
 			return true;
 		}
 		

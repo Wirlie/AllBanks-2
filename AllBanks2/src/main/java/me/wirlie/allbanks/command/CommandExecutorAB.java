@@ -24,6 +24,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command.CommandExecuteResult;
@@ -39,31 +40,31 @@ public class CommandExecutorAB extends AllBanksExecutor implements CommandExecut
 	
 	public CommandExecutorAB(){
 		//ItemInfo
-		registerCommand(new CommandItemInfo("allbanks.commands.iteminfo"), "iteminfo");
+		registerCommand(new CommandItemInfo(PermissionsConstants.COMMAND_AB_ITEMINFO_PERMISSION), "iteminfo");
 		registerCommand(new CommandItemInfo(null), "showPreview");
 		//Lotería
 		registerCommand(new CommandLottery(null), "lottery", "?");
 		registerCommand(new CommandLottery(null), "lottery", "help");
-		registerCommand(new CommandLottery("allbanks.commands.lottery.info"), "lottery", "info");
-		registerCommand(new CommandLottery("allbanks.commands.lottery.force"), "lottery", "force");
-		registerCommand(new CommandLottery("allbanks.commands.lottery.enable"), "lottery", "enable");
-		registerCommand(new CommandLottery("allbanks.commands.lottery.disable"), "lottery", "disable");
-		registerCommand(new CommandLottery("allbanks.commands.lottery.buyticket"), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
+		registerCommand(new CommandLottery(PermissionsConstants.COMMAND_AB_LOTTERY_INFO_PERMISSION), "lottery", "info");
+		registerCommand(new CommandLottery(PermissionsConstants.COMMAND_AB_LOTTERY_FORCE_PERMISSION), "lottery", "force");
+		registerCommand(new CommandLottery(PermissionsConstants.COMMAND_AB_LOTTERY_ENABLE_PERMISSION), "lottery", "enable");
+		registerCommand(new CommandLottery(PermissionsConstants.COMMAND_AB_LOTTERY_DISABLE_PERMISSION), "lottery", "disable");
+		registerCommand(new CommandLottery(PermissionsConstants.COMMAND_AB_LOTTERY_BUYTICKET_PERMISSION), "lottery", "buyticket", "RegEx->([0-9]){1,}:<amount>");
 		//DataBase
 		registerCommand(new CommandDataBase(null), "database", "?");
 		registerCommand(new CommandDataBase(null), "database", "help");
-		registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-query", "RegEx->(.){1,}:<SQL>");
-		registerCommand(new CommandDataBase("allbanks.commands.database.executequery"), "database", "try-update", "RegEx->(.){1,}:<SQL>");
+		registerCommand(new CommandDataBase(PermissionsConstants.COMMAND_AB_DATABASE_EXECUTEQUERY_PERMISSION), "database", "try-query", "RegEx->(.){1,}:<SQL>");
+		registerCommand(new CommandDataBase(PermissionsConstants.COMMAND_AB_DATABASE_EXECUTEQUERY_PERMISSION), "database", "try-update", "RegEx->(.){1,}:<SQL>");
 		//TopRank
 		registerCommand(new CommandTopRank(null), "toprank", "?");
 		registerCommand(new CommandTopRank(null), "toprank", "help");
-		registerCommand(new CommandTopRank("allbanks.commands.toprank.bankmoney"), "toprank", "bankmoney");
-		registerCommand(new CommandTopRank("allbanks.commands.toprank.bankxp"), "toprank", "bankxp");
+		registerCommand(new CommandTopRank(PermissionsConstants.COMMAND_AB_TOPRANK_BANKMONEY_PERMISSION), "toprank", "bankmoney");
+		registerCommand(new CommandTopRank(PermissionsConstants.COMMAND_AB_TOPRANK_BANKXP_PERMISSION), "toprank", "bankxp");
 		//Ayuda
-		registerCommand(new CommandHelp("allbanks.commands.help"), "help");
-		registerCommand(new CommandHelp("allbanks.commands.help"), "help", "RegEx->([0-9]){1,}:<page>");
-		registerCommand(new CommandHelp("allbanks.commands.help"), "?");
-		registerCommand(new CommandHelp("allbanks.commands.help"), "?", "RegEx->([0-9]){1,}:<page>");
+		registerCommand(new CommandHelp(null), "help");
+		registerCommand(new CommandHelp(null), "help", "RegEx->([0-9]){1,}:<page>");
+		registerCommand(new CommandHelp(null), "?");
+		registerCommand(new CommandHelp(null), "?", "RegEx->([0-9]){1,}:<page>");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {

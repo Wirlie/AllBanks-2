@@ -39,6 +39,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 
 /**
@@ -60,7 +61,7 @@ public class ShopUtil {
 	}
 	
 	public static boolean playerHasPermissionForRemove(Player p, Sign sign){
-		if(Util.hasPermission(p, "allbanks.sign.shop.admin")) return true;
+		if(Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) return true;
 		
 		//Comprobar dueño
 		String ownerSTR = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));

@@ -29,6 +29,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import me.wirlie.allbanks.Banks;
+import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
@@ -86,7 +87,7 @@ public class ShopChestInteractListener implements Listener {
 			}
 			
 			//Bien, comprobar si el cofre pertenece al jugador
-			if(!ShopUtil.isAdminShop(sign) && !ShopUtil.getOwner(sign).getName().equalsIgnoreCase(p.getName()) && !Util.hasPermission(p, "allbanks.sign.shop.admin")) {
+			if(!ShopUtil.isAdminShop(sign) && !ShopUtil.getOwner(sign).getName().equalsIgnoreCase(p.getName()) && !Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) {
 				e.setCancelled(true);
 				return;
 			}

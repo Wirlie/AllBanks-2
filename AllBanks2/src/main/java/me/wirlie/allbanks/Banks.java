@@ -73,7 +73,6 @@ public class Banks {
 		BANK_XP("XP"),
 		BANK_TIME("Time"),
 		BANK_MONEY("Money"),
-		BANK_LAND("Land"),
 		ATM("ATM"), 
 		BANK_CHEST("Chest"), 
 		DEFAULT("");
@@ -136,38 +135,34 @@ public class Banks {
 		case NEW_SIGN:
 			switch(signType){
 			case ATM:
-				return Util.hasPermission(p, "allbanks.sign.atm.new");
-			case BANK_LAND:
-				return Util.hasPermission(p, "allbanks.sign.land.new");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_ATM_NEW_PERMISSION);
 			case BANK_LOAN:
-				return Util.hasPermission(p, "allbanks.sign.loan.new");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_LOAN_NEW_PERMISSION);
 			case BANK_MONEY:
-				return Util.hasPermission(p, "allbanks.sign.money.new");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_MONEY_NEW_PERMISSION);
 			case BANK_TIME:
-				return Util.hasPermission(p, "allbanks.sign.time.new");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_TIME_NEW_PERMISSION);
 			case BANK_XP:
-				return Util.hasPermission(p, "allbanks.sign.xp.new");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_XP_NEW_PERMISSION);
 			case BANK_CHEST:
-				return Util.hasPermission(p, "allbanks.sign.chest.new");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_CHEST_NEW_PERMISSION);
 			case DEFAULT:
 				break;
 			}
 		case DESTROY_SIGN:
 			switch(signType){
 			case ATM:
-				return Util.hasPermission(p, "allbanks.sign.atm.destroy");
-			case BANK_LAND:
-				return Util.hasPermission(p, "allbanks.sign.land.destroy");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_ATM_DESTROY_PERMISSION);
 			case BANK_LOAN:
-				return Util.hasPermission(p, "allbanks.sign.loan.destroy");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_LOAN_DESTROY_PERMISSION);
 			case BANK_MONEY:
-				return Util.hasPermission(p, "allbanks.sign.money.destroy");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_MONEY_DESTROY_PERMISSION);
 			case BANK_TIME:
-				return Util.hasPermission(p, "allbanks.sign.time.destroy");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_TIME_DESTROY_PERMISSION);
 			case BANK_XP:
-				return Util.hasPermission(p, "allbanks.sign.xp.destroy");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_XP_DESTROY_PERMISSION);
 			case BANK_CHEST:
-				return Util.hasPermission(p, "allbanks.sign.chest.destroy");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_CHEST_DESTROY_PERMISSION);
 			case DEFAULT:
 				break;
 			}
@@ -175,19 +170,17 @@ public class Banks {
 		case USE_SIGN:
 			switch(signType){
 			case ATM:
-				return Util.hasPermission(p, "allbanks.sign.atm.use");
-			case BANK_LAND:
-				return Util.hasPermission(p, "allbanks.sign.land.use");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_ATM_USE_PERMISSION);
 			case BANK_LOAN:
-				return Util.hasPermission(p, "allbanks.sign.loan.use");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_LOAN_USE_PERMISSION);
 			case BANK_MONEY:
-				return Util.hasPermission(p, "allbanks.sign.money.use");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_MONEY_USE_PERMISSION);
 			case BANK_TIME:
-				return Util.hasPermission(p, "allbanks.sign.time.use");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_TIME_USE_PERMISSION);
 			case BANK_XP:
-				return Util.hasPermission(p, "allbanks.sign.xp.use");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_XP_USE_PERMISSION);
 			case BANK_CHEST:
-				return Util.hasPermission(p, "allbanks.sign.chest.use");
+				return Util.hasPermission(p, PermissionsConstants.BANK_SIGN_CHEST_USE_PERMISSION);
 			case DEFAULT:
 				break;
 			}
@@ -230,11 +223,6 @@ public class Banks {
 			break;
 		case BANK_CHEST:
 			nextStep = 0;
-			break;
-		case BANK_LAND:
-			if(nextStep > 2){
-				nextStep = 0;
-			}
 			break;
 		case BANK_LOAN:
 			if(nextStep >= 2){
@@ -313,15 +301,6 @@ public class Banks {
 					Translation.getAndSendMessage(player, StringsID.BANKCHEST_STEP0_INFO, true);
 				}
 				break;
-			default:
-				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
-				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
-				allbanksSign.setLine(3, "");
-				break;
-			}
-			break;
-		case BANK_LAND:
-			switch(signStep){
 			default:
 				//El estado default es el estado cuando el letrero NO está en uso (establecer "step" con -1 logra este resultado)
 				allbanksSign.setLine(2, ChatColor.DARK_GREEN + StringsID.CLICK_TO_USE.toString(false));
