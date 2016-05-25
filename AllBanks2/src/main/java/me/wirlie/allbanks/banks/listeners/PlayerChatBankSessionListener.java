@@ -284,7 +284,7 @@ public class PlayerChatBankSessionListener implements Listener {
 					if(!unlimitedSave){
 						//Si el dinero no es ilimitado, tratamos de acoplarnos al valor máximo.
 						BigDecimal remainingSave = maxLimitSave.subtract(ba.BankMoney.getMoney());
-					
+
 						if(remainingSave.compareTo(msgValue) < 0){
 							BigDecimal msgValueClone = msgValue;
 							msgValue = remainingSave;
@@ -299,6 +299,9 @@ public class PlayerChatBankSessionListener implements Listener {
 							replaceMap.put("%1%", AllBanks.getEconomy().format(msgValueClone.doubleValue()));
 							replaceMap.put("%2%", AllBanks.getEconomy().format(msgValue.doubleValue()));
 							Translation.getAndSendMessage(p, StringsID.BANKMONEY_MAX_LIMIT_REACHED_1, replaceMap, true);
+						}else if(!AllBanks.getEconomy().has(p, msgValue.doubleValue())){
+							Translation.getAndSendMessage(p, StringsID.YOU_DO_NOT_HAVE_MONEY, true);
+							return;
 						}
 					}else{
 						if(!AllBanks.getEconomy().has(p, msgValue.doubleValue())){
