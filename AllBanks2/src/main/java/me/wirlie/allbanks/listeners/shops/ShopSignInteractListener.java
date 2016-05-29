@@ -109,12 +109,6 @@ public class ShopSignInteractListener implements Listener {
 					return;
 				} else {
 					//Bien, el banco se encuentra configurado adecuadamente.
-					//¿Está tratando de usar una tienda de sí mismo?
-					if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
-						Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
-						InteractiveUtil.sendSound(p, SoundType.DENY);
-						return;
-					}
 					
 					//Bien, está usando la tienda de alguien más. (BUY)
 					
@@ -126,6 +120,13 @@ public class ShopSignInteractListener implements Listener {
 					
 					//Ok, vamos a mostrar un mensaje con la previsualización si está usando shift
 					if(!p.isSneaking()){
+						
+						//¿Está tratando de usar una tienda de sí mismo?
+						if(ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(p.getName())) {
+							Translation.getAndSendMessage(p, StringsID.SHOP_CANNOT_USE_YOUR_SHOP, true);
+							InteractiveUtil.sendSound(p, SoundType.DENY);
+							return;
+						}
 						
 						//No tiene la etiqueta S:X
 						if(!ShopUtil.signSupportBuyAction(sign)) {
