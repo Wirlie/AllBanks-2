@@ -24,9 +24,9 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks.ABSignType;
-import me.wirlie.allbanks.logger.AllBanksLogger;
-import me.wirlie.allbanks.tempdata.BankAccount;
-import me.wirlie.allbanks.tempdata.BankSession;
+import me.wirlie.allbanks.banks.bankdata.BankAccount;
+import me.wirlie.allbanks.banks.bankdata.BankSession;
+import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 
 /**

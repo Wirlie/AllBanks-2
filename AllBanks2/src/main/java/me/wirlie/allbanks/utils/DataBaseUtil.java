@@ -26,7 +26,6 @@ import org.bukkit.entity.Player;
 import me.wirlie.allbanks.Console;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Funciones de utilidad con la base de datos.

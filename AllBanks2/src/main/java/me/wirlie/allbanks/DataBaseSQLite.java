@@ -26,7 +26,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 
-import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.utils.AllBanksLogger;
 
 /**
  * Clase recopilada desde AllBanks (antiguo AllBanks)

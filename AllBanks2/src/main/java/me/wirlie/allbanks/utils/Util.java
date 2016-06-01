@@ -42,7 +42,6 @@ import org.bukkit.entity.Player;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Console;
 import me.wirlie.allbanks.StringsID;
-import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Utilidades

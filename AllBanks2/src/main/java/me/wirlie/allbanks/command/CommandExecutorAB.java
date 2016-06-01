@@ -28,7 +28,7 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command.CommandExecuteResult;
-import me.wirlie.allbanks.logger.AllBanksLogger;
+import me.wirlie.allbanks.utils.AllBanksLogger;
 
 /**
  * Clase encargada de procesar todo lo relacionado con los comandos.

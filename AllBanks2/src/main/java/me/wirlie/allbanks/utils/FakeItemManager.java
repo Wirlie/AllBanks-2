@@ -40,7 +40,6 @@ import org.bukkit.util.Vector;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.Banks;
-import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Administrador de objetos falsos usados para las tiendas

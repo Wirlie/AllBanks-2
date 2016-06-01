@@ -32,6 +32,8 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.allbanksland.AllBanksPlot;
+import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.hooks.HookManager.ResidenceHook;
 import me.wirlie.allbanks.hooks.HookManager.TownyHook;
 import me.wirlie.allbanks.hooks.HookManager.WorldGuardHook;
@@ -44,8 +46,6 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.hooks.ResidenceFunctions;
 import me.wirlie.allbanks.hooks.TownyFunctions;
 import me.wirlie.allbanks.hooks.WorldGuardFunctions;
-import me.wirlie.allbanks.land.AllBanksPlot;
-import me.wirlie.allbanks.land.AllBanksWorld;
 
 /**
  * Detectar cuando un jugador intenta destruir una tienda.

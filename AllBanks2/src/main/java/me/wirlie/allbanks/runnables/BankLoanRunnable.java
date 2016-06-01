@@ -36,8 +36,8 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.AllBanks.StorageType;
-import me.wirlie.allbanks.logger.AllBanksLogger;
-import me.wirlie.allbanks.tempdata.BankAccount;
+import me.wirlie.allbanks.banks.bankdata.BankAccount;
+import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.Util;
 

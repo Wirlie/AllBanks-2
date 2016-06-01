@@ -37,7 +37,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.logger.AllBanksLogger;
 
 /**
  * Funciones de utilidad para la configuración.
