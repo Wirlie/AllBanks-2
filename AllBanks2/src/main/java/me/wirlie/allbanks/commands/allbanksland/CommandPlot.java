@@ -1357,7 +1357,7 @@ public class CommandPlot extends Command {
 				plot.setBiome(biome);
 				
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_SETBIOME_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + biome.toString().toUpperCase()), true);
-				
+				return CommandExecuteResult.SUCCESS;
 			}catch(IllegalArgumentException e){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_SETBIOME_ERROR_INVALID_BIOME, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + args[2]), true);
 				return CommandExecuteResult.EXCEPTION;
