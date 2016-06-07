@@ -19,6 +19,7 @@
 package me.wirlie.allbanks.listeners.allbanksland;
 
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
@@ -43,7 +44,8 @@ public class PlotPlayerDropItemListener implements Listener {
 				AllBanksPlot plot = abw.getPlot(loc.getBlockX(), loc.getBlockZ());
 				
 				if(plot.hasOwner()){
-					if(!plot.getPlotConfiguration().dropItem()){
+					Player p = e.getPlayer();
+					if(!plot.getPlotConfiguration().dropItem() && !plot.havePermissions(p)){
 						e.setCancelled(true);
 					}
 				}

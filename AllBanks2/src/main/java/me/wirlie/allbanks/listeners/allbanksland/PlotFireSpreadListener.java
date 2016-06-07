@@ -84,7 +84,8 @@ public class PlotFireSpreadListener implements Listener {
 				if(e.getIgnitingEntity() instanceof Player){
 					Player p = (Player) e.getIgnitingEntity();
 					if(!plot.getOwnerName().equalsIgnoreCase(p.getName())
-							&& !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase()))
+							&& !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase())
+							&& !abw.hasAdminPermissions(p))
 					{
 						e.setCancelled(true);
 					}
