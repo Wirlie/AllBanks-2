@@ -24,10 +24,13 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.block.Biome;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.PermissionsConstants;
+import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.Util;
 
 /**
@@ -58,7 +61,6 @@ public class AllBanksPlot {
 		
 		firstBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX : startX, abw.getBukkitWorld().getSpawnLocation().getY(), (startZ >= 0) ? startZ : startZ);
 		secondBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX + abw.plotSize - 1 : startX - abw.plotSize + 1, abw.getBukkitWorld().getMaxHeight(), (startZ >= 0) ? startZ + abw.plotSize - 1 : startZ - abw.plotSize + 1);
-		
 		//Id del plot
 		int totalSize = abw.plotSize + abw.roadSize + 2;
 		plotX = ((startX >= 0) ? (startX / totalSize) : (startX / totalSize) - 1);
@@ -194,11 +196,11 @@ public class AllBanksPlot {
 	}
 
 	/**
-	 * @param name
+	 * @param newOwnerName
 	 */
-	public void claim(String name) {
+	public void claim(String newOwnerName) {
 		
-		name = name.toLowerCase();
+		newOwnerName = newOwnerName.toLowerCase();
 		
 		Statement stm = null;
 		
@@ -206,14 +208,14 @@ public class AllBanksPlot {
 			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
 			
 			if(!registeredDatabase){
-				stm.executeUpdate("INSERT INTO world_plots (world_id, plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + abw.getID() + "', '" + plotX + "', '" + plotZ + "', '" + name + "', '" + PlotConfiguration.defaultConfiguration(abw.getID()) + "')");
+				stm.executeUpdate("INSERT INTO world_plots (world_id, plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + abw.getID() + "', '" + plotX + "', '" + plotZ + "', '" + newOwnerName + "', '" + PlotConfiguration.defaultConfiguration(abw.getID()) + "')");
 			}else{
-				stm.executeUpdate("UPDATE world_plots SET plot_owner = '" + name + "' WHERE world_id = '" + abw.getID() + "' AND plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
+				stm.executeUpdate("UPDATE world_plots SET plot_owner = '" + newOwnerName + "' WHERE world_id = '" + abw.getID() + "' AND plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
 			}
 			
 			//Añadir dueño
 			AllBanksPlot plot = plotCache.get(plotStringID);
-			plot.ownerName = name;
+			plot.ownerName = newOwnerName;
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
@@ -223,6 +225,41 @@ public class AllBanksPlot {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void setBiome(Biome biome){
+		int firstCursorX = 0;
+		int firstCursorZ = 0;
+		int secondCursorX = 0;
+		int secondCursorZ = 0;
+		
+		if(firstBound.getBlockX() < secondBound.getBlockX()){
+			firstCursorX = firstBound.getBlockX();
+			secondCursorX = secondBound.getBlockX();
+		}else{
+			firstCursorX = secondBound.getBlockX();
+			secondCursorX = firstBound.getBlockX();
+		}
+		
+		if(firstBound.getBlockZ() < secondBound.getBlockZ()){
+			firstCursorZ = firstBound.getBlockZ();
+			secondCursorZ = secondBound.getBlockZ();
+		}else{
+			firstCursorZ = secondBound.getBlockZ();
+			secondCursorZ = firstBound.getBlockZ();
+		}
+		
+		World w = abw.getBukkitWorld();
+		int debugIteration = 0;
+		
+		for(int cursorX = firstCursorX; cursorX < secondCursorX; cursorX++){
+			for(int cursorZ = firstCursorZ; cursorZ < secondCursorZ; cursorZ++){
+				w.getBlockAt(cursorX, 1, cursorZ).setBiome(biome);
+				debugIteration++;
+			}
+		}
+		
+		AllBanksLogger.debug("SetBiome report, plot: " + plotStringID + ", firstBound: " + firstBound.toString() + ", secondBound: " + secondBound.toString() + ", totalIterations: " + debugIteration + ", firstCursorX: " + firstCursorX + ", secondCursorX: " + secondCursorX + ", firstCursorZ: " + firstCursorZ + ", secondCursorZ: " + secondCursorZ + ", end of report.");
 	}
 	
 	public boolean havePermissions(Player player){
