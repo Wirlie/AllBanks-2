@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import com.griefcraft.lwc.LWCPlugin;
 import com.griefcraft.model.Protection;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.allbanksland.AllBanksPlot;
@@ -33,7 +34,7 @@ public class PlotLWCListener implements Listener {
 				Player p = e.getPlayer();
 				AllBanksPlot plot = abw.getPlot(b.getLocation());
 				
-				if(e.isCancelled() && plot.havePermissions(p)){
+				if(e.isCancelled() && plot.getOwnerName().equalsIgnoreCase(p.getName()) && AllBanks.getInstance().getConfig().getBoolean("allbanksland.revoke-lwc-protection-only-plot-owners", true)){
 					LWCPlugin plugin = LWCFunctions.pluginInstance;
 					
 					Protection pr = plugin.getLWC().findProtection(b);
@@ -71,7 +72,7 @@ public class PlotLWCListener implements Listener {
 				
 				AllBanksPlot plot = abw.getPlot(b.getLocation());
 				
-				if(e.isCancelled() && plot.havePermissions(p)){
+				if(e.isCancelled() && plot.getOwnerName().equalsIgnoreCase(p.getName()) && AllBanks.getInstance().getConfig().getBoolean("allbanksland.revoke-lwc-protection-only-plot-owners", true)){
 					LWCPlugin plugin = LWCFunctions.pluginInstance;
 					
 					Protection pr = plugin.getLWC().findProtection(b);

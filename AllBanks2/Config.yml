@@ -120,3 +120,10 @@ modules:
   # Enable/Disable AllBanksLand
   allbanksland:
     enable: true
+allbanksland:
+  #Revoke LWC protection only if the player are the owner of the plot.
+  #This means that the owner of the plot may break chests and ovens protected by LWC belonging to other players.
+  revoke-lwc-protection-only-plot-owners: true
+  #Revoke Lockette protection only if the player are the owner of the plot.
+  #This means that the owner of the plot may break chests and ovens protected by Lockette belonging to other players.
+  revoke-lockette-protection-only-plot-owners: true

@@ -325,8 +325,14 @@ public class ConfigurationUtil{
 					newLines.add("    # Supported values: Exp amount:     2000");
 					newLines.add("    #                   Levels:         10Lvl or 10Levels or 10L");
 				}else if(line.contains("update-cache-every:")) {
-					newLines.add("  # Because the TopRanks needs to read All accounts for Allbanks, the cache is useful if do you want to prevent a higher server consumption.");
+					newLines.add("  # Because the TopRanks needs to read All accounts of Allbanks, the cache is useful if do you want to prevent a higher server consumption.");
 					newLines.add("  # Please do not set it with a minimal value (example: 1 second)");
+				}else if(line.contains("revoke-lwc-protection-only-plot-owners:")) {
+					newLines.add("  #Revoke LWC protection only if the player are the owner of the plot.");
+					newLines.add("  #This means that the owner of the plot may break chests and ovens protected by LWC belonging to other players.");
+				}else if(line.contains("revoke-lockette-protection-only-plot-owners:")) {
+					newLines.add("  #Revoke Lockette protection only if the player are the owner of the plot.");
+					newLines.add("  #This means that the owner of the plot may break chests and ovens protected by Lockette belonging to other players.");
 				}
 				
 				if(line.contains("modules:")){

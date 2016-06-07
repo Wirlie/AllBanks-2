@@ -9,6 +9,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.yi.acru.bukkit.Lockette.Lockette;
 
+import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.allbanksland.AllBanksPlot;
@@ -26,20 +27,15 @@ public class PlotLocketteListener implements Listener {
 				Player p = e.getPlayer();
 				AllBanksPlot plot = abw.getPlot(b.getLocation());
 				
-				if(e.isCancelled() && plot.havePermissions(p)){
+				if(e.isCancelled() && plot.getOwnerName().equalsIgnoreCase(p.getName()) && AllBanks.getInstance().getConfig().getBoolean("allbanksland.revoke-lockette-protection-only-plot-owners", true)){
 					
 					if(!Lockette.isProtected(b)){
 						return;
 					}
 					
-					String protectionOwner = Lockette.getProtectedOwner(b);
-					
-					if(!plot.getPlotConfiguration().getFriends().contains(protectionOwner.toLowerCase())){
-						//El dueño de la protección no es amigo de esta parcela.
-						e.setCancelled(false);
-						Lockette.getSignAttachedBlock(b).breakNaturally();
-						AllBanksLogger.warning("[LOCKETTE REMOVED] Player " + p.getName() + " has supersede a LWC protection of another player. " + p.getName() + " has obtained permission because the owner of this protection (" + protectionOwner + ") no longer form part of the list of friends and " + p.getName() + " is the owner of this Plot (ID: " + plot.getPlotID() + "). [BlockLocation: " + b.getLocation() + "]");
-					}
+					e.setCancelled(false);
+					Translation.getAndSendMessage(p, StringsID.PLOT_LOCKETTE_PROTECTION_REMOVED, true);
+					AllBanksLogger.warning("[LOCKETTE REMOVED] Player " + p.getName() + " has supersede a Lockette protection of another player. " + p.getName() + " has obtained permission because " + p.getName() + " is the owner of this Plot (ID: " + plot.getPlotID() + "). [BlockLocation: " + b.getLocation() + "]");
 				}
 			}
 		}
@@ -56,19 +52,14 @@ public class PlotLocketteListener implements Listener {
 				
 				AllBanksPlot plot = abw.getPlot(b.getLocation());
 				
-				if(e.isCancelled() && plot.havePermissions(p)){
+				if(e.isCancelled() && plot.getOwnerName().equalsIgnoreCase(p.getName()) && AllBanks.getInstance().getConfig().getBoolean("allbanksland.revoke-lockette-protection-only-plot-owners", true)){
 					if(!Lockette.isProtected(b)){
 						return;
 					}
 					
-					String protectionOwner = Lockette.getProtectedOwner(b);
-					
-					if(!plot.getPlotConfiguration().getFriends().contains(protectionOwner.toLowerCase())){
-						//El dueño de la protección no es amigo de esta parcela.
-						e.setCancelled(false);
-						Translation.getAndSendMessage(p, StringsID.PLOT_LOCKETTE_PROTECTION_REMOVED, true);
-						AllBanksLogger.warning("[LOCKETTE INTERACTION] Player " + p.getName() + " has supersede a LWC protection of another player. " + p.getName() + " has obtained permission because the owner of this protection (" + protectionOwner + ") no longer form part of the list of friends and " + p.getName() + " is the owner of this Plot (ID: " + plot.getPlotID() + "). [BlockLocation: " + b.getLocation() + "]");
-					}
+					e.setCancelled(false);
+					Translation.getAndSendMessage(p, StringsID.PLOT_LOCKETTE_PROTECTION_REMOVED, true);
+					AllBanksLogger.warning("[LOCKETTE INTERACTION] Player " + p.getName() + " has supersede a Lockette protection of another player. " + p.getName() + " has obtained permission because " + p.getName() + " is the owner of this Plot (ID: " + plot.getPlotID() + "). [BlockLocation: " + b.getLocation() + "]");
 				}
 			}
 		}
