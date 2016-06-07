@@ -252,8 +252,8 @@ public class AllBanksPlot {
 		World w = abw.getBukkitWorld();
 		int debugIteration = 0;
 		
-		for(int cursorX = firstCursorX; cursorX < secondCursorX; cursorX++){
-			for(int cursorZ = firstCursorZ; cursorZ < secondCursorZ; cursorZ++){
+		for(int cursorX = (firstCursorX - 1); cursorX <= (secondCursorX + 1); cursorX++){
+			for(int cursorZ = (firstCursorZ - 1); cursorZ <= (secondCursorZ + 1); cursorZ++){
 				w.getBlockAt(cursorX, 1, cursorZ).setBiome(biome);
 				debugIteration++;
 			}
