@@ -280,7 +280,6 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlotTreeGrowEvent(), this);
 		Bukkit.getPluginManager().registerEvents(new PlotPotionListener(), this);
 		//LWC
-		System.out.println("HHHHHHHHHHHHHHHH" + HookManager.LWCHook.isHooked());
 		if(HookManager.LWCHook.isHooked()){
 			Bukkit.getPluginManager().registerEvents(new PlotLWCListener(), this);
 		}
