@@ -97,21 +97,7 @@ public class AllBanksLogger {
 		if(message == null || threadInfo == null) return;
 		
 		if(showOnMainConsole){
-			switch(level){
-			case INFO:
-				Console.sendMessage(ChatUtil.replaceChatFormat(message));
-				break;
-			case SEVERE:
-				Console.sendMessage(ChatUtil.replaceChatFormat(message));
-				break;
-			case WARNING:
-				Console.sendMessage(ChatUtil.replaceChatFormat(message));
-				break;
-			case DEBUG:
-				Console.sendMessage(ChatUtil.replaceChatFormat(message));
-				break;
-			
-			}
+			Console.sendMessage(ChatUtil.replaceChatFormat(message));
 		}
 		
 		Calendar calendar = Calendar.getInstance();
