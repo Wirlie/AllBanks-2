@@ -183,9 +183,9 @@ public class HookManager {
 		private static boolean hooked = false;
 		
 		private static void tryHook(){
-			//LWCHook
+			//LocketteHook
 			Plugin lockettePlugin = PLUGIN_MANAGER.getPlugin("Lockette");
-		    if (lockettePlugin != null && (lockettePlugin instanceof LWCPlugin)) {
+		    if (lockettePlugin != null && (lockettePlugin instanceof Lockette)) {
 		    	Console.sendMessage(ChatColor.YELLOW + "[Lockette] Lockette hooked!");
 		    	LocketteFunctions.pluginInstance = (Lockette) lockettePlugin;
 		    	
