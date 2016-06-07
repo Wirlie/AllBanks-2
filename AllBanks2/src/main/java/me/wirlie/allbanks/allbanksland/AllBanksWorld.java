@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
@@ -275,6 +276,10 @@ public class AllBanksWorld {
 		}
 	}
 	
+	public boolean locationIsPlot(Location loc){
+		return locationIsPlot(loc.getBlockX(), loc.getBlockZ());
+	}
+	
 	public boolean locationIsPlot(int worldX, int worldZ){
 		
 		int totalSize = 1 + plotSize + 1 + roadSize;
@@ -350,7 +355,11 @@ public class AllBanksWorld {
 		
 		return isPlot;
 	}
-
+	
+	public AllBanksPlot getPlot(Location loc) {
+		return getPlot(loc.getBlockX(), loc.getBlockZ());
+	}
+	
 	/**
 	 * @param x
 	 * @param z

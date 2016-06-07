@@ -9,6 +9,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.PermissionAttachmentInfo;
@@ -1316,6 +1317,51 @@ public class CommandPlot extends Command {
 				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_SUGGEST_PAGES, Translation.splitStringIntoReplaceHashMap(">>>", "%COMMAND_LABEL%>>>" + labelPrefix, "%1%>>>" + (page + 1)), true);
 			InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 			return CommandExecuteResult.SUCCESS;
+		}else if(args[1].equalsIgnoreCase("setbiome")){
+			
+			if(!(sender instanceof Player)){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+				return CommandExecuteResult.OTHER;
+			}
+			
+			Player p = (Player) sender;
+			
+			if(!this.hasPermission(p)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				InteractiveUtil.sendSound(p, SoundType.DENY);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
+			
+			if(!AllBanksWorld.worldIsAllBanksWorld(p.getLocation().getWorld().getName())){
+				Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
+				InteractiveUtil.sendSound(p, SoundType.WARNING);
+				return CommandExecuteResult.OTHER;
+			}
+			
+			try{
+				Biome biome = Biome.valueOf(args[2]);
+				AllBanksWorld abw = AllBanksWorld.getInstance(p.getLocation().getWorld().getName());
+				
+				if(!abw.locationIsPlot(p.getLocation())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				AllBanksPlot plot = abw.getPlot(p.getLocation());
+				
+				if(!plot.getOwnerName().equalsIgnoreCase(p.getName()) && !abw.hasAdminPermissions(p)){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return CommandExecuteResult.NO_PERMISSIONS;
+				}
+				
+				plot.setBiome(biome);
+				
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_SETBIOME_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + biome.toString().toUpperCase()), true);
+				
+			}catch(IllegalArgumentException e){
+				Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_SETBIOME_ERROR_INVALID_BIOME, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + args[2]), true);
+				return CommandExecuteResult.EXCEPTION;
+			}
 		}
 		
 		return CommandExecuteResult.INVALID_ARGUMENTS;

@@ -58,5 +58,7 @@ public class PermissionsConstants {
 	public static final String COMMAND_PLOT_HOME_PERMISSION = "allbanks.land.commands.plot.home";
 	public static final String COMMAND_PLOT_TELEPORT_PERMISSION = "allbanks.land.commands.plot.teleport";
 	public static final String COMMAND_PLOT_AUTO_PERMISSION = "allbanks.land.commands.plot.auto";
+	//TODO Documentar.
+	public static final String COMMAND_PLOT_SETBIOME_PERMISSION = "allbanks.land.commands.plot.setbiome";
 	
 }

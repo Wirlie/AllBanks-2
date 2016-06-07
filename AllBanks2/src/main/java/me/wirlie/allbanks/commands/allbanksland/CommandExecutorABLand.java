@@ -79,6 +79,7 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_AUTO_PERMISSION), "plot", "autoclaim");
 		registerCommand(new CommandPlot(null), "plot", "list");
 		registerCommand(new CommandPlot(null), "plot", "list", "RegEx->([0-9]){1,}:<page>");
+		registerCommand(new CommandPlot(PermissionsConstants.COMMAND_PLOT_SETBIOME_PERMISSION), "plot", "setbiome", "RegEx->([A-Za-z0-9_]){1,}:<biome>");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {
