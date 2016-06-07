@@ -495,7 +495,7 @@ public class PlotConfiguration {
 			
 			for(String s : listStr.split(",|>,")){
 				if(s.equalsIgnoreCase("|") || s.equalsIgnoreCase("")) continue;
-				returnList.add(s);
+				returnList.add(s.toLowerCase());
 			}
 			
 			return returnList;

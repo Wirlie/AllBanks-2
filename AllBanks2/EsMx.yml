@@ -242,4 +242,5 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 222: "&cInsuficiente permiso para ver este comando."
 223: "&cEl valor &f%1% &cno hace referencia a un bioma válido. Usa &b/plot biomelist &cpara ver todos los valores posibles."
 224: "&aHas cambiado del bioma de esta parcela a &f%1%&a. Esto surtirá efecto hasta que el servidor vuelva a cargar estos chunks."
+225: "&eLa protección de LWC ha sido revocada por que el dueño de esta protección ya no forma parte de tus amigos en esta parcela."
 

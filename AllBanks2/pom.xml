@@ -131,6 +131,20 @@
   		<scope>system</scope>
   		<systemPath>${project.basedir}/resources/Residence.jar</systemPath>
   	</dependency>
+    <dependency>
+  		<groupId>com.bekvon</groupId>
+  		<artifactId>Lockette</artifactId>
+  		<version>1.8.21</version>
+  		<scope>system</scope>
+  		<systemPath>${project.basedir}/resources/Lockette.jar</systemPath>
+  	</dependency>
+    <dependency>
+  		<groupId>com.bekvon</groupId>
+  		<artifactId>LWC</artifactId>
+  		<version>4.5.0</version>
+  		<scope>system</scope>
+  		<systemPath>${project.basedir}/resources/LWC.jar</systemPath>
+  	</dependency>
   </dependencies>
   
   <issueManagement>

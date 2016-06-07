@@ -230,4 +230,5 @@ LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 222: "&cInsufficient permission to see this command."
 223: "&cThe value &f%1% &cdoes not reference a valid biome. Please use &b/plot biomelist &cto see all possible values."
 224: "&aYou have changed the biome of this plot to &f%1%&a. This shall take effect until the server load these chunk again."
+225: "&eLWC protection has been revoked because the owner of this protection is no longer part of your friends in this plot."
 

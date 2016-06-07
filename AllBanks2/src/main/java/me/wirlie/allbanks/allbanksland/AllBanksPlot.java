@@ -156,6 +156,10 @@ public class AllBanksPlot {
 		return plotZ;
 	}
 	
+	public String getPlotID(){
+		return plotStringID;
+	}
+	
 	public Location getFirstBound(){
 		return firstBound;
 	}

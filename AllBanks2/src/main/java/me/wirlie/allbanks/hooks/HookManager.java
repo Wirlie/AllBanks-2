@@ -24,6 +24,7 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
 import com.bekvon.bukkit.residence.ResidenceCommandListener;
+import com.griefcraft.lwc.LWCPlugin;
 import com.palmergames.bukkit.towny.Towny;
 import com.sk89q.worldguard.bukkit.WorldGuardPlugin;
 
@@ -44,9 +45,14 @@ public class HookManager {
 	 * Inicializar
 	 */
 	public static void initializeHookManager(){
-		WorldGuardHook.tryHook();
-		TownyHook.tryHook();
-		ResidenceHook.tryHook();
+		try{
+			WorldGuardHook.tryHook();
+			TownyHook.tryHook();
+			ResidenceHook.tryHook();
+			LWCHook.tryHook();
+		}catch(Exception e){
+			//skip
+		}
 	}
 	
 	/**
@@ -132,6 +138,30 @@ public class HookManager {
 		    	}
 		    	
 		    	WorldGuardFunctions.pluginInstance = (WorldGuardPlugin) worldGuardPlugin;
+		    	
+		    	hooked = true;
+		    }
+		}
+		
+		public static boolean isHooked(){
+			return hooked;
+		}
+	}
+	
+	/**
+	 * Para LWC
+	 * @author Wirlie
+	 *
+	 */
+	public static class LWCHook{
+		private static boolean hooked = false;
+		
+		private static void tryHook(){
+			//WorldGuard
+			Plugin lwcPlugin = PLUGIN_MANAGER.getPlugin("LWC");
+		    if (lwcPlugin != null && (lwcPlugin instanceof LWCPlugin)) {
+		    	Console.sendMessage(ChatColor.YELLOW + "[LWC] LWC hooked!");
+		    	LWCFunctions.pluginInstance = (LWCPlugin) lwcPlugin;
 		    	
 		    	hooked = true;
 		    }

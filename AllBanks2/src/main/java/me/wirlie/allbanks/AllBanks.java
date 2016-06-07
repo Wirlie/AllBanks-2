@@ -50,6 +50,7 @@ import me.wirlie.allbanks.listeners.allbanksland.PlotEntityCroopsPhysicalListene
 import me.wirlie.allbanks.listeners.allbanksland.PlotEntityExplosionListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotEntityListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotFireSpreadListener;
+import me.wirlie.allbanks.listeners.allbanksland.PlotLWCListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotLavaWaterFlowListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotLeashUnleashListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotPlayerBlockBreakListener;
@@ -278,6 +279,11 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginManager().registerEvents(new PlotPvPListener(), this);
 		Bukkit.getPluginManager().registerEvents(new PlotTreeGrowEvent(), this);
 		Bukkit.getPluginManager().registerEvents(new PlotPotionListener(), this);
+		//LWC
+		System.out.println("HHHHHHHHHHHHHHHH" + HookManager.LWCHook.isHooked());
+		if(HookManager.LWCHook.isHooked()){
+			Bukkit.getPluginManager().registerEvents(new PlotLWCListener(), this);
+		}
 		
 		/*
 		 * RUNNABLES
