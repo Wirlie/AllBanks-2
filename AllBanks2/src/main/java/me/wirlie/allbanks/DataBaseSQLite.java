@@ -41,11 +41,19 @@ public class DataBaseSQLite {
     public Statement statement;
     public static boolean setstatus = false;
     HashMap<String, Connection> multipleConnections = new HashMap<String, Connection>();
-
+    
+    /**
+     * Obtener la instancia de esta clase.
+     * @return Instancia de la clase.
+     */
     public static synchronized DataBaseSQLite getInstance() {
         return instance;
     }
     
+    /**
+     * Intentar obtener el driver para el soporte SQLite.
+     * @return {@code true} si el driver (clase) fue encontrada.
+     */
     public static boolean tryForClass() {
     	try {
     		AllBanksLogger.info("Try for class: org.sqlite.JDBC");
@@ -59,10 +67,16 @@ public class DataBaseSQLite {
         }
     }
     
-    public Connection setConnection(String path, String NameConnection) {
+    /**
+     * Establecer la conexión a una base de datos local.
+     * @param databaseFilePath Ruta del archivo en donde se encuentra la base de datos. Por ejemplo:<br>{@code %pluginDataFolder%/database.db}
+     * @param NameConnection Nombre de la conexión.
+     * @return Devuelve la conexión establecida.
+     */
+    public Connection setConnection(String databaseFilePath, String NameConnection) {
         try {
             Class.forName("org.sqlite.JDBC");
-            File f = new File(path);
+            File f = new File(databaseFilePath);
             if(!f.getParentFile().exists()){
             	f.getParentFile().mkdirs();
             }
@@ -74,19 +88,23 @@ public class DataBaseSQLite {
 					e.printStackTrace();
 				}
             }
-            this.multipleConnections.put(NameConnection, DriverManager.getConnection("jdbc:sqlite:" + path));
+            
+            this.multipleConnections.put(NameConnection, DriverManager.getConnection("jdbc:sqlite:" + databaseFilePath));
             return getConnection(NameConnection);
-        }
-        catch (ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
             e.printStackTrace();
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         
         return null;
     }
-
+    
+    /**
+     * Obtener la conexión se
+     * @param NameConnection
+     * @return
+     */
     public Connection getConnection(String NameConnection) {
         return this.multipleConnections.get(NameConnection);
     }

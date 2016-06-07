@@ -175,7 +175,7 @@ public class AllBanks extends JavaPlugin {
 		case MYSQL:
 			//Comprobar si el driver para MySQL existe.
     		AllBanksLogger.info("Storage Method: MySQL");
-			if(!DataBaseMySQL.tryForClass()) {
+			if(!DataBaseMySQL.tryFindClassForName()) {
 	    		AllBanksLogger.warning("Ops! DriverManager not found, setting storage method: FlatFile");
 	    		storageMethod = StorageType.FLAT_FILE;
 			}
@@ -210,7 +210,7 @@ public class AllBanks extends JavaPlugin {
 		//Establecer la conexión global de la base de datos según el método específicado (SQLite o MySQL)
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
 			AllBanksLogger.info("Initializing MySQL database...");
-			dbc = dbMySQL.setConnection("global");
+			dbc = dbMySQL.setConnection();
 		}else {
 			AllBanksLogger.info("Initializing SQLite database...");
 			dbc = dbSQLite.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
