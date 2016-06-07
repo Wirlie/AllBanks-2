@@ -1317,6 +1317,37 @@ public class CommandPlot extends Command {
 				Translation.getAndSendMessage(p, StringsID.PLOT_LIST_SUCCESS_SUGGEST_PAGES, Translation.splitStringIntoReplaceHashMap(">>>", "%COMMAND_LABEL%>>>" + labelPrefix, "%1%>>>" + (page + 1)), true);
 			InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 			return CommandExecuteResult.SUCCESS;
+		}else if(args[1].equalsIgnoreCase("biomelist")){
+			if(!this.hasPermission(sender)){
+				Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+				return CommandExecuteResult.NO_PERMISSIONS;
+			}
+			
+			int page = 1;
+			int biomesLenght = Biome.values().length;
+			int completePage = biomesLenght / 10;
+			int dif = biomesLenght - (completePage * 10);
+			int maxPage = (dif == 0) ? completePage : completePage + 1;
+			
+			if(args.length >= 3){
+				try{
+					page = Integer.parseInt(args[2]);
+				}catch(NumberFormatException e){
+					page = 1;
+				}
+			}
+			
+			if(page > maxPage) page = maxPage;
+			if(page < 1) page = 1;
+			
+			sender.sendMessage(ChatColor.DARK_AQUA + String.valueOf(page) + "/" + maxPage + " :");
+			
+			for(int i = (page * 10) - 10; i < (page * 10); i++){
+				if(i >= Biome.values().length) break;
+				sender.sendMessage(Biome.values()[i].toString().toUpperCase());
+			}
+			
+			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("setbiome")){
 			
 			if(!(sender instanceof Player)){
