@@ -51,7 +51,7 @@ public class PlotPlayerMoveListener implements Listener {
 				
 				if(plot.hasOwner()){
 					if(plot.getPlotConfiguration().getDenyPlayers().contains(p.getName().toLowerCase())
-							|| !plot.getPlotConfiguration().allowEntry() && !plot.getPlotConfiguration().getFriends().contains(p.getName().toLowerCase()) && !plot.getOwnerName().equalsIgnoreCase(p.getName().toLowerCase())){
+							|| !plot.getPlotConfiguration().allowEntry() && !plot.havePermissions(p)){
 						//denegar
 						e.setCancelled(true);
 						Translation.getAndSendMessage(p, StringsID.PLOT_NOT_ALLOW_TO_ENTRY, true);
