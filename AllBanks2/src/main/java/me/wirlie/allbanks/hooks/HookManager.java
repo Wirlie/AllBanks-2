@@ -22,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.yi.acru.bukkit.Lockette.Lockette;
 
 import com.bekvon.bukkit.residence.ResidenceCommandListener;
 import com.griefcraft.lwc.LWCPlugin;
@@ -50,6 +51,7 @@ public class HookManager {
 			TownyHook.tryHook();
 			ResidenceHook.tryHook();
 			LWCHook.tryHook();
+			LocketteHook.tryHook();
 		}catch(Exception e){
 			//skip
 		}
@@ -162,6 +164,30 @@ public class HookManager {
 		    if (lwcPlugin != null && (lwcPlugin instanceof LWCPlugin)) {
 		    	Console.sendMessage(ChatColor.YELLOW + "[LWC] LWC hooked!");
 		    	LWCFunctions.pluginInstance = (LWCPlugin) lwcPlugin;
+		    	
+		    	hooked = true;
+		    }
+		}
+		
+		public static boolean isHooked(){
+			return hooked;
+		}
+	}
+	
+	/**
+	 * Para Lockette
+	 * @author Wirlie
+	 *
+	 */
+	public static class LocketteHook{
+		private static boolean hooked = false;
+		
+		private static void tryHook(){
+			//LWCHook
+			Plugin lockettePlugin = PLUGIN_MANAGER.getPlugin("Lockette");
+		    if (lockettePlugin != null && (lockettePlugin instanceof LWCPlugin)) {
+		    	Console.sendMessage(ChatColor.YELLOW + "[Lockette] Lockette hooked!");
+		    	LocketteFunctions.pluginInstance = (Lockette) lockettePlugin;
 		    	
 		    	hooked = true;
 		    }

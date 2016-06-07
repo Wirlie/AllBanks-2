@@ -53,6 +53,7 @@ import me.wirlie.allbanks.listeners.allbanksland.PlotFireSpreadListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotLWCListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotLavaWaterFlowListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotLeashUnleashListener;
+import me.wirlie.allbanks.listeners.allbanksland.PlotLocketteListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotPlayerBlockBreakListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotPlayerBlockPlaceListener;
 import me.wirlie.allbanks.listeners.allbanksland.PlotPlayerDropItemListener;
@@ -282,6 +283,10 @@ public class AllBanks extends JavaPlugin {
 		//LWC
 		if(HookManager.LWCHook.isHooked()){
 			Bukkit.getPluginManager().registerEvents(new PlotLWCListener(), this);
+		}
+		//Lockette
+		if(HookManager.LocketteHook.isHooked()){
+			Bukkit.getPluginManager().registerEvents(new PlotLocketteListener(), this);
 		}
 		
 		/*
