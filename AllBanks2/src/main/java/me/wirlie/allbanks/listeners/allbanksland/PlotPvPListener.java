@@ -39,10 +39,7 @@ public class PlotPvPListener implements Listener {
 	public void onPlayerHitPlayer(EntityDamageByEntityEvent e){
 		if((e.getDamager() instanceof Player) && (e.getEntity() instanceof Player) || (e.getDamager() instanceof Arrow) && (e.getEntity() instanceof Player)){
 			
-			
-			
 			//Jugador a jugador.
-			
 			Player attacker = null;
 			
 			if(e.getDamager() instanceof Arrow){
