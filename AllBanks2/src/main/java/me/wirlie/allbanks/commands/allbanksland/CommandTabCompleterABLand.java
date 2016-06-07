@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.Biome;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
@@ -111,7 +112,9 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"info",
 						"auto",
 						"autoclaim",
-						"list"
+						"list",
+						"setbiome",
+						"biomelist"
 						);
 				
 				if(args[1].replace(" ", "").equalsIgnoreCase("")){
@@ -196,7 +199,26 @@ public class CommandTabCompleterABLand implements TabCompleter{
 					}
 					
 					return suggest;
+				}else if(args[1].equalsIgnoreCase("setbiome")){
+					List<String> allBiomes = new ArrayList<String>();
+					for(Biome b : Biome.values()){
+						allBiomes.add(b.toString().toUpperCase());
+					}
 					
+					List<String> suggest = new ArrayList<String>();
+					for(String s : allBiomes){
+						if(s.contains(args[2].toUpperCase())){
+							suggest.add(s);
+						}
+					}
+					
+					if(suggest.isEmpty()){ 
+						return allBiomes;
+					}
+					
+					return suggest;
+				}else if(args[1].equalsIgnoreCase("biomelist")){
+					return Arrays.asList("1");
 				}else if(args[1].equalsIgnoreCase("set")){
 					List<String> results = Arrays.asList(
 							"fire-spread",
