@@ -64,7 +64,7 @@ public class HookManager {
 		private static boolean hooked = false;
 		
 		private static void tryHook(){
-			//WorldGuard
+			//Residence
 			Plugin residencePlugin = PLUGIN_MANAGER.getPlugin("Residence");
 		    if (residencePlugin != null && (residencePlugin instanceof ResidenceCommandListener)) {
 		    	if(residencePlugin.getDescription().getVersion().equalsIgnoreCase("4.0.6.3")){
@@ -95,7 +95,7 @@ public class HookManager {
 		private static boolean hooked = false;
 		
 		private static void tryHook(){
-			//WorldGuard
+			//Towny
 			Plugin townyPlugin = PLUGIN_MANAGER.getPlugin("Towny");
 		    if (townyPlugin != null && (townyPlugin instanceof Towny)) {
 		    	if(townyPlugin.getDescription().getVersion().equalsIgnoreCase("0.91.0.2")){
@@ -157,7 +157,7 @@ public class HookManager {
 		private static boolean hooked = false;
 		
 		private static void tryHook(){
-			//WorldGuard
+			//LWCHook
 			Plugin lwcPlugin = PLUGIN_MANAGER.getPlugin("LWC");
 		    if (lwcPlugin != null && (lwcPlugin instanceof LWCPlugin)) {
 		    	Console.sendMessage(ChatColor.YELLOW + "[LWC] LWC hooked!");
