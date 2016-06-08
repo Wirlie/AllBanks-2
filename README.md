@@ -11,7 +11,9 @@ AllBanks2 supports Java 7 and Java 8.
 #### Download latest release (AllBanks 1.1.5):
 https://github.com/Wirlie/AllBanks-2/releases
 
-#### Download latest SNAPSHOT (provided by AppVeyor):
+#### Download latest development build (provided by AppVeyor):
+If you want to test the new changes before the release you can download the latest build from AppVeyor (you not require to have an account), follow these simple steps:
+
 1. Go to: https://ci.appveyor.com/project/Wirlie/allbanks-2/branch/develop
   * 1.1 Select the job with environment `JAVA_HOME=C:\Program Files\Java\jdk1.7.0` if you want to use Java 7.
   * 1.2 Select the job with environment `JAVA_HOME=C:\Program Files\Java\jdk1.8.0` if you want to use Java 8.
@@ -23,3 +25,6 @@ https://www.spigotmc.org/resources/allbanks.21032/
 
 ### AllBanks on BukkitDev:
 http://dev.bukkit.org/bukkit-plugins/allbanks-2/
+
+### Wiki:
+https://allbanks2.miraheze.org/wiki/Main_Page
