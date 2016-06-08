@@ -23,9 +23,10 @@ build_script:
   - mvn clean package -B -Dmaven.test.skip=true
 after_build:
   - cmd: MOVE C:\projects\allbanks-2\AllBanks2\target\AllBanks2-1.2-SNAPSHOT.jar %APPVEYOR_BUILD_FOLDER%
+  - cmd: RENAME AllBanks2-1.2-SNAPSHOT.jar AllBanks2.jar
 cache:
   - C:\maven\
   - C:\Users\appveyor\.m2
 artifacts:
-  - path: AllBanks2-1.2-SNAPSHOT.jar
+  - path: AllBanks2.jar
     name: AllBanks2-SNAPSHOT
