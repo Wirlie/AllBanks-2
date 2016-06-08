@@ -21,5 +21,7 @@ install:
   - cmd: java -version
 build_script:
   - mvn clean package -B -Dmaven.test.skip=true
+after_build:
+  - cmd: MOVE C:\projects\allbanks-2\AllBanks2\target\AllBanks2-1.1.5-RELEASE.jar C:\
 cache:
   - C:\maven
