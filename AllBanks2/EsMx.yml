@@ -1,21 +1,23 @@
 ###########################################################################################################################
 # Este documento ha sido traducido por Wirlie, las traducciones son exactas ya que yo (Wirlie)                            #
 # hablo español nativamente. Sin embargo, si usted encuentra algún problema o cree que una traducción                     #
-# puede tener una mejor traducción envíe su reporte de corrección: https://github.com/Wirlie/AllBanks-Localisation/issues #
+# puede tener una mejor traducción envíe su reporte de corrección: https://github.com/Wirlie/AllBanks-2/issues            #
 #                                                                                                                         #
 # Actualmente el idioma menos acertado es el Inglés (debido a que no conozco el Inglés a la perfección),                  #
-# si estás dispuesto a ayudar con la traducción de AllBanks y conoces Español e Inglés a la perfección puedes             #
-# aportar mejores traducciones basándote en este archivo (ya que yo, wirlie he traducido el archivo EnUs con              #
-# ayuda de este archivo EsMx.                                                                                             #
+# si está dispuesto a ayudar con la traducción de AllBanks y conoce el idioma Español e Inglés a la perfección puede      #
+# aportar mejores traducciones basándote en este archivo (ya que yo wirlie he traducido el archivo EnUs con               #
+# ayuda de este archivo EsMx)                                                                                             #
 #                                                                                                                         #
 # Con respecto a otros idiomas (por ejemplo, Español España "EsEs"), puedes solicitar una nueva traducción desde:         #
-# https://github.com/Wirlie/AllBanks-Localisation/ (se requiere una cuenta en GitHub)                                     #
+# https://github.com/Wirlie/AllBanks-2/issues (se requiere una cuenta en GitHub)                                          #
 #                                                                                                                         #
-# AllBanks v1.0                                                                                                           #
+# AllBanks v1.2                                                                                                           #
 #                                                                                                                         #
+# IMPORTANTE: Para visualizar las traducciones con caracteres UTF8 use un editor que soporte la codificacion              #
+# UTF8 sin BOM. Recomiendo usar Notepad++ para editar este archivo.                                                       #
 ###########################################################################################################################
 
-language-version: "1.1.5"
+language-version: "1.2"
 LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."

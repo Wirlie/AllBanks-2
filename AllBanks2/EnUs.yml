@@ -1,9 +1,15 @@
-## Translated by Wirlie (Translations are not 100% accurate, if you found a mistake please send your correction to 
-## https://github.com/Wirlie/AllBanks-Localisation/
-##
-## AllBanks v1.0
+#####################################################################################################################
+# Translated by Wirlie (Translations are not 100% accurate, if you found a mistake please send your correction to   #
+# https://github.com/Wirlie/AllBanks-2/issues                                                                       #
+#                                                                                                                   #
+# AllBanks v1.2                                                                                                     #
+# Thank you for use AllBanks2! :)                                                                                   #
+#                                                                                                                   #
+# IMPORTANT: To view UTF8 characters please use an editor that supports the codification UTF8 without BOM           #
+# I recommend Notepad++ to edit this file.                                                                          #
+#####################################################################################################################
 
-language-version: "1.1.5"
+language-version: "1.2"
 LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 
 1: "Enabling plugin.%BREAK%Starting local database..."
