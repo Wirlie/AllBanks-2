@@ -29,4 +29,4 @@ cache:
   - C:\Users\appveyor\.m2
 artifacts:
   - path: AllBanks2.jar
-    name: AllBanks2-SNAPSHOT
+    name: AllBanks2-v1.2-SNAPSHOT
