@@ -22,6 +22,9 @@ install:
 build_script:
   - mvn clean package -B -Dmaven.test.skip=true
 after_build:
-  - cmd: MOVE C:\projects\allbanks-2\AllBanks2\target\AllBanks2-1.1.5-RELEASE.jar C:\
+  - cmd: MOVE C:\projects\allbanks-2\AllBanks2\target\AllBanks2-1.1.5-RELEASE.jar %APPVEYOR_BUILD_FOLDER%
 cache:
   - C:\maven
+artifacts:
+  - path: AllBanks2-1.1.5-RELEASE.jar
+    name: AllBanks2-SNAPSHOT
