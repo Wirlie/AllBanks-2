@@ -6,6 +6,7 @@ environment:
     - JAVA_HOME: C:\Program Files\Java\jdk1.7.0
     - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
 install:
+  - cmd: appveyor AddMessage "Downloading Maven 3.3.9"
   - ps: |
       Add-Type -AssemblyName System.IO.Compression.FileSystem
       if (!(Test-Path -Path "C:\maven" )) {
@@ -14,14 +15,17 @@ install:
       }
   # Prepend Java entry, remove Ruby entry (C:\Ruby193\bin;) from PATH
   - cmd: cd AllBanks2
+  - cmd: appveyor AddMessage "Switching to AllBanks2"
   - cmd: SET PATH=C:\maven\apache-maven-3.3.9\bin;%JAVA_HOME%\bin;=%
   - cmd: SET MAVEN_OPTS=-XX:MaxPermSize=1g -Xmx2g
   - cmd: SET JAVA_OPTS=-XX:MaxPermSize=1g -Xmx2g
   - cmd: mvn --version
   - cmd: java -version
 build_script:
+  - appveyor AddMessage "Build..."
   - mvn clean package -B -Dmaven.test.skip=true
 after_build:
+  - cmd: appveyor AddMessage "Packaging AllBanks2 artifact..."
   - cmd: RENAME C:\projects\allbanks-2\AllBanks2\target\AllBanks2-1.2-SNAPSHOT.jar AllBanks2.jar
   - cmd: MOVE C:\projects\allbanks-2\AllBanks2\target\AllBanks2.jar %APPVEYOR_BUILD_FOLDER%
 cache:
