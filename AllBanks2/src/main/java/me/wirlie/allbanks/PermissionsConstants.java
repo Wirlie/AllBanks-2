@@ -61,4 +61,9 @@ public class PermissionsConstants {
 	//TODO Documentar.
 	public static final String COMMAND_PLOT_SETBIOME_PERMISSION = "allbanks.land.commands.plot.setbiome";
 	
+	public static final String COMMAND_UPDATER_CHECK_UPDATES_PERMISSION = "allbanks.commands.updater.check-updates";
+	public static final String COMMAND_UPDATER_DOWNLOAD_UPDATE_PERMISSION = "allbanks.commands.updater.download-update";
+	public static final String COMMAND_UPDATER_CURRENT_VERSION_PERMISSION = "allbanks.commands.updater.current-version";
+	public static final String COMMAND_UPDATER_FORCE_UPDATE_PERMISSION = "allbanks.commands.updater.force-update";
+	
 }
