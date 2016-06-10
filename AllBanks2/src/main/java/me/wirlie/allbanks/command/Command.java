@@ -38,26 +38,65 @@ public class Command {
 	private List<String> commandArgs = new ArrayList<String>();
 	private String permissionNode = "";
 	
+	/**
+	 * Constructor principal de un comando.
+	 * @param permission Permiso necesario para la ejecución.
+	 */
 	public Command(String permission){
 		permissionNode = permission;
 	}
 	
+	/**
+	 * Resultados de la ejecución del comando.
+	 * @author Wirlie
+	 */
 	public enum CommandExecuteResult{
+		/**
+		 * Cuando el comando se ha ejecutado exitosamente.
+		 */
 		SUCCESS,
+		/**
+		 * Cuando el jugador o el que ha enviado el comando no tiene permisos.
+		 */
 		NO_PERMISSIONS,
+		/**
+		 * Argumentos insuficientes.
+		 */
 		INSUFICIENT_ARGUMENTS,
+		/**
+		 * Cuando por accidente no se ha especificado un resultado. Este resultado es devuelto por defecto.
+		 */
 		DEFAULT,
+		/**
+		 * Cuando el comando no es procesado por otra causa.
+		 */
 		OTHER,
+		/**
+		 * Argumentos inválidos.
+		 */
 		INVALID_ARGUMENTS,
+		/**
+		 * Cuando una excepción ocurre y el comando no puede ser procesado.
+		 */
 		EXCEPTION
 	}
 	
+	/**
+	 * Establecer los argumentos del comando.
+	 * @param args Argumentos
+	 */
 	public void setArguments(String... args) {
 		for(String s : args){
 			commandArgs.add(s);
 		}
 	}
 
+	/**
+	 * Comprobar si los argumentos a prueba coinciden con los argumentos previamente definidos por
+	 * el método {@link #setArguments(String...)}.
+	 * @param testArgs Argumentos a poner a prueba.
+	 * @return {@code true} si los argumentos coinciden, {@code false} si no.
+	 */
 	public boolean matchArguments(String[] testArgs) {
 		if(commandArgs.size() > testArgs.length) return false;
 		
@@ -88,11 +127,24 @@ public class Command {
 		return true;
 	}
 
+	/**
+	 * Acción cuando el comando es ejecutado. Esto tiene que ser reemplazado por una anotación
+	 * {@code @Override} al momento de usar la clase Command.
+	 * @param sender El ejecutor de este comando.
+	 * @param label La etiqueta de este comando.
+	 * @param args Argumentos del comando.
+	 * @return {@link CommandExecuteResult}, resultado de la ejecución del comando.
+	 */
 	public CommandExecuteResult execute(CommandSender sender, String label, String[] args) {
 		//Esto tiene que ser reemplazado con un override
 		return CommandExecuteResult.DEFAULT;
 	}
 
+	/**
+	 * Usado para obtener las posibles coincidencias con este comando.
+	 * @param testArgs Argumentos a probar.
+	 * @return {@code true} si este comando coincide, {@code false} si no.
+	 */
 	public boolean possibleMatch(String[] testArgs) {
 		
 		for(int i = 0; i < commandArgs.size() && i < testArgs.length; i ++){
@@ -121,6 +173,10 @@ public class Command {
 		return true;
 	}
 
+	/**
+	 * Obtener la sintáxis de este comando.
+	 * @return Sintáxis del comando.
+	 */
 	public String getSyntax() {
 		String returnSyntax = "";
 		
@@ -135,6 +191,11 @@ public class Command {
 		return returnSyntax;
 	}
 	
+	/**
+	 * Comprobar si el ejecutor tiene permiso o no.
+	 * @param sender
+	 * @return {@code true} si tiene permiso o {@code false} sino.
+	 */
 	public boolean hasPermission(CommandSender sender){
 		
 		if(permissionNode == null || permissionNode.equalsIgnoreCase("")) return true;
@@ -142,6 +203,11 @@ public class Command {
 		return Util.hasPermission(sender, permissionNode);
 	}
 	
+	/**
+	 * Comprobar si el jugador tiene permiso o no.
+	 * @param sender
+	 * @return {@code true} si tiene permiso o {@code false} sino.
+	 */
 	public boolean hasPermission(Player sender){
 		
 		if(permissionNode == null || permissionNode.equalsIgnoreCase("")) return true;
