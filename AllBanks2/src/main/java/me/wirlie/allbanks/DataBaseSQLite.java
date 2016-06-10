@@ -37,9 +37,6 @@ import me.wirlie.allbanks.utils.AllBanksLogger;
 
 public class DataBaseSQLite {
     private static DataBaseSQLite instance = new DataBaseSQLite();
-    public Connection connection = null;
-    public Statement statement;
-    public static boolean setstatus = false;
     HashMap<String, Connection> multipleConnections = new HashMap<String, Connection>();
     
     /**

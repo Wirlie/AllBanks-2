@@ -32,9 +32,6 @@ import java.util.HashMap;
  */
 public class DataBaseMySQL {
     private static DataBaseSQLite instance = new DataBaseSQLite();
-    public Connection connection = null;
-    public Statement statement;
-    public static boolean setstatus = false;
     HashMap<String, Connection> multipleConnections = new HashMap<String, Connection>();
     
     /**
