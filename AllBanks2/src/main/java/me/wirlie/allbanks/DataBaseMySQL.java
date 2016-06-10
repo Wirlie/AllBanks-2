@@ -59,8 +59,7 @@ public class DataBaseMySQL {
     
     /**
      * Establecer la conexión MySQL.
-     * @param NameConnection
-     * @return
+     * @return Conexión establecida.
      */
     public Connection setConnection() {
         try {

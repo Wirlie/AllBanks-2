@@ -26,6 +26,8 @@ import java.util.HashMap;
  * @since AllBanks v1.0
  *
  */
+
+@SuppressWarnings("javadoc")
 public enum StringsID {
 
 	ENABLING(1),

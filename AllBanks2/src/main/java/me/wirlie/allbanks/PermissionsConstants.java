@@ -1,5 +1,11 @@
 package me.wirlie.allbanks;
 
+/**
+ * Constantes de permisos.
+ * @author Wirlie
+ */
+
+@SuppressWarnings("javadoc")
 public class PermissionsConstants {
 
 	private PermissionsConstants() {}

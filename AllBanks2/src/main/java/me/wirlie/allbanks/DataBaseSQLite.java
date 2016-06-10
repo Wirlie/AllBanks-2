@@ -99,12 +99,17 @@ public class DataBaseSQLite {
     /**
      * Obtener la conexión se
      * @param NameConnection
-     * @return
+     * @return Conexión obtenida.
      */
     public Connection getConnection(String NameConnection) {
         return this.multipleConnections.get(NameConnection);
     }
 
+    /**
+     * Comprobar si una conexión existe.
+     * @param NameConnection
+     * @return {@code true} si la conexión existe.
+     */
     public boolean checkConnection(String NameConnection) {
         if (this.multipleConnections.containsKey(NameConnection)) {
             return true;

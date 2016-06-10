@@ -127,6 +127,11 @@ public class Metrics {
      */
     private volatile BukkitTask task = null;
 
+    /**
+     * Constructor
+     * @param plugin Plugin instance
+     * @throws IOException if a exception occurrs
+     */
     public Metrics(final Plugin plugin) throws IOException {
         if (plugin == null) {
             throw new IllegalArgumentException("Plugin cannot be null");
@@ -521,7 +526,7 @@ public class Metrics {
      * GZip compress a string of bytes
      *
      * @param input
-     * @return
+     * @return bytes
      */
     public static byte[] gzip(String input) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();

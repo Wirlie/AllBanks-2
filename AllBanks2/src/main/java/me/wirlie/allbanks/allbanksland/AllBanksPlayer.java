@@ -40,6 +40,10 @@ public class AllBanksPlayer {
 	
 	String playerName;
 	
+	/**
+	 * Constructor.
+	 * @param playerName Nombre del jugador.
+	 */
 	public AllBanksPlayer(String playerName){		
 		this.playerName = playerName = playerName.toLowerCase();
 		
@@ -51,6 +55,10 @@ public class AllBanksPlayer {
 		}
 	}
 	
+	/**
+	 * Constructor.
+	 * @param p Instancia del jugador.
+	 */
 	public AllBanksPlayer(Player p) {
 		String playerName = p.getName();
 		this.playerName = playerName = playerName.toLowerCase();
@@ -63,6 +71,10 @@ public class AllBanksPlayer {
 		}
 	}
 
+	/**
+	 * Obtener las parcelas que posee.
+	 * @return Listado de parcelas del tipo {@link PlotID}
+	 */
 	public List<PlotID> getOwnedPlots(){
 		Statement stm = null;
 		ResultSet res = null;
@@ -96,6 +108,11 @@ public class AllBanksPlayer {
 		return new ArrayList<PlotID>();
 	}
 	
+	/**
+	 * Obtener el número actual de parcelas que posee.
+	 * @param worldID
+	 * @return número actual de parcelas que posee.
+	 */
 	public int currentPlots(String worldID){
 		Statement stm = null;
 		ResultSet res = null;

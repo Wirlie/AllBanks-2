@@ -1156,7 +1156,7 @@ public class CommandPlot extends Command {
 				InteractiveUtil.sendSound(p, SoundType.DENY);
 				return CommandExecuteResult.OTHER;
 			}
-			AllBanksPlot plot = new AllBanksPlot(AllBanksPlot.PlotHelper.getNextAvailablePlot(abw));
+			AllBanksPlot plot = new AllBanksPlot(AllBanksPlot.PlotFinder.getNextAvailablePlot(abw));
 			
 			plot.claim(p.getName());
 			p.teleport(plot.getFirstBound());

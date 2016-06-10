@@ -27,19 +27,48 @@ import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_4_R2;
 
+/**
+ * Interpretación de un mundo de AllBankdLand
+ * @author Wirlie
+ */
 public class AllBanksWorld {
 	
 	private static final Connection DBC = AllBanks.getSQLConnection("AllBanksLand");
 	
+	/**
+	 * Resultado de la generación.
+	 * @author Wirlie
+	 */
 	public enum WorldGenerationResult{
+		/**
+		 * Exitoso
+		 */
 		SUCCESS,
+		/**
+		 * El mundo ya existe
+		 */
 		ERROR_WORLD_ID_ALREADY_EXISTS,
+		/**
+		 * IO Exception
+		 */
 		ERROR_IO_EXCEPTION,
+		/**
+		 * Error en la base de datos
+		 */
 		ERROR_DATABASE_EXCEPTION,
 	}
 	
+	/**
+	 * Caché que conserva todos los mundos ya instanciados.
+	 */
 	public static HashMap<String, AllBanksWorld> registeredMaps = new HashMap<String, AllBanksWorld>();
 	
+	/**
+	 * Descargar un mundo de AllBanksLand.
+	 * @param worldID ID del mundo.
+	 * @param saveWorld Guardar mundo o no guardar mundo.
+	 * @return {@code true} si el mundo fue descargado.
+	 */
 	public static boolean unloadPlotWorld(String worldID, boolean saveWorld){
 		if(Bukkit.unloadWorld(worldID.toLowerCase(), saveWorld)){
 			registeredMaps.remove(worldID.toLowerCase());
@@ -49,10 +78,21 @@ public class AllBanksWorld {
 		return false;
 	}
 	
+	/**
+	 * Remover un mundo en su totalidad.
+	 * @param worldID ID del mundo.
+	 * @return resultado
+	 */
 	public static int removePlotWorldFolderAndDataBase(String worldID){
 		return removePlotWorldFolderAndDataBase(worldID, false);
 	}
 	
+	/**
+	 * Remover un mundo en su totalidad.
+	 * @param worldID ID del mundo.
+	 * @param forceDropTable ¿Eliminar table asociada en la base de datos?
+	 * @return resultado
+	 */
 	public static int removePlotWorldFolderAndDataBase(String worldID, boolean forceDropTable){
 		
 		worldID = worldID.toLowerCase();
@@ -93,14 +133,29 @@ public class AllBanksWorld {
 		return 1;
 	}
 	
+	/**
+	 * Comprobar si un mundo pertenece a AllBanks.
+	 * @param worldID
+	 * @return {@code true} si el mundo es de AllBanks.
+	 */
 	public static boolean worldIsAllBanksWorld(String worldID){
 		return registeredMaps.containsKey(worldID.toLowerCase());
 	}
 	
+	/**
+	 * Generar un nuevo mundo de AllBanks-
+	 * @param worldID ID del mundo.
+	 * @return {@link WorldGenerationResult} resultado de la generación.
+	 */
 	public static WorldGenerationResult generatePlotWorld(String worldID){
 		return generatePlotWorld(worldID.toLowerCase(), null);
 	}
 	
+	/**
+	 * @param worldIDP worldID ID del mundo.
+	 * @param sender Ejecutor
+	 * @return {@link WorldGenerationResult} resultado de la generación.
+	 */
 	public static WorldGenerationResult generatePlotWorld(String worldIDP, final CommandSender sender){
 		
 		final String worldID = worldIDP.toLowerCase();
@@ -167,6 +222,9 @@ public class AllBanksWorld {
 		
 	}
 	
+	/**
+	 * Cargar mundos al iniciar AllBanks.
+	 */
 	public static void loadWorldsStartup(){
 		
 		Statement stm = null;
@@ -228,6 +286,11 @@ public class AllBanksWorld {
 		}
 	}
 	
+	/**
+	 * Obtener la instancia de un mundo desde el caché.
+	 * @param worldID
+	 * @return Instancia del mundo.
+	 */
 	public static AllBanksWorld getInstance(String worldID){
 		return registeredMaps.get(worldID.toLowerCase());
 	}
@@ -239,6 +302,10 @@ public class AllBanksWorld {
 	int plotSize = 0;
 	int roadSize = 0;
 
+	/**
+	 * Constructor.
+	 * @param worldID ID del mundo.
+	 */
 	public AllBanksWorld(String worldID) {
 		if(worldIsAllBanksWorld(worldID)) throw new IllegalArgumentException(worldID + " already initialized, use getInstance(ID) instead of a new instance.");
 		
@@ -246,6 +313,10 @@ public class AllBanksWorld {
 		loadWorldConfiguration();
 	}
 	
+	/**
+	 * Obtener el ID del mundo.
+	 * @return ID del mundo.
+	 */
 	public String getID(){
 		return world_id;
 	}
@@ -276,10 +347,21 @@ public class AllBanksWorld {
 		}
 	}
 	
+	/**
+	 * Comprobar si una localización pertenece a una parcela.
+	 * @param loc Localización a comprobar.
+	 * @return {@code true} si pertenece a una parcela.
+	 */
 	public boolean locationIsPlot(Location loc){
 		return locationIsPlot(loc.getBlockX(), loc.getBlockZ());
 	}
 	
+	/**
+	 * Comprobar si una localización pertenece a una parcela.
+	 * @param worldX coordenada X en el mundo
+	 * @param worldZ coordenada Z en el mundo
+	 * @return {@code true} si pertenece a una parcela.
+	 */
 	public boolean locationIsPlot(int worldX, int worldZ){
 		
 		int totalSize = 1 + plotSize + 1 + roadSize;
@@ -356,14 +438,20 @@ public class AllBanksWorld {
 		return isPlot;
 	}
 	
+	/**
+	 * Obtener la parcela de la localización especificada.
+	 * @param loc Localización.
+	 * @return {@link AllBanksPlot} parcela.
+	 */
 	public AllBanksPlot getPlot(Location loc) {
 		return getPlot(loc.getBlockX(), loc.getBlockZ());
 	}
 	
 	/**
-	 * @param x
-	 * @param z
-	 * @return
+	 * Obtener la parcela de la localización especificada
+	 * @param worldX coordenada X en el mundo
+	 * @param worldZ coordenada Z en el mundo
+	 * @return {@link AllBanksPlot} parcela.
 	 */
 	public AllBanksPlot getPlot(int worldX, int worldZ) {
 		
@@ -388,14 +476,27 @@ public class AllBanksWorld {
 		return new AllBanksPlot(this, startX, startZ);
 	}
 	
+	/**
+	 * Obtener el mundo de Bukkit
+	 * @return {@link World} mundo de Bukkit.
+	 */
 	public World getBukkitWorld(){
 		return Bukkit.getWorld(world_id);
 	}
 	
+	/**
+	 * Obtener la configuración del mundo.
+	 * @return {@link WorldConfiguration} configuración del mundo.
+	 */
 	public WorldConfiguration getWorldConfiguration(){
 		return new WorldConfiguration(getID());
 	}
 	
+	/**
+	 * Comprobar si un jugador tiene permisos administrativos.
+	 * @param p Jugador.
+	 * @return {@code true} si el jugador tiene permisos administrativos en este mundo.
+	 */
 	public boolean hasAdminPermissions(Player p){
 		if(Util.hasPermission(p, PermissionsConstants.LAND_ADMIN_PERMISSION) || p.isOp()){
 			return true;

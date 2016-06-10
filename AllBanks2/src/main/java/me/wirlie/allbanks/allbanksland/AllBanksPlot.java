@@ -70,6 +70,12 @@ public class AllBanksPlot {
 		loadPlotData();
 	}
 	
+	/**
+	 * Constructor.
+	 * @param plotX X id
+	 * @param plotZ Z id
+	 * @param abw Mundo de AllBanksLand
+	 */
 	public AllBanksPlot(int plotX, int plotZ, AllBanksWorld abw){
 		this.abw = abw;
 		this.plotX = plotX;
@@ -84,6 +90,10 @@ public class AllBanksPlot {
 		loadPlotData();
 	}
 	
+	/**
+	 * Constructor corto de {@link #AllBanksPlot(int, int, AllBanksWorld)}.
+	 * @param pid Información de la parcela.
+	 */
 	public AllBanksPlot(PlotID pid) {
 		this.abw = pid.getWorld();
 		this.plotX = pid.getPlotX();
@@ -140,48 +150,92 @@ public class AllBanksPlot {
 		}
 	}
 	
+	/**
+	 * Obtener la configuración de la parcela.
+	 * @return {@link PlotConfiguration} Configuración de la parcela.
+	 */
 	public PlotConfiguration getPlotConfiguration(){
 		return plot_cfg;
 	}
 	
+	/**
+	 * Establecer una configuración de esta parcela.
+	 * @param key Configuración.
+	 * @param value Nuevo valor.
+	 */
 	public void setPlotConfiguration(String key, String value){
 		plot_cfg.setPlotConfiguration(key, value);
 	}
 	
+	/**
+	 * Obtener el ID en X
+	 * @return X
+	 */
 	public int getPlotX(){
 		return plotX;
 	}
 	
+	/**
+	 * Obtener el ID en Z
+	 * @return Z
+	 */
 	public int getPlotZ(){
 		return plotZ;
 	}
 	
+	/**
+	 * Obtener el ID de la parcela.
+	 * @return ID de la parcela.
+	 */
 	public String getPlotID(){
 		return plotStringID;
 	}
 	
+	/**
+	 * Obtener el primer límite.
+	 * @return Localización de la primer esquina.
+	 */
 	public Location getFirstBound(){
 		return firstBound;
 	}
 	
+	/**
+	 * Obtener el segundo límite.
+	 * @return Localización de la segunda esquina.
+	 */
 	public Location getSecondBound(){
 		return secondBound;
 	}
 	
+	/**
+	 * Si la parcela tiene dueño.
+	 * @return {@code true} si la parcela tiene dueño.
+	 */
 	public boolean hasOwner(){
 		if(ownerName == null) return false;
 		
 		return true;
 	}
 	
+	/**
+	 * Obtener el nombre del dueño.
+	 * @return Nombre del dueño.
+	 */
 	public String getOwnerName(){
 		return this.ownerName;
 	}
 	
+	/**
+	 * Obtener el mundo de AllBanksLand perteneciente a esta parcela.
+	 * @return Mundo de AllBanksLand.
+	 */
 	public AllBanksWorld getAllBanksWorld(){
 		return abw;
 	}
 	
+	/**
+	 * Desclaimear esta parcela.
+	 */
 	public void unclaim(){
 		Statement stm = null;
 		
@@ -200,7 +254,8 @@ public class AllBanksPlot {
 	}
 
 	/**
-	 * @param newOwnerName
+	 * Claimear esta parcela
+	 * @param newOwnerName Nuevo dueño.
 	 */
 	public void claim(String newOwnerName) {
 		
@@ -231,6 +286,10 @@ public class AllBanksPlot {
 		}
 	}
 	
+	/**
+	 * Establecer un nuevo bioma.
+	 * @param biome Bioma a establecer
+	 */
 	public void setBiome(Biome biome){
 		int firstCursorX = 0;
 		int firstCursorZ = 0;
@@ -266,6 +325,11 @@ public class AllBanksPlot {
 		AllBanksLogger.debug("SetBiome report, plot: " + plotStringID + ", firstBound: " + firstBound.toString() + ", secondBound: " + secondBound.toString() + ", totalIterations: " + debugIteration + ", firstCursorX: " + firstCursorX + ", secondCursorX: " + secondCursorX + ", firstCursorZ: " + firstCursorZ + ", secondCursorZ: " + secondCursorZ + ", end of report.");
 	}
 	
+	/**
+	 * Comprobar si un jugador tiene permisos.
+	 * @param player Jugador a comprobar.
+	 * @return {@code true} si tiene permiso.
+	 */
 	public boolean havePermissions(Player player){
 		
 		if(player.isOp()){
@@ -291,11 +355,20 @@ public class AllBanksPlot {
 		
 	}
 	
-	public static class PlotHelper{
+	/**
+	 * Utilidad para ayudar con las funciones de las parcelas.
+	 * @author Wirlie
+	 */
+	public static class PlotFinder{
 		
 		private static int lastCursorIterations = 0;
 		
-		public static PlotID getNextAvailablePlot(AllBanksWorld abw){
+		/**
+		 * Obtener la siguiente parcela disponible en el mundo.
+		 * @param abw Mundo de AllBanksLand a comprobar.
+		 * @return El ID de la parcela disponible.
+		 */
+		public static synchronized PlotID getNextAvailablePlot(AllBanksWorld abw){
 			while(true){
 				if(lastCursorIterations == 0){
 					if(!new AllBanksPlot(0, 0, abw).hasOwner()){
