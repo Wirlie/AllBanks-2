@@ -7,10 +7,9 @@ os:
 env:
   - AB_VERSION=1.9
 script:
-  - echo $TRAVIS_JDK_VERSION
   - if [[ $AB_VERSION == "1.9" ]] ; then cd "AllBanks2"; fi
-  - if [[ $TRAVIS_JDK_VERSION == "1.7" ]] ; then javac -target 1.7 -source 1.8; fi
-  - if [[ $TRAVIS_JDK_VERSION == "1.8" ]] ; then javac -target 1.7 -source 1.8; fi
+  - if [[ $TRAVIS_JDK_VERSION == "oraclejdk7" ]] ; then javac -target 1.7 -source 1.8; fi
+  - if [[ $TRAVIS_JDK_VERSION == "oraclejdk8" ]] ; then javac -target 1.7 -source 1.8; fi
   - if [[ $AB_VERSION == "1.9" ]] ; then mvn clean test -U; fi
 notifications:
   email:
