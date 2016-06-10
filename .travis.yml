@@ -2,9 +2,19 @@ language: java
 os:
   - linux
   - osx
-jdk:
-  - oraclejdk7
-  - oraclejdk8
+env:
+  - JAVA_SELECTOR = "java7Linux"
+    os: linux
+  - JAVA_SELECTOR = "java8Linux"
+    os: linux
+  - JAVA_SELECTOR = "java8OSX"
+    os: osx
+before_install:
+  - if [[ $JAVA_SELECTOR == "java8OSX" ]] ; then wget --no-cookies --no-check-certificate --header \"Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie\" http://download.oracle.com/otn-pub/java/jdk/8u66-b17/jdk-8u66-macosx-x64.dmg"; fi
+  - if [[ $JAVA_SELECTOR == "java8OSX" ]] ; then hdiutil mount jdk-8u66-macosx-x64.dmg; fi
+  - if [[ $JAVA_SELECTOR == "java8OSX" ]] ; then sudo installer -pkg /Volumes/JDK\ 8\ Update\ 66/JDK\ 8\ Update\ 66.pkg -target LocalSystem; fi
+  - if [[ $JAVA_SELECTOR == "java7Linux" ]] ; then jdk_switcher use oraclejdk7; fi
+  - if [[ $JAVA_SELECTOR == "java8Linux" ]] ; then jdk_switcher use oraclejdk8; fi
 script:
   - cd "AllBanks2"
   - mvn clean deploy
