@@ -2,9 +2,8 @@ language: java
 os:
   - linux
   - osx
-env:
-  - JAVA_HOME=/usr/lib/jvm/java-8-oracle
-  - JAVA_HOME=/usr/lib/jvm/java-7-oracle
+before_install:
+  - echo $JAVA_HOME
 script:
   - cd "AllBanks2"
   - if [[ $TRAVIS_JDK_VERSION == "oraclejdk7" ]] ; then javac -target 1.7; fi
