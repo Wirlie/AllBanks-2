@@ -142,27 +142,27 @@ public class Translation{
 	
 	/**
 	 * Obtener una traducción.
-	 * @param strPath Ruta de la traducción.
+	 * @param stringPath Ruta de la traducción.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Incluir prefijo de AllBanks?
 	 * @param consoleSender ¿Se necesita enviar con formato de Consola? (Sin ChatColor)
 	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
 	 */
-	public static String[] get(String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean consoleSender){
+	public static String[] get(String stringPath, HashMap<String, String> replaceMap, boolean prefix, boolean consoleSender){
 		File trFile = ensureLanguageFileExists(getLanguageSpecifiedInConfiguration());
 		YamlConfiguration trYaml = YamlConfiguration.loadConfiguration(trFile);
-		String translation = trYaml.getString(strPath, null);
+		String translation = trYaml.getString(stringPath, null);
 		
 		if(translation == null && !getLanguageSpecifiedInConfiguration().equals(Languages.EN_US)){
 			//Intentar obtener desde el archivo EnUS
 			
-			Console.sendMessage(ChatColor.YELLOW + "[Translation] String " + strPath + " not found in " + getLanguageSpecifiedInConfiguration().getResourceName() + ", try to get this string with EnUs.yml");
+			Console.sendMessage(ChatColor.YELLOW + "[Translation] String " + stringPath + " not found in " + getLanguageSpecifiedInConfiguration().getResourceName() + ", try to get this string with EnUs.yml");
 			YamlConfiguration enUsYaml = YamlConfiguration.loadConfiguration(ensureLanguageFileExists(Languages.EN_US));
-			translation = enUsYaml.getString(strPath, null);
+			translation = enUsYaml.getString(stringPath, null);
 		
 		}
 		
-		if(translation == null) translation = "{" + strPath + "}";
+		if(translation == null) translation = "{" + stringPath + "}";
 		
 		if(!replaceMap.isEmpty()){
 			Iterator<Entry<String, String>> it = replaceMap.entrySet().iterator();
@@ -194,58 +194,58 @@ public class Translation{
 	
 	/**
 	 * Obtener una traducción.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 * @param commandSender ¿Enviar en formato de consola? (Sin ChatColor)
 	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
 	 */
-	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
-		return get(strPath.getPath(), replaceMap, prefix, commandSender);
+	public static String[] get(StringsID stringID, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
+		return get(stringID.getPath(), replaceMap, prefix, commandSender);
 	}
 	
 	/**
 	 * Obtener una traducción.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
 	 */
-	public static String[] get(StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
-		return get(strPath.getPath(), replaceMap, prefix, false);
+	public static String[] get(StringsID stringID, HashMap<String, String> replaceMap, boolean prefix){
+		return get(stringID.getPath(), replaceMap, prefix, false);
 	}
 	
 	/**
 	 * Obtener una traducción.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 * @param commandSender ¿Se necesita enviar con formato de Consola? (Sin ChatColor)
 	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
 	 */
-	public static String[] get(StringsID strPath, boolean prefix, boolean commandSender){
-		return get(strPath.getPath(), new HashMap<String, String>(), prefix, commandSender);
+	public static String[] get(StringsID stringID, boolean prefix, boolean commandSender){
+		return get(stringID.getPath(), new HashMap<String, String>(), prefix, commandSender);
 	}
 	
 	/**
 	 * Obtener una traducción.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
 	 */
-	public static String[] get(StringsID strPath, boolean prefix){
-		return get(strPath.getPath(), new HashMap<String, String>(), prefix, false);
+	public static String[] get(StringsID stringID, boolean prefix){
+		return get(stringID.getPath(), new HashMap<String, String>(), prefix, false);
 	}
 	
 	/**
 	 * Obtener una traducción múltiple.
 	 * @param prefix ¿Conservar prefix?
-	 * @param IDS Multiples ID de traducciones a obtener.
+	 * @param stringIDS Multiples ID de traducciones a obtener.
 	 * @return Array conteniendo las lineas de traducción correspondientes a lo solicitado.
 	 */
-	public static List<String> getMultiple(boolean prefix, StringsID... IDS){
+	public static List<String> getMultiple(boolean prefix, StringsID... stringIDS){
 		
 		List<String> returnList = new ArrayList<String>();
-		for(StringsID id : IDS){
+		for(StringsID id : stringIDS){
 			returnList.addAll(Arrays.asList(get(id.getPath(), new HashMap<String, String>(), prefix, false)));
 		}
 		
@@ -255,105 +255,105 @@ public class Translation{
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
-	 * @param strPath Ruta de la traducción a enviar.
+	 * @param stringPath Ruta de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix){
-		p.sendMessage(get(strPath, replaceMap, prefix, false));
+	public static void getAndSendMessage(Player p, String stringPath, HashMap<String, String> replaceMap, boolean prefix){
+		p.sendMessage(get(stringPath, replaceMap, prefix, false));
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
-	 * @param strPath Ruta de la traducción a enviar.
+	 * @param stringPath Ruta de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 * @param commandSender ¿Se necesita enviar con formato de Consola? (Sin ChatColor)
 	 */
-	public static void getAndSendMessage(Player p, String strPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
-		p.sendMessage(get(strPath, replaceMap, prefix, commandSender));
+	public static void getAndSendMessage(Player p, String stringPath, HashMap<String, String> replaceMap, boolean prefix, boolean commandSender){
+		p.sendMessage(get(stringPath, replaceMap, prefix, commandSender));
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
 	 * @param s Ejecutor del comando.
-	 * @param strPath Ruta de la traducción a enviar.
+	 * @param stringPath Ruta de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(CommandSender s, String strPath, HashMap<String, String> replaceMap, boolean prefix){
+	public static void getAndSendMessage(CommandSender s, String stringPath, HashMap<String, String> replaceMap, boolean prefix){
 		if(s instanceof ConsoleCommandSender){
-			s.sendMessage(get(strPath, replaceMap, prefix, true));
+			s.sendMessage(get(stringPath, replaceMap, prefix, true));
 		}else{
-			s.sendMessage(get(strPath, replaceMap, prefix, false));
+			s.sendMessage(get(stringPath, replaceMap, prefix, false));
 		}
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
 	 * @param s Ejecutor del comando.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(CommandSender s, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
+	public static void getAndSendMessage(CommandSender s, StringsID stringID, HashMap<String, String> replaceMap, boolean prefix){
 		if(s instanceof ConsoleCommandSender){
-			s.sendMessage(get(strPath, replaceMap, prefix, true));
+			s.sendMessage(get(stringID, replaceMap, prefix, true));
 		}else{
-			s.sendMessage(get(strPath, replaceMap, prefix, false));
+			s.sendMessage(get(stringID, replaceMap, prefix, false));
 		}
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param replaceMap Mapa de reemplazo.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(Player p, StringsID strPath, HashMap<String, String> replaceMap, boolean prefix){
-		getAndSendMessage(p, strPath.getPath(), replaceMap, prefix);
+	public static void getAndSendMessage(Player p, StringsID stringID, HashMap<String, String> replaceMap, boolean prefix){
+		getAndSendMessage(p, stringID.getPath(), replaceMap, prefix);
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 * @param replaceArray Array de cadenas de texto, lo mismo que replaceMap pero sin necesidad de especificar un {@code HashMap<String, String>}
 	 */
-	public static void getAndSendMessage(Player p, StringsID strPath, boolean prefix, String... replaceArray){
+	public static void getAndSendMessage(Player p, StringsID stringID, boolean prefix, String... replaceArray){
 		
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
 		for(int i = 0; i < replaceArray.length; i++){
 			replaceMap.put("%" + i + "%", replaceArray[i]);
 		}
 		
-		getAndSendMessage(p, strPath.getPath(), replaceMap, prefix);
+		getAndSendMessage(p, stringID.getPath(), replaceMap, prefix);
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param sender Jugador/CommandSender a enviar el mensaje.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 * @param replaceArray Array de cadenas de texto, lo mismo que replaceMap pero sin necesidad de especificar un {@code HashMap<String, String>}
 	 */
-	public static void getAndSendMessage(CommandSender sender, StringsID strPath, boolean prefix, String... replaceArray){
+	public static void getAndSendMessage(CommandSender sender, StringsID stringID, boolean prefix, String... replaceArray){
 		
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
 		for(int i = 0; i < replaceArray.length; i++){
 			replaceMap.put("%" + i + "%", replaceArray[i]);
 		}
 		
-		getAndSendMessage(sender, strPath.getPath(), replaceMap, prefix);
+		getAndSendMessage(sender, stringID.getPath(), replaceMap, prefix);
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 * @param replaceFormat Prefijo y sufijo a usar al momento de leer y colocar los valores de <b>replaceArray</b> en el Mapa de reemplazo (HashMap).
 	 * <br><br>El formato por defecto (si este valor es especificado como null) es el siguiente: <b>%{i}%</b> en donde <b>i</b> es el índice del array especificado <i>replaceArray</i>.
@@ -415,7 +415,7 @@ public class Translation{
 	 * ...<br>
 	 * replaceArray[n] = "n";<br>
 	 */
-	public static void getAndSendMessage(Player p, StringsID strPath, boolean prefix, String replaceFormat, String... replaceArray){
+	public static void getAndSendMessage(Player p, StringsID stringID, boolean prefix, String replaceFormat, String... replaceArray){
 		
 		Pattern pattern = Pattern.compile("(.|){1,}{i}(.|){1,}");
 		Matcher matcher = pattern.matcher(replaceFormat);
@@ -439,17 +439,17 @@ public class Translation{
 				replaceMap.put(prefixRpl + i + subfixRpl, replaceArray[i]);
 			}
 			
-			getAndSendMessage(p, strPath.getPath(), replaceMap, prefix);
+			getAndSendMessage(p, stringID.getPath(), replaceMap, prefix);
 		}else{
 			//default replacement
-			getAndSendMessage(p, strPath, prefix, replaceArray);
+			getAndSendMessage(p, stringID, prefix, replaceArray);
 		}
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param sender El que ha ejecutado un comando.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 * @param replaceFormat Prefijo y sufijo a usar al momento de leer y colocar los valores de <b>replaceArray</b> en el Mapa de reemplazo (HashMap).
 	 * <br><br>El formato por defecto (si este valor es especificado como null) es el siguiente: <b>%{i}%</b> en donde <b>i</b> es el índice del array especificado <i>replaceArray</i>.
@@ -511,7 +511,7 @@ public class Translation{
 	 * ...<br>
 	 * replaceArray[n] = "n";<br>
 	 */
-	public static void getAndSendMessage(CommandSender sender, StringsID strPath, boolean prefix, String replaceFormat, String... replaceArray){
+	public static void getAndSendMessage(CommandSender sender, StringsID stringID, boolean prefix, String replaceFormat, String... replaceArray){
 		
 		Pattern pattern = Pattern.compile("(.|){1,}{i}(.|){1,}");
 		Matcher matcher = pattern.matcher(replaceFormat);
@@ -535,41 +535,41 @@ public class Translation{
 				replaceMap.put(prefixRpl + i + subfixRpl, replaceArray[i]);
 			}
 			
-			getAndSendMessage(sender, strPath.getPath(), replaceMap, prefix);
+			getAndSendMessage(sender, stringID.getPath(), replaceMap, prefix);
 		}else{
 			//default replacement
-			getAndSendMessage(sender, strPath, prefix, replaceArray);
+			getAndSendMessage(sender, stringID, prefix, replaceArray);
 		}
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(Player p, StringsID strPath, boolean prefix){
-		getAndSendMessage(p, strPath.getPath(), new HashMap<String, String>(), prefix);
+	public static void getAndSendMessage(Player p, StringsID stringID, boolean prefix){
+		getAndSendMessage(p, stringID.getPath(), new HashMap<String, String>(), prefix);
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
 	 * @param s Ejecutor del comando.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringID ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(CommandSender s, StringsID strPath, boolean prefix){
-		getAndSendMessage(s, strPath.getPath(), new HashMap<String, String>(), prefix);
+	public static void getAndSendMessage(CommandSender s, StringsID stringID, boolean prefix){
+		getAndSendMessage(s, stringID.getPath(), new HashMap<String, String>(), prefix);
 	}
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al ejecutor del comando especificado.
 	 * @param s Ejecutor del comando.
-	 * @param strPath ID de la traducción a enviar.
+	 * @param stringPath ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
 	 */
-	public static void getAndSendMessage(CommandSender s, String strPath, boolean prefix){
-		getAndSendMessage(s, strPath, new HashMap<String, String>(), prefix);
+	public static void getAndSendMessage(CommandSender s, String stringPath, boolean prefix){
+		getAndSendMessage(s, stringPath, new HashMap<String, String>(), prefix);
 	}
 	
 	/**
