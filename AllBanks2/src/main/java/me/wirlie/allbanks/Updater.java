@@ -591,6 +591,9 @@ public class Updater {
      * I tested this function, and it works.
      * 
      * @author Wirlie
+     * @param pluginVersion Plugin version.
+     * @param serverVersion Remote version.
+     * @return {@code true} if this should be updated.
      * @since AllBanks 1.0.2
      * 
      */

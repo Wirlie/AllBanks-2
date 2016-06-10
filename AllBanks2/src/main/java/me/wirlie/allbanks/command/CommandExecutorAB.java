@@ -65,6 +65,13 @@ public class CommandExecutorAB extends AllBanksExecutor implements CommandExecut
 		registerCommand(new CommandHelp(null), "help", "RegEx->([0-9]){1,}:<page>");
 		registerCommand(new CommandHelp(null), "?");
 		registerCommand(new CommandHelp(null), "?", "RegEx->([0-9]){1,}:<page>");
+		//actualizador
+		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_UPDATER_CHECK_UPDATES_PERMISSION), "updater", "check-updates");
+		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_UPDATER_DOWNLOAD_UPDATE_PERMISSION), "updater", "download-update");
+		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_UPDATER_CURRENT_VERSION_PERMISSION), "updater", "current-version");
+		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_UPDATER_FORCE_UPDATE_PERMISSION), "updater", "force-download");
+		registerCommand(new CommandUpdate(null), "updater", "?");
+		registerCommand(new CommandUpdate(null), "updater", "help");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {

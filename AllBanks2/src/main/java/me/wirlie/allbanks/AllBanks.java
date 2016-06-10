@@ -101,13 +101,30 @@ public class AllBanks extends JavaPlugin {
 	private static Connection dbc;
 	private static StorageType storageMethod = StorageType.SQLITE;
 	private static Economy econ = null;
+	
+	/**
+	 * Si hay una actualización pendiente.
+	 */
 	public static boolean updatePending = false;
+	
+	/**
+	 * Versión de la actualización pendiente. Sólo si {@link #updatePending} es {@code true}.
+	 */
 	public static String updatePendingVersion = "";
 	
 	/** Resultados usados al momento de comparar versiones. */
 	public enum VersionCheckResult{
+		/**
+		 * Si la versión actual de CB es compatible con AllBanks2.
+		 */
 		COMPATIBLE,
+		/**
+		 * Si la versión actual de CB no es compatible con AllBanks2.
+		 */
 		NOT_COMPATIBLE,
+		/**
+		 * Si la versión actual no ha sido probada.
+		 */
 		PROCCEED_WITH_PRECAUTION
 	}
 
@@ -125,8 +142,17 @@ public class AllBanks extends JavaPlugin {
 	
 	/** Tipo de almacenamiento que usará AllBanks para almacenar los datos. */
 	public enum StorageType{
+		/**
+		 * Almacenamiento por archivo.
+		 */
 		FLAT_FILE,
+		/**
+		 * Almacenamiento por base de datos SQLite.
+		 */
 		SQLITE,
+		/**
+		 * Almacenamiento vía MySQL.
+		 */
 		MYSQL;
 	}
 	
@@ -512,7 +538,6 @@ public class AllBanks extends JavaPlugin {
 	
 	/**
 	 * Instalar Vault y plugin de economía.
-	 * @return true si la instalación fue exitosa.
 	 */
 	private void setupEconomy() {
         if (getServer().getPluginManager().getPlugin("Vault") == null) {
@@ -574,6 +599,9 @@ public class AllBanks extends JavaPlugin {
 		}
 	}
 	
+	/**
+	 * Instalar la base de datos de AllBanksLand.
+	 */
 	public static void installAllBanksLandDataBase(){
 		
 		Statement stm = null;
@@ -672,4 +700,12 @@ public class AllBanks extends JavaPlugin {
 		
 	   System.out.println(version);
 	 */
+	
+	/**
+	 * Obtener el archivo actual del plugin. Lo mismo que getFile();
+	 * @return Archivo.
+	 */
+	public File getPluginFile(){
+		return getFile();
+	}
 }

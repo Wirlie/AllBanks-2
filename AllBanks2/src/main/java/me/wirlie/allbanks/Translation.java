@@ -415,7 +415,7 @@ public class Translation{
 	 * ...<br>
 	 * replaceArray[n] = "n";<br>
 	 */
-	public static void getAndSendMessage(Player p, StringsID stringID, boolean prefix, String replaceFormat, String... replaceArray){
+	public static void getAndSendMessage(Player p, StringsID stringID, String replaceFormat, boolean prefix, String... replaceArray){
 		
 		Pattern pattern = Pattern.compile("(.|){1,}{i}(.|){1,}");
 		Matcher matcher = pattern.matcher(replaceFormat);
@@ -511,7 +511,7 @@ public class Translation{
 	 * ...<br>
 	 * replaceArray[n] = "n";<br>
 	 */
-	public static void getAndSendMessage(CommandSender sender, StringsID stringID, boolean prefix, String replaceFormat, String... replaceArray){
+	public static void getAndSendMessage(CommandSender sender, StringsID stringID, String replaceFormat, boolean prefix, String... replaceArray){
 		
 		Pattern pattern = Pattern.compile("(.|){1,}{i}(.|){1,}");
 		Matcher matcher = pattern.matcher(replaceFormat);
