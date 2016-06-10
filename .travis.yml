@@ -6,7 +6,7 @@ env:
   matrix:
     - JAVA_MATRIX=java7Linux
     - JAVA_MATRIX=java8Linux
-    - JAVA_MATRIX=java8OSX
+    - JAVA_MATRIX=javaOSX
 matrix:
   exclude:
   - env: JAVA_MATRIX=java8Linux
