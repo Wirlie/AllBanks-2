@@ -18,7 +18,7 @@ matrix:
 before_install:
   - if [[ $JAVA_MATRIX == "java7Linux" ]] ; then jdk_switcher use oraclejdk7; fi
   - if [[ $JAVA_MATRIX == "java8Linux" ]] ; then jdk_switcher use oraclejdk8; fi
-  - if [[ $JAVA_MATRIX == "javaOSX" ]] ; then export JAVA_HOME=/usr/lib/jvm/java-7-oracle; fi
+  - if [[ $JAVA_MATRIX == "javaOSX" ]] ; then export JAVA_HOME=$(/usr/libexec/java_home); fi
 script:
   - cd "AllBanks2"
   - mvn test
