@@ -69,12 +69,33 @@ public class Banks {
 	 * @author Wirlie
 	 */
 	public static enum ABSignType{
+		/**
+		 * BankLoan
+		 */
 		BANK_LOAN("Loan"),
+		/**
+		 * BankXP
+		 */
 		BANK_XP("XP"),
+		/**
+		 * BankTime
+		 */
 		BANK_TIME("Time"),
+		/**
+		 * BankMoney
+		 */
 		BANK_MONEY("Money"),
+		/**
+		 * ATM
+		 */
 		ATM("ATM"), 
+		/**
+		 * BankChest
+		 */
 		BANK_CHEST("Chest"), 
+		/**
+		 * Default
+		 */
 		DEFAULT("");
 		
 		String display;
@@ -88,6 +109,11 @@ public class Banks {
 		}
 		
 		
+		/**
+		 * Obtener el tipo de banco usando el nombre corto.
+		 * @param string Nombre corto.
+		 * @return {@link ABSignType}, Tipo de banco.
+		 */
 		public static ABSignType getSignTypeByShortName(String string){
 			
 			for(ABSignType b : ABSignType.values()){
@@ -106,8 +132,17 @@ public class Banks {
 	 *
 	 */
 	public static enum ABSignAction{
+		/**
+		 * Acción al crear un nuevo letrero.
+		 */
 		NEW_SIGN,
+		/**
+		 * Acción al destruir un letrero.
+		 */
 		DESTROY_SIGN,
+		/**
+		 * Acción al usar un letrero.
+		 */
 		USE_SIGN;
 	}
 	
@@ -257,6 +292,7 @@ public class Banks {
 	 * @param signType Tipo de banco.
 	 * @param allbanksSign Letrero de AllBanks.
 	 * @param signStep Paso al que se desea cambiar.
+	 * @param sendInfoMessages Enviar mensaje de información (instrucciones).
 	 */
 	public static void switchABSignToStep(ABSignType signType, Sign allbanksSign, int signStep, boolean sendInfoMessages) {
 		
@@ -702,10 +738,10 @@ public class Banks {
 	/**
 	 * Verificar si un bloque contiene uno o más letreros de AllBanks.
 	 * @param block El bloque a verificar.
+	 * @return {@code true} si este bloque tiene letreros de AllBanks en su alrededor.
 	 */
 	
 	public static boolean blockIsSupportForABSigns(Block block) {
-		//TODO Se necesita agregar un método que compruebe la dirección del letrero para verificar si el letrero realmente está siendo sujetado por el bloque.
 		for(int i = 0; i < 4; i++){
 			Block relativeBlock = (i == 0) ? block.getRelative(BlockFace.NORTH) : ((i == 1) ? block.getRelative(BlockFace.SOUTH) : ((i == 2) ? block.getRelative(BlockFace.WEST) : block.getRelative(BlockFace.EAST)));
 		
