@@ -335,6 +335,23 @@ public class Translation{
 	
 	/**
 	 * Obtener una traducción y enviar a la vez al jugador especificado.
+	 * @param sender Jugador/CommandSender a enviar el mensaje.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 * @param replaceArray Array de cadenas de texto, lo mismo que replaceMap pero sin necesidad de especificar un {@code HashMap<String, String>}
+	 */
+	public static void getAndSendMessage(CommandSender sender, StringsID strPath, boolean prefix, String... replaceArray){
+		
+		HashMap<String, String> replaceMap = new HashMap<String, String>();
+		for(int i = 0; i < replaceArray.length; i++){
+			replaceMap.put("%" + i + "%", replaceArray[i]);
+		}
+		
+		getAndSendMessage(sender, strPath.getPath(), replaceMap, prefix);
+	}
+	
+	/**
+	 * Obtener una traducción y enviar a la vez al jugador especificado.
 	 * @param p Jugador a enviar el mensaje.
 	 * @param strPath ID de la traducción a enviar.
 	 * @param prefix ¿Conservar prefix?
@@ -426,6 +443,102 @@ public class Translation{
 		}else{
 			//default replacement
 			getAndSendMessage(p, strPath, prefix, replaceArray);
+		}
+	}
+	
+	/**
+	 * Obtener una traducción y enviar a la vez al jugador especificado.
+	 * @param sender El que ha ejecutado un comando.
+	 * @param strPath ID de la traducción a enviar.
+	 * @param prefix ¿Conservar prefix?
+	 * @param replaceFormat Prefijo y sufijo a usar al momento de leer y colocar los valores de <b>replaceArray</b> en el Mapa de reemplazo (HashMap).
+	 * <br><br>El formato por defecto (si este valor es especificado como null) es el siguiente: <b>%{i}%</b> en donde <b>i</b> es el índice del array especificado <i>replaceArray</i>.
+	 * <br><br>Si no se especifica <b>{i}</b> en la cadena entonces se usará el formato por defecto <b>%{i}%</b>
+	 * <br><br>Ejemplos de formatos y su resultado:
+	 * <br>
+	 * <table>
+	 * 	<tr>
+	 * 		<td style="padding: 15px; text-align: center; border: 1px solid black;">Formato</td>
+	 * 		<td style="padding: 15px; text-align: center; border: 1px solid black;">Resultado<br>Array de longitud 5</td>
+	 * 	</tr>
+	 * 	<tr>
+	 * 		<td style="padding: 15px; text-align: center; border: 1px solid black;">%{i}%</td>
+	 * 		<td style="padding: 15px; text-align: left; border: 1px solid black;">
+	 * 			replaceArray[1] -> replaceMap.put("%1%", String)<br>
+	 * 			replaceArray[2] -> replaceMap.put("%2%", String)<br>
+	 * 			replaceArray[3] -> replaceMap.put("%3%", String)<br>
+	 * 			replaceArray[4] -> replaceMap.put("%4%", String)<br>
+	 * 			replaceArray[5] -> replaceMap.put("%5%", String)<br>
+	 * 		</td>
+	 * 	</tr>
+	 *  <tr>
+	 * 		<td style="padding: 15px; text-align: center; border: 1px solid black;">&{i}=</td>
+	 * 		<td style="padding: 15px; text-align: left; border: 1px solid black;">
+	 * 			replaceArray[1] -> replaceMap.put("&1=", String)<br>
+	 * 			replaceArray[2] -> replaceMap.put("&2=", String)<br>
+	 * 			replaceArray[3] -> replaceMap.put("&3=", String)<br>
+	 * 			replaceArray[4] -> replaceMap.put("&4=", String)<br>
+	 * 			replaceArray[5] -> replaceMap.put("&5=", String)<br>
+	 * 		</td>
+	 * 	</tr>
+	 *  <tr>
+	 * 		<td style="padding: 15px; text-align: center; border: 1px solid black;">{i}</td>
+	 * 		<td style="padding: 15px; text-align: left; border: 1px solid black;">
+	 * 			replaceArray[1] -> replaceMap.put("1", String)<br>
+	 * 			replaceArray[2] -> replaceMap.put("2", String)<br>
+	 * 			replaceArray[3] -> replaceMap.put("3", String)<br>
+	 * 			replaceArray[4] -> replaceMap.put("4", String)<br>
+	 * 			replaceArray[5] -> replaceMap.put("5", String)<br>
+	 * 		</td>
+	 * 	</tr>
+	 *  <tr>
+	 * 		<td style="padding: 15px; text-align: center; border: 1px solid black;">$%?{i}</td>
+	 * 		<td style="padding: 15px; text-align: left; border: 1px solid black;">
+	 * 			replaceArray[1] -> replaceMap.put("$%?1", String)<br>
+	 * 			replaceArray[2] -> replaceMap.put("$%?2", String)<br>
+	 * 			replaceArray[3] -> replaceMap.put("$%?3", String)<br>
+	 * 			replaceArray[4] -> replaceMap.put("$%?4", String)<br>
+	 * 			replaceArray[5] -> replaceMap.put("$%?5", String)<br>
+	 * 		</td>
+	 * 	</tr>
+	 * </table>
+	 * @param replaceArray Argumentos de tipo String que especifica las cadenas a reemplazar usando el sufijo y prefijo especificado por <i>replaceFormat</i>.<br>
+	 * <br>Estos se ordenan en el array según la especificación, es decir<br>
+	 * ("hola", "que tal", "duh", ..., "n") se ordena como:<br><br>
+	 * replaceArray[1] = "hola"<br>
+	 * replaceArray[2] = "que tal"<br>
+	 * replaceArray[3] = "duh"<br>
+	 * ...<br>
+	 * replaceArray[n] = "n";<br>
+	 */
+	public static void getAndSendMessage(CommandSender sender, StringsID strPath, boolean prefix, String replaceFormat, String... replaceArray){
+		
+		Pattern pattern = Pattern.compile("(.|){1,}{i}(.|){1,}");
+		Matcher matcher = pattern.matcher(replaceFormat);
+		
+		if(matcher.matches()){
+			HashMap<String, String> replaceMap = new HashMap<String, String>();
+			
+			String prefixRpl = matcher.group(1);
+			String subfixRpl = matcher.group(2);
+			
+			if(prefixRpl == null){
+				prefixRpl = "";
+				AllBanksLogger.warning("[REGEX] Fail to get group 1 of regex | pattern: " + pattern.pattern() + " | charSequence: " + replaceFormat + " | matcher.group(1) result: null | resolution: switch to an empty String ('') instead of a null value.");
+			}
+			if(subfixRpl == null){
+				subfixRpl = "";
+				AllBanksLogger.warning("[REGEX] Fail to get group 2 of regex | pattern: " + pattern.pattern() + " | charSequence: " + replaceFormat + " | matcher.group(2) result: null | resolution: switch to an empty String ('') instead of a null value.");
+			}
+			
+			for(int i = 0; i < replaceArray.length; i++){
+				replaceMap.put(prefixRpl + i + subfixRpl, replaceArray[i]);
+			}
+			
+			getAndSendMessage(sender, strPath.getPath(), replaceMap, prefix);
+		}else{
+			//default replacement
+			getAndSendMessage(sender, strPath, prefix, replaceArray);
 		}
 	}
 	
