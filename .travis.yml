@@ -1,16 +1,27 @@
 language: java
-jdk:
-  - oraclejdk8
-  - oraclejdk7
 os:
   - linux
+  - osx
 env:
-  - AB_VERSION=1.9
-script: 
-  - if [[ $AB_VERSION == "1.9" ]] ; then cd "AllBanks2"; fi
-  - if [[ $TRAVIS_JDK_VERSION == "1.7" ]] ; then javac -target 1.7 -source 1.8; fi
-  - if [[ $TRAVIS_JDK_VERSION == "1.8" ]] ; then javac -target 1.7 -source 1.8; fi
-  - if [[ $AB_VERSION == "1.9" ]] ; then mvn clean test -U; fi
+  matrix:
+    - JAVA_MATRIX=java7Linux
+    - JAVA_MATRIX=java8Linux
+    - JAVA_MATRIX=javaOSX
+matrix:
+  exclude:
+  - env: JAVA_MATRIX=java8Linux
+    os: osx
+  - env: JAVA_MATRIX=java7Linux
+    os: osx
+  - env: JAVA_MATRIX=javaOSX
+    os: linux
+before_install:
+  - if [[ $JAVA_MATRIX == "java7Linux" ]] ; then jdk_switcher use oraclejdk7; fi
+  - if [[ $JAVA_MATRIX == "java8Linux" ]] ; then jdk_switcher use oraclejdk8; fi
+  - if [[ $JAVA_MATRIX == "javaOSX" ]] ; then export JAVA_HOME=$(/usr/libexec/java_home); fi
+script:
+  - cd "AllBanks2"
+  - mvn test
 notifications:
   email:
     recipients:
