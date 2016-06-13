@@ -29,6 +29,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
 
+/**
+ * Comando /plot
+ * @author Wirlie
+ */
 public class CommandPlot extends Command {
 	
 	private static HashMap<String, PlotClearTokenStruct> plotClearTokens = new HashMap<String, PlotClearTokenStruct>();
@@ -40,6 +44,10 @@ public class CommandPlot extends Command {
 		String token;
 	}
 	
+	/**
+	 * Constructor de la clase
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandPlot(String permissionNode){
 		super(permissionNode);
 	}

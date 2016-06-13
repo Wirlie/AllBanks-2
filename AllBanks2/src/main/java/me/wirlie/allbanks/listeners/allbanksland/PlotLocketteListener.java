@@ -16,6 +16,7 @@ import me.wirlie.allbanks.allbanksland.AllBanksPlot;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 
+@SuppressWarnings("javadoc")
 public class PlotLocketteListener implements Listener {
 
 	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)

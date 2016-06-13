@@ -38,6 +38,9 @@ import me.wirlie.allbanks.utils.AllBanksLogger;
  */
 public class CommandExecutorAB extends AllBanksExecutor implements CommandExecutor{
 	
+	/**
+	 * Ejecutor del comando /allbanks
+	 */
 	public CommandExecutorAB(){
 		//ItemInfo
 		registerCommand(new CommandItemInfo(PermissionsConstants.COMMAND_AB_ITEMINFO_PERMISSION), "iteminfo");

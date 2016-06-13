@@ -83,6 +83,10 @@ public class HookManager {
 		    }
 		}
 		
+		/**
+		 * Comprobar si ya se encuentra enganchado.
+		 * @return {@code true} si está ya enganchado.
+		 */
 		public static boolean isHooked(){
 			return hooked;
 		}
@@ -114,6 +118,10 @@ public class HookManager {
 		    }
 		}
 		
+		/**
+		 * Comprobar si ya se encuentra enganchado.
+		 * @return {@code true} si está ya enganchado.
+		 */
 		public static boolean isHooked(){
 			return hooked;
 		}
@@ -145,6 +153,10 @@ public class HookManager {
 		    }
 		}
 		
+		/**
+		 * Comprobar si ya se encuentra enganchado.
+		 * @return {@code true} si está ya enganchado.
+		 */
 		public static boolean isHooked(){
 			return hooked;
 		}
@@ -169,6 +181,10 @@ public class HookManager {
 		    }
 		}
 		
+		/**
+		 * Comprobar si ya se encuentra enganchado.
+		 * @return {@code true} si está ya enganchado.
+		 */
 		public static boolean isHooked(){
 			return hooked;
 		}
@@ -193,6 +209,10 @@ public class HookManager {
 		    }
 		}
 		
+		/**
+		 * Comprobar si ya se encuentra enganchado.
+		 * @return {@code true} si está ya enganchado.
+		 */
 		public static boolean isHooked(){
 			return hooked;
 		}

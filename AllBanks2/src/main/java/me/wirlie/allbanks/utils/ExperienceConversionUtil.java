@@ -70,7 +70,7 @@ public class ExperienceConversionUtil{
     /**
      * Obtiene la cantidad de experiencia que se necesita para el sig nivel.
      * @param level
-     * @return
+     * @return cantidad de exp necesaria para el siguiente nivel.
      */
     public static int getExpAtLevel(final int level) {
         if (level <= 15) {
@@ -82,6 +82,11 @@ public class ExperienceConversionUtil{
         return (9 * level) - 158;
     }
     
+    /**
+     * Convertir exp en niveles.
+     * @param xp Cantidad de exp.
+     * @return Niveles.
+     */
     public static int convertExpToLevel(final int xp){
         int currentLevel = 0;
         int remXP = xp;
@@ -97,7 +102,7 @@ public class ExperienceConversionUtil{
     /**
      * Obtiene la cantidad de experiencia total para el nivel especificado.
      * @param level
-     * @return
+     * @return Cantidad de exp total para el nivel expecificado.
      */
     public static int getExpToLevel(final int level) {
         int currentLevel = 0;
@@ -116,7 +121,7 @@ public class ExperienceConversionUtil{
     /**
      * Obtiene la cantidad total de experiencia quer tiene el jugador.
      * @param player
-     * @return
+     * @return Experiencia total del jugador.
      */
     public static int getTotalExperience(final Player player) {
         int exp = (int) Math.round(getExpAtLevel(player) * player.getExp());
@@ -135,7 +140,7 @@ public class ExperienceConversionUtil{
     /**
      * Obtener la experiencia necesaria para el siguiente nivel del jugador.
      * @param player
-     * @return
+     * @return Experiencia necesaria para el siguiente nivel del jugador.
      */
     public static int getExpUntilNextLevel(final Player player) {
         int exp = (int) Math.round(getExpAtLevel(player) * player.getExp());

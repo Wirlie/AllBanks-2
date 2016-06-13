@@ -32,9 +32,10 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.utils.ChatUtil;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotPlayerMoveListener implements Listener {
 
 	@EventHandler

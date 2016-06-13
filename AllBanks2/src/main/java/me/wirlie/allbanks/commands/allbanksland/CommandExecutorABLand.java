@@ -40,6 +40,9 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 	
 	static CommandExecutorABLand instance;
 
+	/**
+	 * Ejecutor del comando /allbanksland
+	 */
 	public CommandExecutorABLand(){
 		instance = this;
 		
@@ -162,6 +165,10 @@ public class CommandExecutorABLand extends AllBanksExecutor implements CommandEx
 		return true;
 	}
 
+	/**
+	 * Obtener la instancia de la clase.
+	 * @return instancia de esta clase.
+	 */
 	public static CommandExecutorABLand getInstance() {
 		return instance;
 	}

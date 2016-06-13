@@ -39,7 +39,7 @@ import org.bukkit.inventory.ItemStack;
  * <p>
  * This class follows the builder pattern, allowing for method chaining.
  * It is set up such that invocations of property-setting methods will affect the current editing component,
- * and a call to {@link #then()} or {@link #then(Object)} will append a new editing component to the end of the message,
+ * and a call to {@link #then()} or {@link #then(String)} will append a new editing component to the end of the message,
  * optionally initializing it with text. Further property-setting method calls will affect that editing component.
  * </p>
  */
@@ -74,7 +74,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	public BuildChatMessage(final String firstPartText) {
 		this(TextualComponent.rawText(firstPartText));
 	}
-
+	
+	@SuppressWarnings("javadoc")
 	public BuildChatMessage(final TextualComponent firstPartText) {
 		messageParts = new ArrayList<MessagePart>();
 		messageParts.add(new MessagePart(firstPartText));
@@ -749,6 +750,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * This is called by the Bukkit serialization API.
 	 * It is not intended for direct public API consumption.
 	 * @param serialized The key-value mapping which represents a fancy message.
+	 * @return A {@code FancyMessage} representing the parameterized JSON message.
 	 */
 	@SuppressWarnings("unchecked")
 	public static BuildChatMessage deserialize(Map<String, Object> serialized){

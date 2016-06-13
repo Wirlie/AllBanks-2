@@ -6,6 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
+/**
+ * Completador del tabulador, usando el mismo tabulador de AllBanksLand
+ * @author Wirlie
+ *
+ */
 public class CommandTabCompleterABLandPlotAccess implements TabCompleter {
 
 	public List<String> onTabComplete(CommandSender sender, Command cmd, String label, String[] args) {

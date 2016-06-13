@@ -33,9 +33,10 @@ import me.wirlie.allbanks.allbanksland.AllBanksPlot;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotBucketListener implements Listener {
 	@EventHandler
 	public void bucketFill(PlayerBucketFillEvent e){

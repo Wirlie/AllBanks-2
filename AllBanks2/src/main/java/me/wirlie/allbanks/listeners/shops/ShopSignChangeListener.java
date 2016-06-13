@@ -45,6 +45,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class ShopSignChangeListener implements Listener {
 	@EventHandler(ignoreCancelled = true)
 	public void onSignChange(final SignChangeEvent e){

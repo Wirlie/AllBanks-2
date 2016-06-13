@@ -46,6 +46,10 @@ public class WorldConfiguration {
 	
 	int worldHeight = 0;
 	
+	/**
+	 * Constructor principal de la clase.
+	 * @param worldID ID del mundo.
+	 */
 	public WorldConfiguration(String worldID){
 		id = worldID;
 		
@@ -53,6 +57,9 @@ public class WorldConfiguration {
 		loadConfiguration();
 	}
 	
+	/**
+	 * Generar una configuración por defecto para cualquier mundo.
+	 */
 	public void generateDefaultConfiguration(){
 		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
 		
@@ -87,6 +94,9 @@ public class WorldConfiguration {
 		}
 	}
 		
+	/**
+	 * Cargar la configuración desde el archivo de configuración.
+	 */
 	public void loadConfiguration(){
 		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
 		
@@ -109,6 +119,11 @@ public class WorldConfiguration {
 		cost_claim = worldCfgYaml.getString("general.cost-claim", cost_claim);
 	}
 	
+	/**
+	 * Actualizar un parámetro de la configuración.
+	 * @param key Configuración.
+	 * @param value Valor.
+	 */
 	public void updateConfiguration(String key, Object value){
 		if(!FileDirectory.WORLDS_DATA_FOLDER.exists()) FileDirectory.WORLDS_DATA_FOLDER.mkdirs();
 		
@@ -129,69 +144,144 @@ public class WorldConfiguration {
 		}
 	}
 	
+	/**
+	 * Configuración: mob-spawn<br>
+	 * Ruta: world.mob-spawn<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean mobSpawn(){
 		return (mob_spawn.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: mob-spawn<br>
+	 * Ruta: world.mob-spawn<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void mobSpawn(boolean newVal){
 		updateConfiguration("world.mob-spawn", newVal);
 		mob_spawn = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: animal-spawn<br>
+	 * Ruta: world.animal-spawn<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean animalSpawn(){
 		return (animal_spawn.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: animal-spawn<br>
+	 * Ruta: world.animal-spawn<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void animalSpawn(boolean newVal){
 		updateConfiguration("world.animal-spawn", newVal);
 		animal_spawn = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: creeper-explosion<br>
+	 * Ruta: world.creeper-explosion<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean creeperExplosion(){
 		return (creeper_explosion.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: creeper-explosion<br>
+	 * Ruta: world.creeper-explosion<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void creeperExplosion(boolean newVal){
 		updateConfiguration("world.creeper-explosion", newVal);
 		creeper_explosion = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: wither-explosion<br>
+	 * Ruta: world.wither-explosion<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean witherExplosion(){
 		return (wither_explosion.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: wither-explosion<br>
+	 * Ruta: world.wither-explosion<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void witherExplosion(boolean newVal){
 		updateConfiguration("world.wither-explosion", newVal);
 		wither_explosion = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: allow-wither<br>
+	 * Ruta: world.allow-wither<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean allowWither(){
 		return (allow_wither.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: allow-wither<br>
+	 * Ruta: world.allow-wither<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void allowWither(boolean newVal){
 		updateConfiguration("world.allow-wither", newVal);
 		allow_wither = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: allow-nether-portal<br>
+	 * Ruta: world.allow-nether-portal<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean allowNetherPortal(){
 		return (allow_nether_portal.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: allow-nether-portal<br>
+	 * Ruta: world.allow-nether-portal<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void allowNetherPortal(boolean newVal){
 		updateConfiguration("world.allow-nether-portal", newVal);
 		allow_nether_portal = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: allow-tnt<br>
+	 * Ruta: world.allow-tnt<br>
+	 * @return {@code true} si la configuración está activada (true).
+	 */
 	public boolean allowTNTExplosion(){
 		return (allow_tnt_explosion.equalsIgnoreCase("true")) ? true : false;
 	}
 	
+	/**
+	 * Configuración: allow-tnt<br>
+	 * Ruta: world.allow-tnt<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void allowTNTExplosion(boolean newVal){
 		updateConfiguration("world.allow-tnt", newVal);
 		allow_tnt_explosion = (newVal) ? "true" : "false";
 	}
 	
+	/**
+	 * Configuración: plots-per-user<br>
+	 * Ruta: general.plots-per-user<br>
+	 * @return cantidad de parcelas permitidas por usuario.
+	 */
 	public int plotsPerUser(){
 		try{
 			return Integer.parseInt(plot_per_user);
@@ -200,11 +290,21 @@ public class WorldConfiguration {
 		}
 	}
 	
+	/**
+	 * Configuración: plots-per-user<br>
+	 * Ruta: general.plots-per-user<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void plotsPerUser(int newVal){
 		updateConfiguration("general.plots-per-user", newVal);
 		plot_per_user = String.valueOf(newVal);
 	}
 	
+	/**
+	 * Configuración: cost-claim<br>
+	 * Ruta: general.cost-claim<br>
+	 * @return costo para claimear una parcela.
+	 */
 	public BigDecimal claimCost(){
 		try{
 			return new BigDecimal(cost_claim);
@@ -213,6 +313,11 @@ public class WorldConfiguration {
 		}
 	}
 	
+	/**
+	 * Configuración: cost-claim<br>
+	 * Ruta: general.cost-claim<br>
+	 * @param newVal Nuevo valor para esta configuración.
+	 */
 	public void claimCost(BigDecimal newVal){
 		updateConfiguration("general.cost-claim", newVal.toPlainString());
 		cost_claim = String.valueOf(newVal);

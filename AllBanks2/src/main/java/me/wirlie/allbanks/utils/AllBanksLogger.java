@@ -46,53 +46,106 @@ public class AllBanksLogger {
 	private static File dirLog = new File(AllBanks.getInstance().getDataFolder() + File.separator + "logs");
 	private static File fileLog = null;
 	
+	/**
+	 * Nivel del mensaje.
+	 * @author Wirlie
+	 *
+	 */
 	public enum AllBanksLoggerLevel{
+		/** Información */
 		INFO,
+		/** Advertencia */
 		WARNING,
+		/** Severo */
 		SEVERE,
+		/** Debug */
 		DEBUG;
 	}
 	
+	/**
+	 * Mensaje de información.
+	 * @param message Mensaje
+	 */
 	public static void info(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO, false);
 	}
 	
+	/**
+	 * Mensaje de información.
+	 * @param message Mensaje
+	 * @param showOnMainConsole Mostrar en la consola
+	 */
 	public static void info(String message, boolean showOnMainConsole){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.INFO, showOnMainConsole);
 	}
 	
+	/**
+	 * Mensaje de depuración.
+	 * @param message Mensaje
+	 */
 	public static void debug(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.DEBUG, false);
 	}
 	
+	/**
+	 * Mensaje de depuración.
+	 * @param message Mensaje
+	 * @param showOnMainConsole Mostrar en la consola
+	 */
 	public static void debug(String message, boolean showOnMainConsole){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.DEBUG, showOnMainConsole);
 	}
 	
+	/**
+	 * Mensaje de advertencia.
+	 * @param message Mensaje
+	 * @param showOnMainConsole Mostrar en la consola
+	 */
 	public static void warning(String message, boolean showOnMainConsole){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.WARNING, showOnMainConsole);
 	}
 	
+	/**
+	 * Mensaje de advertencia.
+	 * @param message Mensaje
+	 */
 	public static void warning(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.WARNING, false);
 	}
 	
+	/**
+	 * Mensaje severo.
+	 * @param message Mensaje
+	 * @param showOnMainConsole Mostrar en la consola
+	 */
 	public static void severe(String message, boolean showOnMainConsole){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.SEVERE, showOnMainConsole);
 	}
 	
+	/**
+	 * Mensaje severo.
+	 * @param message Mensaje
+	 */
 	public static void severe(String message){
 		StackTraceElement[] stackTraceElements = Thread.currentThread().getStackTrace();
 		writeMessage(message, stackTraceElements[2], AllBanksLoggerLevel.SEVERE, false);
 	}
 	
+	
+	/**
+	 * Escribir un log.
+	 * @param message Mensaje
+	 * @param threadInfo Información relevante del thread.
+	 * @param level Nivel del log.
+	 * @param showOnMainConsole Mostrar en la consola.
+	 */
 	public static void writeMessage(String message, StackTraceElement threadInfo, AllBanksLoggerLevel level, boolean showOnMainConsole){
 		if(message == null || threadInfo == null) return;
 		
@@ -130,6 +183,9 @@ public class AllBanksLogger {
 	    }
 	}
 	
+	/**
+	 * Inicializar logger.
+	 */
 	public static void initializeLogger(){
 		if(initializedLogger) return;
 		
@@ -202,9 +258,10 @@ public class AllBanksLogger {
  
 		initializedLogger = true;
 	}
-
+	
 	/**
-	 * @param string
+	 * Escribir un mensaje sin prefijos.
+	 * @param message Mensaje a escribir.
 	 */
 	public static void writeRawMessage(String message) {
 		try{

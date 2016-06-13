@@ -39,6 +39,9 @@ public class CommandTabCompleterABLand implements TabCompleter{
 	
 	static CommandTabCompleterABLand instance;
 	
+	/**
+	 * Completador del tabulador para el comando de AllBanksLand
+	 */
 	public CommandTabCompleterABLand(){
 		instance = this;
 	}
@@ -385,6 +388,10 @@ public class CommandTabCompleterABLand implements TabCompleter{
 		return Arrays.asList("");
 	}
 
+	/**
+	 * Obtener la instancia de esta clase.
+	 * @return Instancia de esta clase.
+	 */
 	public static CommandTabCompleterABLand getInstance() {
 		return instance;
 	}

@@ -125,6 +125,10 @@ public class FakeItemManager extends BukkitRunnable {
 		}.runTaskLater(AllBanks.getInstance(), 1);
 	}
 	
+	/**
+	 * Aparecer un objeto falso en una localización de un letrero.
+	 * @param signLoc Localización del letrero.
+	 */
 	public static void SpawnFakeItemForShop(Location signLoc){
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
 		
@@ -152,6 +156,10 @@ public class FakeItemManager extends BukkitRunnable {
 		}
 	}
 	
+	/**
+	 * Desaparecer un objeto según el letrero especificado.
+	 * @param signLoc Localización del letrero.
+	 */
 	public static void DespawnFakeItemForShop(Location signLoc){
 		YamlConfiguration yaml = YamlConfiguration.loadConfiguration(getBackupFile());
 		
@@ -204,6 +212,9 @@ public class FakeItemManager extends BukkitRunnable {
 
 	private static boolean initialized = false;
 	
+	/**
+	 * Inicializar el administrador de los objetos.
+	 */
 	public static void initializeItemManeger(){
 		if(initialized) return;
 
@@ -308,6 +319,11 @@ public class FakeItemManager extends BukkitRunnable {
 		}
 	}
 	
+	/**
+	 * Comprobar si un letrero es un SLAB.
+	 * @param material Material a comprobar.
+	 * @return {@code true} si el material es un SLAB.
+	 */
 	public boolean materialIsSlab(Material material){
 		if(material.equals(Material.STEP)
 				|| material.equals(Material.WOOD_STEP)
@@ -319,10 +335,20 @@ public class FakeItemManager extends BukkitRunnable {
 		return false;
 	}
 	
+	/**
+	 * Transformar la localización en una cadena de texto.
+	 * @param signLoc Localización del letrero
+	 * @return Cadena de texto
+	 */
 	public static String transformSignlocToKey(Location signLoc){
 		return signLoc.getWorld().getName() + ">>>" + signLoc.getBlockX() + ">>>" + signLoc.getBlockY() + ">>>" + signLoc.getBlockZ();
 	}
 	
+	/**
+	 * Revertir el proceso de {@link #transformSignlocToKey(Location)}.
+	 * @param key Cadena de texto representativa del resultado de {@link #transformSignlocToKey(Location)}
+	 * @return Localización del letrero original.
+	 */
 	public static Location transformKeyToSignloc(String key){
 		String[] split = key.split(">>>");
 		

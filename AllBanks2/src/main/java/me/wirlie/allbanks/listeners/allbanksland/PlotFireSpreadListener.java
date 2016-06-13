@@ -30,9 +30,10 @@ import me.wirlie.allbanks.allbanksland.AllBanksPlot;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotFireSpreadListener implements Listener {
 	@EventHandler
 	public void onBlockBurn(BlockBurnEvent e){

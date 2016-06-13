@@ -4,6 +4,10 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 
+/**
+ * Ejecutor del comando /plot usando el mismo ejecutor para el comando /allbanksland
+ * @author Wirlie
+ */
 public class CommandExecutorABLandPlotAccess implements CommandExecutor {
 
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {

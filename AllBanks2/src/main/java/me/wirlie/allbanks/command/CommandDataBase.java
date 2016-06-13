@@ -42,6 +42,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  */
 public class CommandDataBase extends Command {
 	
+	/**
+	 * Comandos para la iteracción con la base de datos.
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandDataBase(String permissionNode){
 		super(permissionNode);
 	}

@@ -61,6 +61,7 @@ import me.wirlie.allbanks.utils.chatcomposer.TextualComponent;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class ShopSignInteractListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)

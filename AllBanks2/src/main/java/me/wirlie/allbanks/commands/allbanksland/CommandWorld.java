@@ -33,11 +33,16 @@ import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_4_R2;
 
 /**
+ * Comando para gestión de mundos.
  * @author Wirlie
  *
  */
 public class CommandWorld extends Command {
 	
+	/**
+	 * Constructor de la clase principal.
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandWorld(String permissionNode){
 		super(permissionNode);
 	}

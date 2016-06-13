@@ -42,6 +42,7 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
  * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotPlayerInteractListener implements Listener {
 
 	@EventHandler(ignoreCancelled = true)

@@ -51,6 +51,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class SignBreakListener implements Listener {
 
 	public SignBreakListener(){

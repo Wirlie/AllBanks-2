@@ -46,10 +46,22 @@ import me.wirlie.allbanks.Translation;
  */
 public class ConfigurationUtil{
 
+	/**
+	 * Convertir segundos en una cadena de texto mostando "Hace x minutos" "Hace x horas, x minutos" etc.
+	 * @param seconds Segundos.
+	 * @param fullString Mostrar cadena total o parcialmente.
+	 * @return Cadena de texto representativa de los segundos especificados.
+	 */
 	public static String convertSecondsIntoTimeAgo(int seconds, boolean fullString) {
 		return convertSecondsIntoTimeAgo(seconds, fullString, 2);
 	}
 	
+	/**
+	 * Convertir segundos en una cadena de texto mostando "Hace x minutos" "Hace x horas, x minutos" etc.
+	 * @param seconds Segundos.
+	 * @param maxShow Máxima cantidad de parámetros a mostrar en la cadena.
+	 * @return Cadena de texto representativa de los segundos especificados.
+	 */
 	public static String convertSecondsIntoTimeAgo(int seconds, int maxShow) {
 		return convertSecondsIntoTimeAgo(seconds, false, maxShow);
 	}
@@ -117,6 +129,12 @@ public class ConfigurationUtil{
 		return returnStr;
 	}
 	
+	/**
+	 * Un método que une el proceso de {@link #convertTimeValueToSeconds(String)} y el proceso de {@link #convertSecondsIntoTimeAgo(int, boolean)}.
+	 * @param strTimeValue Cadena de texto representando el tiempo.
+	 * @param maxShow Máximo de parámetros a mostrar.
+	 * @return Cadena de texto representativa del valor de tiempo calculado.
+	 */
 	public static String convertTimeValueToSecondsAndConvertIntoTimeAgo(String strTimeValue, int maxShow){
 		int seconds = convertTimeValueToSeconds(strTimeValue);
 		
@@ -130,7 +148,7 @@ public class ConfigurationUtil{
 	 * ya que se encuentra en formato 0 days, 0 hours, 0 minutes, 0 seconds y es necesario
 	 * convertir todo eso a un mensaje que se pueda adaptar a las traducciones.
 	 * @param strTimeValue
-	 * @return
+	 * @return Segundos obtenidos después del cálculo.
 	 */
 	public static int convertTimeValueToSeconds(String strTimeValue){
 		
@@ -455,6 +473,9 @@ public class ConfigurationUtil{
 		ensureConfigExists(false);
 	}
 	
+	/**
+	 * Comprobar configuración en la inicialización del plugin.
+	 */
 	public static void checkConfigurationStartup(){
 		
 		AllBanksLogger.debug("[CONFIG] Validating Config.yml ...");

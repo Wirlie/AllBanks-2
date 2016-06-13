@@ -37,10 +37,19 @@ public class WorldGuardFunctions {
 	//Privatizar constructor
 	private WorldGuardFunctions() {}
 
+	/**
+	 * @return Instancia del plugin
+	 */
 	public static WorldGuardPlugin getWorldGuardPlugin(){
 		return pluginInstance;
 	}
 	
+	/**
+	 * Comprobar si puede remover un letrero de AllBanksShop
+	 * @param player Jugador
+	 * @param blockLocation Localización del letrero
+	 * @return {@code true} si el jugador puede romper este letrero.
+	 */
 	public static boolean canBreakAllBanksShop(Player player, Location blockLocation){
 		
 		WorldGuardPlugin worldGuard = WorldGuardFunctions.getWorldGuardPlugin();

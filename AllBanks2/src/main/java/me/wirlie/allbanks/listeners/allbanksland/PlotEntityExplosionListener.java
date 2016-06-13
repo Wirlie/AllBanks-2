@@ -39,9 +39,10 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.allbanksland.WorldConfiguration;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotEntityExplosionListener implements Listener {
 	@EventHandler
 	public void preventEntityExplosion(EntityExplodeEvent e){

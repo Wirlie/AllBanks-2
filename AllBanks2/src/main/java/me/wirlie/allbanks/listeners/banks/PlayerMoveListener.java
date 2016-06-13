@@ -34,6 +34,7 @@ import me.wirlie.allbanks.utils.AllBanksLogger;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class PlayerMoveListener implements Listener {
 	
 	public PlayerMoveListener(){

@@ -47,6 +47,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  */
 public class CommandLottery extends Command {
 	
+	/**
+	 * Comando de la lotería.
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandLottery(String permissionNode){
 		super(permissionNode);
 	}

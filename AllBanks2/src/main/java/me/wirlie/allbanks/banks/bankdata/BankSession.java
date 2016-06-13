@@ -39,7 +39,7 @@ import me.wirlie.allbanks.Translation;
 /**
  * Esta clase se encarga de almacenar las sesiones de AllBanks cuando un jugador usa un banco (letrero),
  * de esta manera esta clase siempre estará accesible desde sus métodos estáticos para acceder a los valores
- * almacenados en el {@link BankSession#activeSessions HashMap activeSessions}
+ * almacenados en el HashMap activeSessions
  * 
  * @author Wirlie
  * @since AllBanks v1.0
@@ -51,9 +51,12 @@ public class BankSession {
 	 * Funciones para las sesiones activas. (activeSessions) 
 	 */
 	
-	public static int expireInactiveSessionBeforeSeconds = 120;
+	private static int expireInactiveSessionBeforeSeconds = 120;
 	static boolean started = false;
 	
+	/**
+	 * Runnable para expirar las sesiones de los usuarios inactivos.
+	 */
 	public static void StartExpireSessionRunnable(){
 		//Auto ejecutar un runnable que cheque las sesiones expiradas.
 		if(!started) {
@@ -323,14 +326,24 @@ public class BankSession {
 		updateStepAndSwitchSign(-1, true);
 	}
 	
+	/**
+	 * Recargar letrero con el estatus actual.
+	 */
 	public void reloadSign(){
 		Banks.switchABSignToStep(btype, sign, step, false);
 	}
 	
+	/**
+	 * Actualizar ultimo uso, con el fin de evitar que la sesión expire automáticamente.
+	 */
 	public void updateLastUse(){
 		this.lastUse = new Date().getTime();
 	}
 	
+	/**
+	 * Checar si la sesión debe ser expirada o debe continuar.
+	 * @return {@code true} si la sesión debe expirarse.
+	 */
 	public boolean sessionExpired(){
 		long currentTime = new Date().getTime();
 		int diferenceSeconds = (int) ((currentTime - lastUse) / 1000);

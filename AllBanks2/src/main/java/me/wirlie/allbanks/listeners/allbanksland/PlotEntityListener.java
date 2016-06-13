@@ -44,6 +44,7 @@ import me.wirlie.allbanks.utils.Util;
  * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotEntityListener implements Listener{
 	
 	@EventHandler

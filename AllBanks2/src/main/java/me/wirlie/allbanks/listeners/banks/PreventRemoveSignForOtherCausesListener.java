@@ -38,6 +38,7 @@ import me.wirlie.allbanks.Banks;
  * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PreventRemoveSignForOtherCausesListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.NORMAL)

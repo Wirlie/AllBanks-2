@@ -36,6 +36,10 @@ import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
  */
 public class CommandHelp extends Command {
 	
+	/**
+	 * Comando de ayuda
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandHelp(String permissionNode){
 		super(permissionNode);
 	}
@@ -413,7 +417,14 @@ public class CommandHelp extends Command {
 		return CommandExecuteResult.SUCCESS;
 	}
 	
-	public BuildChatMessage prepareNextBackButton(CommandSender sender, int page, int maxPages){
+	/**
+	 * Preparar el botón siguiente y anterior para el paginado de ayuda.
+	 * @param sender Ejecutor del comando.
+	 * @param page Página actual.
+	 * @param maxPages Páginas máximas.
+	 * @return {@link BuildChatMessage Mensaje formateable}
+	 */
+	private BuildChatMessage prepareNextBackButton(CommandSender sender, int page, int maxPages){
 		boolean supportBackPage = false;
 		boolean supportNextPage = false;
 		

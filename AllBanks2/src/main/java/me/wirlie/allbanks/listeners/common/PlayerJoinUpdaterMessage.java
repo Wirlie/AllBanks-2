@@ -33,6 +33,7 @@ import me.wirlie.allbanks.Translation;
  * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlayerJoinUpdaterMessage implements Listener {
 
 	@EventHandler

@@ -38,6 +38,14 @@ import me.wirlie.allbanks.AllBanks;
  */
 public class InteractiveUtil{
 	
+	/**
+	 * Crear un efecto de cohete.
+	 * @param loc Localización
+	 * @param power Poder del cohete
+	 * @param type Tipo del cohete
+	 * @param detonateDelay Delay de la detonación
+	 * @param fireworkColors Colores del cohete
+	 */
 	public static void playFireworkEffect(Location loc, int power, Type type, long detonateDelay, Color... fireworkColors) {
 		final Firework fw = (Firework) loc.getWorld().spawn(loc, Firework.class);
 		FireworkMeta meta = fw.getFireworkMeta();
@@ -62,6 +70,7 @@ public class InteractiveUtil{
 		}
 	}
 
+	@SuppressWarnings("javadoc")
 	public static enum SoundType{
 		SUCCESS,
 		DENY,
@@ -72,6 +81,11 @@ public class InteractiveUtil{
 		NEW_BANK;
 	}
 	
+	/**
+	 * Enviar un sonido al jugador.
+	 * @param p Jugador
+	 * @param stype Tipo de sonido.
+	 */
 	public static void sendSound(Player p, SoundType stype) {
 		
 		Sound sendSound = null;

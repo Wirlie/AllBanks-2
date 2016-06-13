@@ -38,10 +38,19 @@ public class TownyFunctions {
 	//Privatizar constructor
 	private TownyFunctions() {}
 
+	/**
+	 * @return Instancia del plugin
+	 */
 	public static Towny getTownyPlugin(){
 		return pluginInstance;
 	}
 	
+	/**
+	 * Comprobar si puede remover un letrero de AllBanksShop
+	 * @param player Jugador
+	 * @param blockLocation Localización del letrero
+	 * @return {@code true} si el jugador puede romper este letrero.
+	 */
 	public static boolean canBreakAllBanksShop(Player player, Location blockLocation){
 
 		if(TownyUniverse.isWilderness(blockLocation.getBlock())){

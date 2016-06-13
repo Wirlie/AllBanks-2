@@ -53,6 +53,7 @@ import me.wirlie.allbanks.hooks.WorldGuardFunctions;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class ShopSignBreakListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)

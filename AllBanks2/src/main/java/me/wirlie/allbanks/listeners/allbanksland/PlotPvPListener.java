@@ -31,9 +31,10 @@ import me.wirlie.allbanks.allbanksland.AllBanksPlot;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotPvPListener implements Listener {
 	@EventHandler
 	public void onPlayerHitPlayer(EntityDamageByEntityEvent e){

@@ -43,6 +43,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class VirtualChestCloseListener implements Listener{
 	
 	public VirtualChestCloseListener(){

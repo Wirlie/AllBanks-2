@@ -57,18 +57,35 @@ public class BankAccount {
 	 */
 	private static HashMap<UUID, BankAccount> cache = new HashMap<UUID, BankAccount>();
 	
+	/** Instancia para el banco BankLoan */
 	public BankLoan BankLoan = new BankLoan();
+	/** Instancia para el banco BankMoney */
 	public BankMoney BankMoney = new BankMoney();
+	/** Instancia para el banco BankXP */
 	public BankXP BankXP = new BankXP();
+	/** Instancia para el banco BankTime */
 	public BankTime BankTime = new BankTime();
+	/** Instancia para el banco BankChest */
 	public BankChest BankChest = new BankChest();
 	
+	/**
+	 * Caché de las cuentas.
+	 * @author Wirlie
+	 */
 	public static class Cache{
 		
+		/**
+		 * Limpiar caché
+		 */
 		public static void clearCache(){
 			cache.clear();
 		}
 		
+		/**
+		 * Obtener o leer una cuenta mediante el UUID del jugador.
+		 * @param uuid
+		 * @return {@link BankAccount}, cuenta del usuario.
+		 */
 		public static BankAccount get(UUID uuid){
 			if(!cache.containsKey(uuid)){
 				cache.put(uuid, getAccountFromDataBase(Bukkit.getPlayer(uuid)));
@@ -77,11 +94,14 @@ public class BankAccount {
 			return cache.get(uuid);
 		}
 		
+		/**
+		 * Obtener la cuenta del usuario mediante el letrero activo.
+		 * @param sign Letrero que el usuario está usando.
+		 * @return {@link BankAccount}, cuenta del usuario.
+		 */
 		public static BankAccount get(Sign sign){
 			
 			BankSession bs = BankSession.getActiveSessionBySign(sign);
-			
-			assert(bs != null);
 			
 			if(!cache.containsKey(bs.getPlayer().getUniqueId())){
 				AllBanksLogger.info("BankAccount : Cache : Reading database, try to get the bank account for " + bs.getPlayer().getName());
@@ -233,22 +253,39 @@ public class BankAccount {
 	int bankchest_chest = 0;
 	
 	/**
-	 * @param uniqueId
+	 * Constructor para crear una instancia de una cuenta de un jugador.
+	 * @param p Jugador
 	 */
 	public BankAccount(Player p) {
 		this.player = p;
 	}
 	
+	/**
+	 * Funciones para la cuenta de BankChest.
+	 * @author Wirlie
+	 */
 	public class BankChest{
-		//BankChest no trabajará con SQLite por razones de seguridad (ej, una falla de la base de datos podría hacer perder los datos, ademas que, ItemStack es serializable en Yaml)
+		/**
+		 * Cursor actual, esto quiere decir el # de cofre que el usuario actualmente está usando.
+		 * @return Número de cofre (cursor).
+		 */
 		public int getCurrentChestCursor(){
 			return bankchest_chest;
 		}
 		
+		/**
+		 * Mover o cambiar el cursor a otro # de cofre.
+		 * @param newCursor Nuevo cursor.
+		 */
 		public void setChestCursor(int newCursor){
 			bankchest_chest = newCursor;
 		}
 		
+		/**
+		 * Obtener el siguiente # en el cursor. Si el cursor excede del límite de cofres máximos para este jugador automáticamente el cursor
+		 * será movido a la posición 1.
+		 * @return Cursor siguiente.
+		 */
 		public int getNextChestCursor(){
 			
 			int max_virtuals_chests = 0;
@@ -281,23 +318,46 @@ public class BankAccount {
 			}
 		}
 		
+		/**
+		 * Ir al siguiente cofre, esto cambia el cursor.
+		 */
 		public void switchToNextChest(){
 			setChestCursor(getNextChestCursor());
 		}
 	}
 	
+	/**
+	 * Funciones para la cuenta de BankLoan.
+	 * @author Wirlie
+	 */
 	public class BankLoan{
+		/**
+		 * Añadir préstamo a la cuenta.
+		 * @param add Añadir como préstamo.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean addLoan(BigDecimal add){
 			BigDecimal total = bankloan_loan.add(add);
 			return updateLoan(total, true);
 		}
 		
+		/**
+		 * Remover préstamo de la cuenta.
+		 * @param substract Cantidad a remover del préstamo.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean subsLoan(BigDecimal substract){
 
 			BigDecimal total = bankloan_loan.subtract(substract);
 			return updateLoan(total, true);
 		}
 		
+		/**
+		 * Actualizar el préstamo del usuario.
+		 * @param newLoan Nueva cantidad.
+		 * @param updateFromDatabase Actualizar o no la nueva cantidad en la base de datos.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public synchronized boolean updateLoan(BigDecimal newLoan, boolean updateFromDatabase){
 			bankloan_loan = newLoan;
 			
@@ -353,22 +413,47 @@ public class BankAccount {
 			return false;
 		}
 		
+		/**
+		 * Obtener el préstamo actual
+		 * @return Préstamo actual
+		 */
 		public BigDecimal getLoan(){
 			return bankloan_loan;
 		}
 	}
 
+	/**
+	 * Funciones para la cuenta de BankMoney
+	 * @author Wirlie
+	 *
+	 */
 	public class BankMoney{
+		/**
+		 * Añadir dinero al banco.
+		 * @param add Cantidad de dinero a añadir.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean addMoney(BigDecimal add){
 			BigDecimal total = bankmoney_money.add(add);
 			return updateMoney(total, true);
 		}
 		
+		/**
+		 * Remover dinero del banco.
+		 * @param substract Cantidad de dinero a remover de la cuenta.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean subsMoney(BigDecimal substract){
 			BigDecimal total = bankmoney_money.subtract(substract);
 			return updateMoney(total, true);
 		}
 		
+		/**
+		 * Actualizar el dinero actual del banco.
+		 * @param newMoney Nueva cantidad de dinero.
+		 * @param updateFromDatabase Actualizar en la base de datos.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public synchronized boolean updateMoney(BigDecimal newMoney, boolean updateFromDatabase){
 			
 			bankmoney_money = newMoney;
@@ -425,12 +510,27 @@ public class BankAccount {
 			return false;
 		}
 		
+		/**
+		 * Obtener la cantidad de dinero actual.
+		 * @return Cantidad de dinero actual.
+		 */
 		public BigDecimal getMoney(){
 			return bankmoney_money;
 		}
 	}
 	
+	/**
+	 * Funciones para la cuenta de BankXP
+	 * @author Wirlie
+	 *
+	 */
 	public class BankXP{
+		/**
+		 * Actualizar la cantidad de XP en el banco.
+		 * @param newXP Nueva cantidad de XP
+		 * @param updateFromDatabase Actualizar desde la base de datos.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public synchronized boolean updateXP(int newXP, boolean updateFromDatabase){
 			
 			bankxp_xp = newXP;
@@ -489,26 +589,56 @@ public class BankAccount {
 			return false;
 		}
 		
+		/**
+		 * Añadir experiencia al banco
+		 * @param addXP Cantidad de exp a añadir
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean addXP(int addXP){
 			int total = bankxp_xp + addXP;
 			return updateXP(total, true);
 		}
 		
+		/**
+		 * Remover experiencia del banco.
+		 * @param subsXP Cantidad de exp a remover.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean subsXP(int subsXP){
 			int total = bankxp_xp - subsXP;
 			return updateXP(total, true);
 		}
 		
+		/**
+		 * Obtener la experiencia total en unidades de exp
+		 * @return Cantidad total, unidad por unidad.
+		 */
 		public int getRawXP(){
 			return bankxp_xp;
 		}
 		
+		
+		/**
+		 * Obtener el nivel actual de experiencia a través de una conversión-
+		 * @return Nivel actual de experiencia almacenado en el banco.
+		 */
 		public int getLvlForRawXP(){
 			return ExperienceConversionUtil.convertExpToLevel(bankxp_xp);
 		}
 	}
 	
+	/**
+	 * Funciones para la cuenta de BankTime
+	 * @author Wirlie
+	 *
+	 */
 	public class BankTime{
+		/**
+		 * Actualizar el tiempo actual en el banco de tiempo
+		 * @param newTime Nueva cantidad de tiempo
+		 * @param updateFromDatabase Actualizar la base de datos 
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public synchronized boolean updateTime(int newTime, boolean updateFromDatabase){
 			
 			banktime_time = newTime;
@@ -567,19 +697,37 @@ public class BankAccount {
 			return false;
 		}
 		
+		/**
+		 * Subir +1 a la cantidad actual de tiempo.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean updateTimePlusOne(){
 			return updateTime(banktime_time + 1, true);
 		}
 		
+		/**
+		 * Obtener el tiempo almacenado.
+		 * @return Tiempo almacenado.
+		 */
 		public int getTime(){
 			return banktime_time;
 		}
 		
+		/**
+		 * Remover tiempo almacenado.
+		 * @param subsTime Cantidad de tiempo almacenado a remover.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean subsTime(int subsTime){
 			int total = banktime_time - subsTime;
 			return updateTime(total, true);
 		}
 		
+		/**
+		 * Añadir tiempo almacenado.
+		 * @param addTime Cantidad de tiempo a añadir al tiempo almacenado.
+		 * @return {@code true} si la petición se completó con éxito.
+		 */
 		public boolean addTime(int addTime){
 			int total = banktime_time + addTime;
 			return updateTime(total, true);

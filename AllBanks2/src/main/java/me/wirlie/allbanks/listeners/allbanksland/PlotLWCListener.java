@@ -23,6 +23,7 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.hooks.LWCFunctions;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 
+@SuppressWarnings("javadoc")
 public class PlotLWCListener implements Listener {
 
 	@EventHandler(ignoreCancelled = false, priority = EventPriority.HIGHEST)

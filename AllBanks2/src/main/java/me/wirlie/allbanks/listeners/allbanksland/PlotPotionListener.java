@@ -12,6 +12,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.allbanksland.AllBanksPlot;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 
+@SuppressWarnings("javadoc")
 public class PlotPotionListener implements Listener {
 
 	@EventHandler

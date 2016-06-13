@@ -46,6 +46,7 @@ import me.wirlie.allbanks.utils.InteractiveUtil;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class SignChangeListener implements Listener {
 	
 	public SignChangeListener(){

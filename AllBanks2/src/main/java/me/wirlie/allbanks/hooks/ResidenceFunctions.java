@@ -36,10 +36,20 @@ public class ResidenceFunctions {
 	//Privatizar constructor
 	private ResidenceFunctions() {}
 
+	/**
+	 * Obtener la instancia del plugin.
+	 * @return Instancia del plugin.
+	 */
 	public static ResidenceCommandListener getResidencePlugin(){
 		return pluginInstance;
 	}
 	
+	/**
+	 * Comprobar si puede remover un letrero de AllBanksShop
+	 * @param player Jugador
+	 * @param blockLocation Localización del letrero
+	 * @return {@code true} si el jugador puede romper este letrero.
+	 */
 	public static boolean canBreakAllBanksShop(Player player, Location blockLocation){
 		ResidenceInterface residenceManager = ResidenceApi.getResidenceManager();
 		ClaimedResidence claim = residenceManager.getByLoc(blockLocation);

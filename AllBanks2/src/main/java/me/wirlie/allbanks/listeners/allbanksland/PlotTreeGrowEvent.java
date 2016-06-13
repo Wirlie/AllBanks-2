@@ -14,6 +14,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.allbanksland.AllBanksPlot;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 
+@SuppressWarnings("javadoc")
 public class PlotTreeGrowEvent implements Listener {
 
 	@EventHandler

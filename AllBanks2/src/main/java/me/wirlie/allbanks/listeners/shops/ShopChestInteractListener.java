@@ -43,6 +43,7 @@ import me.wirlie.allbanks.utils.Util;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class ShopChestInteractListener implements Listener {
 	
 	@EventHandler(ignoreCancelled = true, priority = EventPriority.HIGH)

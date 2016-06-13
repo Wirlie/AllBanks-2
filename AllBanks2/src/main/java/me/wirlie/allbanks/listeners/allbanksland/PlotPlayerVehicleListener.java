@@ -36,9 +36,10 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.utils.Util;
 
 /**
- * @author josue
+ * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotPlayerVehicleListener implements Listener {
 	
 	@EventHandler

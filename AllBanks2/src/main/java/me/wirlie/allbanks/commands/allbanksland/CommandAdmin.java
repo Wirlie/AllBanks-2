@@ -19,8 +19,16 @@ import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_4_R2;
 
+/**
+ * Comando administrativo de AllBanksLand.
+ * @author Wirlie
+ */
 public class CommandAdmin extends Command {
 	
+	/**
+	 * Comando administrativo.
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandAdmin(String permissionNode){
 		super(permissionNode);
 	}

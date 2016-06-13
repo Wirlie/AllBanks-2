@@ -41,6 +41,10 @@ import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
  */
 public class CommandItemInfo extends Command {
 	
+	/**
+	 * Comando para monstrar información sobre el objeto en la mano.
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandItemInfo(String permissionNode){
 		super(permissionNode);
 	}

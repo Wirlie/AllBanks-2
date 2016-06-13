@@ -42,25 +42,34 @@ import me.wirlie.allbanks.utils.ConfigurationUtil;
  *
  */
 public class LotteryRunnable extends BukkitRunnable {
+	/** Ejecutar comprobación cada X tiempo */
 	public static int runEvery = 0;
+	/** Saber si esta clase ya se ha inicializado */
 	public static boolean initialized = false;
+	/** Task del runnable de esta clase */
 	public static BukkitTask runnable = null;
+	/** Saber si la lotería está activada */
 	public static boolean enable = false;
+	/** Instancia de esta clase */
 	public static LotteryRunnable instance = null;
-	
+	/** Carpeta de los tickets */
 	public static File dirTickets = new File(AllBanks.getInstance().getDataFolder() + File.separator + "lot-tickets");
+	/** Archivo de la lotería */
 	public static File lotteryFile = new File(AllBanks.getInstance().getDataFolder() + File.separator + "lottery.yml");
 	
 	/**
-	 * El constructor de la lotería es privado.<br>
+	 * El constructor de la lotería es privado. 
 	 * Para iniciar el Runnable es necesario usar el método<br>
-	 * {@code startRunnable()}
+	 * {@link #startRunnable()}
 	 */
 	private LotteryRunnable(){
 		instance = this;
 		initializeLottery();
 	}
 	
+	/**
+	 * Inicializar lotería.
+	 */
 	public static void initializeLottery(){
 		if(initialized) return;
 		
@@ -85,6 +94,10 @@ public class LotteryRunnable extends BukkitRunnable {
 		initialized = true;
 	}
 	
+	/**
+	 * Detener runnable.
+	 * @throws Exception
+	 */
 	public static void stopRunnable() throws Exception{
 		
 		AllBanksLogger.info("[Lottery] Trying to stop BukkitTask (Runnable)...");
@@ -106,6 +119,10 @@ public class LotteryRunnable extends BukkitRunnable {
 		AllBanksLogger.info("[Lottery] Success: BukkitTask cancelled.");
 	}
 	
+	/**
+	 * Iniciar runnable.
+	 * @throws Exception
+	 */
 	public static void startRunnable() throws Exception{
 		
 		AllBanksLogger.info("[Lottery] Trying to start BukkitTask (Runnable)...");
@@ -152,6 +169,10 @@ public class LotteryRunnable extends BukkitRunnable {
 		AllBanksLogger.info("[Lottery] Success: New BukkitTask created (TaskId: " + runnable.getTaskId() + ", delay: " + remainingTime + " seconds, runEvery: " + runEvery + " seconds)");
 	}
 	
+	/**
+	 * Obtener el tiempo total de la lotería para ejecutarse cada X segundos.
+	 * @return tiempo de ejecución en segundos.
+	 */
 	public static int getLotteryTime(){
 		String readCfg = AllBanks.getInstance().getConfig().getString("lottery.get-winer-every", "24 hours");
 		

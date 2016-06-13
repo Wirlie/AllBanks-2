@@ -60,6 +60,10 @@ public class CommandTopRank extends Command {
 	private static Map<String, Integer> bankXPTopRankCache = new HashMap<String, Integer>();
 	private static long bankXPTopRankCacheTime = 0;
 	
+	/**
+	 * Comando para el top rank.
+	 * @param permissionNode Permiso necesario para ejecutar este comando.
+	 */
 	public CommandTopRank(String permissionNode){
 		super(permissionNode);
 	}

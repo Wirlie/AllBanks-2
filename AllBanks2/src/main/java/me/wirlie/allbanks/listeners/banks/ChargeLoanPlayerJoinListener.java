@@ -46,6 +46,7 @@ import me.wirlie.allbanks.utils.Util;
  * @since AllBanks v1.0
  *
  */
+@SuppressWarnings("javadoc")
 public class ChargeLoanPlayerJoinListener implements Listener {
 	
 	public ChargeLoanPlayerJoinListener(){

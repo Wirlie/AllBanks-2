@@ -34,119 +34,164 @@ import me.wirlie.allbanks.utils.FileDirectory;
  */
 public class WorldGenerationCfg {
 	private static int world_height_def = 60;
+	/** Altura del mundo hasta donde se generará césped. */
 	public int world_height = world_height_def;
 	
 	private static int plot_size_def = 50;
+	/** Tamaño de la parcela */
 	public int plot_size = plot_size_def;
 	
 	private static int road_size_def = 10;
+	/** Tamaño de la calle */
 	public int road_size = road_size_def;
 	
 	private static Material road_material_def = Material.WOOD;
+	/** Material de la calle */
 	public Material road_material = road_material_def;
 	
 	private static boolean coal_ore_def = true;
+	/** ¿Generar carbón? */
 	public boolean coal_ore = coal_ore_def;
 	
 	private static boolean iron_ore_def = true;
+	/** ¿Generar hierro? */
 	public boolean iron_ore = iron_ore_def;
 	
 	private static boolean emerald_ore_def = true;
+	/** ¿Generar esmeralda? */
 	public boolean emerald_ore = emerald_ore_def;
 	
 	private static boolean diamond_ore_def = true;
+	/** ¿Generar diamante? */
 	public boolean diamond_ore = diamond_ore_def;
 	
 	private static boolean redstone_ore_def = true;
+	/** ¿Generar redstone? */
 	public boolean redstone_ore = redstone_ore_def;
 	
 	private static boolean gold_ore_def = true;
+	/** ¿Generar oro? */
 	public boolean gold_ore = gold_ore_def;
 	
 	private static boolean lapis_ore_def = true;
+	/** ¿Generar lapis? */
 	public boolean lapis_ore = lapis_ore_def;
 	
 	private static boolean generate_grass_def = true;
+	/** ¿Generar hierba? */
 	public boolean generate_grass = generate_grass_def;
 	
 	private static boolean generate_tree_def = true;
+	/** ¿Generar árboles' */
 	public boolean generate_tree = generate_tree_def;
 	
 	private static TreeType tree_type_1_def = TreeType.TREE;
+	/** Generar árbol, tipo 1 */
 	public TreeType tree_type_1 = tree_type_1_def;
 	
 	private static TreeType tree_type_2_def = TreeType.BIRCH;
+	/** Generar árbol, tipo 2 */
 	public TreeType tree_type_2 = tree_type_2_def;
 	
 	private static Biome default_biome_def = Biome.PLAINS;
+	/** Bioma por defecto */
 	public Biome default_biome = default_biome_def;
 	
 	String world_id = "";
 	
 	//Descriptores de altura máxima para la generacion de un mineral
 	private static int coal_ore_max_y_def = 128;
+	/** Distancia máxima de generación */
 	public int coal_ore_max_y = coal_ore_max_y_def;
 
 	private static int iron_ore_max_y_def = 64;
+	/** Distancia máxima de generación */
 	public int iron_ore_max_y = iron_ore_max_y_def;
 	
 	private static int lapis_ore_max_y_def = 23;
+	/** Distancia máxima de generación */
 	public int lapis_ore_max_y = lapis_ore_max_y_def;
 	
 	private static int gold_ore_max_y_def = 60;
+	/** Distancia máxima de generación */
 	public int gold_ore_max_y = gold_ore_max_y_def;
 	
 	private static int redstone_ore_max_y_def = 15;
+	/** Distancia máxima de generación */
 	public int redstone_ore_max_y = redstone_ore_max_y_def;
 	
 	private static int diamond_ore_max_y_def = 15;
+	/** Distancia máxima de generación */
 	public int diamond_ore_max_y = diamond_ore_max_y_def;
 	
 	private static int emerald_ore_max_y_def = 30;
+	/** Distancia máxima de generación */
 	public int emerald_ore_max_y = emerald_ore_max_y_def;
 	
 	//Descriptores de minimo y máximo de un mineral
 	private static int coal_rand_min_def = 6;
 	private static int coal_rand_max_def = 10;
+	/** Probabilidad mínima de generación */
 	public int coal_rand_min = coal_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int coal_rand_max = coal_rand_max_def;
 	
 	private static int iron_rand_min_def = 5;
 	private static int iron_rand_max_def = 8;
+	/** Probabilidad mínima de generación */
 	public int iron_rand_min = iron_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int iron_rand_max = iron_rand_max_def;
 
 	private static int lapis_rand_min_def = 0;
 	private static int lapis_rand_max_def = 4;
+	/** Probabilidad mínima de generación */
 	public int lapis_rand_min = lapis_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int lapis_rand_max = lapis_rand_max_def;
 
 	private static int gold_rand_min_def = 1;
 	private static int gold_rand_max_def = 3;
+	/** Probabilidad mínima de generación */
 	public int gold_rand_min = gold_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int gold_rand_max = gold_rand_max_def;
 	
 	private static int redstone_rand_min_def = 2;
 	private static int redstone_rand_max_def = 4;
+	/** Probabilidad mínima de generación */
 	public int redstone_rand_min = redstone_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int redstone_rand_max = redstone_rand_max_def;
 	
 	private static int diamond_rand_min_def = 0;
 	private static int diamond_rand_max_def = 2;
+	/** Probabilidad mínima de generación */
 	public int diamond_rand_min = diamond_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int diamond_rand_max = diamond_rand_max_def;
 	
 	private static int emerald_rand_min_def = 0;
 	private static int emerald_rand_max_def = 2;
+	/** Probabilidad mínima de generación */
 	public int emerald_rand_min = emerald_rand_min_def;
+	/** Probabilidad máxima de generación */
 	public int emerald_rand_max = emerald_rand_max_def;
 	
+	/**
+	 * Remover configuración temporal, útil para remover después de la generación.
+	 * @param worldID ID del mundo.
+	 */
 	public static void removeTemporalConfiguration(String worldID){
 		File worldFileCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + "world-" + worldID + "-gen-config.yml");
 		
 		worldFileCfg.delete();
 	}
 	
+	/**
+	 * Constructor de la clase.
+	 * @param worldID ID del mundo.
+	 */
 	public WorldGenerationCfg(String worldID){
 		this.world_id = worldID;
 		
@@ -212,11 +257,21 @@ public class WorldGenerationCfg {
 		
 	}
 	
+	/**
+	 * Checar si la configuración temporal ya existe.
+	 * @param worldID ID del mundo.
+	 * @return {@code true} si existe.
+	 */
 	public static boolean generatorConfigurationFileExists(String worldID){
 		File worldFileCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + "world-" + worldID + "-gen-config.yml");
 		return worldFileCfg.exists();
 	}
 	
+	/**
+	 * Hacer una configuración temporal nueva.
+	 * @param worldID ID del mundo.
+	 * @return Ruta absoluta del nuevo archivo.
+	 */
 	public static String makeNewDefaultGeneratorConfigurationFile(String worldID){
 		File worldFileCfg = new File(FileDirectory.WORLDS_DATA_FOLDER + File.separator + "world-" + worldID + "-gen-config.yml");
 		

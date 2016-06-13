@@ -35,6 +35,7 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
  * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class PlotPlayerBlockPlaceListener implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
