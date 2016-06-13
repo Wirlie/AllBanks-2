@@ -460,10 +460,20 @@ public class ItemNameUtil {
 			.put("RECORD_12" , 			"Record 12")
 			.build();
 	
+	/**
+	 * Obtener el nombre relativo.
+	 * @param item Objeto
+	 * @return Nombre relativo
+	 */
 	public static String getItemName(ItemStack item) {
 		return getItemName(item.getType());
 	}
 	
+	/**
+	 * Obtener el nombre relativo.
+	 * @param material Material
+	 * @return Nombre relativo
+	 */
 	public static String getItemName(Material material) {
 		if(itemIsOnBlackList(material)) return null;
 		
@@ -476,14 +486,29 @@ public class ItemNameUtil {
 		}
 	}
 	
+	/**
+	 * Checar si un material está en la lista negra.
+	 * @param material Material
+	 * @return {@code true} si el objeto está en la lista negra.
+	 */
 	public static boolean itemIsOnBlackList(Material material) {
 			return blackList.contains(material);
 	}
 	
+	/**
+	 * Checar si un objeto está en la lista negra.
+	 * @param item Material
+	 * @return {@code true} si el objeto está en la lista negra.
+	 */
 	public static boolean itemIsOnBlackList(ItemStack item) {
 		return itemIsOnBlackList(item.getType());
 	}
 	
+	/**
+	 * Obtener objeto por el nombre relativo.
+	 * @param shortName Nombre relativo
+	 * @return Material del objeto.
+	 */
 	public static Material getItemByShortName(String shortName) {
 		if(itemNames.containsValue(shortName)) {
 			return Material.valueOf(itemNames.inverse().get(shortName));
@@ -492,6 +517,11 @@ public class ItemNameUtil {
 		return null;
 	}
 	
+	/**
+	 * Registrar nuevo nombre relativo.
+	 * @param m Material
+	 * @return Nombre relativo.
+	 */
 	public static String registerNameNativeMethod(Material m) {
 		
 		String shortName = "";

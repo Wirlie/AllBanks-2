@@ -51,6 +51,11 @@ import me.wirlie.allbanks.StringsID;
  */
 public class Util {
 	
+	/**
+	 * Remover un directorio.
+	 * @param directory directorio
+	 * @return {@code true} si se ha eliminado.
+	 */
 	public static boolean deleteDirectory(File directory) {
 	    if(directory.exists() && directory.isDirectory()){
 	        File[] files = directory.listFiles();
@@ -69,6 +74,11 @@ public class Util {
 	    return (directory.delete());
 	}
 
+	/**
+	 * Sortear un Map
+	 * @param map Mapa
+	 * @return Map sorteado
+	 */
 	public static <K,V extends Comparable<? super V>> SortedSet<Map.Entry<K,V>> entriesSortedByValues(Map<K,V> map) {
 	    SortedSet<Map.Entry<K,V>> sortedEntries = new TreeSet<Map.Entry<K,V>>(
 	        new Comparator<Map.Entry<K,V>>() {
@@ -88,6 +98,12 @@ public class Util {
 	    return sortedEntries;
 	}
 	
+	/**
+	 * Obtener entidades cercanas
+	 * @param l Localización
+	 * @param radius Radio
+	 * @return Entidades detectadas
+	 */
 	public static Entity[] getNearbyEntities(Location l, int radius) {	
 		if(l == null || l.getWorld() == null){
 			return new Entity[0];
@@ -109,6 +125,7 @@ public class Util {
 		return radiusEntities.toArray(new Entity[radiusEntities.size()]);
 	}
 
+	@SuppressWarnings("javadoc")
 	public enum CompareVersionResult{
 		VERSION_1_IS_GREATER,
 		VERSION_2_IS_GREATER,
@@ -118,8 +135,8 @@ public class Util {
 	
 	/**
 	 * Compara dos versiones del tipo {@code 1.0.0}.
-	 * @param pluginVersion Version
-	 * @param bukkitVersion Version que se desea comparar con {@code arg0}
+	 * @param version1 Version
+	 * @param version2 Version que se desea comparar con {@code arg0}
 	 * @return 1 si {@code version1} > {@code version2} <br> 0 si {@code arg0} = {@code arg1} <br> -1 si {@code version1} < {@code version2} <br> -2 si la operación falla
 	 */
 	
@@ -166,10 +183,19 @@ public class Util {
 	}
 	
 	//Directorios
+	@SuppressWarnings("javadoc")
 	public static File FlatFile_signFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "SignData");
+	@SuppressWarnings("javadoc")
 	public static File FlatFile_bankAccountFolder = new File(AllBanks.getInstance().getDataFolder() + File.separator + "BankAccount");
+	@SuppressWarnings("javadoc")
 	public static File FlatFile_pendingCharges = new File(AllBanks.getInstance().getDataFolder() + File.separator + "PendingCharge");
 	
+	/**
+	 * Comprobar si un jugador tiene permisos
+	 * @param p Jugador
+	 * @param str Permido
+	 * @return {@code true} si tiene permisos.
+	 */
 	public static boolean hasPermission(Player p, String str) {
 		
 		boolean permRegistered = false;
@@ -196,6 +222,11 @@ public class Util {
 		}
 	}
 	
+	/**
+	 * Primer letra en mayúscula
+	 * @param text Texto
+	 * @return Cadena de texto con la primer letra en mayúsculas.
+	 */
 	public static String capitalizeFirstLetter(String text) {
 		String[] split = text.split(" ");
 		String finalStr = "";
@@ -207,6 +238,12 @@ public class Util {
 		return finalStr.substring(0, finalStr.length() - 1);
 	}
 	
+	/**
+	 * Comprobar si un jugador tiene permisos
+	 * @param s Ejecutor
+	 * @param str Permido
+	 * @return {@code true} si tiene permisos.
+	 */
 	public static boolean hasPermission(CommandSender s, String str) {
 		
 		boolean permRegistered = false;
@@ -233,6 +270,12 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Transformar una localización en una cadena de texto para fines de almacenamiento prácticos.
+	 * @param loc Localización a almacenar
+	 * @param blockLocation Especificar si se desea guardar como una localización de bloque.
+	 * @return Cadena de texto representativa de la localización.
+	 */
 	public static String convertLocationToString(Location loc, boolean blockLocation){
 		String returnStr;
 		if(blockLocation)
@@ -243,12 +286,22 @@ public class Util {
 		return returnStr;
 	}
 
+	/**
+	 * Revertir {@link #convertLocationToString(Location, boolean)}.
+	 * @param loc Cadena de texto representativa de una localización.
+	 * @return Localización original.
+	 */
 	public static Location convertStringToLocation(String loc){
 		
 		String[] args = loc.split(":");
 		return new Location(Bukkit.getWorld(args[0]), Double.parseDouble(args[1]), Double.parseDouble(args[2]), Double.parseDouble(args[3]));
 	}
 
+	/**
+	 * Comprobar si una cadena de texto es representativa de una localización.
+	 * @param loc Cadena de texto.
+	 * @return {@code true} si la cadena de texto representa una localización.
+	 */
 	public static boolean stringIsValidLocation(String loc){
 		
 		String[] args = loc.split(":");
@@ -267,6 +320,11 @@ public class Util {
 		return true;
 	}
 
+	/**
+	 * Saber si la entidad es hóstil.
+	 * @param e Entidad
+	 * @return {@code true} si la entidad es hóstil.
+	 */
 	public static boolean entityIsHostil(Entity e){
 		if(!Util.entityIsAnimal(e) && !Util.entityIsNeutral(e)){
 			return true;
@@ -275,6 +333,11 @@ public class Util {
 		return false;
 	}
 
+	/**
+	 * Saber si una entidad es neutral.
+	 * @param e Entidad
+	 * @return {@code true} si la entidad es neutral.
+	 */
 	public static boolean entityIsNeutral(Entity e){
 		if(e.getType().equals(EntityType.SNOWMAN) ||
 				e.getType().equals(EntityType.IRON_GOLEM) ||
@@ -300,6 +363,11 @@ public class Util {
 		return false;
 	}
 
+	/**
+	 * Saber si una entidad es un animal.
+	 * @param e Entidad
+	 * @return {@code true} si la entidad es un animal.
+	 */
 	public static boolean entityIsAnimal(Entity e){
 		if(e.getType().equals(EntityType.COW) ||
 				e.getType().equals(EntityType.CHICKEN) ||
@@ -315,6 +383,7 @@ public class Util {
 		return false;
 	}
 	
+	@SuppressWarnings("javadoc")
 	public static class VersionPackageStruct{
 		public VersionPackage versionPackageEnum;
 		public String versionPackageRaw;
@@ -325,12 +394,17 @@ public class Util {
 		}
 	}
 	
+	@SuppressWarnings("javadoc")
 	public enum VersionPackage{
 		NMS_1_9_R1,
 		NMS_1_9_R2,
 		NOT_SUPPORTED,
 	}
 	
+	/**
+	 * Resolver la versión actual del NMS.
+	 * @return {@link VersionPackageStruct Versión}
+	 */
 	public static VersionPackageStruct resolveNMSVersion(){
 		String name = AllBanks.getInstance().getServer().getClass().getPackage().getName();
 		String version = name.substring(name.lastIndexOf('.') + 1);
@@ -344,6 +418,11 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Obtener nombre de un ítem.
+	 * @param asNMSCopy Ítem, copia NMS
+	 * @return Cadena de texto representando el código del nombre de un ítem.
+	 */
 	public static String getItemCodeOrGetCustomName(Object asNMSCopy) {
 		if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
 			return Util_R1.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R1.ItemStack) asNMSCopy);
@@ -352,6 +431,11 @@ public class Util {
 		}
 	}
 
+	/**
+	 * Convertir el color NMS en ChatColor
+	 * @param e EnumChatFormat
+	 * @return Color.
+	 */
 	public static ChatColor convertEnumChatFormatToChatColor(Object e) {
 		if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
 			return Util_R1.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R1.EnumChatFormat) e);

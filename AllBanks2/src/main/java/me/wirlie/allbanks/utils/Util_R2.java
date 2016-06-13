@@ -17,15 +17,24 @@ import org.bukkit.scheduler.BukkitTask;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
-import me.wirlie.allbanks.utils.Util_R1.ChunkLocStruct;
 import net.minecraft.server.v1_9_R2.Chunk;
 import net.minecraft.server.v1_9_R2.ChunkProviderServer;
 import net.minecraft.server.v1_9_R2.WorldServer;
 import net.minecraft.server.v1_9_R2.EnumChatFormat;
 import net.minecraft.server.v1_9_R2.NBTTagCompound;
 
+/**
+ * Util para R2
+ * @author Wirlie
+ *
+ */
 public class Util_R2 {
 	
+	/**
+	 * Obtener el código de nombre de un ítem
+	 * @param stack Ítem
+	 * @return Código
+	 */
 	public static String getItemCodeOrGetCustomName(net.minecraft.server.v1_9_R2.ItemStack stack) {
         NBTTagCompound tag = stack.getTag();
 
@@ -40,6 +49,11 @@ public class Util_R2 {
         return stack.a() + ".name";
     }
 	
+	/**
+	 * Convertir un EnumChat a ChatColor
+	 * @param e EnumChatFormat
+	 * @return ChatColor
+	 */
 	public static ChatColor convertEnumChatFormatToChatColor(EnumChatFormat e) {
 		
 		switch(e){
@@ -93,6 +107,13 @@ public class Util_R2 {
 	private static Chunk originalChunkStatic;
 	private static HashSet<String> lockClearPlot = new HashSet<String>();
 	
+	/**
+	 * Limpiar una parcela y reiniciarla.
+	 * @param sender Ejecutor
+	 * @param bukkitWorld Mundo bukkit
+	 * @param plotFirstBound Primer esquina de la parcela
+	 * @param plotSecondBound Segunda esquina de la parcela
+	 */
 	public static void clearPlot(final CommandSender sender, final World bukkitWorld, final Location plotFirstBound, final Location plotSecondBound) {
 		
 		if(sender != null){

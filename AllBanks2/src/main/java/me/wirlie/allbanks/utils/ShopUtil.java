@@ -49,9 +49,11 @@ import me.wirlie.allbanks.Shops;
  *
  */
 public class ShopUtil {
+	
 	/**
-	 * @param string
-	 * @return
+	 * Validar la lína de precio de un letrero
+	 * @param s Línea de precio
+	 * @return {@code true} si la cadena de texto es válida.
 	 */
 	public static boolean validatePriceLine(String s) {
 		
@@ -60,6 +62,12 @@ public class ShopUtil {
 		return r.matcher(s).matches();
 	}
 	
+	/**
+	 * Comprobar si un jugador tiene permisos para remover un letrero.
+	 * @param p Jugador
+	 * @param sign Letrero
+	 * @return {@code true} si el jugador tiene permisos.
+	 */
 	public static boolean playerHasPermissionForRemove(Player p, Sign sign){
 		if(Util.hasPermission(p, PermissionsConstants.SHOP_ADMIN_PERMISSION)) return true;
 		
@@ -73,15 +81,30 @@ public class ShopUtil {
 		return false;
 	}
 	
+	/**
+	 * Validar el cofre de un letrero.
+	 * @param loc Localización del letrero.
+	 * @return {@code true} si el cofre fue encontrado.
+	 */
 	public static boolean validateNearbyChest(Location loc) {
 		Location testLoc = loc.getBlock().getRelative(BlockFace.DOWN).getLocation();
 		return testLoc.getBlock().getType().equals(Material.CHEST);
 	}
 	
+	/**
+	 * Obtener el monto del objeto de un letrero en base a la línea de precios.
+	 * @param sign Letrero de AllBanksShop
+	 * @return monto del objeto
+	 */
 	public static int getItemAmount(Sign sign) {
 		return getItemAmount(sign.getLine(Shops.LINE_PRICE));
 	}
 	
+	/**
+	 * Obtener el monto del objeto de un letrero en base a la línea de precios.
+	 * @param priceLine Cadena de texto representativa
+	 * @return monto del objeto
+	 */
 	public static int getItemAmount(String priceLine) {
 		priceLine = ChatUtil.removeChatFormat(priceLine);
 		
@@ -93,6 +116,11 @@ public class ShopUtil {
 		}
 	}
 	
+	/**
+	 * Obtener el ítem en venta de un letrero
+	 * @param signLoc Localización del letrero de AllBanksShop
+	 * @return Item
+	 */
 	public static ItemStack getItemStack(Location signLoc) {
 		Block b = signLoc.getBlock();
 		
@@ -103,6 +131,11 @@ public class ShopUtil {
 		return getItemStack((Sign) b.getState());
 	}
 	
+	/**
+	 * Obtener el ítem en venta de un letrero
+	 * @param sign Letrero de AllBanksShop
+	 * @return Item
+	 */
 	public static ItemStack getItemStack(Sign sign) {
 		String itemLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_ITEM));
 		
@@ -143,6 +176,11 @@ public class ShopUtil {
 		}
 	}
 	
+	/**
+	 * Obtener el precio de compra de un letrero de AllBanksShop
+	 * @param sign Letrero de AllBanksShop
+	 * @return Precio de compra
+	 */
 	public static BigDecimal getBuyPrice(Sign sign) {
 		String priceLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_PRICE));
 		String[] str = priceLine.split(" ");
@@ -157,6 +195,11 @@ public class ShopUtil {
 		return null;
 	}
 	
+	/**
+	 * Obtener el precio de venta de un letrero de AllBanksShop
+	 * @param sign Letrero de AllBanksShop
+	 * @return Precio de venta
+	 */
 	public static BigDecimal getSellPrice(Sign sign) {
 		String priceLine = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_PRICE));
 		String[] str = priceLine.split(" ");
@@ -169,19 +212,30 @@ public class ShopUtil {
 		
 		return null;
 	}
-
+	
 	/**
-	 * @param line
-	 * @return
+	 * Comprobar si un letrero soporta la acción VENDER
+	 * @param sign Letrero de AllBanksShop
+	 * @return {@code true} si el letrero soporta la acción VENDER
 	 */
 	public static boolean signSupportSellAction(Sign sign) {
 		return (getSellPrice(sign) == null) ? false : true;
 	}
 	
+	/**
+	 * Comprobar si un letrero soporta la acción COMPRAR
+	 * @param sign Letrero de AllBanksShop
+	 * @return {@code true} si el letrero soporta la acción COMPRAR
+	 */
 	public static boolean signSupportBuyAction(Sign sign) {
 		return (getBuyPrice(sign) == null) ? false : true;
 	}
 	
+	/**
+	 * Intentar obtener el letrero relativo de AllBanksShop
+	 * @param mainSign Letrero principal
+	 * @return Letrero obtenido
+	 */
 	public static Sign tryToGetRelativeSignByChest(Sign mainSign) {
 		Block chestB = mainSign.getBlock().getRelative(BlockFace.DOWN);
 		
@@ -205,10 +259,13 @@ public class ShopUtil {
 		
 		return null;
 	}
-
+	
 	/**
-	 * @param itemStack
-	 * @return
+	 * Comprobar si el jugador tiene los items necesarios para la transacción
+	 * @param p Jugador
+	 * @param shopItem Item de la tienda
+	 * @param checkAmount Monto a checar
+	 * @return {@code true} si el jugador tiene los objetos necesarios.
 	 */
 	public static boolean checkItemForPlayerInventory(Player p, ItemStack shopItem, boolean checkAmount) {
 		
@@ -241,6 +298,12 @@ public class ShopUtil {
 		return false;
 	}
 	
+	/**
+	 * Obtener todos los objetos totales de un inventario
+	 * @param inv Inventario
+	 * @param shopItem Item de la tienda
+	 * @return Cantidad de item
+	 */
 	public static int getTotalItemsInventory(Inventory inv, ItemStack shopItem) {
 		int totalItems = 0;
 		
@@ -261,9 +324,11 @@ public class ShopUtil {
 		
 		return totalItems;
 	}
-
+	
 	/**
-	 * @return
+	 * Obtener el dueño del letrero de AllBanksShop
+	 * @param sign Letrero de AllBanksShop
+	 * @return Dueño
 	 */
 	public static OfflinePlayer getOwner(Sign sign) {
 		String ownerName = ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER));
@@ -283,8 +348,9 @@ public class ShopUtil {
 	}
 
 	/**
-	 * @param sign
-	 * @return
+	 * Obtener el cofre de un Letrero de AllBanksShop.
+	 * @param sign Letrero de AllBanksShop
+	 * @return Cofre
 	 */
 	public static Chest getNearbyChest(Sign sign) {
 		Block signBlock = sign.getBlock();
@@ -296,13 +362,19 @@ public class ShopUtil {
 	}
 
 	/**
-	 * @param sign
-	 * @return
+	 * Comprobar si una tienda es una tienda administrativa.
+	 * @param sign Letrero de AllBanksShop
+	 * @return {@code true} si la tienda es una tienda administrativa.
 	 */
 	public static boolean isAdminShop(Sign sign) {
 		return ChatUtil.removeChatFormat(sign.getLine(Shops.LINE_OWNER)).equalsIgnoreCase(Shops.ADMIN_TAG);
 	}
 	
+	/**
+	 * Comprobar si un letrero necesita un ID especial, por ejemplo, los libros encantados ocupan de una duración especial.
+	 * @param item Objeto a comprobar
+	 * @return {@code true} si el item necesita un ID especial
+	 */
 	public static boolean itemNeedResolveCustomDurability(ItemStack item){
 		
 		if(item.getItemMeta().getDisplayName() != null){
@@ -314,6 +386,11 @@ public class ShopUtil {
 		return itemNeedResolveCustomDurability(item.getType());
 	}
 	
+	/**
+	 * Comprobar si un letrero necesita un ID especial, por ejemplo, los libros encantados ocupan de una duración especial.
+	 * @param mat Material a comprobar
+	 * @return {@code true} si el item necesita un ID especial
+	 */
 	public static boolean itemNeedResolveCustomDurability(Material mat){
 		switch(mat){
 		case BANNER:
@@ -330,6 +407,11 @@ public class ShopUtil {
 		}
 	}
 	
+	/**
+	 * Resolver el ID especial
+	 * @param item Objeto a resolver
+	 * @return ID especial
+	 */
 	public static String resolveCustomDurabilityIDFor(ItemStack item){
 		if(item == null) throw new NullPointerException("item is null");
 		
@@ -405,6 +487,11 @@ public class ShopUtil {
 		}
 	}
 	
+	/**
+	 * Obtener el ítem a través del objeto especial.
+	 * @param specialID ID especial 
+	 * @return Objeto perteneciente al ID especificado
+	 */
 	public static ItemStack getItemBySpecialID(String specialID){
 		specialID = specialID.replace("#", "");
 		
@@ -437,8 +524,9 @@ public class ShopUtil {
 	}
 
 	/**
-	 * @param specialID
-	 * @return
+	 * Comprobar si un ID especial ya está en uso
+	 * @param specialID ID especial
+	 * @return {@code true} si el ID especial está en uso.
 	 */
 	public static boolean checkForSpecialID(String specialID) {
 		
@@ -476,8 +564,9 @@ public class ShopUtil {
 	}
 
 	/**
-	 * @param s
-	 * @return
+	 * Comprobar si un letrero pertenece a AllBanksShop
+	 * @param s Letrero a comprobar
+	 * @return {@code true} si el letrero pertenece a AllBanksShop
 	 */
 	public static boolean isShopSign(Sign s) {
 		return ChatUtil.removeChatFormat(s.getLine(Shops.LINE_HEADER)).equalsIgnoreCase("AllBanks SHOP");

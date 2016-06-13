@@ -38,9 +38,10 @@ public class InventoryUtil {
 	}
 	
 	/**
-	 * @param p
-	 * @param itemStack
-	 * @param totalItems
+	 * Remover cierta cantidad de objetos de un inventario.
+	 * @param inv Inventario
+	 * @param itemStack Item
+	 * @param totalItems Objetos totales a remover.
 	 */
 	public static synchronized void removeItemsFromInventory(Inventory inv, ItemStack itemStack, int totalItems) {
 		int remainingItems = totalItems;
@@ -69,6 +70,12 @@ public class InventoryUtil {
 		}
 	}
 	
+	/**
+	 * Obtener el espacio disponible en un inventario para un objeto.
+	 * @param sign Letrero
+	 * @param shopItem Item de la tienda a comprobar.
+	 * @return Cantidad de espacio total para el objeto especificado.
+	 */
 	public static synchronized int getInventoryFreeSpaceForItem(Sign sign, ItemStack shopItem) {
 		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
 		if(!tryChest.getType().equals(Material.CHEST)) return -1;
@@ -76,15 +83,21 @@ public class InventoryUtil {
 		return getInventoryFreeSpaceForItem(chest.getInventory(), shopItem);
 	}
 	
-
+	/**
+	 * Obtener el espacio disponible en un inventario para un objeto.
+	 * @param inv Inventario a comprobar.
+	 * @param shopItem Item de la tienda a comprobar.
+	 * @return Cantidad de espacio total para el objeto especificado.
+	 */
 	public static synchronized int getInventoryFreeSpaceForItem(PlayerInventory inv, ItemStack shopItem) {
 		return getInventoryFreeSpaceForItem((Inventory) inv, shopItem);
 	}
-
+	
 	/**
-	 * @param sign
-	 * @param shopItem
-	 * @return
+	 * Obtener el espacio disponible en un inventario para un objeto.
+	 * @param inv Inventario a comprobar.
+	 * @param shopItem Item de la tienda a comprobar.
+	 * @return Cantidad de espacio total para el objeto especificado.
 	 */
 	public static synchronized int getInventoryFreeSpaceForItem(Inventory inv, ItemStack shopItem) {
 		int freeSpace = 0;
@@ -103,6 +116,13 @@ public class InventoryUtil {
 		return freeSpace;
 	}
 	
+	/**
+	 * Colocar objetos en un inventario de manera distinta a como lo haría el método addItem().
+	 * @param sign Letrero
+	 * @param shopItem Objeto a colocar
+	 * @param totalItems Total de objetos
+	 * @return {@code true} si fue exitoso.
+	 */
 	public static synchronized boolean putItemsToInventory(Sign sign, ItemStack shopItem, int totalItems) {
 		Block tryChest = sign.getLocation().getBlock().getRelative(BlockFace.DOWN);
 		if(!tryChest.getType().equals(Material.CHEST)) return false;
@@ -112,9 +132,10 @@ public class InventoryUtil {
 	}
 
 	/**
-	 * @param sign
-	 * @param shopItem
-	 * @param totalItems
+	 * @param inv Inventario
+	 * @param shopItem Objeto a colocar
+	 * @param totalItems Total de objetos
+	 * @return {@code true} si fue exitoso.
 	 */
 	public static synchronized boolean putItemsToInventory(Inventory inv, ItemStack shopItem, int totalItems) {
 		int remainingItems = totalItems;

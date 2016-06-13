@@ -66,17 +66,35 @@ public class WorldLoadAsync_1_9_4_R2 {
 	private static Chunk waitForChunk;
 	private static int waitForChunkSeconds = 0;
 	private static boolean generationBusy = false;
+	/** Último mundo generado */
 	public static String lastWorldGenerated = "";
 	private static boolean waitPostProcess = false;
 	
+	/**
+	 * Saber si el generador está ocupado.
+	 * @return {@code true} si el generador está ocupado.
+	 */
 	public static boolean isBusy(){
 		return generationBusy;
 	}
 
+	/**
+	 * Crear un mundo de manera asíncrona.
+	 * @param creator Datos de creación
+	 * @param wcfg Configuración
+	 * @return Mundo generado
+	 */
 	public static World createAsyncWorld(final WorldCreator creator, WorldGenerationCfg wcfg){
 		return createAsyncWorld(creator, null, wcfg);
 	}
 	
+	/**
+	 * Crear un mundo de manera asíncrona.
+	 * @param creator Datos de creación
+	 * @param sender Ejecutor del comando
+	 * @param wcfg Configuración
+	 * @return Mundo generado
+	 */
 	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender, final WorldGenerationCfg wcfg){
 		
 		//Nombre del mundo en minúsculas.

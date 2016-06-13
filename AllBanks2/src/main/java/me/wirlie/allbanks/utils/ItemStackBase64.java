@@ -34,16 +34,31 @@ import org.yaml.snakeyaml.external.biz.base64Coder.Base64Coder;
  *
  */
 public class ItemStackBase64 {
+    /**
+     * Convertir inventario a Base64
+     * @param inventory Inventario
+     * @return Cadena "codificada" en Base64.
+     */
     public static String toBase64(Inventory inventory) {
         return toBase64(inventory.getContents());
     }
-
+    
+    /**
+     * Convertir un objeto a Base64
+     * @param itemstack Item
+     * @return Cadena "codificada" en Base64.
+     */
     public static String toBase64(ItemStack itemstack){
         ItemStack[] arr = new ItemStack[1];
         arr[0] = itemstack;
         return toBase64(arr);
     }
-
+    
+    /**
+     * Convertir una colección de objetos a Base64
+     * @param contents Items
+     * @return Cadena "codificada" en Base64.
+     */
     public static String toBase64(ItemStack[] contents) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -60,7 +75,13 @@ public class ItemStackBase64 {
             throw new IllegalStateException("Unable to save item stacks.", e);
         }
     }
-
+    
+    /**
+     * Restaurar un inventario desde una cadena "codificada" en Base64.
+     * @param data Cadena codificada.
+     * @return Inventario.
+     * @throws IOException Si no se ha podido decodificar.
+     */
     public static Inventory inventoryFromBase64(String data) throws IOException {
         ItemStack[] stacks = stacksFromBase64(data);
         Inventory inventory = Bukkit.createInventory(null, (int) Math.ceil(stacks.length / 9D) * 9);
@@ -72,6 +93,12 @@ public class ItemStackBase64 {
         return inventory;
     }
 
+    /**
+     * Restaurar un item desde una cadena "codificada" en Base64.
+     * @param data Cadena codificada.
+     * @return Item.
+     * @throws IOException Si no se ha podido decodificar.
+     */
     public static ItemStack[] stacksFromBase64(String data) throws IOException {
         try {
             if(data == null || Base64Coder.decodeLines(data) == null) return new ItemStack[]{};
