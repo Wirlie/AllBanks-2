@@ -89,6 +89,10 @@ public class Util {
 	}
 	
 	public static Entity[] getNearbyEntities(Location l, int radius) {	
+		if(l == null || l.getWorld() == null){
+			return new Entity[0];
+		}
+		
 		int chunkRadius = radius < 16 ? 1 : (radius - (radius % 16)) / 16;
 		HashSet<Entity> radiusEntities = new HashSet<Entity>();
 
@@ -311,27 +315,37 @@ public class Util {
 		return false;
 	}
 	
+	public static class VersionPackageStruct{
+		public VersionPackage versionPackageEnum;
+		public String versionPackageRaw;
+		
+		private VersionPackageStruct(VersionPackage versionPackageEnum, String versionPackageRaw){
+			this.versionPackageEnum = versionPackageEnum;
+			this.versionPackageRaw = versionPackageRaw;
+		}
+	}
+	
 	public enum VersionPackage{
 		NMS_1_9_R1,
 		NMS_1_9_R2,
 		NOT_SUPPORTED,
 	}
 	
-	public static VersionPackage resolveNMSVersion(){
+	public static VersionPackageStruct resolveNMSVersion(){
 		String name = AllBanks.getInstance().getServer().getClass().getPackage().getName();
 		String version = name.substring(name.lastIndexOf('.') + 1);
 		
 		if(version.equalsIgnoreCase("v1_9_R1")){
-			return VersionPackage.NMS_1_9_R1;
+			return new VersionPackageStruct(VersionPackage.NMS_1_9_R1, version);
 		}else if(version.equalsIgnoreCase("v1_9_R2")){
-			return VersionPackage.NMS_1_9_R2;
+			return new VersionPackageStruct(VersionPackage.NMS_1_9_R2, version);
 		}else{
-			return VersionPackage.NOT_SUPPORTED;
+			return new VersionPackageStruct(VersionPackage.NOT_SUPPORTED, version);
 		}
 	}
 
 	public static String getItemCodeOrGetCustomName(Object asNMSCopy) {
-		if(resolveNMSVersion() == VersionPackage.NMS_1_9_R1){
+		if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
 			return Util_R1.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R1.ItemStack) asNMSCopy);
 		}else{
 			return Util_R2.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R2.ItemStack) asNMSCopy);
@@ -339,7 +353,7 @@ public class Util {
 	}
 
 	public static ChatColor convertEnumChatFormatToChatColor(Object e) {
-		if(resolveNMSVersion() == VersionPackage.NMS_1_9_R1){
+		if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
 			return Util_R1.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R1.EnumChatFormat) e);
 		}else{
 			return Util_R2.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R2.EnumChatFormat) e);

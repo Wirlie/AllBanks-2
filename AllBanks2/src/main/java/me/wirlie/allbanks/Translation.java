@@ -327,7 +327,7 @@ public class Translation{
 		
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
 		for(int i = 0; i < replaceArray.length; i++){
-			replaceMap.put("%" + i + "%", replaceArray[i]);
+			replaceMap.put("%" + (i + 1) + "%", replaceArray[i]);
 		}
 		
 		getAndSendMessage(p, stringID.getPath(), replaceMap, prefix);
@@ -344,7 +344,7 @@ public class Translation{
 		
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
 		for(int i = 0; i < replaceArray.length; i++){
-			replaceMap.put("%" + i + "%", replaceArray[i]);
+			replaceMap.put("%" + (i + 1) + "%", replaceArray[i]);
 		}
 		
 		getAndSendMessage(sender, stringID.getPath(), replaceMap, prefix);
@@ -436,7 +436,7 @@ public class Translation{
 			}
 			
 			for(int i = 0; i < replaceArray.length; i++){
-				replaceMap.put(prefixRpl + i + subfixRpl, replaceArray[i]);
+				replaceMap.put(prefixRpl + (i + 1) + subfixRpl, replaceArray[i]);
 			}
 			
 			getAndSendMessage(p, stringID.getPath(), replaceMap, prefix);
@@ -532,7 +532,7 @@ public class Translation{
 			}
 			
 			for(int i = 0; i < replaceArray.length; i++){
-				replaceMap.put(prefixRpl + i + subfixRpl, replaceArray[i]);
+				replaceMap.put(prefixRpl + (i + 1) + subfixRpl, replaceArray[i]);
 			}
 			
 			getAndSendMessage(sender, stringID.getPath(), replaceMap, prefix);

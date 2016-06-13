@@ -99,7 +99,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	public BuildChatMessage() {
 		this((TextualComponent)null);
 	}
-
+	
 	/**
 	 * Sets the text of the current editing component to a value.
 	 * @param text The new text of the current editing component.

@@ -1,5 +1,7 @@
 package me.wirlie.allbanks.commands.allbanksland;
 
+import java.math.BigInteger;
+import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -25,8 +27,18 @@ import me.wirlie.allbanks.allbanksland.PlotID;
 import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
+import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
 
 public class CommandPlot extends Command {
+	
+	private static HashMap<String, PlotClearTokenStruct> plotClearTokens = new HashMap<String, PlotClearTokenStruct>();
+	
+	class PlotClearTokenStruct{
+		int plot_X;
+		int plot_Z;
+		AllBanksWorld plot_world;
+		String token;
+	}
 	
 	public CommandPlot(String permissionNode){
 		super(permissionNode);
@@ -1393,6 +1405,134 @@ public class CommandPlot extends Command {
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_PLOT_SETBIOME_ERROR_INVALID_BIOME, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + args[2]), true);
 				return CommandExecuteResult.EXCEPTION;
 			}
+		}else if(args[1].equalsIgnoreCase("clear")){
+			if(args.length == 2){
+				if(!(sender instanceof Player)){
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				final Player p = (Player) sender;
+				
+				if(!this.hasPermission(p)){
+					Translation.getAndSendMessage(sender, StringsID.NO_PERMISSIONS_FOR_THIS, true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
+					return CommandExecuteResult.NO_PERMISSIONS;
+				}
+				
+				if(!AllBanksWorld.worldIsAllBanksWorld(p.getWorld().getName())){
+					Translation.getAndSendMessage(p, StringsID.PLOT_INVALID_WORLD, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				AllBanksWorld abw = AllBanksWorld.getInstance(p.getWorld().getName());
+				
+				if(!abw.locationIsPlot(p.getLocation())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_LOC_NOT_IS_PLOT, true);
+					InteractiveUtil.sendSound(p, SoundType.WARNING);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				final AllBanksPlot plot = abw.getPlot(p.getLocation());
+				
+				if(!plot.hasOwner() || !plot.getOwnerName().equalsIgnoreCase(p.getName())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+					return CommandExecuteResult.NO_PERMISSIONS;
+				}
+				
+				//Aviso de confirmación
+				new Thread(){
+					@Override
+					public void run(){
+						SecureRandom random = new SecureRandom();
+						String token = new BigInteger(130, random).toString(32);
+						
+						PlotClearTokenStruct save = new PlotClearTokenStruct();
+						save.plot_X = plot.getPlotX();
+						save.plot_Z = plot.getPlotZ();
+						save.plot_world = plot.getAllBanksWorld();
+						save.token = token;
+						
+						plotClearTokens.put(p.getName(), save);
+						
+						for(String s : Translation.get(StringsID.COMMAND_PLOT_CLEAR_CONFIRM_MSG, true)){
+							BuildChatMessage prepareMessage1 = new BuildChatMessage(s);
+							prepareMessage1.color(ChatColor.YELLOW);
+							prepareMessage1.send(p);
+						}
+						BuildChatMessage prepareMessage2 = new BuildChatMessage("")
+						.then("[")
+							.color(ChatColor.BLUE)
+						.then(Translation.get(StringsID.ACCEPT, false)[0])
+							.color(ChatColor.YELLOW)
+							.command("/plot clear confirm " + token)
+						.then("] [")
+							.color(ChatColor.BLUE)
+						.then(Translation.get(StringsID.CANCEL, false)[0])
+							.color(ChatColor.YELLOW)
+							.command("/plot clear cancel " + token)
+						.then("]")
+							.color(ChatColor.BLUE)
+						;
+						
+						prepareMessage2.send(p);
+						
+					}
+				}.start();
+				
+				return CommandExecuteResult.SUCCESS;
+			}else if(args.length >= 4){
+				if(!(sender instanceof Player)){
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
+					return CommandExecuteResult.OTHER;
+				}
+				
+				if(args[2].equalsIgnoreCase("confirm")){
+					String token = args[3];
+					if(!plotClearTokens.containsKey(sender.getName())){
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_PLOT_CLEAR_INVALID_TOKEN, true);
+						return CommandExecuteResult.NO_PERMISSIONS;
+					}else{
+						PlotClearTokenStruct data = plotClearTokens.get(sender.getName());
+						if(!data.token.equalsIgnoreCase(token)){
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_PLOT_CLEAR_INVALID_TOKEN, true);
+							return CommandExecuteResult.NO_PERMISSIONS;
+						}
+						
+						//Resetear parcela
+						AllBanksPlot plot = new AllBanksPlot(data.plot_X, data.plot_Z, data.plot_world);
+						
+						//Segundo chequeo por si se trata de ejecutar este comando para intentar acciones de trolleo
+						if(!plot.hasOwner() || !plot.getOwnerName().equalsIgnoreCase(sender.getName())){
+							Translation.getAndSendMessage(sender, StringsID.PLOT_NOT_IS_YOUR_OWN_PLOT, true);
+							return CommandExecuteResult.NO_PERMISSIONS;
+						}
+						
+						plot.clearPlot(sender);
+						plotClearTokens.remove(sender.getName());
+						return CommandExecuteResult.SUCCESS;
+					}
+					
+				}else if(args[2].equalsIgnoreCase("cancel")){
+					String token = args[3];
+					if(!plotClearTokens.containsKey(sender.getName())){
+						Translation.getAndSendMessage(sender, StringsID.COMMAND_PLOT_CLEAR_INVALID_TOKEN, true);
+						return CommandExecuteResult.NO_PERMISSIONS;
+					}else{
+						PlotClearTokenStruct data = plotClearTokens.get(sender.getName());
+						if(!data.token.equalsIgnoreCase(token)){
+							Translation.getAndSendMessage(sender, StringsID.COMMAND_PLOT_CLEAR_INVALID_TOKEN, true);
+							return CommandExecuteResult.NO_PERMISSIONS;
+						}
+					}
+					
+					Translation.getAndSendMessage(sender, StringsID.COMMAND_PLOT_CLEAR_CANCEL_SUCCESS, true);
+					plotClearTokens.remove(sender.getName());
+					return CommandExecuteResult.SUCCESS;
+				}
+			}
+			
 		}
 		
 		return CommandExecuteResult.INVALID_ARGUMENTS;

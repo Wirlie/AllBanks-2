@@ -72,4 +72,6 @@ public class PermissionsConstants {
 	public static final String COMMAND_UPDATER_CURRENT_VERSION_PERMISSION = "allbanks.commands.updater.current-version";
 	public static final String COMMAND_UPDATER_FORCE_UPDATE_PERMISSION = "allbanks.commands.updater.force-update";
 	
+	public static final String COMMAND_PLOT_CLEAR_PERMISSION = "allbanks.land.commands.plot.clear";
+	
 }

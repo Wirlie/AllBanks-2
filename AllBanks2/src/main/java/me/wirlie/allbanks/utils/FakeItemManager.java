@@ -73,6 +73,11 @@ public class FakeItemManager extends BukkitRunnable {
 					//Transformar parámetros en valores
 					Location signLoc = transformKeyToSignloc(key);
 					Location itemLoc = Util.convertStringToLocation(itemLocStr);
+					
+					if(signLoc.getWorld() == null || itemLoc.getWorld() == null){
+						continue;
+					}
+					
 					UUID itemUUID = UUID.fromString(itemUUIDStr);
 					
 					//Comprobar si existe

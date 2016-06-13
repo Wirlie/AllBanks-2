@@ -39,6 +39,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.allbanksland.generator.WorldGenerationCfg;
 import net.minecraft.server.v1_9_R1.BlockPosition;
 import net.minecraft.server.v1_9_R1.Blocks;
 import net.minecraft.server.v1_9_R1.Chunk;
@@ -72,11 +73,11 @@ public class WorldLoadAsync_1_9_R1 {
 		return generationBusy;
 	}
 
-	public static World createAsyncWorld(final WorldCreator creator, int spawn_X, int spawn_Y, int spawn_Z){
-		return createAsyncWorld(creator, null, spawn_X, spawn_Y, spawn_Z);
+	public static World createAsyncWorld(final WorldCreator creator, WorldGenerationCfg wcfg){
+		return createAsyncWorld(creator, null, wcfg);
 	}
 	
-	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender, final int spawn_X, final int spawn_Y, final int spawn_Z){
+	public static World createAsyncWorld(WorldCreator creator, final CommandSender sender, final WorldGenerationCfg wcfg){
 		
 		//Nombre del mundo en minúsculas.
 		final String name = creator.name().toLowerCase();
@@ -346,8 +347,8 @@ public class WorldLoadAsync_1_9_R1 {
 						World w = Bukkit.getWorld(name);
 						//establecer spawn, para corregir errores.
 						if(w != null){
-							System.out.println("[AllBanks] Set spawn to " + spawn_X + ", " + spawn_Y + ", " + spawn_Z);
-							w.setSpawnLocation(spawn_X, spawn_Y, spawn_Z);
+							System.out.println("[AllBanks] Set spawn to " + 0 + ", " + (wcfg.world_height + 1) + ", " + 0);
+							w.setSpawnLocation(0, (wcfg.world_height + 1), 0);
 							System.out.println("[AllBanks] Done.");
 						}else{
 							System.out.println("[AllBanks] World not loaded??? (null)");

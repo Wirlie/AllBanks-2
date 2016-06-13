@@ -44,6 +44,8 @@ public class WorldConfiguration {
 	String plot_per_user = "1";
 	String cost_claim = "0";
 	
+	int worldHeight = 0;
+	
 	public WorldConfiguration(String worldID){
 		id = worldID;
 		

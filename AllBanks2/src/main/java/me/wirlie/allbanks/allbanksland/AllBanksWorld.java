@@ -178,13 +178,13 @@ public class AllBanksWorld {
 				try {
 					//R1 Support
 		    		Class.forName("org.bukkit.craftbukkit.v1_9_R1.CraftServer");
-		    		WorldLoadAsync_1_9_R1.createAsyncWorld(wc, sender, 0, worldCfg.world_height, 0);
+		    		WorldLoadAsync_1_9_R1.createAsyncWorld(wc, sender, worldCfg);
 		    	}catch (ClassNotFoundException e) {
 		            //R2 Support
 		    		try {
 						//R1 Support
 			    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
-			    		WorldLoadAsync_1_9_4_R2.createAsyncWorld(wc, sender, 0, worldCfg.world_height, 0);
+			    		WorldLoadAsync_1_9_4_R2.createAsyncWorld(wc, sender, worldCfg);
 			    	}catch (ClassNotFoundException e2) {
 			    		e2.printStackTrace();
 			            return;
