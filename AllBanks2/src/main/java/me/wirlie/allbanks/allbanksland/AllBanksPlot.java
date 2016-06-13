@@ -26,9 +26,7 @@ import java.util.HashMap;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
-import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
@@ -38,9 +36,6 @@ import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.Util.VersionPackage;
 import me.wirlie.allbanks.utils.Util_R1;
 import me.wirlie.allbanks.utils.Util_R2;
-import net.minecraft.server.v1_9_R1.Chunk;
-import net.minecraft.server.v1_9_R1.ChunkProviderServer;
-import net.minecraft.server.v1_9_R1.WorldServer;
 
 /**
  * @author josue
@@ -433,6 +428,11 @@ public class AllBanksPlot {
 		}
 	}
 	
+	/**
+	 * Reinicia la parcela según los datos del chunk original.<br>
+	 * <b>Importante:</b> Después del reinicio NO se regenerarán los minerales y árboles de la parcela.
+	 * @param sender Opcional, si se desea notificar a alguien en concreto sobre el progreso de la regeneración.
+	 */
 	public void clearPlot(CommandSender sender) {
 		if(Util.resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
 			Util_R1.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
