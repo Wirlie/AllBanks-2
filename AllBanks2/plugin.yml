@@ -15,3 +15,8 @@ commands:
   plot:
     description: AllBanks Land (Short Command)
     usage: Syntax error, please use /abland ?
+    aliases: [plt]
+  allbanksshop:
+    description: AllBanks Shop, use /abs help
+    usage: Syntax error, please use /abs ?
+    aliases: [abshop, allshop, alls, abs]

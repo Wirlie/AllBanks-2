@@ -40,6 +40,8 @@ import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.banks.bankdata.BankSession;
 import me.wirlie.allbanks.command.CommandExecutorAB;
 import me.wirlie.allbanks.command.CommandTabCompleterAB;
+import me.wirlie.allbanks.command.shops.CommandExecutorAllBanksShop;
+import me.wirlie.allbanks.command.shops.CommandTabCompleterAllBanksShop;
 import me.wirlie.allbanks.commands.allbanksland.CommandExecutorABLand;
 import me.wirlie.allbanks.commands.allbanksland.CommandExecutorABLandPlotAccess;
 import me.wirlie.allbanks.commands.allbanksland.CommandTabCompleterABLand;
@@ -269,6 +271,10 @@ public class AllBanks extends JavaPlugin {
 		Bukkit.getPluginCommand("plot").setExecutor(new CommandExecutorABLandPlotAccess());
 		AllBanksLogger.info("Commands: Set tab completer (/plot).");
 		Bukkit.getPluginCommand("plot").setTabCompleter(new CommandTabCompleterABLandPlotAccess());
+		AllBanksLogger.info("Commands: Set executor (/allbanksshop).");
+		Bukkit.getPluginCommand("allbanksshop").setExecutor(new CommandExecutorAllBanksShop());
+		AllBanksLogger.info("Commands: Set tab completer (/allbanksshop).");
+		Bukkit.getPluginCommand("allbanksshop").setTabCompleter(new CommandTabCompleterAllBanksShop());
 		
 		//Hooks
 		HookManager.initializeHookManager();
