@@ -191,6 +191,9 @@ public class ShopSignInteractListener implements Listener {
 							replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
 							
 							Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
+							
+							//Estadísticas
+							
 							return;
 						}
 					}else{

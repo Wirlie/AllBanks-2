@@ -79,6 +79,7 @@ import me.wirlie.allbanks.listeners.shops.ShopSignInteractListener;
 import me.wirlie.allbanks.runnables.BankLoanRunnable;
 import me.wirlie.allbanks.runnables.BankTimerRunnable;
 import me.wirlie.allbanks.runnables.LotteryRunnable;
+import me.wirlie.allbanks.statistics.AllBanksStatistics;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.ConfigurationUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
@@ -96,7 +97,8 @@ import net.milkbowl.vault.economy.Economy;
 public class AllBanks extends JavaPlugin {
 
 	private static AllBanks AllBanksInstance;
-	private static DataBaseSQLite dbSQLite = new DataBaseSQLite();
+	/** base de datos SQLite */
+	public static DataBaseSQLite dbSQLite = new DataBaseSQLite();
 	private static DataBaseMySQL dbMySQL = new DataBaseMySQL();
 	private static Connection dbc;
 	private static StorageType storageMethod = StorageType.SQLITE;
@@ -470,6 +472,9 @@ public class AllBanks extends JavaPlugin {
 		        e.printStackTrace();
 		    }
 		}
+		
+		//Estadísticas
+		AllBanksStatistics.initializeSystem();
 		
 	}
 	
