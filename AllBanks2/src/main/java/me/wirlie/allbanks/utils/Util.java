@@ -398,6 +398,7 @@ public class Util {
 	public enum VersionPackage{
 		NMS_1_9_R1,
 		NMS_1_9_R2,
+		NMS_1_10_R1,
 		NOT_SUPPORTED,
 	}
 	
@@ -413,6 +414,8 @@ public class Util {
 			return new VersionPackageStruct(VersionPackage.NMS_1_9_R1, version);
 		}else if(version.equalsIgnoreCase("v1_9_R2")){
 			return new VersionPackageStruct(VersionPackage.NMS_1_9_R2, version);
+		}else if(version.equalsIgnoreCase("v1_10_R1")){
+			return new VersionPackageStruct(VersionPackage.NMS_1_10_R1, version);
 		}else{
 			return new VersionPackageStruct(VersionPackage.NOT_SUPPORTED, version);
 		}
@@ -425,10 +428,14 @@ public class Util {
 	 */
 	public static String getItemCodeOrGetCustomName(Object asNMSCopy) {
 		if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
-			return Util_R1.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R1.ItemStack) asNMSCopy);
-		}else{
-			return Util_R2.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R2.ItemStack) asNMSCopy);
+			return Util_1_9_R1.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R1.ItemStack) asNMSCopy);
+		}else if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
+			return Util_1_9_R2.getItemCodeOrGetCustomName((net.minecraft.server.v1_9_R2.ItemStack) asNMSCopy);
+		}else if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_10_R1){
+			return Util_1_10_R1.getItemCodeOrGetCustomName((net.minecraft.server.v1_10_R1.ItemStack) asNMSCopy);
 		}
+		
+		return null;
 	}
 
 	/**
@@ -438,10 +445,14 @@ public class Util {
 	 */
 	public static ChatColor convertEnumChatFormatToChatColor(Object e) {
 		if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
-			return Util_R1.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R1.EnumChatFormat) e);
-		}else{
-			return Util_R2.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R2.EnumChatFormat) e);
+			return Util_1_9_R1.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R1.EnumChatFormat) e);
+		}else if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
+			return Util_1_9_R2.convertEnumChatFormatToChatColor((net.minecraft.server.v1_9_R2.EnumChatFormat) e);
+		}else if(resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_10_R1){
+			return Util_1_10_R1.convertEnumChatFormatToChatColor((net.minecraft.server.v1_10_R1.EnumChatFormat) e);
 		}
+		
+		return null;
 	}
 
 	/**

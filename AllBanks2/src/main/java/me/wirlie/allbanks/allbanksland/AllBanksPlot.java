@@ -34,8 +34,8 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.Util.VersionPackage;
-import me.wirlie.allbanks.utils.Util_R1;
-import me.wirlie.allbanks.utils.Util_R2;
+import me.wirlie.allbanks.utils.Util_1_9_R1;
+import me.wirlie.allbanks.utils.Util_1_9_R2;
 
 /**
  * @author josue
@@ -435,9 +435,9 @@ public class AllBanksPlot {
 	 */
 	public void clearPlot(CommandSender sender) {
 		if(Util.resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
-			Util_R1.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
+			Util_1_9_R1.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
 		}else if(Util.resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R2){
-			Util_R2.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
+			Util_1_9_R2.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
 		}else{
 			throw new IllegalStateException(Util.resolveNMSVersion().versionPackageRaw + " is not supported!");
 		}

@@ -42,6 +42,7 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.statistics.AllBanksShopStatistics;
 import me.wirlie.allbanks.utils.ChatUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FakeItemManager;
@@ -193,7 +194,8 @@ public class ShopSignInteractListener implements Listener {
 							Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
 							
 							//Estadísticas
-							
+							AllBanksShopStatistics statistics = new AllBanksShopStatistics(sign);
+							statistics.addBuyStatisticsToSign(shopItem, p);
 							return;
 						}
 					}else{
@@ -378,6 +380,10 @@ public class ShopSignInteractListener implements Listener {
 						replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
 						
 						Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_SELL, replaceMap, true);
+						
+						//Estadísticas
+						AllBanksShopStatistics statistics = new AllBanksShopStatistics(sign);
+						statistics.addSellStatisticsToSign(shopItem, p);
 					}
 					
 					return;

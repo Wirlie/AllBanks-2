@@ -31,13 +31,14 @@ import me.wirlie.allbanks.statistics.AllBanksShopStatistics.TransactionType;
  * @author Wirlie
  *
  */
+@SuppressWarnings("javadoc")
 public class ShopTransactionEntry {
-	Location signLoc;
-	String transactionPlayer;
-	ItemStack transactionItem;
-	long date;
-	String shopOwner;
-	TransactionType transactionType;
+	public Location signLoc;
+	public String transactionPlayer;
+	public ItemStack transactionItem;
+	public long date;
+	public String shopOwner;
+	public TransactionType transactionType;
 	
 	/**
 	 * Construir una nueva entrada de una transacción.

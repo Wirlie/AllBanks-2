@@ -29,8 +29,9 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld;
 import me.wirlie.allbanks.command.Command;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_10_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
-import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_4_R2;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
 
 /**
  * Comando para gestión de mundos.
@@ -104,9 +105,9 @@ public class CommandWorld extends Command {
 							}
 				    	}catch (ClassNotFoundException e) {
 				    		try {
-								//R1 Support
+								//R2 Support
 					    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
-					    		if(WorldLoadAsync_1_9_4_R2.isBusy() && WorldLoadAsync_1_9_4_R2.lastWorldGenerated.equalsIgnoreCase(worldName)){
+					    		if(WorldLoadAsync_1_9_R2.isBusy() && WorldLoadAsync_1_9_R2.lastWorldGenerated.equalsIgnoreCase(worldName)){
 									//El mundo se está generando
 									Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
 								}else{
@@ -120,8 +121,26 @@ public class CommandWorld extends Command {
 									}
 								}
 					    	}catch (ClassNotFoundException e2) {
-					    		e2.printStackTrace();
-					    		return CommandExecuteResult.EXCEPTION;
+					    		try {
+									//1.10 R1 Support
+						    		Class.forName("org.bukkit.craftbukkit.v1_10_R1.CraftServer");
+						    		if(WorldLoadAsync_1_10_R1.isBusy() && WorldLoadAsync_1_10_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
+										//El mundo se está generando
+										Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+									}else{
+										World w = Bukkit.getWorld(worldName);
+										
+										if(w != null){
+											Bukkit.getPlayer(sender.getName()).teleport(w.getSpawnLocation());
+											Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_SUCCESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+										}else{
+											Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_BUKKIT_NULL, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+										}
+									}
+						    	}catch (ClassNotFoundException e3) {
+						    		e3.printStackTrace();
+						    		return CommandExecuteResult.EXCEPTION;
+						    	}
 					    	}
 				    	}
 					}else{

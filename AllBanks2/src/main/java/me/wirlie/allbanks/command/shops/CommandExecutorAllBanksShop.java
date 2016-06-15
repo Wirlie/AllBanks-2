@@ -29,7 +29,6 @@ import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.AllBanksExecutor;
 import me.wirlie.allbanks.command.Command;
-import me.wirlie.allbanks.command.CommandUpdate;
 import me.wirlie.allbanks.command.Command.CommandExecuteResult;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 
@@ -46,14 +45,14 @@ public class CommandExecutorAllBanksShop extends AllBanksExecutor implements Com
 	 */
 	public CommandExecutorAllBanksShop(){
 		//estadísticas
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byHour");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byDay");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byMonth");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byYear");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byTransactionPlayer", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<Player>");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byShopOwner", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<Player>");
-		registerCommand(new CommandUpdate(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byTransactionItem");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byHour");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byDay");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byMonth");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byYear");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byTransactionPlayer", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<Player>");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byShopOwner", "RegEx->([A-Za-z0-9_.?!#-()]){1,}:<Player>");
+		registerCommand(new CommandShopTransactions(PermissionsConstants.COMMAND_ABS_TRANSACTION), "transactions", "byTransactionItem");
 	}
 	
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command command, String label, String[] args) {

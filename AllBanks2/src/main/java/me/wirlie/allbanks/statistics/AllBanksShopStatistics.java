@@ -35,6 +35,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.utils.AssertUtil;
 import me.wirlie.allbanks.utils.ItemStackBase64;
 import me.wirlie.allbanks.utils.ShopUtil;
@@ -80,14 +81,14 @@ public class AllBanksShopStatistics {
 		AssertUtil.assertNotNull(item);
 		AssertUtil.assertNotNull(p);
 		
-		String shop_owner = ShopUtil.getOwner(AllBanksShopSign).getName().toLowerCase();
+		String shop_owner = (ShopUtil.isAdminShop(AllBanksShopSign)) ? Shops.ADMIN_TAG : ShopUtil.getOwner(AllBanksShopSign).getName().toLowerCase();
 		Statement stm = null;
 		
 		try{
 			stm = DBC.createStatement();
 			stm.executeUpdate("INSERT INTO shops_statistics "
 					+ "(sign_loc, transaction_player, transaction_item_base64, date, shop_owner, transaction_type) VALUES "
-					+ "('" + Util.convertLocationToString(AllBanksShopSign.getLocation(), true) + "', '" + p.getName().toLowerCase() + "', '" + ItemStackBase64.toBase64(item) + "', " + new Date().getTime() + ", '" + shop_owner + "', " + TransactionType.BUY.toString() + ")");
+					+ "('" + Util.convertLocationToString(AllBanksShopSign.getLocation(), true) + "', '" + p.getName().toLowerCase() + "', '" + ItemStackBase64.toBase64(item) + "', " + new Date().getTime() + ", '" + shop_owner + "', '" + TransactionType.BUY.toString() + "')");
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{
@@ -109,14 +110,14 @@ public class AllBanksShopStatistics {
 		AssertUtil.assertNotNull(item);
 		AssertUtil.assertNotNull(p);
 		
-		String shop_owner = ShopUtil.getOwner(AllBanksShopSign).getName().toLowerCase();
+		String shop_owner = (ShopUtil.isAdminShop(AllBanksShopSign)) ? Shops.ADMIN_TAG : ShopUtil.getOwner(AllBanksShopSign).getName().toLowerCase();
 		Statement stm = null;
 		
 		try{
 			stm = DBC.createStatement();
 			stm.executeUpdate("INSERT INTO shops_statistics "
 					+ "(sign_loc, transaction_player, transaction_item_base64, date, shop_owner, transaction_type) VALUES "
-					+ "('" + Util.convertLocationToString(AllBanksShopSign.getLocation(), true) + "', '" + p.getName().toLowerCase() + "', '" + ItemStackBase64.toBase64(item) + "', '" + item.getType().toString() + "', " + new Date().getTime() + ", '" + shop_owner + "', " + TransactionType.SELL.toString() + ")");
+					+ "('" + Util.convertLocationToString(AllBanksShopSign.getLocation(), true) + "', '" + p.getName().toLowerCase() + "', '" + ItemStackBase64.toBase64(item) + "', " + new Date().getTime() + ", '" + shop_owner + "', '" + TransactionType.SELL.toString() + "')");
 		}catch(SQLException e){
 			e.printStackTrace();
 		}finally{

@@ -150,35 +150,39 @@ public class CommandPlot extends Command {
 				return CommandExecuteResult.OTHER;
 			}
 			
-			//Comprobar límite
-			AllBanksPlayer abp = new AllBanksPlayer(p.getName());
-			
-			//Permiso especial
-			int plotLimit = abw.getWorldConfiguration().plotsPerUser();
-			
-			for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
-				if(pinfo.getPermission().startsWith("allbanks.land." + abw.getID() + ".plot-limit.")){
-					try{
-						plotLimit = Integer.parseInt(pinfo.getPermission().replace("allbanks.land." + abw.getID() + ".plot-limit.", ""));
-					}catch(NumberFormatException e2){
-						plotLimit = abw.getWorldConfiguration().plotsPerUser();
+			if(!abw.hasAdminPermissions(p)){
+				//Comprobar límite
+				AllBanksPlayer abp = new AllBanksPlayer(p.getName());
+				
+				//Permiso especial
+				int plotLimit = abw.getWorldConfiguration().plotsPerUser();
+				
+				for(PermissionAttachmentInfo pinfo : p.getEffectivePermissions()){
+					if(pinfo.getPermission().startsWith("allbanks.land." + abw.getID() + ".plot-limit.")){
+						try{
+							plotLimit = Integer.parseInt(pinfo.getPermission().replace("allbanks.land." + abw.getID() + ".plot-limit.", ""));
+						}catch(NumberFormatException e2){
+							plotLimit = abw.getWorldConfiguration().plotsPerUser();
+						}
 					}
+				}
+				
+				int currentPlots = abp.currentPlots(abw.getID());
+				
+				if((currentPlots + 1) > plotLimit){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
+					return CommandExecuteResult.OTHER;
 				}
 			}
 			
-			int currentPlots = abp.currentPlots(abw.getID());
-			
-			if((currentPlots + 1) > plotLimit){
-				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_MAX_REACHED, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + currentPlots, "%2%>>>" + abw.getWorldConfiguration().plotsPerUser()), true);
-				InteractiveUtil.sendSound(p, SoundType.DENY);
-				return CommandExecuteResult.OTHER;
-			}
-			
-			//Dinero??
-			if(!AllBanks.getEconomy().has(p, abw.getWorldConfiguration().claimCost().doubleValue())){
-				Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_INSUFICIENT_MONEY, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getEconomy().format(abw.getWorldConfiguration().claimCost().doubleValue())), true);
-				InteractiveUtil.sendSound(p, SoundType.DENY);
-				return CommandExecuteResult.OTHER;
+			if(!abw.hasAdminPermissions(p)){
+				//Dinero??
+				if(!AllBanks.getEconomy().has(p, abw.getWorldConfiguration().claimCost().doubleValue())){
+					Translation.getAndSendMessage(sender, StringsID.PLOT_CLAIM_INSUFICIENT_MONEY, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.getEconomy().format(abw.getWorldConfiguration().claimCost().doubleValue())), true);
+					InteractiveUtil.sendSound(p, SoundType.DENY);
+					return CommandExecuteResult.OTHER;
+				}
 			}
 			
 			//Listo, claimear
