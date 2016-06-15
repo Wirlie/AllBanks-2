@@ -136,7 +136,8 @@ public class AllBanks extends JavaPlugin {
 	public final static String[] COMPATIBLE_VERSIONS = {
 			"1.9",
 			"1.9.2",
-			"1.9.4"
+			"1.9.4",
+			"1.10"
 			};
 	
 	/** Version incompatible mínima **/
