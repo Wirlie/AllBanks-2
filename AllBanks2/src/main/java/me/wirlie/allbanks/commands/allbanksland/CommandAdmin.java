@@ -16,6 +16,7 @@ import me.wirlie.allbanks.allbanksland.WorldConfiguration;
 import me.wirlie.allbanks.allbanksland.AllBanksWorld.WorldGenerationResult;
 import me.wirlie.allbanks.allbanksland.generator.WorldGenerationCfg;
 import me.wirlie.allbanks.command.Command;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_10_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
 
@@ -104,8 +105,17 @@ public class CommandAdmin extends Command {
 									return CommandExecuteResult.OTHER;
 								}
 					    	}catch (ClassNotFoundException e2) {
-					    		e2.printStackTrace();
-					    		return CommandExecuteResult.EXCEPTION;
+					    		try {
+									//1.10 R1 Support
+						    		Class.forName("org.bukkit.craftbukkit.v1_10_R1.CraftServer");
+						    		if(WorldLoadAsync_1_10_R1.isBusy()){
+										Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_GENERATE_WORLD_ERROR_ANOTHER_JOB_IN_PROGRESS, true);
+										return CommandExecuteResult.OTHER;
+									}
+						    	}catch (ClassNotFoundException e3) {
+						    		e3.printStackTrace();
+						    		return CommandExecuteResult.EXCEPTION;
+						    	}
 					    	}
 				    	}
 						
@@ -157,8 +167,18 @@ public class CommandAdmin extends Command {
 									return CommandExecuteResult.OTHER;
 								}
 					    	}catch (ClassNotFoundException e2) {
-					    		e2.printStackTrace();
-					    		return CommandExecuteResult.EXCEPTION;
+					    		try {
+									//R1 Support
+						    		Class.forName("org.bukkit.craftbukkit.v1_10_R1.CraftServer");
+						    		if(WorldLoadAsync_1_10_R1.isBusy() && WorldLoadAsync_1_10_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
+										//En generación
+										Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+										return CommandExecuteResult.OTHER;
+									}
+						    	}catch (ClassNotFoundException e3) {
+						    		e3.printStackTrace();
+						    		return CommandExecuteResult.EXCEPTION;
+						    	}
 					    	}
 				    	}
 						
@@ -209,8 +229,18 @@ public class CommandAdmin extends Command {
 									return CommandExecuteResult.OTHER;
 								}
 					    	}catch (ClassNotFoundException e2) {
-					    		e2.printStackTrace();
-					    		return CommandExecuteResult.EXCEPTION;
+					    		try {
+									//R1 Support
+						    		Class.forName("org.bukkit.craftbukkit.v1_10_R1.CraftServer");
+						    		if(WorldLoadAsync_1_10_R1.isBusy() && WorldLoadAsync_1_10_R1.lastWorldGenerated.equalsIgnoreCase(worldName)){
+										//En generación
+										Translation.getAndSendMessage(sender, StringsID.COMMAND_LAND_WORLD_SPAWN_ERROR_WORLD_IN_PROGRESS, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + worldName), true);
+										return CommandExecuteResult.OTHER;
+									}
+						    	}catch (ClassNotFoundException e3) {
+						    		e3.printStackTrace();
+						    		return CommandExecuteResult.EXCEPTION;
+						    	}
 					    	}
 				    	}
 						
