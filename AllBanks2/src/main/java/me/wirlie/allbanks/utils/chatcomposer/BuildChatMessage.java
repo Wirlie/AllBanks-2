@@ -635,16 +635,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 		if(nmsChatSerializerGsonInstance == null){
 			// Find the field and its value, completely bypassing obfuscation
 			Class<?> chatSerializerClazz;
-
-			String version = Reflection.getVersion();
-			double majorVersion = Double.parseDouble(version.replace('_', '.').substring(1, 4));
-			int lesserVersion = Integer.parseInt(version.substring(6, 7));
-
-			if (majorVersion < 1.8 || (majorVersion == 1.8 && lesserVersion == 1)) {
-				chatSerializerClazz = Reflection.getNMSClass("ChatSerializer");
-			} else {
-				chatSerializerClazz = Reflection.getNMSClass("IChatBaseComponent$ChatSerializer");
-			}
+			
+			chatSerializerClazz = Reflection.getNMSClass("IChatBaseComponent$ChatSerializer");
 
 			if (chatSerializerClazz == null) {
 				throw new ClassNotFoundException("Can't find the ChatSerializer class");
