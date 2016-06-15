@@ -485,6 +485,8 @@ public class Util {
 		HashMap<String, String> replaceMap = new HashMap<String, String>();
 		replaceMap.put("%1%", rawBukkitVersion);
 		
+		AllBanksLogger.info("Current CB/Spigot version: " + rawVersion, true);
+		
 		if(compatible){
 			AllBanksLogger.info("You are using a compatible version of CraftBukkit.");
 			Console.sendMessage(StringsID.YOU_ARE_RUNNING_A_COMPATIBLE_VERSION_OF_CB, replaceMap);
@@ -496,7 +498,7 @@ public class Util {
 				|| compareVersionsString(AllBanks.INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_2_IS_GREATER && !AllBanks.INCOMPATIBLE_MAX.equalsIgnoreCase("0")
 				|| compareVersionsString(AllBanks.INCOMPATIBLE_MAX, rawVersion) == CompareVersionResult.VERSION_EQUALS && !AllBanks.INCOMPATIBLE_MAX.equalsIgnoreCase("0")) {
 				AllBanksLogger.severe("Please use the correct version of CraftBukkit/Spigot.", true);
-				AllBanksLogger.severe("For this build, CB 1.9 is expected.", true);
+				AllBanksLogger.severe("For this build, CB/Spigot 1.9 or 1.10 is expected.", true);
 				return AllBanks.VersionCheckResult.NOT_COMPATIBLE;
 			} else {
 				AllBanksLogger.severe("You are not using a compatible version of CraftBukkit.");

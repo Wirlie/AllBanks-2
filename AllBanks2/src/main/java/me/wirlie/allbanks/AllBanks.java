@@ -105,6 +105,8 @@ public class AllBanks extends JavaPlugin {
 	private static Connection dbc;
 	private static StorageType storageMethod = StorageType.SQLITE;
 	private static Economy econ = null;
+	/** Cuando una versión incompatible es detectada **/
+	public static boolean incompatibleVersionDetected = false;
 	
 	/**
 	 * Si hay una actualización pendiente.
@@ -143,7 +145,7 @@ public class AllBanks extends JavaPlugin {
 	/** Version incompatible mínima **/
 	public static String INCOMPATIBLE_MIN = "1.8";
 	/** Version incompatible maxima **/
-	public static String INCOMPATIBLE_MAX = "0";
+	public static String INCOMPATIBLE_MAX = "1.10";
 	
 	/** Tipo de almacenamiento que usará AllBanks para almacenar los datos. */
 	public enum StorageType{
@@ -183,7 +185,15 @@ public class AllBanks extends JavaPlugin {
 		//Si el resultado de la comparación es No Compatible, entonces deshabilitamos AllBanks.
 		if(result.equals(VersionCheckResult.NOT_COMPATIBLE)) {
 			//No compatible
-			Bukkit.getPluginManager().disablePlugin(this);
+			incompatibleVersionDetected = true;
+			
+			new BukkitRunnable(){
+				public void run(){
+					for(Player p : Bukkit.getOnlinePlayers()){
+						Translation.getAndSendMessage(p, StringsID.YOU_ARE_RUNNING_A_INCOMPATIBLE_VERSION_PROCEED_WITH_CAUTION_ALLBANKS2_CANNOT_WORK, true);
+					}
+				}
+			}.runTaskTimer(this, 20, 20 * 60 * 60);
 			return;
 		}
 		

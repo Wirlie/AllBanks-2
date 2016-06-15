@@ -40,7 +40,7 @@ public class PlayerJoinUpdaterMessage implements Listener {
 	public void onPlayerJoin(PlayerJoinEvent e){
 		final Player p = e.getPlayer();
 		
-		if(AllBanks.updatePending)
+		if(AllBanks.updatePending){
 			new BukkitRunnable(){
 				public void run(){
 					if(p.isOp()){
@@ -48,5 +48,16 @@ public class PlayerJoinUpdaterMessage implements Listener {
 					}
 				}
 			}.runTaskLater(AllBanks.getInstance(), 20 * 4);
+		}
+		
+		if(AllBanks.incompatibleVersionDetected){
+			new BukkitRunnable(){
+				public void run(){
+					if(p.isOp()){
+						Translation.getAndSendMessage(p, StringsID.YOU_ARE_RUNNING_A_INCOMPATIBLE_VERSION_PROCEED_WITH_CAUTION_ALLBANKS2_CANNOT_WORK, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + AllBanks.updatePendingVersion), true);
+					}
+				}
+			}.runTaskLater(AllBanks.getInstance(), 20 * 4);
+		}
 	}
 }
