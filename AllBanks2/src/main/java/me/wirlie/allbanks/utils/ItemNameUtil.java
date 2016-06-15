@@ -90,6 +90,7 @@ public class ItemNameUtil {
 			.add(Material.DARK_OAK_DOOR)
 			.add(Material.WOODEN_DOOR)
 			.add(Material.CAULDRON)
+			.add(Material.AIR)
 			.build();
 	
 	private static BiMap<String, String> itemNames = new ImmutableBiMap.Builder<String, String>()
@@ -511,7 +512,11 @@ public class ItemNameUtil {
 	 */
 	public static Material getItemByShortName(String shortName) {
 		if(itemNames.containsValue(shortName)) {
-			return Material.valueOf(itemNames.inverse().get(shortName));
+			Material mat = Material.valueOf(itemNames.inverse().get(shortName));
+			if(blackList.contains(mat)){
+				return null;
+			}
+			return mat;
 		}
 		
 		return null;

@@ -376,6 +376,7 @@ public class ShopUtil {
 	 * @return {@code true} si el item necesita un ID especial
 	 */
 	public static boolean itemNeedResolveCustomDurability(ItemStack item){
+		if(item.getType() == Material.AIR) return false;
 		
 		if(item.getItemMeta().getDisplayName() != null){
 			return true;
