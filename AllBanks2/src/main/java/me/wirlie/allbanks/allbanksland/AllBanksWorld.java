@@ -24,6 +24,7 @@ import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
+import me.wirlie.allbanks.utils.WorldLoadAsync_1_10_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R1;
 import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
 
@@ -186,8 +187,14 @@ public class AllBanksWorld {
 			    		Class.forName("org.bukkit.craftbukkit.v1_9_R2.CraftServer");
 			    		WorldLoadAsync_1_9_R2.createAsyncWorld(wc, sender, worldCfg);
 			    	}catch (ClassNotFoundException e2) {
-			    		e2.printStackTrace();
-			            return;
+			    		try {
+							//R1 Support
+				    		Class.forName("org.bukkit.craftbukkit.v1_10_R1.CraftServer");
+				    		WorldLoadAsync_1_10_R1.createAsyncWorld(wc, sender, worldCfg);
+				    	}catch (ClassNotFoundException e3) {
+				    		e3.printStackTrace();
+				            return;
+				        }
 			        }
 		        }
 				

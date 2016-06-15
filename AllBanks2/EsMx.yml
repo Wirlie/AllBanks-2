@@ -17,7 +17,7 @@
 # UTF8 sin BOM. Recomiendo usar Notepad++ para editar este archivo.                                                       #
 ###########################################################################################################################
 
-language-version: "1.2"
+language-version: "1.1.6"
 LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
@@ -177,7 +177,7 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 155: "&cEl valor &f%1% &cno es válido."
 156: "&cHaz alcanzado el número máximo de parcelas.%BREAK%&c(&f%1% &cde &f%2% &cparcelas)"
 157: "&cEsta parcela no tiene dueño.%BREAK%&3ID: &e%1%&3."
-158: "&b======[ &2AllBanksLand - PlotInfo &b]======%BREAK%&3ID: &e%1% %BREAK%&3Dueño: &6%2% %BREAK%&3Expira: &6%3% %BREAK%&3Permitidos: &f%4% %BREAK%&3Denegados: &f%6% %BREAK%&3Flags: &r%5%"
+158: "&b======[ &2AllBanksLand - PlotInfo &b]======%BREAK%&3ID: &e%1% %BREAK%&3Dueño: &6%2% %BREAK%&3Expira: &6%3% %BREAK%&3Bioma: &d%7% %BREAK%&3Permitidos: &f%4% %BREAK%&3Denegados: &f%6% %BREAK%&3Flags: &r%5%"
 159: "Ninguno"
 160: "&aPunto de aparición cambiado con éxito."
 161: "&cPvP no activado en este lugar."

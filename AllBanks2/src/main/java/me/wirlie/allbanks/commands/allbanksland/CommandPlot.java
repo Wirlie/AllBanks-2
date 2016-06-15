@@ -1110,6 +1110,10 @@ public class CommandPlot extends Command {
 						if(deny.equalsIgnoreCase("") || deny.equalsIgnoreCase(", ")) deny = Translation.get(StringsID.NONE, false)[0];
 						replaceMap.put("%6%", deny);
 						
+						Biome plotBiome = plot.getFirstBound().getBlock().getBiome();
+						
+						replaceMap.put("%7%", plotBiome.toString());
+						
 						Translation.getAndSendMessage(sender, StringsID.PLOT_INFO, replaceMap, false);
 						InteractiveUtil.sendSound(p, SoundType.SUCCESS);
 						return CommandExecuteResult.SUCCESS;
@@ -1374,6 +1378,12 @@ public class CommandPlot extends Command {
 			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("setbiome")){
 			
+			boolean disable = true;
+			if(disable){
+				sender.sendMessage("Not yet implemented.");
+				return CommandExecuteResult.SUCCESS;
+			}
+			
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
 				return CommandExecuteResult.OTHER;
@@ -1394,7 +1404,7 @@ public class CommandPlot extends Command {
 			}
 			
 			try{
-				Biome biome = Biome.valueOf(args[2]);
+				Biome biome = Biome.valueOf(args[2].toUpperCase());
 				AllBanksWorld abw = AllBanksWorld.getInstance(p.getLocation().getWorld().getName());
 				
 				if(!abw.locationIsPlot(p.getLocation())){
@@ -1418,6 +1428,13 @@ public class CommandPlot extends Command {
 				return CommandExecuteResult.EXCEPTION;
 			}
 		}else if(args[1].equalsIgnoreCase("clear")){
+			
+			boolean disable = true;
+			if(disable){
+				sender.sendMessage("Not yet implemented.");
+				return CommandExecuteResult.SUCCESS;
+			}
+			
 			if(args.length == 2){
 				if(!(sender instanceof Player)){
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);

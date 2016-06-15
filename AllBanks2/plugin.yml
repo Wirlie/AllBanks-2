@@ -1,5 +1,5 @@
 name: AllBanks2
-version: 1.2
+version: 1.1.6
 load: POSTWORLD
 main: me.wirlie.allbanks.AllBanks
 softdepend: [AllBanksPlotProtection, WorldGuard, Towny, Residence]
