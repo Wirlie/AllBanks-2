@@ -1,5 +1,6 @@
 package me.wirlie.allbanks.utils;
 
+import java.lang.reflect.Field;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_9_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_9_R1.util.LongHash;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -20,7 +22,9 @@ import me.wirlie.allbanks.Translation;
 import net.minecraft.server.v1_9_R1.Chunk;
 import net.minecraft.server.v1_9_R1.ChunkProviderServer;
 import net.minecraft.server.v1_9_R1.EnumChatFormat;
+import net.minecraft.server.v1_9_R1.LongHashMap;
 import net.minecraft.server.v1_9_R1.NBTTagCompound;
+import net.minecraft.server.v1_9_R1.PlayerChunk;
 import net.minecraft.server.v1_9_R1.WorldServer;
 
 /**
@@ -186,6 +190,28 @@ public class Util_1_9_R1 {
 							Location loc = new Location(bukkitWorld, cursorX, cursorY, cursorZ);
 							final int chunk_x = loc.getChunk().getX();
 							final int chunk_z = loc.getChunk().getZ();
+							
+							new BukkitRunnable(){
+								public void run(){
+									try {
+										Field f = ws.getPlayerChunkMap().getClass().getDeclaredField("e");
+										f.setAccessible(true);
+										@SuppressWarnings("unchecked")
+										LongHashMap<PlayerChunk> chunks = (LongHashMap<PlayerChunk>) f.get(ws.getPlayerChunkMap());
+										chunks.remove(LongHash.toLong(chunk_x, chunk_z));
+										provider.unloadQueue.remove(LongHash.toLong(chunk_x, chunk_z));
+									} catch (NoSuchFieldException e) {
+										e.printStackTrace();
+									} catch (SecurityException e) {
+										e.printStackTrace();
+									} catch (IllegalArgumentException e) {
+										e.printStackTrace();
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+									}
+								}
+							}.runTask(AllBanks.getInstance());
+							
 							originalChunkStatic = null;
 							
 							if(tempChunks.containsKey(chunk_x + ":" + chunk_z)){
@@ -221,7 +247,6 @@ public class Util_1_9_R1 {
 								currentBlock.setBiome(originalBlock.getBiome());
 								processedBlocks++;
 							}catch(ConcurrentModificationException e){
-								//skip
 								AllBanksLogger.severe("ConcurrentModificationException! - Plot Clear");
 							}
 						}

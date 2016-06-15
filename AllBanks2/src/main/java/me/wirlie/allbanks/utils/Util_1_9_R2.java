@@ -1,5 +1,6 @@
 package me.wirlie.allbanks.utils;
 
+import java.lang.reflect.Field;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
@@ -10,13 +11,16 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
+import org.bukkit.craftbukkit.v1_9_R2.util.LongHash;
 import org.bukkit.craftbukkit.v1_9_R2.CraftWorld;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import net.minecraft.server.v1_9_R2.PlayerChunk;
 import net.minecraft.server.v1_9_R2.Chunk;
 import net.minecraft.server.v1_9_R2.ChunkProviderServer;
 import net.minecraft.server.v1_9_R2.WorldServer;
@@ -175,6 +179,28 @@ public class Util_1_9_R2 {
 							Location loc = new Location(bukkitWorld, cursorX, cursorY, cursorZ);
 							final int chunk_x = loc.getChunk().getX();
 							final int chunk_z = loc.getChunk().getZ();
+							
+							new BukkitRunnable(){
+								public void run(){
+									try {
+										Field f = ws.getPlayerChunkMap().getClass().getDeclaredField("e");
+										f.setAccessible(true);
+										@SuppressWarnings("unchecked")
+										Long2ObjectMap<PlayerChunk> chunks = (Long2ObjectMap<PlayerChunk>) f.get(ws.getPlayerChunkMap());
+										chunks.remove(LongHash.toLong(chunk_x, chunk_z));
+										provider.unloadQueue.remove(LongHash.toLong(chunk_x, chunk_z));
+									} catch (NoSuchFieldException e) {
+										e.printStackTrace();
+									} catch (SecurityException e) {
+										e.printStackTrace();
+									} catch (IllegalArgumentException e) {
+										e.printStackTrace();
+									} catch (IllegalAccessException e) {
+										e.printStackTrace();
+									}
+								}
+							}.runTask(AllBanks.getInstance());
+							
 							originalChunkStatic = null;
 							
 							if(tempChunks.containsKey(chunk_x + ":" + chunk_z)){
