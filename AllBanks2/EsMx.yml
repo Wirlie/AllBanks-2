@@ -17,7 +17,7 @@
 # UTF8 sin BOM. Recomiendo usar Notepad++ para editar este archivo.                                                       #
 ###########################################################################################################################
 
-language-version: "1.1.6"
+language-version: "1.2"
 LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 
 1: "Habilitando plugin.%BREAK%Iniciando Base de Datos local."
@@ -277,4 +277,5 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 255: "Jugador de la Transacción"
 256: "Ítem"
 257: "&7Generando listado..."
+258: "&cEstas usando una versión de CraftBukkit/Spigot incompatible con AllBanks2. Procede con precaución es posible que no todo funcione como se espera."
 

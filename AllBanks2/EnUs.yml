@@ -9,7 +9,7 @@
 # I recommend Notepad++ to edit this file.                                                                          #
 #####################################################################################################################
 
-language-version: "1.1.6"
+language-version: "1.2"
 LOTTERY_PREFIX: "&5Lottery &6&l>>&r "
 
 1: "Enabling plugin.%BREAK%Starting local database..."
