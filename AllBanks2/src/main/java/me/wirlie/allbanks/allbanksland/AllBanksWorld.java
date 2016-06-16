@@ -37,7 +37,7 @@ import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
  */
 public class AllBanksWorld {
 	
-	private static final Connection DBC = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME);
+	private static final Connection DBC = AllBanks.getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME);
 	
 	/**
 	 * Resultado de la generación.

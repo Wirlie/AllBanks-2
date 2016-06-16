@@ -81,7 +81,7 @@ public class AllBanksPlayer {
 		ResultSet res = null;
 		
 		try{
-			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
+			stm = AllBanks.getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' ORDER BY id");
 		
 			List<PlotID> returnList = new ArrayList<PlotID>();
@@ -119,7 +119,7 @@ public class AllBanksPlayer {
 		ResultSet res = null;
 		
 		try{
-			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
+			stm = AllBanks.getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' AND world_id = '" + worldID + "'");
 		
 			int total = 0;

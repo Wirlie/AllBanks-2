@@ -104,7 +104,7 @@ public class AllBanksPlot {
 		ResultSet res = null;
 		
 		try{
-			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
+			stm = AllBanks.getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_coord_X = " + plotX + " AND plot_coord_Z = " + plotZ + " AND world_id = '" + abw.getID() + "'");
 			
 			if(res.next()){
@@ -221,7 +221,7 @@ public class AllBanksPlot {
 		Statement stm = null;
 		
 		try{
-			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
+			stm = AllBanks.getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			stm.executeUpdate("DELETE FROM world_plots WHERE world_id = '" + abw.getID() + "' AND plot_coord_X = '" + plotX + "' AND plot_coord_Z = '" + plotZ + "'");
 		}catch(SQLException e){
 			e.printStackTrace();
@@ -245,7 +245,7 @@ public class AllBanksPlot {
 		Statement stm = null;
 		
 		try{
-			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
+			stm = AllBanks.getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			
 			if(!registeredDatabase){
 				stm.executeUpdate("INSERT INTO world_plots (world_id, plot_coord_X, plot_coord_Z, plot_owner, plot_config) VALUES ('" + abw.getID() + "', '" + plotX + "', '" + plotZ + "', '" + newOwnerName + "', '" + PlotConfiguration.defaultConfiguration(abw.getID()) + "')");

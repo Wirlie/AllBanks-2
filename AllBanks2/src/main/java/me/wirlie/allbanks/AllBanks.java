@@ -608,7 +608,7 @@ public class AllBanks extends JavaPlugin {
 		
 		try{
 			AllBanksLogger.info("Try to install ItemSolution database...");
-			stm = getSQLConnectionx(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
+			stm = getSQLConnection(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
@@ -633,7 +633,7 @@ public class AllBanks extends JavaPlugin {
 		
 		try{
 			AllBanksLogger.info("Try to install ItemSolution database...");
-			stm = getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
+			stm = getSQLConnection(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS world_plots (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_coord_X NUMBER, plot_coord_Z NUMBER, plot_owner TEXT NOT NULL, plot_config TEXT NOT NULL)");
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS worlds_cfg (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_size NUMBER NOT NULL, road_size NUMBER NOT NULL, current_plot_cursor TEXT NULL, world_base_height NUMBER NOT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
@@ -698,7 +698,7 @@ public class AllBanks extends JavaPlugin {
 	 * @param connectionName Nombre de la conexión
 	 * @return Conexión obtenida por el nombre especificado
 	 */
-	public static Connection getSQLConnectionx(String connectionName){
+	public static Connection getSQLConnection(String connectionName){
 		return dbSQLite.getConnection(connectionName);
 	}
 	
