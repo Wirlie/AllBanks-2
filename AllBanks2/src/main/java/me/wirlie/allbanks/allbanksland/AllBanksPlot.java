@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
@@ -61,56 +62,35 @@ public class AllBanksPlot {
 	
 	private boolean registeredDatabase = false;
 	
-	protected AllBanksPlot(AllBanksWorld abw, int startX, int startZ){
-		this.abw = abw;
-		
-		firstBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX : startX, abw.getBukkitWorld().getSpawnLocation().getY(), (startZ >= 0) ? startZ : startZ);
-		secondBound = new Location(abw.getBukkitWorld(), (startX >= 0) ? startX + abw.plotSize - 1 : startX - abw.plotSize + 1, abw.getBukkitWorld().getMaxHeight(), (startZ >= 0) ? startZ + abw.plotSize - 1 : startZ - abw.plotSize + 1);
-		//Id del plot
-		int totalSize = abw.plotSize + abw.roadSize + 2;
-		plotX = ((startX >= 0) ? (startX / totalSize) : (startX / totalSize) - 1);
-		plotZ = ((startZ >= 0) ? (startZ / totalSize) : (startZ / totalSize) - 1);
-		plotStringID = plotX + "," + plotZ;
-		
-		loadPlotData();
-	}
-	
 	/**
 	 * Constructor.
+	 * @param abw Mundo de AllBanksLand
 	 * @param plotX X id
 	 * @param plotZ Z id
-	 * @param abw Mundo de AllBanksLand
 	 */
-	public AllBanksPlot(int plotX, int plotZ, AllBanksWorld abw){
+	public AllBanksPlot(AllBanksWorld abw, int plotX, int plotZ){
 		this.abw = abw;
 		this.plotX = plotX;
 		this.plotZ = plotZ;
-		
-		plotStringID = plotX + "," + plotZ;
+		this.plotStringID = plotX + "," + plotZ;
 		
 		int totalSize = abw.plotSize + abw.roadSize + 2;
-		firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, plotZ * totalSize);
-		secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, (plotZ * totalSize) + abw.plotSize);
+		this.firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, plotZ * totalSize);
+		this.secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, (plotZ * totalSize) + abw.plotSize);
 		
 		loadPlotData();
+		
+		//DEBUG REMOVE Test de cálculo
+		firstBound.getBlock().setType(Material.GOLD_BLOCK);
+		secondBound.getBlock().setType(Material.GOLD_BLOCK);
 	}
 	
 	/**
-	 * Constructor corto de {@link #AllBanksPlot(int, int, AllBanksWorld)}.
+	 * Constructor corto de {@link #AllBanksPlot(AllBanksWorld, int, int)}.
 	 * @param pid Información de la parcela.
 	 */
 	public AllBanksPlot(PlotID pid) {
-		this.abw = pid.getWorld();
-		this.plotX = pid.getPlotX();
-		this.plotZ = pid.getPlotZ();
-		
-		plotStringID = plotX + "," + plotZ;
-		
-		int totalSize = abw.plotSize + abw.roadSize + 2;
-		firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, plotZ * totalSize);
-		secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, (plotZ * totalSize) + abw.plotSize);
-		
-		loadPlotData();
+		this(pid.getWorld(), pid.getPlotX(), pid.getPlotZ());
 	}
 
 	private void loadPlotData(){
@@ -376,7 +356,7 @@ public class AllBanksPlot {
 		public static synchronized PlotID getNextAvailablePlot(AllBanksWorld abw){
 			while(true){
 				if(lastCursorIterations == 0){
-					if(!new AllBanksPlot(0, 0, abw).hasOwner()){
+					if(!new AllBanksPlot(abw, 0, 0).hasOwner()){
 						return new PlotID(abw, 0, 0);
 					}
 				}else{
@@ -391,7 +371,7 @@ public class AllBanksPlot {
 					for(int cursorX = startX; cursorX <= bound1X; cursorX++){
 						int cursorZ = startZ;
 						
-						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+						if(!new AllBanksPlot(abw, cursorX, cursorZ).hasOwner()){
 							return new PlotID(abw, cursorX, cursorZ);
 						}
 					}
@@ -400,7 +380,7 @@ public class AllBanksPlot {
 					for(int cursorZ = startZ; cursorZ >= bound2Z; cursorZ--){
 						int cursorX = bound1X;
 						
-						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+						if(!new AllBanksPlot(abw, cursorX, cursorZ).hasOwner()){
 							return new PlotID(abw, cursorX, cursorZ);
 						}
 					}
@@ -409,7 +389,7 @@ public class AllBanksPlot {
 					for(int cursorX = bound1X; cursorX >= bound3X; cursorX--){
 						int cursorZ = bound2Z;
 						
-						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+						if(!new AllBanksPlot(abw, cursorX, cursorZ).hasOwner()){
 							return new PlotID(abw, cursorX, cursorZ);
 						}
 					}
@@ -418,7 +398,7 @@ public class AllBanksPlot {
 					for(int cursorZ = bound2Z; cursorZ <= bound4Z; cursorZ++){
 						int cursorX = startX;
 						
-						if(!new AllBanksPlot(cursorX, cursorZ, abw).hasOwner()){
+						if(!new AllBanksPlot(abw, cursorX, cursorZ).hasOwner()){
 							return new PlotID(abw, cursorX, cursorZ);
 						}
 					}
