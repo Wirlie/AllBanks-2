@@ -480,7 +480,7 @@ public class AllBanksWorld {
 			startZ = ((worldZ / totalSize) * totalSize) - roadSize - 1;
 		}
 		
-		return new AllBanksPlot(this, startX, startZ);
+		return new AllBanksPlot(PlotID.getPlotIDByRealXZ(this, startX, startZ));
 	}
 	
 	/**

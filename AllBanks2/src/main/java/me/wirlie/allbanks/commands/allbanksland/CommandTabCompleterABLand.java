@@ -109,7 +109,7 @@ public class CommandTabCompleterABLand implements TabCompleter{
 						"deny",
 						"undeny",
 						"set",
-						"teleport", //TODO AGREGAR ESTE COMANDO
+						"teleport",
 						"setHomeSpawn",
 						"setShopSpawn",
 						"info",

@@ -12,6 +12,20 @@ public class PlotID {
 	private int plotX;
 	
 	/**
+	 * Obtener una instancia de esta clase usando valores reales del mundo.
+	 * @param abw Mundo de AllBanksLand
+	 * @param startX Localización real, inicial X
+	 * @param startZ Localización real, inicial Z
+	 * @return Instancia de {@link PlotID}
+	 */
+	public static PlotID getPlotIDByRealXZ(AllBanksWorld abw, int startX, int startZ){
+		int totalSize = abw.plotSize + abw.roadSize + 2;
+		int plotX = ((startX >= 0) ? (startX / totalSize) : (startX / totalSize) - 1);
+		int plotZ = ((startZ >= 0) ? (startZ / totalSize) : (startZ / totalSize) - 1);
+		return new PlotID(abw, plotX, plotZ);
+	}
+	
+	/**
 	 * Constructor de la clase.
 	 * @param worldID ID del mundo.
 	 * @param plotX ID X

@@ -894,7 +894,7 @@ public class CommandPlot extends Command {
 			}
 			
 			AllBanksWorld abw = AllBanksWorld.getInstance(worldID);
-			AllBanksPlot plot = new AllBanksPlot(plotX, plotZ, abw);
+			AllBanksPlot plot = new AllBanksPlot(abw, plotX, plotZ);
 			
 			if(plot.getPlotConfiguration().plotSpawnLoc() != null)
 				p.teleport(plot.getPlotConfiguration().plotSpawnLoc());
@@ -1530,7 +1530,7 @@ public class CommandPlot extends Command {
 						}
 						
 						//Resetear parcela
-						AllBanksPlot plot = new AllBanksPlot(data.plot_X, data.plot_Z, data.plot_world);
+						AllBanksPlot plot = new AllBanksPlot(data.plot_world, data.plot_X, data.plot_Z);
 						
 						//Segundo chequeo por si se trata de ejecutar este comando para intentar acciones de trolleo
 						if(!plot.hasOwner() || !plot.getOwnerName().equalsIgnoreCase(sender.getName())){
