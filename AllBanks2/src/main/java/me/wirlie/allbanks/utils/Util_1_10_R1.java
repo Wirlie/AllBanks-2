@@ -1,7 +1,6 @@
 package me.wirlie.allbanks.utils;
 
 import java.lang.reflect.Field;
-import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,21 +8,18 @@ import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 import org.bukkit.craftbukkit.v1_10_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_10_R1.util.LongHash;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import net.minecraft.server.v1_10_R1.Chunk;
 import net.minecraft.server.v1_10_R1.ChunkProviderServer;
 import net.minecraft.server.v1_10_R1.WorldServer;
-import net.minecraft.server.v1_10_R1.PlayerChunk;
 import net.minecraft.server.v1_10_R1.EnumChatFormat;
 import net.minecraft.server.v1_10_R1.NBTTagCompound;
 
@@ -33,8 +29,6 @@ import net.minecraft.server.v1_10_R1.NBTTagCompound;
  *
  */
 public class Util_1_10_R1 {
-	
-	private static boolean finish_unload = false;
 	
 	/**
 	 * Obtener el código de nombre de un ítem
@@ -138,7 +132,6 @@ public class Util_1_10_R1 {
 		
 		//Background
 		new BukkitRunnable(){
-			@SuppressWarnings("deprecation")
 			public void run(){
 				long initialTime = new Date().getTime();
 				int firstCursorX = 0;
@@ -182,45 +175,26 @@ public class Util_1_10_R1 {
 							final int chunk_x = loc.getChunk().getX();
 							final int chunk_z = loc.getChunk().getZ();
 							
-							finish_unload = false;
-							
-							new BukkitRunnable(){
-								public void run(){
-									try {
-										Field f = ws.getPlayerChunkMap().getClass().getDeclaredField("e");
-										f.setAccessible(true);
-										@SuppressWarnings("unchecked")
-										Long2ObjectMap<PlayerChunk> chunks = (Long2ObjectMap<PlayerChunk>) f.get(ws.getPlayerChunkMap());
-										chunks.remove(LongHash.toLong(chunk_x, chunk_z));
-										provider.unloadQueue.remove(LongHash.toLong(chunk_x, chunk_z));
-									} catch (NoSuchFieldException e) {
-										e.printStackTrace();
-									} catch (SecurityException e) {
-										e.printStackTrace();
-									} catch (IllegalArgumentException e) {
-										e.printStackTrace();
-									} catch (IllegalAccessException e) {
-										e.printStackTrace();
-									}
-									
-									finish_unload = true;
-								}
-							}.runTask(AllBanks.getInstance());
-							
-							while(finish_unload == false){
-								
-							}
-							
 							originalChunkStatic = null;
 							
 							if(tempChunks.containsKey(chunk_x + ":" + chunk_z)){
 								//Ok, obtener chunk almacenado
 								originalChunkStatic = tempChunks.get(chunk_x + ":" + chunk_z);
 							}else{
+								System.out.println("GetOriginalChunk");
 								BukkitTask task = new BukkitRunnable(){
 									public void run(){
 										originalChunkStatic = provider.chunkGenerator.getOrCreateChunk(chunk_x, chunk_z);
 										tempChunks.put(chunk_x + ":" + chunk_z, originalChunkStatic);
+										provider.unloadQueue.remove(LongHash.toLong(chunk_x, chunk_z));
+										provider.chunks.replace(LongHash.toLong(chunk_x, chunk_z), originalChunkStatic);
+										try {
+											Field f = provider.getClass().getField("e");
+											f.setAccessible(true);
+											f.get(provider);
+										} catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+											e.printStackTrace();
+										}
 									}
 								}.runTask(AllBanks.getInstance());
 								
@@ -231,23 +205,13 @@ public class Util_1_10_R1 {
 									long currentWhileTime = new Date().getTime();
 									if((currentWhileTime - lastWhileTime) > 10000){
 										//Más de 10 segundos
-										AllBanksLogger.severe("PlotRegeneration timeout (10 seconds).");
+										AllBanksLogger.severe("PlotRegeneration timeout (10 seconds).", true);
 										task.cancel();
 										continue y_cursor;
 									}
 								}
-							}
-							
-							try{
-								Block originalBlock = originalChunkStatic.bukkitChunk.getBlock(cursorX - (chunk_x << 4), cursorY, cursorZ - (chunk_z << 4));
-								Block currentBlock = loc.getBlock();
-								currentBlock.setType(originalBlock.getType());
-								currentBlock.setData(originalBlock.getData());
-								currentBlock.setBiome(originalBlock.getBiome());
-								processedBlocks++;
-							}catch(ConcurrentModificationException e){
-								//skip
-								AllBanksLogger.severe("ConcurrentModificationException! - Plot Clear");
+								
+								System.out.println("originalChunkStatic: " + originalChunkStatic);
 							}
 						}
 					}
