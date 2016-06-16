@@ -1378,12 +1378,6 @@ public class CommandPlot extends Command {
 			return CommandExecuteResult.SUCCESS;
 		}else if(args[1].equalsIgnoreCase("setbiome")){
 			
-			boolean disable = true;
-			if(disable){
-				sender.sendMessage("Not yet implemented.");
-				return CommandExecuteResult.SUCCESS;
-			}
-			
 			if(!(sender instanceof Player)){
 				Translation.getAndSendMessage(sender, StringsID.COMMAND_ONLY_FOR_PLAYER, true);
 				return CommandExecuteResult.OTHER;
