@@ -37,6 +37,7 @@ import me.wirlie.allbanks.AllBanks;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.ChatUtil;
+import me.wirlie.allbanks.utils.DBUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
 
@@ -145,7 +146,7 @@ public class PlotConfiguration {
 				Statement stm = null;
 				
 				try{
-					stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+					stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 					stm.executeUpdate("UPDATE world_plots SET plot_config = '" + toJSON() + "' WHERE world_id = '" + plot.getAllBanksWorld().getID() + "' AND plot_coord_X = '" + plot.getPlotX() + "' AND plot_coord_Z = '" + plot.getPlotZ() + "'");
 				}catch(SQLException e){
 					e.printStackTrace();

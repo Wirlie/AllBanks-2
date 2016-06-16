@@ -28,6 +28,7 @@ import java.util.List;
 import org.bukkit.entity.Player;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.utils.DBUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 
 /**
@@ -80,7 +81,7 @@ public class AllBanksPlayer {
 		ResultSet res = null;
 		
 		try{
-			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' ORDER BY id");
 		
 			List<PlotID> returnList = new ArrayList<PlotID>();
@@ -118,7 +119,7 @@ public class AllBanksPlayer {
 		ResultSet res = null;
 		
 		try{
-			stm = AllBanks.getSQLConnection("AllBanksLand").createStatement();
+			stm = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			res = stm.executeQuery("SELECT * FROM world_plots WHERE plot_owner = '" + playerName + "' AND world_id = '" + worldID + "'");
 		
 			int total = 0;

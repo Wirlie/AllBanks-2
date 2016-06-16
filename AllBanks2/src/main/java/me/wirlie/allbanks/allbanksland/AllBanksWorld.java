@@ -23,6 +23,7 @@ import me.wirlie.allbanks.allbanksland.generator.WorldGenerationCfg;
 import me.wirlie.allbanks.allbanksland.generator.WorldGenerator;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.AssertUtil;
+import me.wirlie.allbanks.utils.DBUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
@@ -36,7 +37,7 @@ import me.wirlie.allbanks.utils.WorldLoadAsync_1_9_R2;
  */
 public class AllBanksWorld {
 	
-	private static final Connection DBC = AllBanks.getSQLConnection("AllBanksLand");
+	private static final Connection DBC = AllBanks.getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME);
 	
 	/**
 	 * Resultado de la generación.
@@ -214,7 +215,7 @@ public class AllBanksWorld {
 				Statement stm = null;
 				try {
 					stm = DBC.createStatement();
-					stm.executeUpdate("INSERT INTO worlds_cfg (world_id, plot_size, road_size) VALUES ('" + worldID + "', " + worldCfg.plot_size + ", " + worldCfg.road_size + ")");
+					stm.executeUpdate("INSERT INTO worlds_cfg (world_id, plot_size, road_size, world_base_height) VALUES ('" + worldID + "', " + worldCfg.plot_size + ", " + worldCfg.road_size + ", " + worldCfg.world_height + ")");
 				} catch (SQLException e) {
 					e.printStackTrace();
 				} finally {

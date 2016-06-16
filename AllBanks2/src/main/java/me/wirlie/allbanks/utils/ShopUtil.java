@@ -452,14 +452,14 @@ public class ShopUtil {
 			
 			try {
 				
-				selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+				selectStatement = AllBanks.getSQLConnectionx(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
 				res = selectStatement.executeQuery("SELECT * FROM items WHERE itemmeta = '" + base64str + "'");
 				
 				if(res.next()){
 					return "#" + String.valueOf(res.getInt("id"));
 				} else {
 					//Registrar
-					insertStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+					insertStatement = AllBanks.getSQLConnectionx(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
 					insertStatement.executeUpdate("INSERT INTO items (itemmeta) VALUES ('" + base64str + "')");
 					
 					generatedKeys = insertStatement.getGeneratedKeys();
@@ -500,7 +500,7 @@ public class ShopUtil {
 		ResultSet res = null;
 		
 		try{
-			selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+			selectStatement = AllBanks.getSQLConnectionx(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
 			res = selectStatement.executeQuery("SELECT * FROM items WHERE id = " + specialID);
 			
 			if(res.next()){
@@ -545,7 +545,7 @@ public class ShopUtil {
 		
 		try {
 			
-			selectStatement = AllBanks.getSQLConnection("itemSolution").createStatement();
+			selectStatement = AllBanks.getSQLConnectionx(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
 			res = selectStatement.executeQuery("SELECT * FROM items WHERE id = " + specialID);
 			
 			return res.next();

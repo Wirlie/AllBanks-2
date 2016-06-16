@@ -22,12 +22,12 @@
  */
 package me.wirlie.allbanks.statistics;
 
-import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 import me.wirlie.allbanks.AllBanks;
+import me.wirlie.allbanks.utils.DBUtil;
 
 /**
  * @author Wirlie
@@ -41,7 +41,7 @@ public class AllBanksStatistics {
 	 * Inicializar, con el fin de instalar la base de datos.
 	 */
 	public static void initializeSystem(){
-		DBC = AllBanks.dbSQLite.setConnection(AllBanks.getInstance().getDataFolder() + File.separator + "AllBanksStatistics.db", "Statistics");
+		DBC = AllBanks.dbSQLite.setConnection(DBUtil.STATISTICS_DATABASE_PATH, DBUtil.STATISTICS_DATABASE_CONNECTION_NAME);
 		Statement stm = null;
 		try{
 			stm = DBC.createStatement();
