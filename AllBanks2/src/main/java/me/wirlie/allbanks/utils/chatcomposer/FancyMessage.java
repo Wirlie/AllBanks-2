@@ -43,10 +43,10 @@ import org.bukkit.inventory.ItemStack;
  * optionally initializing it with text. Further property-setting method calls will affect that editing component.
  * </p>
  */
-public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart>, ConfigurationSerializable {
+public class FancyMessage implements JsonRepresentedObject, Cloneable, Iterable<MessagePart>, ConfigurationSerializable {
 
 	static{
-		ConfigurationSerialization.registerClass(BuildChatMessage.class);
+		ConfigurationSerialization.registerClass(FancyMessage.class);
 	}
 
 	private List<MessagePart> messageParts;
@@ -56,8 +56,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	private static Constructor<?> nmsPacketPlayOutChatConstructor;
 
         @Override
-	public BuildChatMessage clone() throws CloneNotSupportedException{
-		BuildChatMessage instance = (BuildChatMessage)super.clone();
+	public FancyMessage clone() throws CloneNotSupportedException{
+		FancyMessage instance = (FancyMessage)super.clone();
 		instance.messageParts = new ArrayList<MessagePart>(messageParts.size());
 		for(int i = 0; i < messageParts.size(); i++){
 			instance.messageParts.add(i, messageParts.get(i).clone());
@@ -71,12 +71,12 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * Creates a JSON message with text.
 	 * @param firstPartText The existing text in the message.
 	 */
-	public BuildChatMessage(final String firstPartText) {
+	public FancyMessage(final String firstPartText) {
 		this(TextualComponent.rawText(firstPartText));
 	}
 	
 	@SuppressWarnings("javadoc")
-	public BuildChatMessage(final TextualComponent firstPartText) {
+	public FancyMessage(final TextualComponent firstPartText) {
 		messageParts = new ArrayList<MessagePart>();
 		messageParts.add(new MessagePart(firstPartText));
 		jsonString = null;
@@ -97,7 +97,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	/**
 	 * Creates a JSON message without text.
 	 */
-	public BuildChatMessage() {
+	public FancyMessage() {
 		this((TextualComponent)null);
 	}
 	
@@ -106,7 +106,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param text The new text of the current editing component.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage text(String text) {
+	public FancyMessage text(String text) {
 		MessagePart latest = latest();
 		latest.text = TextualComponent.rawText(text);
 		dirty = true;
@@ -118,7 +118,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param text The new text of the current editing component.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage text(TextualComponent text) {
+	public FancyMessage text(TextualComponent text) {
 		MessagePart latest = latest();
 		latest.text = text;
 		dirty = true;
@@ -131,7 +131,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @return This builder instance.
 	 * @exception IllegalArgumentException If the specified {@code ChatColor} enumeration value is not a color (but a format value).
 	 */
-	public BuildChatMessage color(final ChatColor color) {
+	public FancyMessage color(final ChatColor color) {
 		if (!color.isColor()) {
 			throw new IllegalArgumentException(color.name() + " is not a color");
 		}
@@ -146,7 +146,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @return This builder instance.
 	 * @exception IllegalArgumentException If any of the enumeration values in the array do not represent formatters.
 	 */
-	public BuildChatMessage style(ChatColor... styles) {
+	public FancyMessage style(ChatColor... styles) {
 		for (final ChatColor style : styles) {
 			if (!style.isFormat()) {
 				throw new IllegalArgumentException(style.name() + " is not a style");
@@ -162,7 +162,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param path The path of the file on the client filesystem.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage file(final String path) {
+	public FancyMessage file(final String path) {
 		onClick("open_file", path);
 		return this;
 	}
@@ -172,7 +172,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param url The URL of the page to open when the link is clicked.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage link(final String url) {
+	public FancyMessage link(final String url) {
 		onClick("open_url", url);
 		return this;
 	}
@@ -183,7 +183,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param command The text to display in the chat bar of the client.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage suggest(final String command) {
+	public FancyMessage suggest(final String command) {
 		onClick("suggest_command", command);
 		return this;
 	}
@@ -194,7 +194,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param command The text to append to the chat bar of the client.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage insert(final String command) {
+	public FancyMessage insert(final String command) {
 		latest().insertionData = command;
 		dirty = true;
 		return this;
@@ -206,7 +206,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param command The text to display in the chat bar of the client.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage command(final String command) {
+	public FancyMessage command(final String command) {
 		onClick("run_command", command);
 		return this;
 	}
@@ -217,7 +217,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param name The name of the achievement to display, excluding the "achievement." prefix.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage achievementTooltip(final String name) {
+	public FancyMessage achievementTooltip(final String name) {
 		onHover("show_achievement", new JsonString("achievement." + name));
 		return this;
 	}
@@ -228,7 +228,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param which The achievement to display.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage achievementTooltip(final Achievement which) {
+	public FancyMessage achievementTooltip(final Achievement which) {
 		try {
 			Object achievement = Reflection.getMethod(Reflection.getOBCClass("CraftStatistic"), "getNMSAchievement", Achievement.class).invoke(null, which);
 			return achievementTooltip((String) Reflection.getField(Reflection.getNMSClass("Achievement"), "name").get(achievement));
@@ -251,7 +251,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @return This builder instance.
 	 * @exception IllegalArgumentException If the statistic requires a parameter which was not supplied.
 	 */
-	public BuildChatMessage statisticTooltip(final Statistic which) {
+	public FancyMessage statisticTooltip(final Statistic which) {
 		Type type = which.getType();
 		if (type != Type.UNTYPED) {
 			throw new IllegalArgumentException("That statistic requires an additional " + type + " parameter!");
@@ -279,7 +279,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @return This builder instance.
 	 * @exception IllegalArgumentException If the statistic requires a parameter which was not supplied, or was supplied a parameter that was not required.
 	 */
-	public BuildChatMessage statisticTooltip(final Statistic which, Material item) {
+	public FancyMessage statisticTooltip(final Statistic which, Material item) {
 		Type type = which.getType();
 		if (type == Type.UNTYPED) {
 			throw new IllegalArgumentException("That statistic needs no additional parameter!");
@@ -310,7 +310,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @return This builder instance.
 	 * @exception IllegalArgumentException If the statistic requires a parameter which was not supplied, or was supplied a parameter that was not required.
 	 */
-	public BuildChatMessage statisticTooltip(final Statistic which, EntityType entity) {
+	public FancyMessage statisticTooltip(final Statistic which, EntityType entity) {
 		Type type = which.getType();
 		if (type == Type.UNTYPED) {
 			throw new IllegalArgumentException("That statistic needs no additional parameter!");
@@ -339,7 +339,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param itemJSON A string representing the JSON-serialized NBT data tag of an {@link ItemStack}.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage itemTooltip(final String itemJSON) {
+	public FancyMessage itemTooltip(final String itemJSON) {
 		onHover("show_item", new JsonString(itemJSON)); // Seems a bit hacky, considering we have a JSON object as a parameter
 		return this;
 	}
@@ -350,7 +350,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param itemStack The stack for which to display information.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage itemTooltip(final ItemStack itemStack) {
+	public FancyMessage itemTooltip(final ItemStack itemStack) {
 		try {
 			Object nmsItem = Reflection.getMethod(Reflection.getOBCClass("inventory.CraftItemStack"), "asNMSCopy", ItemStack.class).invoke(null, itemStack);
 			return itemTooltip(Reflection.getMethod(Reflection.getNMSClass("ItemStack"), "save", Reflection.getNMSClass("NBTTagCompound")).invoke(nmsItem, Reflection.getNMSClass("NBTTagCompound").newInstance()).toString());
@@ -367,7 +367,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param text The text, which supports newlines, which will be displayed to the client upon hovering.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage tooltip(final String text) {
+	public FancyMessage tooltip(final String text) {
 		onHover("show_text", new JsonString(text));
 		return this;
 	}
@@ -378,7 +378,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param lines The lines of text which will be displayed to the client upon hovering. The iteration order of this object will be the order in which the lines of the tooltip are created.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage tooltip(final Iterable<String> lines) {
+	public FancyMessage tooltip(final Iterable<String> lines) {
 		tooltip(ArrayWrapper.toArray(lines, String.class));
 		return this;
 	}
@@ -389,7 +389,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param lines The lines of text which will be displayed to the client upon hovering.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage tooltip(final String... lines) {
+	public FancyMessage tooltip(final String... lines) {
 		StringBuilder builder = new StringBuilder();
 		for(int i = 0; i < lines.length; i++){
 			builder.append(lines[i]);
@@ -407,7 +407,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param text The formatted text which will be displayed to the client upon hovering.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage formattedTooltip(BuildChatMessage text){
+	public FancyMessage formattedTooltip(FancyMessage text){
 		for(MessagePart component : text.messageParts){
 			if(component.clickActionData != null && component.clickActionName != null){
 				throw new IllegalArgumentException("The tooltip text cannot have click data.");
@@ -425,13 +425,13 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param lines The lines of formatted text which will be displayed to the client upon hovering.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage formattedTooltip(BuildChatMessage... lines){
+	public FancyMessage formattedTooltip(FancyMessage... lines){
 		if(lines.length < 1){
 			onHover(null, null); // Clear tooltip
 			return this;
 		}
 
-		BuildChatMessage result = new BuildChatMessage();
+		FancyMessage result = new FancyMessage();
 		result.messageParts.clear(); // Remove the one existing text component that exists by default, which destabilizes the object
 
 		for(int i = 0; i < lines.length; i++){
@@ -463,8 +463,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param lines The lines of text which will be displayed to the client upon hovering. The iteration order of this object will be the order in which the lines of the tooltip are created.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage formattedTooltip(final Iterable<BuildChatMessage> lines){
-		return formattedTooltip(ArrayWrapper.toArray(lines, BuildChatMessage.class));
+	public FancyMessage formattedTooltip(final Iterable<FancyMessage> lines){
+		return formattedTooltip(ArrayWrapper.toArray(lines, FancyMessage.class));
 	}
 
 	/**
@@ -472,7 +472,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param replacements The replacements, in order, that will be used in the language-specific message.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage translationReplacements(final String... replacements){
+	public FancyMessage translationReplacements(final String... replacements){
 		for(String str : replacements){
 			latest().translationReplacements.add(new JsonString(str));
 		}
@@ -502,8 +502,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param replacements The replacements, in order, that will be used in the language-specific message.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage translationReplacements(final BuildChatMessage... replacements){
-		for(BuildChatMessage str : replacements){
+	public FancyMessage translationReplacements(final FancyMessage... replacements){
+		for(FancyMessage str : replacements){
 			latest().translationReplacements.add(str);
 		}
 		
@@ -517,8 +517,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param replacements The replacements, in order, that will be used in the language-specific message.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage translationReplacements(final Iterable<BuildChatMessage> replacements){		
-		return translationReplacements(ArrayWrapper.toArray(replacements, BuildChatMessage.class));
+	public FancyMessage translationReplacements(final Iterable<FancyMessage> replacements){		
+		return translationReplacements(ArrayWrapper.toArray(replacements, FancyMessage.class));
 	}
 	
 	/**
@@ -527,7 +527,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param text The text which will populate the new message component.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage then(final String text) {
+	public FancyMessage then(final String text) {
 		return then(TextualComponent.rawText(text));
 	}
 
@@ -537,7 +537,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param text The text which will populate the new message component.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage then(final TextualComponent text) {
+	public FancyMessage then(final TextualComponent text) {
 		if (!latest().hasText()) {
 			throw new IllegalStateException("previous message part has no text");
 		}
@@ -551,7 +551,7 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * After a successful call to this method, all setter methods will refer to a new message component, created as a result of the call to this method.
 	 * @return This builder instance.
 	 */
-	public BuildChatMessage then() {
+	public FancyMessage then() {
 		if (!latest().hasText()) {
 			throw new IllegalStateException("previous message part has no text");
 		}
@@ -745,8 +745,8 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @return A {@code FancyMessage} representing the parameterized JSON message.
 	 */
 	@SuppressWarnings("unchecked")
-	public static BuildChatMessage deserialize(Map<String, Object> serialized){
-		BuildChatMessage msg = new BuildChatMessage();
+	public static FancyMessage deserialize(Map<String, Object> serialized){
+		FancyMessage msg = new FancyMessage();
 		msg.messageParts = (List<MessagePart>)serialized.get("messageParts");
 		msg.jsonString = serialized.containsKey("JSON") ? serialized.get("JSON").toString() : null;
 		msg.dirty = !serialized.containsKey("JSON");
@@ -768,10 +768,10 @@ public class BuildChatMessage implements JsonRepresentedObject, Cloneable, Itera
 	 * @param json The JSON string which represents a fancy message.
 	 * @return A {@code FancyMessage} representing the parameterized JSON message.
 	 */
-	public static BuildChatMessage deserialize(String json){
+	public static FancyMessage deserialize(String json){
 		JsonObject serialized = _stringParser.parse(json).getAsJsonObject();
 		JsonArray extra = serialized.getAsJsonArray("extra"); // Get the extra component
-		BuildChatMessage returnVal = new BuildChatMessage();
+		FancyMessage returnVal = new FancyMessage();
 		returnVal.messageParts.clear();
 		for(JsonElement mPrt : extra){
 			MessagePart component = new MessagePart();

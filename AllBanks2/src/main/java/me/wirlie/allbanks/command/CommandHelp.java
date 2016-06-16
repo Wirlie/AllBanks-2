@@ -28,7 +28,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
-import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
+import me.wirlie.allbanks.utils.chatcomposer.FancyMessage;
 
 /**
  * @author Wirlie
@@ -82,7 +82,7 @@ public class CommandHelp extends Command {
 					Translation.getAndSendMessage(sender, StringsID.GENERATING, true);
 					
 					//	/ab ? <pagina>
-					BuildChatMessage help01 = new BuildChatMessage("")
+					FancyMessage help01 = new FancyMessage("")
 							.then("#01 /ab ")
 								.color(ChatColor.GRAY)
 								.suggest("/ab ? 1")
@@ -100,10 +100,10 @@ public class CommandHelp extends Command {
 					boolean showHelp02 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_TOPRANK_BANKMONEY_PERMISSION);
 
 					//	/ab toprank bankmoney <page>
-					BuildChatMessage help02 = null;
+					FancyMessage help02 = null;
 					
 					if(showHelp02){
-						help02 = new BuildChatMessage("")
+						help02 = new FancyMessage("")
 						.then("#02 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab toprank bankmoney 1")
@@ -118,7 +118,7 @@ public class CommandHelp extends Command {
 							.suggest("/ab toprank bankmoney 1")
 						;
 					}else{
-						help02 = new BuildChatMessage("#02 ")
+						help02 = new FancyMessage("#02 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -128,10 +128,10 @@ public class CommandHelp extends Command {
 					boolean showHelp03 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_TOPRANK_BANKXP_PERMISSION);
 					
 					//	/ab toprank bankxp <page>
-					BuildChatMessage help03 = null;
+					FancyMessage help03 = null;
 					
 					if(showHelp03){
-						help03 = new BuildChatMessage("")
+						help03 = new FancyMessage("")
 						.then("#03 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab toprank bankxp 1")
@@ -146,7 +146,7 @@ public class CommandHelp extends Command {
 							.suggest("/ab toprank bankxp 1")
 						;
 					}else{
-						help03 = new BuildChatMessage("#03 ")
+						help03 = new FancyMessage("#03 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -156,10 +156,10 @@ public class CommandHelp extends Command {
 					boolean showHelp04 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_LOTTERY_INFO_PERMISSION);
 					
 					//	/ab lottery info
-					BuildChatMessage help04 = null;
+					FancyMessage help04 = null;
 					
 					if(showHelp04){
-						help04 = new BuildChatMessage("")
+						help04 = new FancyMessage("")
 						.then("#04 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab lottery info")
@@ -170,7 +170,7 @@ public class CommandHelp extends Command {
 							.tooltip(ChatColor.YELLOW + Translation.get(StringsID.COMMAND_HELP_LOTTERY_INFO_DESC, false)[0], Translation.get(StringsID.CLICK_TO_USE, false)[0])
 						;
 					}else{
-						help04 = new BuildChatMessage("#04 ")
+						help04 = new FancyMessage("#04 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -180,10 +180,10 @@ public class CommandHelp extends Command {
 					boolean showHelp05 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_LOTTERY_BUYTICKET_PERMISSION);
 					
 					//	/ab lottery buyticket <amount>
-					BuildChatMessage help05 = null;
+					FancyMessage help05 = null;
 					
 					if(showHelp05){
-						help05 = new BuildChatMessage("")
+						help05 = new FancyMessage("")
 						.then("#05 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab lottery buyticket 1")
@@ -198,7 +198,7 @@ public class CommandHelp extends Command {
 							.suggest("/ab lottery buyticket 1")
 						;
 					}else{
-						help05 = new BuildChatMessage("#05 ")
+						help05 = new FancyMessage("#05 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -208,10 +208,10 @@ public class CommandHelp extends Command {
 					boolean showHelp06 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_LOTTERY_ENABLE_PERMISSION);
 					
 					//	/ab lottery enable
-					BuildChatMessage help06 = null;
+					FancyMessage help06 = null;
 					
 					if(showHelp06){
-						help06 = new BuildChatMessage("")
+						help06 = new FancyMessage("")
 						.then("#06 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab lottery enable")
@@ -222,14 +222,14 @@ public class CommandHelp extends Command {
 							.tooltip(ChatColor.YELLOW + Translation.get(StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC, false)[0], Translation.get(StringsID.CLICK_TO_USE, false)[0])
 						;
 					}else{
-						help06 = new BuildChatMessage("#06 ")
+						help06 = new FancyMessage("#06 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
 							;
 					}
 					
-					BuildChatMessage nextBackButton = prepareNextBackButton(sender, final_page, maxPages);
+					FancyMessage nextBackButton = prepareNextBackButton(sender, final_page, maxPages);
 					
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + final_page, "%2%>>>" + maxPages), true);
 					help01.send(sender);
@@ -248,10 +248,10 @@ public class CommandHelp extends Command {
 					boolean showHelp07 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_LOTTERY_DISABLE_PERMISSION);
 					
 					//	/ab lottery enable
-					BuildChatMessage help07 = null;
+					FancyMessage help07 = null;
 					
 					if(showHelp07){
-						help07 = new BuildChatMessage("")
+						help07 = new FancyMessage("")
 						.then("#07 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab lottery disable")
@@ -262,7 +262,7 @@ public class CommandHelp extends Command {
 							.tooltip(ChatColor.YELLOW + Translation.get(StringsID.COMMAND_HELP_LOTTERY_ENABLE_DESC, false)[0], Translation.get(StringsID.CLICK_TO_USE, false)[0])
 						;
 					}else{
-						help07 = new BuildChatMessage("#07 ")
+						help07 = new FancyMessage("#07 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -272,10 +272,10 @@ public class CommandHelp extends Command {
 					boolean showHelp08 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_LOTTERY_FORCE_PERMISSION);
 					
 					//	/ab lottery force
-					BuildChatMessage help08 = null;
+					FancyMessage help08 = null;
 					
 					if(showHelp08){
-						help08 = new BuildChatMessage("")
+						help08 = new FancyMessage("")
 						.then("#08 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab lottery force")
@@ -286,7 +286,7 @@ public class CommandHelp extends Command {
 							.tooltip(ChatColor.YELLOW + Translation.get(StringsID.COMMAND_HELP_LOTTERY_FORCE_DESC, false)[0], Translation.get(StringsID.CLICK_TO_USE, false)[0])
 						;
 					}else{
-						help08 = new BuildChatMessage("#08 ")
+						help08 = new FancyMessage("#08 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -296,10 +296,10 @@ public class CommandHelp extends Command {
 					boolean showHelp09 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_ITEMINFO_PERMISSION);
 					
 					//	/ab iteminfo
-					BuildChatMessage help09 = null;
+					FancyMessage help09 = null;
 					
 					if(showHelp09){
-						help09 = new BuildChatMessage("")
+						help09 = new FancyMessage("")
 						.then("#09 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab iteminfo")
@@ -310,7 +310,7 @@ public class CommandHelp extends Command {
 							.tooltip(ChatColor.YELLOW + Translation.get(StringsID.COMMAND_HELP_ITEMINFO_DESC, false)[0], Translation.get(StringsID.CLICK_TO_USE, false)[0])
 						;
 					}else{
-						help09 = new BuildChatMessage("#09 ")
+						help09 = new FancyMessage("#09 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -320,10 +320,10 @@ public class CommandHelp extends Command {
 					boolean showHelp10 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_DATABASE_EXECUTEQUERY_PERMISSION);
 					
 					//	/ab database try-update <SQL>
-					BuildChatMessage help10 = null;
+					FancyMessage help10 = null;
 					
 					if(showHelp10){
-						help10 = new BuildChatMessage("")
+						help10 = new FancyMessage("")
 						.then("#10 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab database try-update <SQL>")
@@ -338,7 +338,7 @@ public class CommandHelp extends Command {
 							.suggest("/ab database try-update <SQL>")
 						;
 					}else{
-						help10 = new BuildChatMessage("#10 ")
+						help10 = new FancyMessage("#10 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
@@ -348,10 +348,10 @@ public class CommandHelp extends Command {
 					boolean showHelp11 = Util.hasPermission(sender, PermissionsConstants.COMMAND_AB_DATABASE_EXECUTEQUERY_PERMISSION);
 					
 					//	/ab database try-update <SQL>
-					BuildChatMessage help11 = null;
+					FancyMessage help11 = null;
 					
 					if(showHelp11){
-						help11 = new BuildChatMessage("")
+						help11 = new FancyMessage("")
 						.then("#11 /ab ")
 							.color(ChatColor.GRAY)
 							.suggest("/ab database try-query <SQL>")
@@ -366,14 +366,14 @@ public class CommandHelp extends Command {
 							.suggest("/ab database try-query <SQL>")
 						;
 					}else{
-						help11 = new BuildChatMessage("#11 ")
+						help11 = new FancyMessage("#11 ")
 								.color(ChatColor.GRAY)
 							.then(Translation.get(StringsID.NO_PERMISSION_FOR_SEE_THIS, false)[0])
 								.color(ChatColor.RED)
 							;
 					}
 					
-					BuildChatMessage nextBackButton2 = prepareNextBackButton(sender, final_page, maxPages);
+					FancyMessage nextBackButton2 = prepareNextBackButton(sender, final_page, maxPages);
 					
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + final_page, "%2%>>>" + maxPages), true);
 					help07.send(sender);
@@ -397,9 +397,9 @@ public class CommandHelp extends Command {
 	 * @param sender Ejecutor del comando.
 	 * @param page Página actual.
 	 * @param maxPages Páginas máximas.
-	 * @return {@link BuildChatMessage Mensaje formateable}
+	 * @return {@link FancyMessage Mensaje formateable}
 	 */
-	private BuildChatMessage prepareNextBackButton(CommandSender sender, int page, int maxPages){
+	private FancyMessage prepareNextBackButton(CommandSender sender, int page, int maxPages){
 		boolean supportBackPage = false;
 		boolean supportNextPage = false;
 		
@@ -411,13 +411,13 @@ public class CommandHelp extends Command {
 		}
 		
 		if(supportBackPage && !supportNextPage)
-			return new BuildChatMessage("")
+			return new FancyMessage("")
 			.then("<< " + Translation.get(StringsID.BACK, false)[0])
 				.color(ChatColor.YELLOW)
 				.command("/ab ? " + (page - 1))
 			;
 		else if(supportBackPage && supportNextPage)
-			return new BuildChatMessage("")
+			return new FancyMessage("")
 			.then("<< " + Translation.get(StringsID.BACK, false)[0])
 				.color(ChatColor.YELLOW)
 				.command("/ab ? " + (page - 1))
@@ -428,7 +428,7 @@ public class CommandHelp extends Command {
 				.command("/ab ? " + (page + 1))
 			;
 		else
-			return new BuildChatMessage("")
+			return new FancyMessage("")
 			.then(Translation.get(StringsID.NEXT, false)[0] + " >>")
 				.color(ChatColor.YELLOW)
 				.command("/ab ? " + (page + 1))

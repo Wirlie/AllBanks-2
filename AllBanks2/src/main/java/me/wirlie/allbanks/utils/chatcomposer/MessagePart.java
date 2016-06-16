@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 
 /**
- * Internal class: Represents a component of a JSON-serializable {@link BuildChatMessage}.
+ * Internal class: Represents a component of a JSON-serializable {@link FancyMessage}.
  */
 final class MessagePart implements JsonRepresentedObject, ConfigurationSerializable, Cloneable {
 
@@ -48,8 +48,8 @@ final class MessagePart implements JsonRepresentedObject, ConfigurationSerializa
 		obj.styles = (ArrayList<ChatColor>)styles.clone();
 		if(hoverActionData instanceof JsonString){
 			obj.hoverActionData = new JsonString(((JsonString)hoverActionData).getValue());
-		}else if(hoverActionData instanceof BuildChatMessage){
-			obj.hoverActionData = ((BuildChatMessage)hoverActionData).clone();
+		}else if(hoverActionData instanceof FancyMessage){
+			obj.hoverActionData = ((FancyMessage)hoverActionData).clone();
 		}
 		obj.translationReplacements = (ArrayList<JsonRepresentedObject>)translationReplacements.clone();
 		return obj;

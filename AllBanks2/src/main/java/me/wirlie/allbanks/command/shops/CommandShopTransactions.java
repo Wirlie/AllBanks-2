@@ -35,7 +35,7 @@ import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.statistics.AllBanksShopStatistics;
 import me.wirlie.allbanks.statistics.AllBanksShopStatistics.GetTransactionParameter;
 import me.wirlie.allbanks.statistics.ShopTransactionEntry;
-import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
+import me.wirlie.allbanks.utils.chatcomposer.FancyMessage;
 
 /**
  * @author Wirlie
@@ -150,8 +150,8 @@ public class CommandShopTransactions extends Command {
 					new Thread(){
 						@Override
 						public void run(){
-							BuildChatMessage msgHeader = new BuildChatMessage(Translation.get(StringsID.SEE_TRANSACTIONS_BY, true)[0]);
-							BuildChatMessage msg1 = new BuildChatMessage("[")
+							FancyMessage msgHeader = new FancyMessage(Translation.get(StringsID.SEE_TRANSACTIONS_BY, true)[0]);
+							FancyMessage msg1 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_HOUR, false)[0])
@@ -161,7 +161,7 @@ public class CommandShopTransactions extends Command {
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 									;
-							BuildChatMessage msg2 = new BuildChatMessage("[")
+							FancyMessage msg2 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_DAY, false)[0])
@@ -171,7 +171,7 @@ public class CommandShopTransactions extends Command {
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								;
-							BuildChatMessage msg3 = new BuildChatMessage("[")
+							FancyMessage msg3 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_MONTH, false)[0])
@@ -181,7 +181,7 @@ public class CommandShopTransactions extends Command {
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								;
-							BuildChatMessage msg4 = new BuildChatMessage("[")
+							FancyMessage msg4 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_YEAR, false)[0])
@@ -191,7 +191,7 @@ public class CommandShopTransactions extends Command {
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								;
-							BuildChatMessage msg5 = new BuildChatMessage("[")
+							FancyMessage msg5 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_SHOP_OWNER, false)[0])
@@ -201,7 +201,7 @@ public class CommandShopTransactions extends Command {
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								;
-							BuildChatMessage msg6 = new BuildChatMessage("[")
+							FancyMessage msg6 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_TRANSACTION_PLAYER, false)[0])
@@ -211,7 +211,7 @@ public class CommandShopTransactions extends Command {
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								;
-							BuildChatMessage msg7 = new BuildChatMessage("[")
+							FancyMessage msg7 = new FancyMessage("[")
 									.color(ChatColor.BLUE)
 									.style(ChatColor.BOLD)
 								.then(Translation.get(StringsID.TRANSACTION_BY_ITEM, false)[0])

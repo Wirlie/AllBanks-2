@@ -27,7 +27,7 @@ import me.wirlie.allbanks.allbanksland.PlotID;
 import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
-import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
+import me.wirlie.allbanks.utils.chatcomposer.FancyMessage;
 
 /**
  * Comando /plot
@@ -1486,11 +1486,11 @@ public class CommandPlot extends Command {
 						plotClearTokens.put(p.getName(), save);
 						
 						for(String s : Translation.get(StringsID.COMMAND_PLOT_CLEAR_CONFIRM_MSG, true)){
-							BuildChatMessage prepareMessage1 = new BuildChatMessage(s);
+							FancyMessage prepareMessage1 = new FancyMessage(s);
 							prepareMessage1.color(ChatColor.YELLOW);
 							prepareMessage1.send(p);
 						}
-						BuildChatMessage prepareMessage2 = new BuildChatMessage("")
+						FancyMessage prepareMessage2 = new FancyMessage("")
 						.then("[")
 							.color(ChatColor.BLUE)
 						.then(Translation.get(StringsID.ACCEPT, false)[0])

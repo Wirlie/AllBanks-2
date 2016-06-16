@@ -53,7 +53,7 @@ import me.wirlie.allbanks.utils.ShopUtil;
 import me.wirlie.allbanks.utils.Util;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
 import me.wirlie.allbanks.utils.Util.VersionPackage;
-import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
+import me.wirlie.allbanks.utils.chatcomposer.FancyMessage;
 import me.wirlie.allbanks.utils.chatcomposer.TextualComponent;
 
 /**
@@ -203,7 +203,7 @@ public class ShopSignInteractListener implements Listener {
 						ItemStack item = ShopUtil.getItemStack(sign);
 						
 						if(Util.resolveNMSVersion().equals(VersionPackage.NMS_1_9_R1)){
-							new BuildChatMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
+							new FancyMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
 								.then("[ ")
 									.color(ChatColor.BLUE)
 								.then(TextualComponent.localizedText(Util.getItemCodeOrGetCustomName(org.bukkit.craftbukkit.v1_9_R1.inventory.CraftItemStack.asNMSCopy(item))))
@@ -221,7 +221,7 @@ public class ShopSignInteractListener implements Listener {
 									.color(ChatColor.BLUE)
 								.send(p);
 						}else if(Util.resolveNMSVersion().equals(VersionPackage.NMS_1_9_R2)){
-							new BuildChatMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
+							new FancyMessage(Translation.get(StringsID.ITEM_PREVIEW, false)[0])
 							.then("[ ")
 								.color(ChatColor.BLUE)
 							.then(TextualComponent.localizedText(Util.getItemCodeOrGetCustomName(org.bukkit.craftbukkit.v1_9_R2.inventory.CraftItemStack.asNMSCopy(item))))

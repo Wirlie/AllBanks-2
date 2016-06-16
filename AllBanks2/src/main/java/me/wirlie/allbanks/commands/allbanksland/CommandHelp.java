@@ -27,7 +27,7 @@ import me.wirlie.allbanks.Translation;
 import me.wirlie.allbanks.command.Command;
 import me.wirlie.allbanks.utils.InteractiveUtil;
 import me.wirlie.allbanks.utils.InteractiveUtil.SoundType;
-import me.wirlie.allbanks.utils.chatcomposer.BuildChatMessage;
+import me.wirlie.allbanks.utils.chatcomposer.FancyMessage;
 
 /**
  * Comando de ayuda
@@ -80,7 +80,7 @@ public class CommandHelp extends Command {
 					Translation.getAndSendMessage(sender, StringsID.GENERATING, true);
 					
 					//	/abl help <page>
-					BuildChatMessage help01 = new BuildChatMessage("")
+					FancyMessage help01 = new FancyMessage("")
 					.then("#01 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl help 1")
@@ -96,7 +96,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl admin world <WorldName> generate
-					BuildChatMessage help02 = new BuildChatMessage("")
+					FancyMessage help02 = new FancyMessage("")
 					.then("#02 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl admin world [WorldName] generate")
@@ -116,7 +116,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl admin world <WorldName> unload
-					BuildChatMessage help03 = new BuildChatMessage("")
+					FancyMessage help03 = new FancyMessage("")
 					.then("#03 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl admin world [WorldName] unload")
@@ -136,7 +136,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl admin world <WorldName> remove
-					BuildChatMessage help04 = new BuildChatMessage("")
+					FancyMessage help04 = new FancyMessage("")
 					.then("#04 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl admin world [WorldName] remove")
@@ -156,7 +156,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl admin world <WorldName> info
-					BuildChatMessage help05 = new BuildChatMessage("")
+					FancyMessage help05 = new FancyMessage("")
 					.then("#05 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl admin world [WorldName] info")
@@ -176,7 +176,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl admin world <WorldName> set <Flag> <Value>
-					BuildChatMessage help06 = new BuildChatMessage("")
+					FancyMessage help06 = new FancyMessage("")
 					.then("#06 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl admin world [WorldName] set [Flag] [Value]")
@@ -203,7 +203,7 @@ public class CommandHelp extends Command {
 						.tooltip(Translation.getMultiple(false, StringsID.COMMAND_HELP_TOOLTIP_LAND_ARG_SETFLAG_VALUE, StringsID.CLICK_TO_USE))
 					;
 					
-					BuildChatMessage nextBackButton = prepareNextBackButton(sender, final_page, maxPages);
+					FancyMessage nextBackButton = prepareNextBackButton(sender, final_page, maxPages);
 					
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + final_page, "%2%>>>" + maxPages), true);
 					help01.send(sender);
@@ -220,7 +220,7 @@ public class CommandHelp extends Command {
 					Translation.getAndSendMessage(sender, StringsID.GENERATING, true);
 					
 					//	/abl spawn <WorldName>
-					BuildChatMessage help07 = new BuildChatMessage("")
+					FancyMessage help07 = new FancyMessage("")
 					.then("#07 /abl ")
 						.color(ChatColor.GRAY)
 						.suggest("/abl spawn [WorldName]")
@@ -236,7 +236,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot help
-					BuildChatMessage help08 = new BuildChatMessage("")
+					FancyMessage help08 = new FancyMessage("")
 					.then("#08 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot help")
@@ -248,7 +248,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot claim
-					BuildChatMessage help09 = new BuildChatMessage("")
+					FancyMessage help09 = new FancyMessage("")
 					.then("#09 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot claim")
@@ -260,7 +260,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot dispose
-					BuildChatMessage help10 = new BuildChatMessage("")
+					FancyMessage help10 = new FancyMessage("")
 					.then("#10 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot dispose")
@@ -272,7 +272,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot add <Player>
-					BuildChatMessage help11 = new BuildChatMessage("")
+					FancyMessage help11 = new FancyMessage("")
 					.then("#11 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot add [Player]")
@@ -288,7 +288,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot add <Player>
-					BuildChatMessage help12 = new BuildChatMessage("")
+					FancyMessage help12 = new FancyMessage("")
 					.then("#12 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot remove [Player]")
@@ -303,7 +303,7 @@ public class CommandHelp extends Command {
 						.tooltip(Translation.getMultiple(false, StringsID.COMMAND_HELP_TOOLTIP_ARG_PLAYER, StringsID.CLICK_TO_USE))
 					;
 					
-					BuildChatMessage nextBackButton1 = prepareNextBackButton(sender, final_page, maxPages);
+					FancyMessage nextBackButton1 = prepareNextBackButton(sender, final_page, maxPages);
 					
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + final_page, "%2%>>>" + maxPages), true);
 					help07.send(sender);
@@ -320,7 +320,7 @@ public class CommandHelp extends Command {
 					Translation.getAndSendMessage(sender, StringsID.GENERATING, true);
 					
 					//	/abl plot deny <Player>
-					BuildChatMessage help13 = new BuildChatMessage("")
+					FancyMessage help13 = new FancyMessage("")
 					.then("#13 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot deny [Player]")
@@ -336,7 +336,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot undeny <Player>
-					BuildChatMessage help14 = new BuildChatMessage("")
+					FancyMessage help14 = new FancyMessage("")
 					.then("#14 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot undeny [Player]")
@@ -352,7 +352,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot set <Flag> <Value>
-					BuildChatMessage help15 = new BuildChatMessage("")
+					FancyMessage help15 = new FancyMessage("")
 					.then("#15 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot set [Flag] [Value]")
@@ -372,7 +372,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot dispose
-					BuildChatMessage help16 = new BuildChatMessage("")
+					FancyMessage help16 = new FancyMessage("")
 					.then("#16 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot setHomeSpawn")
@@ -384,7 +384,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot dispose
-					BuildChatMessage help17 = new BuildChatMessage("")
+					FancyMessage help17 = new FancyMessage("")
 					.then("#17 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot setShopSpawn")
@@ -396,7 +396,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot info
-					BuildChatMessage help18 = new BuildChatMessage("")
+					FancyMessage help18 = new FancyMessage("")
 					.then("#18 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot info")
@@ -407,7 +407,7 @@ public class CommandHelp extends Command {
 						.tooltip(ChatColor.YELLOW + Translation.get(StringsID.COMMAND_LAND_PLOT_INFO_DESC, false)[0], Translation.get(StringsID.CLICK_TO_USE, false)[0])
 					;
 					
-					BuildChatMessage nextBackButton2 = prepareNextBackButton(sender, final_page, maxPages);
+					FancyMessage nextBackButton2 = prepareNextBackButton(sender, final_page, maxPages);
 					
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + final_page, "%2%>>>" + maxPages), true);
 					help13.send(sender);
@@ -424,7 +424,7 @@ public class CommandHelp extends Command {
 					Translation.getAndSendMessage(sender, StringsID.GENERATING, true);
 					
 					//	/abl plot home <#>
-					BuildChatMessage help19 = new BuildChatMessage("")
+					FancyMessage help19 = new FancyMessage("")
 					.then("#19 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot home 1")
@@ -440,7 +440,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot auto
-					BuildChatMessage help20 = new BuildChatMessage("")
+					FancyMessage help20 = new FancyMessage("")
 					.then("#20 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot auto")
@@ -452,7 +452,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot list <page>
-					BuildChatMessage help21 = new BuildChatMessage("")
+					FancyMessage help21 = new FancyMessage("")
 					.then("#21 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot list 1")
@@ -468,7 +468,7 @@ public class CommandHelp extends Command {
 					;
 					
 					//	/abl plot teleport <Player>
-					BuildChatMessage help22 = new BuildChatMessage("")
+					FancyMessage help22 = new FancyMessage("")
 					.then("#22 /plot ")
 						.color(ChatColor.GRAY)
 						.suggest("/plot teleport [Player]")
@@ -483,7 +483,7 @@ public class CommandHelp extends Command {
 						.tooltip(Translation.getMultiple(false, StringsID.COMMAND_HELP_TOOLTIP_ARG_TELEPORT_PLAYER, StringsID.CLICK_TO_USE))
 					;
 					
-					BuildChatMessage nextBackButton3 = prepareNextBackButton(sender, final_page, maxPages);
+					FancyMessage nextBackButton3 = prepareNextBackButton(sender, final_page, maxPages);
 					
 					Translation.getAndSendMessage(sender, StringsID.COMMAND_HELP_HEADER, Translation.splitStringIntoReplaceHashMap(">>>", "%1%>>>" + final_page, "%2%>>>" + maxPages), true);
 					help19.send(sender);
@@ -503,7 +503,7 @@ public class CommandHelp extends Command {
 		return CommandExecuteResult.SUCCESS;
 	}
 	
-	private BuildChatMessage prepareNextBackButton(CommandSender sender, int page, int maxPages){
+	private FancyMessage prepareNextBackButton(CommandSender sender, int page, int maxPages){
 		boolean supportBackPage = false;
 		boolean supportNextPage = false;
 		
@@ -515,13 +515,13 @@ public class CommandHelp extends Command {
 		}
 		
 		if(supportBackPage && !supportNextPage)
-			return new BuildChatMessage("")
+			return new FancyMessage("")
 			.then("<< " + Translation.get(StringsID.BACK, false)[0])
 				.color(ChatColor.YELLOW)
 				.command("/abl ? " + (page - 1))
 			;
 		else if(supportBackPage && supportNextPage)
-			return new BuildChatMessage("")
+			return new FancyMessage("")
 			.then("<< " + Translation.get(StringsID.BACK, false)[0])
 				.color(ChatColor.YELLOW)
 				.command("/abl ? " + (page - 1))
@@ -532,7 +532,7 @@ public class CommandHelp extends Command {
 				.command("/abl ? " + (page + 1))
 			;
 		else
-			return new BuildChatMessage("")
+			return new FancyMessage("")
 			.then(Translation.get(StringsID.NEXT, false)[0] + " >>")
 				.color(ChatColor.YELLOW)
 				.command("/abl ? " + (page + 1))
