@@ -13,6 +13,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.WorldCreator;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -21,6 +22,7 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.allbanksland.generator.WorldGenerationCfg;
 import me.wirlie.allbanks.allbanksland.generator.WorldGenerator;
 import me.wirlie.allbanks.utils.AllBanksLogger;
+import me.wirlie.allbanks.utils.AssertUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FileDirectory;
 import me.wirlie.allbanks.utils.Util;
@@ -71,6 +73,16 @@ public class AllBanksWorld {
 	 * @return {@code true} si el mundo fue descargado.
 	 */
 	public static boolean unloadPlotWorld(String worldID, boolean saveWorld){
+		World w = (World) AssertUtil.assertNotNull(Bukkit.getWorld(worldID));
+		
+		//Expulsar jugadores
+		for(Entity e : w.getEntities()){
+			if(e instanceof Player){
+				Player p = (Player) e;
+				p.teleport(Bukkit.getWorlds().get(0).getSpawnLocation());
+			}
+		}
+		
 		if(Bukkit.unloadWorld(worldID.toLowerCase(), saveWorld)){
 			registeredMaps.remove(worldID.toLowerCase());
 			return true;

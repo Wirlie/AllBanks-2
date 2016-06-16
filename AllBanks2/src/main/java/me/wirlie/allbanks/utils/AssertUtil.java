@@ -83,11 +83,14 @@ public class AssertUtil {
 	/**
 	 * Asertar no nulo
 	 * @param obj1 Objeto 1
+	 * @return Se devuelve obj1
 	 */
-	public static void assertNotNull(Object obj1){
+	public static Object assertNotNull(Object obj1){
 		if(obj1 == null){
 			throw new AssertionError("Assertion failed! 'AssertNotNull obj1' -> false, obj1 is null");
 		}
+		
+		return obj1;
 	}
 	
 	/**
