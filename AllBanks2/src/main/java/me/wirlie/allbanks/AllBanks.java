@@ -347,7 +347,7 @@ public class AllBanks extends JavaPlugin {
 		new BankTimerRunnable().runTaskTimer(this, 20 * runSeconds, 20 * runSeconds); //ejecutar
 		
 		//Iniciar runnable para BankLoan
-		//REMOVE Mover este código a otro lado.
+		//CLEANUP Mover este código a otro lado.
 		AllBanksLogger.info("Enabling BankLoanRunnable...");
 		AllBanksLogger.info("Reading Config.yml -> banks.bank-loan.collect-interest-every");
 		int collectLoanEvery = ConfigurationUtil.convertTimeValueToSeconds(getConfig().getString("banks.bank-loan.collect-interest-every"));
