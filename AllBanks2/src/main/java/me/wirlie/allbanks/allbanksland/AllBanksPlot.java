@@ -79,10 +79,6 @@ public class AllBanksPlot {
 		this.secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() - 2, (plotZ * totalSize) + abw.plotSize);
 		
 		loadPlotData();
-		
-		//DEBUG REMOVE Test de cálculo
-		firstBound.getBlock().setType(Material.IRON_BLOCK);
-		secondBound.getBlock().setType(Material.GOLD_BLOCK);
 	}
 	
 	/**
