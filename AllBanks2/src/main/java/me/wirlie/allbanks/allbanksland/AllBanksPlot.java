@@ -75,13 +75,13 @@ public class AllBanksPlot {
 		this.plotStringID = plotX + "," + plotZ;
 		
 		int totalSize = abw.plotSize + abw.roadSize + 2;
-		this.firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, plotZ * totalSize);
-		this.secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() + 1, (plotZ * totalSize) + abw.plotSize);
+		this.firstBound = new Location(abw.getBukkitWorld(), plotX * totalSize + 1, abw.getBukkitWorld().getSpawnLocation().getY() - 2, plotZ * totalSize + 1);
+		this.secondBound = new Location(abw.getBukkitWorld(), (plotX * totalSize) + abw.plotSize, abw.getBukkitWorld().getSpawnLocation().getY() - 2, (plotZ * totalSize) + abw.plotSize);
 		
 		loadPlotData();
 		
 		//DEBUG REMOVE Test de cálculo
-		firstBound.getBlock().setType(Material.GOLD_BLOCK);
+		firstBound.getBlock().setType(Material.IRON_BLOCK);
 		secondBound.getBlock().setType(Material.GOLD_BLOCK);
 	}
 	
