@@ -365,8 +365,13 @@ public class WorldLoadAsync_1_9_R2 {
 						World w = Bukkit.getWorld(name);
 						//establecer spawn, para corregir errores.
 						if(w != null){
-							System.out.println("[AllBanks] Set spawn to " + 0 + ", " + (wcfg.world_height + 1) + ", " + 0);
-							w.setSpawnLocation(0, wcfg.world_height + 1, 0);
+							//Más exacto en el centro de la calle.
+							int spawn_x = - wcfg.road_size / 2;
+							int spawn_y = wcfg.world_height + 1;
+							int spawn_z = - wcfg.road_size / 2;
+							
+							System.out.println("[AllBanks] Set spawn to " + spawn_x + ", " + spawn_y + ", " + spawn_z);
+							w.setSpawnLocation(spawn_x, spawn_y, spawn_z);
 							System.out.println("[AllBanks] Done.");
 						}else{
 							System.out.println("[AllBanks] World not loaded??? (null)");
