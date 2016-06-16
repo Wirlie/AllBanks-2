@@ -24,7 +24,6 @@ import java.sql.Statement;
 import java.util.HashMap;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.command.CommandSender;
