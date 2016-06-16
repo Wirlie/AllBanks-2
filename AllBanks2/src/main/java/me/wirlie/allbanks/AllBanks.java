@@ -84,6 +84,7 @@ import me.wirlie.allbanks.runnables.LotteryRunnable;
 import me.wirlie.allbanks.statistics.AllBanksStatistics;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.ConfigurationUtil;
+import me.wirlie.allbanks.utils.DBUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
 import me.wirlie.allbanks.utils.FakeItemManager;
 import me.wirlie.allbanks.utils.Util;
@@ -243,12 +244,14 @@ public class AllBanks extends JavaPlugin {
 		}
 		
 		//Establecer conexión para la base de datos que ayudará a resolver los objetos que almacenan datos NBT (Libros encantados)
-		dbSQLite.setConnection(getDataFolder() + File.separator + "itemSolution.db", "itemSolution");
+		dbSQLite.setConnection(DBUtil.ITEMSOLUTION_DATABASE_PATH, DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME);
 		//PlotWorlds (Mundos)
-		dbSQLite.setConnection(getDataFolder() + File.separator + "AllBanksLandWorldData.db", "AllBanksLand");
+		dbSQLite.setConnection(DBUtil.ALLBANKSLAND_DATABASE_PATH, DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME);
 		//Instalar la base de datos, en caso de que no exista.
 		installItemSolutionDataBase();
 		installAllBanksLandDataBase();
+		//Actualizaciones de la base de datos
+		DBUtil.checkUpdatesAllBanksLandDataBase();
 		
 		//Establecer la conexión global de la base de datos según el método específicado (SQLite o MySQL)
 		if(getStorageMethod().equals(StorageType.MYSQL)) {
@@ -256,7 +259,7 @@ public class AllBanks extends JavaPlugin {
 			dbc = dbMySQL.setConnection();
 		}else {
 			AllBanksLogger.info("Initializing SQLite database...");
-			dbc = dbSQLite.setConnection(getDataFolder() + File.separator + "LocalDataBase.db", "local");
+			dbc = dbSQLite.setConnection(DBUtil.ALLBANKS_DATABASE_PATH, DBUtil.ALLBANKS_DATABASE_CONNECTION_NAME);
 		}
 		//Instalar bases de datos tanto MySQL como SQLite
 		if(getStorageMethod().equals(StorageType.MYSQL) || getStorageMethod().equals(StorageType.SQLITE)) {
@@ -605,7 +608,7 @@ public class AllBanks extends JavaPlugin {
 		
 		try{
 			AllBanksLogger.info("Try to install ItemSolution database...");
-			stm = getSQLConnection("itemSolution").createStatement();
+			stm = getSQLConnectionx(DBUtil.ITEMSOLUTION_DATABASE_CONNECTION_NAME).createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS items (id INTEGER PRIMARY KEY AUTOINCREMENT, itemmeta TEXT NOT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
@@ -630,9 +633,9 @@ public class AllBanks extends JavaPlugin {
 		
 		try{
 			AllBanksLogger.info("Try to install ItemSolution database...");
-			stm = getSQLConnection("AllBanksLand").createStatement();
+			stm = getSQLConnectionx(DBUtil.ALLBANKSLAND_DATABASE_CONNECTION_NAME).createStatement();
 			stm.executeUpdate("CREATE TABLE IF NOT EXISTS world_plots (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_coord_X NUMBER, plot_coord_Z NUMBER, plot_owner TEXT NOT NULL, plot_config TEXT NOT NULL)");
-			stm.executeUpdate("CREATE TABLE IF NOT EXISTS worlds_cfg (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_size NUMBER NOT NULL, road_size NUMBER NOT NULL, current_plot_cursor TEXT NULL)");
+			stm.executeUpdate("CREATE TABLE IF NOT EXISTS worlds_cfg (id INTEGER PRIMARY KEY AUTOINCREMENT, world_id TEXT NOT NULL, plot_size NUMBER NOT NULL, road_size NUMBER NOT NULL, current_plot_cursor TEXT NULL, world_base_height NUMBER NOT NULL)");
 			AllBanksLogger.info("Success: 0 problems found.");
 		}catch (SQLException e){
 			AllBanksLogger.info("Ops! An SQLException has ocurred...");
@@ -695,7 +698,7 @@ public class AllBanks extends JavaPlugin {
 	 * @param connectionName Nombre de la conexión
 	 * @return Conexión obtenida por el nombre especificado
 	 */
-	public static Connection getSQLConnection(String connectionName){
+	public static Connection getSQLConnectionx(String connectionName){
 		return dbSQLite.getConnection(connectionName);
 	}
 	
