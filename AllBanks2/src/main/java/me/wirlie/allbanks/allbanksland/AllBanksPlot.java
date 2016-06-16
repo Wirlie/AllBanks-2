@@ -63,7 +63,7 @@ public class AllBanksPlot {
 	private boolean registeredDatabase = false;
 	
 	/**
-	 * Constructor.
+	 * Constructor
 	 * @param abw Mundo de AllBanksLand
 	 * @param plotX X id
 	 * @param plotZ Z id
