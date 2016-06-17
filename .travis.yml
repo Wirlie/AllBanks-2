@@ -21,7 +21,7 @@ before_install:
   - if [[ $JAVA_MATRIX == "javaOSX" ]] ; then export JAVA_HOME=$(/usr/libexec/java_home); fi
 script:
   - cd "AllBanks2"
-  - mvn test -source 7
+  - mvn test
 notifications:
   email:
     recipients:
