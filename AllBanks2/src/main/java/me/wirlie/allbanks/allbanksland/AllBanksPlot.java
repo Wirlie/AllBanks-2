@@ -34,10 +34,6 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.utils.AllBanksLogger;
 import me.wirlie.allbanks.utils.DBUtil;
 import me.wirlie.allbanks.utils.Util;
-import me.wirlie.allbanks.utils.Util.VersionPackage;
-import me.wirlie.allbanks.utils.Util_1_10_R1;
-import me.wirlie.allbanks.utils.Util_1_9_R1;
-import me.wirlie.allbanks.utils.Util_1_9_R2;
 
 /**
  * @author josue
@@ -411,15 +407,7 @@ public class AllBanksPlot {
 	 * @param sender Opcional, si se desea notificar a alguien en concreto sobre el progreso de la regeneración.
 	 */
 	public void clearPlot(CommandSender sender) {
-		if(Util.resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R1){
-			Util_1_9_R1.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
-		}else if(Util.resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_9_R2){
-			Util_1_9_R2.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
-		}else if(Util.resolveNMSVersion().versionPackageEnum == VersionPackage.NMS_1_10_R1){
-			Util_1_10_R1.clearPlot(sender, abw.getBukkitWorld(), firstBound, secondBound);
-		}else{
-			throw new IllegalStateException(Util.resolveNMSVersion().versionPackageRaw + " is not supported!");
-		}
+		//nada
 	}
 	
 }
