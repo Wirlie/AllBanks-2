@@ -279,4 +279,5 @@ LOTTERY_PREFIX: "&5Lotería &6&l>>&r "
 257: "&7Generando listado..."
 258: "&cEstas usando una versión de CraftBukkit/Spigot incompatible con AllBanks2. Procede con precaución es posible que no todo funcione como se espera."
 259: "&cObjeto no válido."
+260: "&cAcción cancelada por otro plugin. Tu petición no fue procesada."
 

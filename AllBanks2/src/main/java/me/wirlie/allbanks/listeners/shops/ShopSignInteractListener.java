@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.HashMap;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
@@ -42,6 +43,10 @@ import me.wirlie.allbanks.PermissionsConstants;
 import me.wirlie.allbanks.Shops;
 import me.wirlie.allbanks.StringsID;
 import me.wirlie.allbanks.Translation;
+import me.wirlie.allbanks.api.events.ShopPreTransactionEvent;
+import me.wirlie.allbanks.api.events.ShopTransactionEvent;
+import me.wirlie.allbanks.api.utils.ShopData;
+import me.wirlie.allbanks.api.utils.ShopTransactionType;
 import me.wirlie.allbanks.statistics.AllBanksShopStatistics;
 import me.wirlie.allbanks.utils.ChatUtil;
 import me.wirlie.allbanks.utils.DataBaseUtil;
@@ -170,32 +175,49 @@ public class ShopSignInteractListener implements Listener {
 							totalItems = freeSpace;
 						}
 						
-						BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalItems));
+						//Pre evento.
+						ShopData shopData = new ShopData(sign);
+						ItemStack item = shopItem.clone();
+						item.setAmount(totalItems);
+						ShopPreTransactionEvent preTransactionEvent = new ShopPreTransactionEvent(shopData, item, ShopTransactionType.SELL, p);
+						Bukkit.getServer().getPluginManager().callEvent(preTransactionEvent);
 						
-						//Bien, ahora vamos a quitarle los objetos al jugador y a pagarle
-						if(!isAdminShop && !AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
-							Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_OWNER_OF_SHOP_CANNOT_HAVE_MONEY_FOR_BUY, true);
-							return;
-						}
-						if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
-							//Quitar objetos
-							InventoryUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
-							p.updateInventory();
-							//Colocar objetos en el cofre
-							if(!isAdminShop) InventoryUtil.putItemsToInventory(sign, shopItem, totalItems);
-							//Pagar al jugador
-							AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
-							//Mensaje
-							HashMap<String, String> replaceMap = new HashMap<String, String>();
-							replaceMap.put("%1%", String.valueOf(totalItems));
-							replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
-							replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+						if (!preTransactionEvent.isCancelled()) {
+							BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalItems));
 							
-							Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
+							//Bien, ahora vamos a quitarle los objetos al jugador y a pagarle
+							if(!isAdminShop && !AllBanks.getEconomy().has(ShopUtil.getOwner(sign), totalCost.doubleValue())) {
+								Translation.getAndSendMessage(p, StringsID.SHOP_ERROR_OWNER_OF_SHOP_CANNOT_HAVE_MONEY_FOR_BUY, true);
+								return;
+							}
 							
-							//Estadísticas
-							AllBanksShopStatistics statistics = new AllBanksShopStatistics(sign);
-							statistics.addBuyStatisticsToSign(shopItem, p);
+							if(isAdminShop || AllBanks.getEconomy().withdrawPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue()).transactionSuccess()) {
+								//Quitar objetos
+								InventoryUtil.removeItemsFromInventory(p.getInventory(), shopItem, totalItems);
+								p.updateInventory();
+								//Colocar objetos en el cofre
+								if(!isAdminShop) InventoryUtil.putItemsToInventory(sign, shopItem, totalItems);
+								//Pagar al jugador
+								AllBanks.getEconomy().depositPlayer(p, totalCost.doubleValue());
+								//Mensaje
+								HashMap<String, String> replaceMap = new HashMap<String, String>();
+								replaceMap.put("%1%", String.valueOf(totalItems));
+								replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
+								replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+								
+								Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_BUY, replaceMap, true);
+								
+								//Estadísticas
+								AllBanksShopStatistics statistics = new AllBanksShopStatistics(sign);
+								statistics.addBuyStatisticsToSign(shopItem, p);
+								
+								//Evento
+								ShopTransactionEvent transactionEvent = new ShopTransactionEvent(shopData, item, ShopTransactionType.SELL, totalCost, p);
+								Bukkit.getServer().getPluginManager().callEvent(transactionEvent);
+								return;
+							}
+						}else{
+							Translation.getAndSendMessage(p, StringsID.API_EVENT_CANCELLED_BY_ANOTHER_PLUGIN, true);
 							return;
 						}
 					}else{
@@ -356,34 +378,49 @@ public class ShopSignInteractListener implements Listener {
 					
 					if(totalItemsChest < totalAmount) totalAmount = totalItemsChest;
 					
-					//¿Tiene el dinero?
-					BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalAmount));
+					//Pre evento.
+					ShopData shopData = new ShopData(sign);
+					ItemStack item = shopItem.clone();
+					item.setAmount(totalItemsChest);
+					ShopPreTransactionEvent preTransactionEvent = new ShopPreTransactionEvent(shopData, item, ShopTransactionType.BUY, p);
+					Bukkit.getServer().getPluginManager().callEvent(preTransactionEvent);
 					
-					if(!AllBanks.getEconomy().has(p, totalCost.doubleValue())) {
-						//No tiene dinero para comprar esta cantidad de objetos.
-						Translation.getAndSendMessage(p, StringsID.YOU_DO_NOT_HAVE_MONEY, true);
-						return;
-					}
-					
-					
-					//Pagar/Cobrar
-					if(AllBanks.getEconomy().withdrawPlayer(p, totalCost.doubleValue()).transactionSuccess()) {
-						//Bien, procesar
-						if(!isAdminShop) InventoryUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
-						InventoryUtil.putItemsToInventory(p.getInventory(), shopItem, totalAmount);
+					if (!preTransactionEvent.isCancelled()) {
+						//¿Tiene el dinero?
+						BigDecimal totalCost = pricePerItem.multiply(new BigDecimal(totalAmount));
 						
-						if(!isAdminShop) AllBanks.getEconomy().depositPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
-						//Bien, mostrar mensaje.
-						HashMap<String, String> replaceMap = new HashMap<String, String>();
-						replaceMap.put("%1%", String.valueOf(totalAmount));
-						replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
-						replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+						if(!AllBanks.getEconomy().has(p, totalCost.doubleValue())) {
+							//No tiene dinero para comprar esta cantidad de objetos.
+							Translation.getAndSendMessage(p, StringsID.YOU_DO_NOT_HAVE_MONEY, true);
+							return;
+						}
 						
-						Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_SELL, replaceMap, true);
 						
-						//Estadísticas
-						AllBanksShopStatistics statistics = new AllBanksShopStatistics(sign);
-						statistics.addSellStatisticsToSign(shopItem, p);
+						//Pagar/Cobrar
+						if(AllBanks.getEconomy().withdrawPlayer(p, totalCost.doubleValue()).transactionSuccess()) {
+							//Bien, procesar
+							if(!isAdminShop) InventoryUtil.removeItemsFromInventory(ShopUtil.getNearbyChest(sign).getInventory(), shopItem, totalAmount);
+							InventoryUtil.putItemsToInventory(p.getInventory(), shopItem, totalAmount);
+							
+							if(!isAdminShop) AllBanks.getEconomy().depositPlayer(ShopUtil.getOwner(sign), totalCost.doubleValue());
+							//Bien, mostrar mensaje.
+							HashMap<String, String> replaceMap = new HashMap<String, String>();
+							replaceMap.put("%1%", String.valueOf(totalAmount));
+							replaceMap.put("%2%", ItemNameUtil.getItemName(shopItem));
+							replaceMap.put("%3%", AllBanks.getEconomy().format(totalCost.doubleValue()));
+							
+							Translation.getAndSendMessage(p, StringsID.SHOP_SUCCESS_SELL, replaceMap, true);
+							
+							//Estadísticas
+							AllBanksShopStatistics statistics = new AllBanksShopStatistics(sign);
+							statistics.addSellStatisticsToSign(shopItem, p);
+							
+							//Evento
+							ShopTransactionEvent transactionEvent = new ShopTransactionEvent(shopData, item, ShopTransactionType.BUY, totalCost, p);
+							Bukkit.getServer().getPluginManager().callEvent(transactionEvent);
+						}
+					}else{
+						Translation.getAndSendMessage(p, StringsID.API_EVENT_CANCELLED_BY_ANOTHER_PLUGIN, true);
 					}
 					
 					return;
